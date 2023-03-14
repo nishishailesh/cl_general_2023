@@ -16,7 +16,7 @@ tnames='examination profile report sample_id_strategy dashboard super_profile
 	reagent reagent_name unit_name cal_equipment reagent_use menu_new'
 
 #####if root password
-mysqldump  -uroot cl_general $tnames -p$password > "cl_general_data.sql"
+mysqldump  -u"$username" cl_general $tnames -p > "cl_general_data.sql"
 #####if unix plugin , as root 
 #mysqldump  cl_general $tnames > "cl_general_data.sql"
 
