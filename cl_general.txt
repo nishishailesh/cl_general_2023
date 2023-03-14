@@ -1,0 +1,24 @@
+TODO
+	delta check
+	print graph
+	multi sample report
+	NABL Logo
+	
+	TAT: examination wise, average, histogram, outliers(examination and location wise)
+	Release: Examination wise
+	
+	reference range : age/sex etc
+	reflex testing
+	
+	Temp, environ
+
+	verify improve
+
+	NC, all docs
+
+	Status of samples -statistics (overview)
+
+	QC - manufacturer's value
+
+	test-equipment relation	
+	
