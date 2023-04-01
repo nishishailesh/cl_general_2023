@@ -8246,6 +8246,7 @@ function xxx_tree_to_panel($link,$tree,$id_prefix='',$collapse=' collapse ')
 							.$k.'
 						</span>
 						<span 	class="d-inline badge badge-primary rounded-circle p-2" onclick=invert_selection(\''.$id.'_target\') >Invert</span>
+						<span 	class="d-inline badge badge-primary rounded-circle p-2" onclick=select_all_children(\''.$id.'_target\') >Select</span>
 						</div>';
 				echo '<ul style="list-style-type: none" class="border-left border-danger">';
 						echo '<li id='.$id.'_target class="'.$collapse.' ex_menu" style="padding-left:60px">';

@@ -35,7 +35,10 @@ echo '<div class="two_column_nine">';
 	echo '</div>';
 	echo '<div >
 				<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
-				echo '	<div id="status-window" class="border border-success">status:</div>
+				echo '	<div id="status-window" 
+							style="position: fixed;  bottom: 0;  right: 0;" 
+							class="border border-success">status:
+						</div>
 	</div>';
 
 echo '</div>';
@@ -126,6 +129,7 @@ function invert_selection(target_id)
 	update_sss()		//Just update once to prevent excessive client CPU usage
 }
 
+
 function go_down_tree(item, index)
 {
 	if(item.type=='button')
@@ -140,6 +144,56 @@ function go_down_tree(item, index)
 	
 }
 
+
+
+function select_all_children(target_id)
+{
+	//alert(target_id)
+	const ul = document.querySelector('#'+target_id);
+
+	// get all children
+	const childern = ul.childNodes;
+
+	// iterate over all child nodes
+	childern.forEach(go_down_tree_to_select_all);
+	update_sss()		//Just update once to prevent excessive client CPU usage
+}
+
+
+
+function go_down_tree_to_select_all(item, index)
+{
+	if(item.type=='button')
+	{
+		//console.log(item.id)
+		select_examination_by_ex_id_not_invert(item.id,'selected_examination_list')
+	}
+	else
+	{
+		item.childNodes.forEach(go_down_tree_to_select_all)
+	}
+	
+}
+
+
+function select_examination_by_ex_id_not_invert(ex_element_id,list_id)
+{
+	ex_id=document.getElementById(ex_element_id).getAttribute('data-examination_id')
+	if(selected_examination.indexOf(ex_id) !== -1)
+	{
+		//already selected, do nothing
+		//selected_examination.splice(selected_examination.indexOf(ex_id),1)
+		//document.getElementById(list_id).value=selected_examination
+	}
+	else
+	{
+		selected_examination.push(ex_id);
+		document.getElementById(list_id).value=selected_examination
+	}
+	
+	manage_all_button_for_ex_id(ex_id)
+	//update_sss()		//updating at every call cause client 100% CPU usage
+}
 
 //////////////////////sync all button
 //called by select_examination_js and select_examination_by_ex_id
