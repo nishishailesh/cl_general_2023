@@ -135,3 +135,10 @@
   display: grid;
   grid-template-columns: 33% 67%;
 }
+
+.two_column_nine
+{
+  display: grid;
+  grid-template-columns: 90% 10%;
+}
+

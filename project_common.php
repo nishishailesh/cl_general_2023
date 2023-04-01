@@ -2385,7 +2385,7 @@ function display_dw($ex_result,$label='')
 }
 
 
-function view_field_any($link,$ex_id,$ex_result,$sample_id)
+function view_field_any($link,$ex_id,$sample_id)
 {
 	$examination_details=get_one_examination_details($link,$ex_id);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
@@ -2396,9 +2396,11 @@ function view_field_any($link,$ex_id,$ex_result,$sample_id)
 	}
 	else
 	{
+		$ex_result=get_one_ex_result($link,$sample_id,$ex_id);
 		view_field($link,$ex_id,$ex_result);
 	}
 }
+
 function view_field($link,$ex_id,$ex_result)
 {
 		$examination_details=get_one_examination_details($link,$ex_id);
@@ -7302,7 +7304,7 @@ function tree_to_panel($link,$tree,$id_prefix='',$collapse=' collapse ')
 							>'
 							.$k.'
 						</span>
-						<span 	class="badge badge-primary" onclick=invert_selection(\''.$id.'_target\') >Invert</span>
+						<span 	class="badge badge-primary rounded-circle p-2" onclick=invert_selection(\''.$id.'_target\') >Invert</span>
 						';
 				echo '<ul style="list-style-type: none" class="border-left border-danger">';
 						echo '<li id='.$id.'_target class="'.$collapse.' ex_menu" style="padding-left:60px">';
@@ -7319,7 +7321,7 @@ function tree_to_panel($link,$tree,$id_prefix='',$collapse=' collapse ')
 								>'
 								.$k.'
 							</span>
-							<span 	class="badge badge-primary" onclick=invert_selection(\''.$id.'_target\') >Invert</span>
+							<span 	class="badge badge-primary rounded-circle p-2" onclick=invert_selection(\''.$id.'_target\') >Invert</span>
 
 						';
 				echo '<ul style="list-style-type: none" class="border-left border-danger">';
@@ -7426,7 +7428,7 @@ function make_examination_tree($link,$sql)
 		$temp=$ar['examination_id_list'];
 	}
 	//echo '<pre>';print_r($examination_tree);echo '</pre>';
-	return $examination_tree;
+	return sort($examination_tree);
 }
 
 function display_one_examination($link,$ex_id,$prefix)
@@ -7434,7 +7436,7 @@ function display_one_examination($link,$ex_id,$prefix)
 	$ex_data=get_one_examination_details($link,$ex_id);
 	$sr=$ex_data['sample_requirement']!='None'?$ex_data['sample_requirement']:'';
 	$edit_specification=json_decode($ex_data['edit_specification'],true);
-	$method=isset($edit_specification['method'])?$edit_specification['method']:'';
+	$method=isset($edit_specification['method'])?$edit_specification['method']:'.';
 	$ex_limit=isset($edit_specification['limit_request'])?$edit_specification['limit_request']:0;
 	$user_limit=get_user_request_limit($link);
 	$e=$ex_id;
@@ -7445,9 +7447,10 @@ function display_one_examination($link,$ex_id,$prefix)
 				id=\''.$prefix.'_'.$e.'\'
 				data-examination_id=\''.$e.'\' 
 				type=button
+				
 				class="bg-warning" 
 				onclick="select_examination_js(this,\''.$e.'\', \'selected_examination_list\')" 
-				>'.$ex_data['name'].'<br>'.$sr.'<br>'.$method.'</button>';
+				><pre>'.str_pad(substr($ex_data['name'],0,20),20,'.').'<br>'.str_pad(substr($sr,0,20),20,'.').'<br>'.str_pad(substr($method,0,20),20,'.').'</pre></button>';
 	}
 }
 
@@ -7637,8 +7640,6 @@ function xx_save_insert_specific($link,$selected_examination_list)
 	$requested=array_filter(array_unique($requested));
 	//echo '<pre>following examinations are requested+filled with results:<br>';print_r($requested);echo '</pre>';
 
-
-
 ////determine sample-type required for each and also distinct types////////////////////////////////////
 	$sample_requirement_array=array();
 	foreach($requested as $ex)
@@ -7656,15 +7657,14 @@ function xx_save_insert_specific($link,$selected_examination_list)
 	$sample_required=array_unique(array_keys($sample_requirement_array));
 	//echo '<pre>following samples are required:<br>';print_r($sample_required);echo '</pre>';
 	
-////determine sample_id to be given/////////////////////////////////
+////determine sample_id to be given to each tube/////////////////////////////////
 	$sample_id_array=set_sample_id($link,$sample_required);
 	
 	//echo '<pre>following samples ids are alloted:<br>';print_r($sample_id_array);echo '</pre>';
 	
 ////Display Properly with sample ID and container types and barcode buttons
 	show_sample_required($sample_id_array);
-	
-	
+
 ////insert examinations////////////////////////////////////////////
 
 //1//Insert None type examination to all samples
@@ -8132,6 +8132,181 @@ function viewww_sample_compact($link,$sample_id)
 		}
 	echo '</div>';
 
+}
+
+///////////////////////ex all////////////
+function xxx_get_examination_data($link,$sql,$pk_name,$multi='no',$size=8)
+{
+	echo '<button class="btn btn-success " type=button id=ex_all_expand onclick="expand_all()">Expand All</button>';
+	echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
+	echo '<input type=hidden readonly class="w-100" name=selected_examination_list type=text id=selected_examination_list>';
+	$tree=xxx_make_examination_tree($link,$sql,'request_route');
+	//tree_to_div($tree);
+	echo '<ul style="list-style-type: none">';
+	xxx_tree_to_panel($link,$tree,'',' collapse ');
+	echo '</ul>';
+	//tree_to_table($link,$tree,'',' show ');
+
+}
+
+
+function xxx_make_examination_tree($link,$sql,$route_field)
+{
+	$examination_tree=[];
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	while($ar=get_single_row($result))
+	{
+		if(strlen($ar[$route_field])>0)
+		{
+			$paths=explode(",",$ar[$route_field]);
+			foreach($paths as $one_path)
+			{
+				$path=explode("/",$one_path);
+				//echo '<pre>';print_r($path);echo '</pre>';
+				$temp=&$examination_tree;
+				foreach($path as $v)
+				{
+					$temp=&$temp[$v];
+				}
+				$temp[]=$ar['examination_id'];
+			}
+		}
+		else if($ar[$route_field]==null)
+		{
+			$examination_tree['Others'][]=$ar['examination_id'];
+		}
+		else
+		{
+			$examination_tree['Others'][]=$ar['examination_id'];			
+		}
+	}
+	//echo '<pre>';print_r($examination_tree);echo '</pre>';
+	ksort($examination_tree);			//for sorting root
+	//echo '<pre>';print_r($examination_tree);echo '</pre>';
+	return $examination_tree;
+}
+
+
+function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collapse ',$sample_id)
+{
+	foreach($tree as $k=>$v)
+	{
+		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',$k));
+		
+		if(is_array($v))
+		{
+			ksort($v);
+			
+				echo '
+						<div class=d-block>
+						<span
+							class="text-info  border border-primary rounded" 
+							data-toggle="collapse"
+							id=\''.$id.'\' 
+							data-target=#'.$id.'_target
+							>'
+							.$k.'
+						</span>
+						</div>';
+				echo '<ul style="list-style-type: none" class="border-left border-danger">';
+						echo '<li id='.$id.'_target class="'.$collapse.' ex_menu" style="padding-left:60px">';
+						xxx_tree_to_panel_for_view($link,$v,$id,' show ',$sample_id);
+						//view_field_any($link,$e,'',$sample_id);
+						echo '</li>';
+				echo'</ul>';
+		}
+		else
+		{
+			view_field_any($link,$v,$sample_id);
+			//display_one_examination($link,$v,$id);
+		}
+	}
+}
+
+
+
+function xxx_tree_to_panel($link,$tree,$id_prefix='',$collapse=' collapse ')
+{
+	foreach($tree as $k=>$v)
+	{
+		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',$k));
+		
+		if(is_array($v))
+		{
+			ksort($v);
+			
+				echo '
+						<div class=d-block>
+						<span
+							class="text-info  border border-primary rounded" 
+							data-toggle="collapse"
+							id=\''.$id.'\' 
+							data-target=#'.$id.'_target
+							>'
+							.$k.'
+						</span>
+						<span 	class="d-inline badge badge-primary rounded-circle p-2" onclick=invert_selection(\''.$id.'_target\') >Invert</span>
+						</div>';
+				echo '<ul style="list-style-type: none" class="border-left border-danger">';
+						echo '<li id='.$id.'_target class="'.$collapse.' ex_menu" style="padding-left:60px">';
+						xxx_tree_to_panel($link,$v,$id,' show ');
+						echo '</li>';
+				echo'</ul>';
+		}
+		else
+		{
+			display_one_examination($link,$v,$id);
+		}
+	}
+}
+
+
+function xxx_view_sample($link,$sample_id)
+{
+	//echo '<pre>';	print_r($result_plus_blob_requested);echo '</pre>';
+	$sql=" (select examination.examination_id,display_route,name from examination,result 
+			where 
+				examination.examination_id=result.examination_id 
+				and
+				result.sample_id='".$sample_id."')
+
+				union
+
+		(select examination.examination_id,display_route,name from examination,result_blob 
+			where 
+				examination.examination_id=result_blob.examination_id 
+				and
+				result_blob.sample_id='".$sample_id."')
+				
+				
+			order by 
+				display_route,examination_id
+								
+				";
+
+	//echo '<br>'.$sql.'<br>';
+	$ex_tree=xxx_make_examination_tree($link,$sql,'display_route');
+
+	//echo '<pre>';print_r($ex_tree);echo '</pre>';
+	ksort($ex_tree);
+	//echo '<pre>';print_r($ex_tree);echo '</pre>';
+		
+	//return;
+	
+
+		echo '<div class="basic_form">
+				<div class=my_label ><span class="badge badge-primary ">Sample ID</span>
+									<span class="badge badge-info"><h5>'.$sample_id.'</h5></span>
+				</div>';
+			
+			show_all_buttons_for_sample($link,$sample_id);
+			echo '</div>
+			<div class="help print_hide">';
+				echo '<button class="btn btn-success " type=button id=ex_all_expand onclick="expand_all()">Expand All</button>';
+				echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
+		echo '</div>';	
+
+		xxx_tree_to_panel_for_view($link,$ex_tree,$id_prefix='',$collapse=' collapse ',$sample_id);
 }
 
 

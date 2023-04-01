@@ -59,9 +59,7 @@ if($_SESSION['display_style']=='full')
         	}
 	}
 	
-	$sql_for_tree="select * from display_examination_view where route like '%%'";
-
-	viewww_sample($link,$_POST['sample_id'],$sql_for_tree);
+	xxx_view_sample($link,$_POST['sample_id']);
 
 }
 else
