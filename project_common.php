@@ -7132,7 +7132,7 @@ function showww_sid_button_release_status($link,$sid,$extra_post='')
 	$location=get_one_ex_result($link,$sid,$GLOBALS['OPD/Ward']);
 	
 	
-	echo '<div class="btn-group-vertical m-0 p-0 border border-light">';
+	echo '<div class="btn-group-vertical m-0 p-0 border border-light print_hide">';
 
 
 		echo '<div class="btn-group d-inline-block">
@@ -7447,13 +7447,19 @@ function display_one_examination($link,$ex_id,$prefix)
 				id=\''.$prefix.'_'.$e.'\'
 				data-examination_id=\''.$e.'\' 
 				type=button
-				
+				data-examination_name=\''.$ex_data['name'].'\'
 				class="bg-warning" 
 				onclick="select_examination_js(this,\''.$e.'\', \'selected_examination_list\')" 
 				><pre>'.str_pad(substr($ex_data['name'],0,20),20,'.').'<br>'.str_pad(substr($sr,0,20),20,'.').'<br>'.str_pad(substr($method,0,20),20,'.').'</pre></button>';
 	}
 }
 
+
+function display_one_examination_on_status($link,$ex_id)
+{
+	$ex_data=get_one_examination_details($link,$ex_id);
+	return $ex_data['name'];
+}
 
 
 function dropdown_get_examination_data($link,$sql,$pk_name,$multi='no',$size=8)
@@ -8137,9 +8143,9 @@ function viewww_sample_compact($link,$sample_id)
 ///////////////////////ex all////////////
 function xxx_get_examination_data($link,$sql,$pk_name,$multi='no',$size=8)
 {
-	echo '<button class="btn btn-success " type=button id=ex_all_expand onclick="expand_all()">Expand All</button>';
-	echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
-	echo '<input type=hidden readonly class="w-100" name=selected_examination_list type=text id=selected_examination_list>';
+	echo '<input type=text readonly class="w-100" name=selected_examination_list type=text id=selected_examination_list>';
+	echo '<button class="btn btn-success " data-status=off type=button id=ex_all_expand onclick="expand_all(this)"><h4>&darr;&darr;&darr;</h4></button>';
+	//echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
 	$tree=xxx_make_examination_tree($link,$sql,'request_route');
 	//tree_to_div($tree);
 	echo '<ul style="list-style-type: none">';
@@ -8199,18 +8205,20 @@ function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collap
 			
 				echo '
 						<div class=d-block>
-						<span
+						<button
+							type=button
+							tabindex="0"
 							class="text-info  border border-primary rounded" 
 							data-toggle="collapse"
 							id=\''.$id.'\' 
 							data-target=#'.$id.'_target
 							>'
 							.$k.'
-						</span>
+						</button>
 						</div>';
 				echo '<ul style="list-style-type: none" class="border-left border-danger">';
 						echo '<li id='.$id.'_target class="'.$collapse.' ex_menu" style="padding-left:60px">';
-						xxx_tree_to_panel_for_view($link,$v,$id,' show ',$sample_id);
+						xxx_tree_to_panel_for_view($link,$v,$id,' collapse ',$sample_id);
 						//view_field_any($link,$e,'',$sample_id);
 						echo '</li>';
 				echo'</ul>';
@@ -8223,8 +8231,6 @@ function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collap
 	}
 }
 
-
-
 function xxx_tree_to_panel($link,$tree,$id_prefix='',$collapse=' collapse ')
 {
 	foreach($tree as $k=>$v)
@@ -8234,23 +8240,41 @@ function xxx_tree_to_panel($link,$tree,$id_prefix='',$collapse=' collapse ')
 		if(is_array($v))
 		{
 			ksort($v);
-			
+
+						//<span 	class="d-inline badge badge-primary rounded-circle p-2" onclick=select_all_children(\''.$id.'_target\') >&#x2713;</span>
+						//<span 	class="d-inline badge badge-primary rounded-circle p-2" onclick=invert_selection(\''.$id.'_target\') >X</span>
+									
 				echo '
 						<div class=d-block>
-						<span
-							class="text-info  border border-primary rounded" 
-							data-toggle="collapse"
-							id=\''.$id.'\' 
-							data-target=#'.$id.'_target
-							>'
-							.$k.'
-						</span>
-						<span 	class="d-inline badge badge-primary rounded-circle p-2" onclick=invert_selection(\''.$id.'_target\') >Invert</span>
-						<span 	class="d-inline badge badge-primary rounded-circle p-2" onclick=select_all_children(\''.$id.'_target\') >Select</span>
+						<h3>
+							<button
+								onclick=toggle_all_children(this,\''.$id.'_target\')
+								type=button
+								tabindex=0
+								class="btn btn-sm btn-outline-success" 
+								id=\''.$id.'\' 
+								data-status=off
+								>'
+								.$k.'
+							</button>
+						
+						
+							<button
+								type=button
+								tabindex=0
+								class="text-info  border border-primary rounded my-toggle" 
+								data-toggle="collapse"
+								id=\''.$id.'\' 
+								data-target=#'.$id.'_target
+								data-status=off
+								onclick="manage_toggle_lable(this)"
+								>&darr;</button>
+						</h3>
 						</div>';
+						
 				echo '<ul style="list-style-type: none" class="border-left border-danger">';
 						echo '<li id='.$id.'_target class="'.$collapse.' ex_menu" style="padding-left:60px">';
-						xxx_tree_to_panel($link,$v,$id,' show ');
+						xxx_tree_to_panel($link,$v,$id,' collapse ');
 						echo '</li>';
 				echo'</ul>';
 		}
@@ -8294,7 +8318,7 @@ function xxx_view_sample($link,$sample_id)
 		
 	//return;
 	
-
+echo '<div class=jumbotron>';
 		echo '<div class="basic_form">
 				<div class=my_label ><span class="badge badge-primary ">Sample ID</span>
 									<span class="badge badge-info"><h5>'.$sample_id.'</h5></span>
@@ -8303,12 +8327,189 @@ function xxx_view_sample($link,$sample_id)
 			show_all_buttons_for_sample($link,$sample_id);
 			echo '</div>
 			<div class="help print_hide">';
-				echo '<button class="btn btn-success " type=button id=ex_all_expand onclick="expand_all()">Expand All</button>';
-				echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
+				//echo '<button class="btn btn-success " type=button id=ex_all_expand onclick="expand_all()">Expand All</button>';
+				//echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
+				echo '<button class="btn btn-success " data-status=off type=button id=ex_all_expand onclick="expand_all(this)"><h4>&darr;&darr;&darr;</h4></button>';
+
 		echo '</div>';	
 
 		xxx_tree_to_panel_for_view($link,$ex_tree,$id_prefix='',$collapse=' collapse ',$sample_id);
+
+echo '</div>';
 }
 
+
+function xxx_save_insert_specific($link,$selected_examination_list)
+{
+
+
+////Requested examinations
+	$requested=array_filter(explode(',',$selected_examination_list));
+	//echo '<pre>following examinations are requested:<br>';print_r($requested);echo '</pre>';
+
+
+
+
+////filled examinations
+
+	$with_result=array();
+	foreach($_POST as $k=>$v)
+	{
+		$tok=explode('__',$k);
+		if(isset($tok[1])=='ex')
+		{
+			$with_result_id=$tok[2];
+			//echo $tok[2].'<br>';
+			$with_result[]=$tok[2];
+		}
+	}
+
+	foreach($_FILES as $k=>$v)
+	{
+		$tok=explode('__',$k);
+		if(isset($tok[1])=='ex')
+		{
+			$with_result_id=$tok[2];
+			//echo $tok[2].'<br>';
+			$with_result[]=$tok[2];
+		}
+	}
+	
+////Requested + filled examinations
+	$requested=array_merge($requested,$with_result);
+	$requested=array_filter(array_unique($requested));
+	//echo '<pre>following examinations are requested+filled with results:<br>';print_r($requested);echo '</pre>';
+
+////determine sample-type required for each and also distinct types////////////////////////////////////
+	$sample_requirement_array=array();
+	foreach($requested as $ex)
+	{
+		$psql='select examination_id,sample_requirement from examination where examination_id=\''.$ex.'\'';
+		$result=run_query($link,$GLOBALS['database'],$psql);
+		$ar=get_single_row($result);
+		$sample_requirement_array[$ar['sample_requirement']][]=$ar['examination_id'];
+	}
+
+	//echo '<pre>following are sample_requirements [$sample_requirement_array] for requested examinations:<br>';print_r($sample_requirement_array);echo '</pre>';
+
+////What are tubes reuired
+	//$sample_required=array_unique($sample_required); original
+	$sample_required=array_unique(array_keys($sample_requirement_array));
+	//echo '<pre>following samples are required:<br>';print_r($sample_required);echo '</pre>';
+	
+////determine sample_id to be given to each tube/////////////////////////////////
+	$sample_id_array=set_sample_id($link,$sample_required);
+	
+	//echo '<pre>following samples ids are alloted:<br>';print_r($sample_id_array);echo '</pre>';
+	
+////Display Properly with sample ID and container types and barcode buttons
+	show_sample_required($sample_id_array);
+
+////insert examinations////////////////////////////////////////////
+
+//1//Insert None type examination to all samples
+
+	if(array_key_exists('None',$sample_requirement_array))
+	{
+		foreach($sample_requirement_array['None'] as $ex)
+		{
+			foreach($sample_id_array as $sid)
+			{
+				if($ex==$GLOBALS['sample_requirement'])
+				{
+					//already inserted during set_sample_id()
+				}
+				else
+				{
+					$examination_details=get_one_examination_details($link,$ex);
+					$edit_specification=json_decode($examination_details['edit_specification'],true);
+					$type=isset($edit_specification['type'])?$edit_specification['type']:'';
+					if($type!='blob')
+					{
+						insert_one_examination_without_result($link,$sid,$ex);
+					}
+					else
+					{
+						insert_one_examination_blob_without_result($link,$sid,$ex);
+					}
+				}
+			}
+		}
+	}
+	
+//2//Insert other types to respective sample_id		
+		
+	foreach($sample_requirement_array as $stype=>$ex_array)
+	{
+		if($stype!='None')
+		{
+			foreach($ex_array as $ex)
+			{
+				$examination_details=get_one_examination_details($link,$ex);
+				$edit_specification=json_decode($examination_details['edit_specification'],true);
+				$type=isset($edit_specification['type'])?$edit_specification['type']:'';
+				
+				if($type!='blob')
+				{
+					insert_one_examination_without_result($link,$sample_id_array[$stype],$ex);
+				}
+				else
+				{
+					insert_one_examination_blob_without_result($link,$sample_id_array[$stype],$ex);
+				}
+			}
+		}
+	}
+
+
+//3//update values for examinations with results
+
+
+	//echo '<pre>';print_r(array_merge($_POST,$_FILES));echo '</pre>';
+
+	foreach(array_merge($_POST,$_FILES) as $k=>$v)
+	{
+		if(substr($k,0,6)=='__ex__')
+		{
+			$ex_id=substr($k,6);
+			$examination_details=get_one_examination_details($link,$ex_id);
+			$edit_specification=json_decode($examination_details['edit_specification'],true);
+			$type=isset($edit_specification['type'])?$edit_specification['type']:'';
+			
+			//print_r($sample_requirement_array);
+			//print_r($examination_details);
+			
+			//echo '>>>>>sample required'.$examination_details['sample_requirement'];
+			//echo '>>>>>sample id for this requirment'.$examination_details['sample_requirement'];
+			
+			if($examination_details['sample_requirement']=='None')
+			{
+				foreach($sample_id_array as $sid)
+				{
+					if($type!='blob')
+					{
+						update_one_examination_with_result($link,$sid,$ex_id,$v);
+					}
+					else
+					{
+						update_one_examination_with_result_blob($link,$sid,$ex_id,$v);
+					}
+				}
+			}
+			else
+			{
+				if($type!='blob')
+				{
+					update_one_examination_with_result($link,$sample_id_array[$examination_details['sample_requirement']],$ex_id,$v);
+				}
+				else
+				{
+					update_one_examination_with_result_blob($link,$sample_id_array[$examination_details['sample_requirement']],$ex_id,$v);
+				}
+			}
+		}
+	}
+	return $sample_id_array	;
+}
 
 ?>

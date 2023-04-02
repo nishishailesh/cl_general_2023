@@ -374,11 +374,30 @@ $(document).ready
 
 
 
-function expand_all()
+function expand_all(me)
 {
 	//console.log("expand_all()")
-	ul = document.getElementsByTagName("html")[0]; 
-	ul.childNodes.forEach(go_down_tree_for_expand);
+	status=me.getAttribute('data-status','on')
+	
+	if(status=='off')
+	{
+		me.setAttribute('data-status','on')
+		me.innerHTML="<h4>&uarr;&uarr;&uarr;</h4>"
+		ul = document.getElementsByTagName("html")[0]; 
+		ul.childNodes.forEach(go_down_tree_for_expand);
+		$(".my-toggle").html("&uarr;")
+		$(".my-toggle").attr("data-status","on")
+	}
+
+	else if(status=='on')
+	{
+		me.setAttribute('data-status','off')
+		me.innerHTML="<h4>&darr;&darr;&darr;</h4>"
+		ul = document.getElementsByTagName("html")[0]; 
+		ul.childNodes.forEach(go_down_tree_for_collapse);
+		$(".my-toggle").html("&darr;")
+		$(".my-toggle").attr("data-status","off")
+	}
 }
 
 function go_down_tree_for_expand(item,index)
@@ -408,6 +427,8 @@ function collapse_all()
 	//console.log("collapse_all()")
 	ul = document.getElementsByTagName("html")[0]; 
 	ul.childNodes.forEach(go_down_tree_for_collapse);
+	$(".my-toggle").html("&darr;")
+	$(".my-toggle").attr("data-status","off")
 }
 
 function go_down_tree_for_collapse(item,index)

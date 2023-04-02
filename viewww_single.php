@@ -12,12 +12,19 @@ $_SESSION['display_style']=isset($_POST['display_style'])?$_POST['display_style'
 
 if($_SESSION['display_style']=='full')
 {
+	echo '<div class="print_hide">';
 	main_menu($link);
+	echo '</div>';
 }
-echo '<div class="d-inline-block">';
-select_display_style();
-echo '</div><div class="d-inline-block">';
-get_dbid_small();
+
+echo '<div class="print_hide">';
+
+	echo '<div class="d-inline-block ">';
+		select_display_style();
+	echo '</div>
+	<div class="d-inline-block print_hide">';
+		get_dbid_small();
+	echo '</div>';
 echo '</div>';
 
 
@@ -31,13 +38,30 @@ if($_POST['action']=='Save_TAT_remark')
                                                 );
 }
 
+if($_POST['action']=='sample_collected')
+{
+	//echo 'analysis_started';
+	update_sample_status($link,$_POST['sample_id'],'sample_collected');
+}
 
+if($_POST['action']=='sample_received')
+{
+	//echo 'analysis_started';
+	update_sample_status($link,$_POST['sample_id'],'sample_received');
+}
+
+if($_POST['action']=='sample_prepared')
+{
+	//echo 'analysis_started';
+	update_sample_status($link,$_POST['sample_id'],'sample_prepared');
+}
 
 if($_POST['action']=='analysis_started')
 {
 	//echo 'analysis_started';
 	update_sample_status($link,$_POST['sample_id'],'analysis_started');
 }
+
 
 showww_sid_button_release_status($link,$_POST['sample_id'],'');
 
@@ -48,7 +72,7 @@ if($_SESSION['display_style']=='full')
 	{
         	if($tat['Total_TAT']>$GLOBALS['TAT_warn_hours'])
         	{
-		$tat_result=get_one_ex_result($link,$_POST['sample_id'],$GLOBALS['TAT_remark_id']);
+			$tat_result=get_one_ex_result($link,$_POST['sample_id'],$GLOBALS['TAT_remark_id']);
                 echo '<h3 class="text-danger d-inline">Total TAT exceed 4 hours. Add remark if required.</h3>';
                 echo '<form class="d-inline"  method=post>
                                 <input type=hidden name=session_name value=\''.session_name().'\'>
@@ -73,7 +97,7 @@ echo '<pre>';print_r($tat);echo '</pre>';
 tail();
 
 
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 
 //////////////Functions///////////////////////
 

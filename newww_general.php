@@ -20,8 +20,14 @@ echo '<div class="two_column_nine">';
 
 		if($tok[0]=='newww_general')
 		{
-			//$sql="select * from examination where request_route like '%".$tok[2]."%'";
-			$sql="select * from examination order by request_route,name";
+			if(strlen($tok[2])>0)
+			{
+				$sql="select * from examination where request_route like '%".$tok[2]."%' order by request_route,name";
+			}
+			else
+			{
+				$sql="select * from examination order by request_route,name";
+			}
 			//echo $sql;
 			
 			get_data_specific($link,$sql,$tok[1]);
@@ -29,46 +35,56 @@ echo '<div class="two_column_nine">';
 
 		elseif($_POST['action']=='insert')
 		{
-			xx_save_insert_specific($link,$_POST['selected_examination_list']);
+			$all_samples=xxx_save_insert_specific($link,$_POST['selected_examination_list']);
+			foreach ($all_samples as $sample_id)
+			{
+					showww_sid_button_release_status($link,$sample_id,'');
+					//xxx_view_sample($link,$sample_id);
+			}
 		}
 
 	echo '</div>';
-	echo '<div >
+	
+	//echo '<div style="position: fixed;  top: 0;  right: 0;" >';
+	echo '<div>
 				<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
 				echo '	<div id="status-window" 
-							style="position: fixed;  bottom: 0;  right: 0;" 
 							class="border border-success">status:
 						</div>
-	</div>';
+			</div>';
 
 echo '</div>';
 
 function get_data_specific($link,$sql,$ex_list)
 {
+	
 	echo '<form method=post class="bg-light jumbotron" enctype="multipart/form-data">';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
-	xx_get_basic_specific();
-	
-	$ex_array=array_filter(explode(",",$ex_list));
-	//print_r($ex_array);
-	foreach($ex_array as $ex_id)
-	{
-		get_one_field_for_insert($link,$ex_id);
-	}
-	
-	
-	echo '<button type=submit class="btn btn-primary form-control" name=action value=insert>Save</button>';
-
-	xxx_get_examination_data($link,$sql,'id',$multi='no',$size=10);
 	echo '<button type=submit class="btn btn-primary form-control" name=action value=insert>Save</button>';
 	
-
-
-	echo '</form>';		
+	echo '<div class="two_column_one_by_two">';
+		echo '<div>';
+			xx_get_basic_specific();
 	
+			$ex_array=array_filter(explode(",",$ex_list));
+			//print_r($ex_array);
+			foreach($ex_array as $ex_id)
+			{
+				get_one_field_for_insert($link,$ex_id);
+			}
+		echo '</div>';
+		echo '<div>';
+	
+			//echo '<button class="btn btn-sm btn-outline-success " type=button id=my_lft onclick="select_super_profile(this,\'selected_examination_list\') " data-status="off" data-ex_list="1002,1031,1032,1034,5001">My LFT</button>';
+			xxx_get_examination_data($link,$sql,'id',$multi='no',$size=10);
+		echo '</div>';
+	echo '</div>';
+	
+	echo '<button type=submit class="btn btn-primary form-control" name=action value=insert>Save</button>';
+	echo '</form>';
 }
 
-
+echo '<pre>';print_r($_POST);echo '</pre>';
 //////////////user code ends////////////////
 tail();
 ?>
@@ -97,7 +113,7 @@ function select_examination_js(me,ex_id,list_id)
 
 }
 
-
+//now deselect
 function select_examination_by_ex_id(ex_element_id,list_id)
 {
 	ex_id=document.getElementById(ex_element_id).getAttribute('data-examination_id')
@@ -106,11 +122,11 @@ function select_examination_by_ex_id(ex_element_id,list_id)
 		selected_examination.splice(selected_examination.indexOf(ex_id),1)
 		document.getElementById(list_id).value=selected_examination
 	}
-	else
-	{
-		selected_examination.push(ex_id);
-		document.getElementById(list_id).value=selected_examination
-	}
+	//else
+	//{
+	//	selected_examination.push(ex_id);
+	//	document.getElementById(list_id).value=selected_examination
+	//}
 	
 	manage_all_button_for_ex_id(ex_id)
 	//update_sss()		//updating at every call cause client 100% CPU usage
@@ -128,6 +144,7 @@ function invert_selection(target_id)
 	childern.forEach(go_down_tree);
 	update_sss()		//Just update once to prevent excessive client CPU usage
 }
+
 
 
 function go_down_tree(item, index)
@@ -159,8 +176,105 @@ function select_all_children(target_id)
 	update_sss()		//Just update once to prevent excessive client CPU usage
 }
 
+///////////toggle start/////////////
+function toggle_all_children(me,target_id)
+{
+	status=me.getAttribute('data-status')
+	//alert(target_id)
+		
+	// get all children
+	const ul = document.querySelector('#'+target_id);
+	const childern = ul.childNodes;
+
+	if(status=='on')
+	{
+		me.classList.remove('btn-success')
+		me.classList.add('btn-outline-success')
+		me.setAttribute('data-status','off')
+	}
+	else if(status=='off')
+	{
+		me.classList.add('btn-success')
+		me.classList.remove('btn-outline-success')
+		me.setAttribute('data-status','on')
+	}	
+	
+	// iterate over all child nodes
+	childern.forEach(go_down_tree_to_toggle_all,status);
+	
+	update_sss()		//Just update once to prevent excessive client CPU usage
+	
+
+}
+
+function go_down_tree_to_toggle_all(item, index,status)
+{
+	if(item.type=='button')
+	{
+		//console.log(item.id)
+		toggle_examination_by_ex_id(item.id,'selected_examination_list',status)
+	}
+	else
+	{
+		item.childNodes.forEach(go_down_tree_to_toggle_all,status)
+	}
+	
+}
+
+function toggle_examination_by_ex_id(ex_element_id,list_id)
+{
+	ex_id=document.getElementById(ex_element_id).getAttribute('data-examination_id')
+	if(status=='off')	//now make status on
+	{
+		if(selected_examination.indexOf(ex_id) !== -1)
+		{
+		//already selected, do nothing
+		//selected_examination.splice(selected_examination.indexOf(ex_id),1)
+		//document.getElementById(list_id).value=selected_examination
+		}
+		else
+		{
+			selected_examination.push(ex_id);
+			document.getElementById(list_id).value=selected_examination
+		}
+	}
+	if(status=='on')	//now make status of
+	{
+		if(selected_examination.indexOf(ex_id) !== -1)
+		{
+		// selected, so, remove
+		selected_examination.splice(selected_examination.indexOf(ex_id),1)
+		document.getElementById(list_id).value=selected_examination
+		}
+		else
+		{
+			//do nothing
+			//selected_examination.push(ex_id);
+			//document.getElementById(list_id).value=selected_examination
+		}
+	}	
+	manage_all_button_for_ex_id(ex_id)
+	//update_sss()		//updating at every call cause client 100% CPU usage
+}
 
 
+function manage_toggle_lable(me)
+{
+	status=me.getAttribute("data-status")
+	if(status=="off")
+	{
+		me.innerHTML="&uarr;"
+		me.setAttribute("data-status","on")
+
+	}
+	if(status=="on")
+	{
+		me.innerHTML="&darr;"
+		me.setAttribute("data-status","off")
+	}
+}
+									
+//////////////toggle end////////////////////
 function go_down_tree_to_select_all(item, index)
 {
 	if(item.type=='button')
@@ -250,20 +364,81 @@ function update_sss()
 									function (item,index)
 									{
 									//console.log("button[id$='_"+item+"']")
+									//jquery
 									$("button[id$='_"+item+"']").each(
 																		function (i, el) 
 																		{
 																			if(i==0)		//even if examination display multiple, status only one button 
 																			{
 																				//console.log(el.id)
-																				bb='<button class="btn btn-sm btn-outline-info" type=button>'+el.innerHTML+'</button><br>';
-																				document.getElementById("status-window").innerHTML = document.getElementById("status-window").innerHTML+bb
+																				//bb='<button class="btn btn-sm btn-outline-info" type=button>'+el.innerHTML+'</button><br>';
+																				//bb=el.innerHTML.split('<br>')[0];
+																				//document.getElementById("status-window").innerHTML = document.getElementById("status-window").innerHTML+bb
+document.getElementById("status-window").innerHTML = document.getElementById("status-window").innerHTML+ el.getAttribute("data-examination_name")+'<br>'
 																			}
 																		}
 																	 );
 									}
 								)	
 }
+
+
+function select_super_profile(me,list_id)
+{
+	ex_list=me.getAttribute('data-ex_list').split(',')
+	status=me.getAttribute('data-status')
+	
+	//alert(ex_list[2])
+	//count=ex_list.length()
+	
+	if(status=='off')
+	{
+		ex_list.forEach
+		(
+			function (i,el)
+			{
+				if(selected_examination.indexOf(i) !== -1)
+				{
+					selected_examination.splice(selected_examination.indexOf(i),1)
+					document.getElementById(list_id).value=selected_examination
+				}
+				
+				selected_examination.push(i);
+				document.getElementById(list_id).value=selected_examination
+
+				manage_all_button_for_ex_id(i)
+			}
+		)
+		
+		me.classList.remove('btn-outline-success')
+		me.classList.add('btn-success')
+		me.setAttribute('data-status','on')
+	}
+	else
+	{
+		ex_list.forEach
+		(
+			function (i,el)
+			{
+				if(selected_examination.indexOf(i) !== -1)
+				{
+					selected_examination.splice(selected_examination.indexOf(i),1)
+					document.getElementById(list_id).value=selected_examination
+				}
+
+				manage_all_button_for_ex_id(i)
+			}
+		)
+		
+		me.classList.remove('btn-success')
+		me.classList.add('btn-outline-success')
+		me.setAttribute('data-status','off')
+		
+	}
+
+	update_sss()
+}
+
 
 //////////////////////////////////////////
 
