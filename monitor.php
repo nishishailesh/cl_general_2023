@@ -58,8 +58,9 @@ echo '
 
 $lh_id=explode("-",$_SESSION['id_range']);
 
-
-$one='select max(sample_id) as max_id from result where sample_id between \''.$lh_id[0].'\' and \''.$lh_id[1].'\'';
+//moving from result to sample_link for improvement in performance and uniqueness
+//$one='select max(sample_id) as max_id from result where sample_id between \''.$lh_id[0].'\' and \''.$lh_id[1].'\'';
+  $one='select ifnull(max(sample_id),'.$lh_id[0].') as max_id from sample_link where sample_id between '.$lh_id[0].' and '.$lh_id[1];
 
 $result=run_query($link,$GLOBALS['database'],$one);
 if($result)
@@ -86,7 +87,7 @@ echo '<div class="two_column">';
 				for ($i=$rounded_start_id;$i<$rounded_start_id+$lot_size;$i++)
 				{
 					echo '<div class="btn-group-vertical m-0 p-0 rounded">';
-					show_sid_button_release_status($link,$i);
+					showww_sid_button_release_status($link,$i);
 					echo '</div>';
 				}			
 	
@@ -96,7 +97,7 @@ echo '<div class="two_column">';
 			for ($i=$rounded_start_id+$lot_size;$i<=$end_id;$i++)
 			{
 				echo '<div class="btn-group-vertical m-0 p-0">';
-				show_sid_button_release_status($link,$i);
+				showww_sid_button_release_status($link,$i);
 				echo '</div>';
 			}							
 	echo '</div>';

@@ -22,17 +22,6 @@ if($tok[0]=='get_dbids')
 	get_dbid($link);
 }
 
-if($_POST['action']=='view_dbid_summary')
-{
-	$from=isset($_POST['from'])?$_POST['from']:'';
-	$to=isset($_POST['to'])?$_POST['to']:'';
-	
-	for ($i=$from;$i<=$to;$i++)
-	{
-		showww_sid_button_release_status($link,$i,$extra_post='');
-	}
-}
-				
 //////////////user code ends////////////////
 tail();
 
@@ -43,7 +32,7 @@ echo '<pre>';print_r($_POST);echo '</pre>';
 function get_dbid($link)
 {
 
-echo '<form method=post >';
+echo '<form method=post action=viewww_from_to_opd.php>';
 echo '<div class="basic_form">';
 	echo '	<label class="my_label text-danger" for="from">From Sample ID</label>
 			<input type=number size=13 id=from name=from class="form-control text-danger" required="required" \>
@@ -54,7 +43,10 @@ echo '<div class="basic_form">';
 		
 echo '</div>';
 
-get_one_field_for_insert($link,1006);	//OPD/Ward
+get_one_field_for_search($link,1006);	//OPD/Ward
+get_one_field_for_search($link,1007);	//OPD/Ward
+get_one_field_for_search($link,1008);	//OPD/Ward
+get_one_field_for_search($link,1001);	//OPD/Ward
 
 echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_summary>View (Summary)</button>';
 echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_detail>View (Detail)</button>';
@@ -67,7 +59,17 @@ echo 	'<ul>
 		</ul>';
 }
 
-
+function get_one_field_for_search($link,$examination_id)
+{
+	echo '<div class="basic_form">';
+		echo '<div class="d-inline p-2">';
+			echo '<input class="float-right"  type=checkbox>';
+		echo '</div>';
+		echo '<div class="d-inline-block">';
+			get_one_field_for_insert($link,$examination_id);	//OPD/Ward
+		echo '</div>';
+	echo '</div>';
+}
 
 
 ?>

@@ -17,6 +17,9 @@ if($_SESSION['display_style']=='full')
 	echo '</div>';
 }
 
+	if(!sample_exist($link,$_POST['sample_id'])){ echo '<h5>Sample Id '.$_POST['sample_id'].' does not exist</h5>';return exit();}
+
+
 echo '<div class="print_hide">';
 
 	echo '<div class="d-inline-block ">';
@@ -67,31 +70,15 @@ showww_sid_button_release_status($link,$_POST['sample_id'],'');
 
 if($_SESSION['display_style']=='full')
 {
-	$tat=calculate_tat($link,$_POST['sample_id'],$print='no');
-	if(isset($tat['Total_TAT']))
-	{
-        	if($tat['Total_TAT']>$GLOBALS['TAT_warn_hours'])
-        	{
-			$tat_result=get_one_ex_result($link,$_POST['sample_id'],$GLOBALS['TAT_remark_id']);
-                echo '<h3 class="text-danger d-inline">Total TAT exceed 4 hours. Add remark if required.</h3>';
-                echo '<form class="d-inline"  method=post>
-                                <input type=hidden name=session_name value=\''.session_name().'\'>
-                                <input type=hidden name=sample_id value=\''.$_POST['sample_id'].'\'>
-                                <textarea name=tat_remark>'.$tat_result.'</textarea>
-                                <input type=submit name=action value=\'Save_TAT_remark\'>
-                        </form>';
-        	}
-	}
-	
+	//$tat=calculate_tat($link,$_POST['sample_id'],$print='no');
 	xxx_view_sample($link,$_POST['sample_id']);
-
 }
 else
 {
 	viewww_sample_compact($link,$_POST['sample_id']);
 }
 
-echo '<pre>';print_r($tat);echo '</pre>';
+//echo '<pre>';print_r($tat);echo '</pre>';
 
 //////////////user code ends////////////////
 tail();

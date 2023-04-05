@@ -85,9 +85,6 @@ function monitor($link)
 }
 
 
-
-
-
 function show_id_range_options($link)
 {
 	//echo 'id_range_dropdown:';

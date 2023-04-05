@@ -22,6 +22,15 @@ if($result_blob)
 	echo '<h3>Deleting attachments of sample_id='.$_POST['sample_id'].'</h3>';
 }
 
+
+$sql_link='delete from sample_link where sample_id=\''.$_POST['sample_id'].'\'';
+$result_link=run_query($link,$GLOBALS['database'],$sql_link);
+if($result_link)
+{
+	echo '<h3>Deleting sample_link of sample_id='.$_POST['sample_id'].'</h3>';
+}
+
+
 view_sample($link,$_POST['sample_id']);
 //////////////user code ends////////////////
 tail();

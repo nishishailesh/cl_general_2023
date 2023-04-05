@@ -55,7 +55,7 @@ function main_menu($link)
 	$auth=explode(',',$user['authorization']);
 	if(in_array('requestonly',$auth))
 	{
-		echo '<span class="bg-warning">'.$GLOBALS['ser'].'</span>
+		echo '
 		<form method=post class="form-group m-0 p-0">
 		<input type=hidden name=session_name value=\''.session_name().'\'>
 
@@ -93,7 +93,7 @@ function main_menu($link)
 		return;
 	}
 
-	echo '<span class="bg-warning">'.$GLOBALS['ser'].'</span>
+	echo '
 	<form method=post class="form-group m-0 p-0">
 	<input type=hidden name=session_name value=\''.session_name().'\'>
 	<div class="btn-group">
@@ -2003,8 +2003,11 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 						value=\''.$result.'\'>';
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
-					if($frill){get_primary_result($link,$sample_id,$examination_id);}
-					show_source_button($element_id,$default);
+					if($readonly!='readonly')
+					{
+						if($frill){get_primary_result($link,$sample_id,$examination_id);}
+						show_source_button($element_id,$default);
+					}
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
@@ -2173,7 +2176,10 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 					htmlspecialchars($result,ENT_QUOTES).'</textarea></PRE>';
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
-					if($frill){get_primary_result($link,$sample_id,$examination_id);}
+					if($readonly!='readonly')
+					{
+						if($frill){get_primary_result($link,$sample_id,$examination_id);}
+					}
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
@@ -6561,8 +6567,8 @@ function view_sql_result_as_table($link,$sql,$show_hide='yes')
 
 function update_sample_status($link,$sample_id,$action)
 {
+	if(!sample_exist($link,$sample_id)){ echo '<h5>Sample Id '.$sample_id.' does not exist</h5>';return false;}
 	//echo '<h1>'.$_POST['action'].'</h1>';
-	if(!sample_exist($link,$sample_id)){return false;}
 	foreach($GLOBALS['sample_status'] as $index=>$status_array)
 	{
 		if($status_array[0]==$action)
@@ -7448,6 +7454,7 @@ function display_one_examination($link,$ex_id,$prefix)
 				data-examination_id=\''.$e.'\' 
 				type=button
 				data-examination_name=\''.$ex_data['name'].'\'
+				data-status=off
 				class="bg-warning" 
 				onclick="select_examination_js(this,\''.$e.'\', \'selected_examination_list\')" 
 				><pre>'.str_pad(substr($ex_data['name'],0,20),20,'.').'<br>'.str_pad(substr($sr,0,20),20,'.').'<br>'.str_pad(substr($method,0,20),20,'.').'</pre></button>';
@@ -8143,7 +8150,6 @@ function viewww_sample_compact($link,$sample_id)
 ///////////////////////ex all////////////
 function xxx_get_examination_data($link,$sql,$pk_name,$multi='no',$size=8)
 {
-	echo '<input type=text readonly class="w-100" name=selected_examination_list type=text id=selected_examination_list>';
 	echo '<button class="btn btn-success " data-status=off type=button id=ex_all_expand onclick="expand_all(this)"><h4>&darr;&darr;&darr;</h4></button>';
 	//echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
 	$tree=xxx_make_examination_tree($link,$sql,'request_route');
@@ -8151,6 +8157,7 @@ function xxx_get_examination_data($link,$sql,$pk_name,$multi='no',$size=8)
 	echo '<ul style="list-style-type: none">';
 	xxx_tree_to_panel($link,$tree,'',' collapse ');
 	echo '</ul>';
+	echo '<input type=text readonly class="w-100" name=selected_examination_list type=text id=selected_examination_list>';
 	//tree_to_table($link,$tree,'',' show ');
 
 }
@@ -8195,6 +8202,8 @@ function xxx_make_examination_tree($link,$sql,$route_field)
 
 function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collapse ',$sample_id)
 {
+	$collapse=' show ';
+	
 	foreach($tree as $k=>$v)
 	{
 		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',$k));
@@ -8208,9 +8217,11 @@ function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collap
 						<button
 							type=button
 							tabindex="0"
-							class="text-info  border border-primary rounded" 
-							data-toggle="collapse"
-							id=\''.$id.'\' 
+							class="text-info  border border-primary rounded" ';
+							
+							//data-toggle="collapse"
+							
+							echo 'id=\''.$id.'\' 
 							data-target=#'.$id.'_target
 							>'
 							.$k.'
@@ -8218,8 +8229,7 @@ function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collap
 						</div>';
 				echo '<ul style="list-style-type: none" class="border-left border-danger">';
 						echo '<li id='.$id.'_target class="'.$collapse.' ex_menu" style="padding-left:60px">';
-						xxx_tree_to_panel_for_view($link,$v,$id,' collapse ',$sample_id);
-						//view_field_any($link,$e,'',$sample_id);
+						xxx_tree_to_panel_for_view($link,$v,$id,' show ',$sample_id);
 						echo '</li>';
 				echo'</ul>';
 		}
@@ -8329,7 +8339,7 @@ echo '<div class=jumbotron>';
 			<div class="help print_hide">';
 				//echo '<button class="btn btn-success " type=button id=ex_all_expand onclick="expand_all()">Expand All</button>';
 				//echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
-				echo '<button class="btn btn-success " data-status=off type=button id=ex_all_expand onclick="expand_all(this)"><h4>&darr;&darr;&darr;</h4></button>';
+				//echo '<button class="btn btn-success " data-status=off type=button id=ex_all_expand onclick="expand_all(this)"><h4>&darr;&darr;&darr;</h4></button>';
 
 		echo '</div>';	
 

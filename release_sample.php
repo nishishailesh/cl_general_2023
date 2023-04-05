@@ -11,6 +11,8 @@ $auth=explode(',',$user['authorization']);
 //print_r($auth);
 main_menu($link);
 
+	if(!sample_exist($link,$_POST['sample_id'])){ echo '<h5>Sample Id '.$_POST['sample_id'].' does not exist</h5>';return exit();}
+
 if($_POST['action']=='Save_TAT_remark')
 {
 	insert_update_one_examination_with_result(

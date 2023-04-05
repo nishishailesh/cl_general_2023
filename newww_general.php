@@ -22,7 +22,9 @@ echo '<div class="two_column_nine">';
 		{
 			if(strlen($tok[2])>0)
 			{
-				$sql="select * from examination where request_route like '%".$tok[2]."%' order by request_route,name";
+				$rlike=str_replace(',','|',$tok[2]);
+				$sql="select * from examination where request_route rlike '".$rlike."' order by request_route,name";
+				//echo $sql;
 			}
 			else
 			{
@@ -63,11 +65,11 @@ function get_data_specific($link,$sql,$ex_list)
 	echo '<button type=submit class="btn btn-primary form-control" name=action value=insert>Save</button>';
 	
 	echo '<div class="two_column_one_by_two">';
-		echo '<div>';
+		echo '<div class="border">';
 			xx_get_basic_specific();
 	
 			$ex_array=array_filter(explode(",",$ex_list));
-			//print_r($ex_array);
+			//print_r($ex_array);xr
 			foreach($ex_array as $ex_id)
 			{
 				get_one_field_for_insert($link,$ex_id);
@@ -180,6 +182,7 @@ function select_all_children(target_id)
 function toggle_all_children(me,target_id)
 {
 	status=me.getAttribute('data-status')
+	//This status variable is available to all functions called within this function!!!!!
 	//alert(target_id)
 		
 	// get all children
@@ -200,23 +203,24 @@ function toggle_all_children(me,target_id)
 	}	
 	
 	// iterate over all child nodes
-	childern.forEach(go_down_tree_to_toggle_all,status);
+	childern.forEach(go_down_tree_to_toggle_all);
 	
 	update_sss()		//Just update once to prevent excessive client CPU usage
 	
 
 }
 
-function go_down_tree_to_toggle_all(item, index,status)
+function go_down_tree_to_toggle_all(item, index)
 {
+	//status from parent function is made avilable
 	if(item.type=='button')
 	{
 		//console.log(item.id)
-		toggle_examination_by_ex_id(item.id,'selected_examination_list',status)
+		toggle_examination_by_ex_id(item.id,'selected_examination_list')
 	}
 	else
 	{
-		item.childNodes.forEach(go_down_tree_to_toggle_all,status)
+		item.childNodes.forEach(go_down_tree_to_toggle_all)
 	}
 	
 }
@@ -224,6 +228,8 @@ function go_down_tree_to_toggle_all(item, index,status)
 function toggle_examination_by_ex_id(ex_element_id,list_id)
 {
 	ex_id=document.getElementById(ex_element_id).getAttribute('data-examination_id')
+	//alert(status)
+	//status from parent-of-parent is available
 	if(status=='off')	//now make status on
 	{
 		if(selected_examination.indexOf(ex_id) !== -1)
@@ -347,11 +353,13 @@ function display_ex_button(ex_element_id,list_id)
 	{
 		document.getElementById(ex_element_id).classList.add('bg-success')
 		document.getElementById(ex_element_id).classList.remove('bg-warning')
+		document.getElementById(ex_element_id).setAttribute("data-status","on")
 	}
 	else
 	{
 		document.getElementById(ex_element_id).classList.remove('bg-success')
 		document.getElementById(ex_element_id).classList.add('bg-warning')
+		document.getElementById(ex_element_id).setAttribute("data-status","off")
 	}
 }
 
@@ -379,7 +387,9 @@ document.getElementById("status-window").innerHTML = document.getElementById("st
 																		}
 																	 );
 									}
-								)	
+								)
+								
+
 }
 
 

@@ -6,7 +6,7 @@
 ####if root password
 ####mysqldump  -d -uroot cl_general -p$password > cl_general_blank.sql 
 #####if unix plugin , as root 
-mysqldump  -d cl_general > cl_general_2023__blank.sql 
+mysqldump  -d cl_general > cl_general_blank_2023.sql 
 
 tnames='examination profile report sample_id_strategy dashboard super_profile
 	copy_bin_text view_info_data prototype prototype_data host_code lab_reference_value
