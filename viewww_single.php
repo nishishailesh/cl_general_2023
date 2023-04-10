@@ -75,7 +75,7 @@ if($_SESSION['display_style']=='full')
 }
 else
 {
-	viewww_sample_compact($link,$_POST['sample_id']);
+	xxx_view_sample_compact($link,$_POST['sample_id']);
 }
 
 //echo '<pre>';print_r($tat);echo '</pre>';

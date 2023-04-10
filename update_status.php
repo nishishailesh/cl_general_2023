@@ -37,7 +37,10 @@ if(isset($_POST['status_action']))
 {
 	update_all_sample_status($link,$_POST['status_action'],$_POST);
 }
-$one='select max(sample_id) as max_id from result where sample_id between 1000000 and 1999999';
+
+//$one='select max(sample_id) as max_id from result where sample_id between 1000000 and 1999999';
+$one='select ifnull(max(sample_id),1000000) as max_id from sample_link where sample_id  between 1000000 and 1999999';
+
 $result=run_query($link,$GLOBALS['database'],$one);
 if($result)
 {

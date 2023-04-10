@@ -238,9 +238,9 @@ function main_menu($link)
 	</form>';		
 }
 
-function mk_select_from_array($name, $select_array,$disabled='',$default='')
+function mk_select_from_array($name, $select_array,$disabled='',$default='',$extra='')
 {	
-	echo '<select  '.$disabled.' name=\''.$name.'\'>';
+	echo '<select  '.$extra.'  '.$disabled.' id=\''.$name.'\' name=\''.$name.'\'>';
 	foreach($select_array as $key=>$value)
 	{
 				//echo $default.'?'.$value;
@@ -307,7 +307,7 @@ function mk_array_from_sql_kv($link,$sql,$field_name_k,$field_name_v,$blank='no'
 	return $ret;
 }
 
-function mk_select_from_sql($link,$sql,$field_name,$select_name,$select_id,$disabled='',$default='',$blank='no')
+function mk_select_from_sql($link,$sql,$field_name,$select_name,$select_id,$disabled='',$default='',$blank='no',$extra='')
 {
 	//echo '<h1>'.$blank.'</h1>';
 	$ar=mk_array_from_sql($link,$sql,$field_name);
@@ -315,7 +315,7 @@ function mk_select_from_sql($link,$sql,$field_name,$select_name,$select_id,$disa
 	{
 		array_unshift($ar,"");
 	}
-	mk_select_from_array($select_name,$ar,$disabled,$default);
+	mk_select_from_array($select_name,$ar,$disabled,$default,$extra);
 }
 
 
@@ -475,6 +475,87 @@ function show_all_buttons_for_sample($link,$sample_id)
 	}
 	echo '</div>';
 }
+
+
+
+function xxx_show_all_buttons_for_sample($link,$sample_id)
+{
+	$released_by=get_one_ex_result($link,$sample_id,$GLOBALS['released_by']);
+	$interim_released_by=get_one_ex_result($link,$sample_id,$GLOBALS['interim_released_by']);
+	
+	echo '<div class="btn-group" role="group">';
+	if(requestonly_check($link))		//no interim, no release, no edit , no delete 
+	{
+		sample_id_barcode_button($sample_id);
+		sample_id_prev_button($sample_id);
+		sample_id_view_button($sample_id);
+		sample_id_next_button($sample_id);
+		sample_id_bill_button($sample_id);
+		if(strlen($released_by)!=0 || strlen($interim_released_by)!=0)
+		{
+			sample_id_print_button($sample_id);						
+		}
+		return;
+	}
+	
+
+	
+	if(strlen($released_by)==0 && strlen($interim_released_by)==0)		//no interim, no release -> no print/xmpp/email/sms
+	{
+		sample_id_barcode_button($sample_id);
+		sample_id_prev_button($sample_id);
+		sample_id_view_button($sample_id);
+		sample_id_next_button($sample_id);
+		sample_id_release_button($sample_id);	
+		sample_id_interim_release_button($sample_id);	
+		sample_id_edittt_button($sample_id);
+		sample_id_delete_button($sample_id);
+		sample_id_copy_button($sample_id);
+		sample_id_bill_button($sample_id);
+	}
+	else if(strlen($released_by)==0 && strlen($interim_released_by)!=0)	//interim but not released, so allow telegram/print/xmpp/email/sms
+	{
+		sample_id_barcode_button($sample_id);		
+		sample_id_prev_button($sample_id);
+		sample_id_view_button($sample_id);
+		sample_id_next_button($sample_id);
+		sample_id_release_button($sample_id);	
+		sample_id_interim_release_button($sample_id);					
+		
+		sample_id_print_button($sample_id);			
+		sample_id_email_button($sample_id);
+		sample_id_telegram_button($sample_id);
+		sample_id_sms_button($sample_id,$link);
+		sample_id_xmpp_button($sample_id);
+		
+		sample_id_edittt_button($sample_id);
+		sample_id_delete_button($sample_id);
+		sample_id_copy_button($sample_id);
+		sample_id_bill_button($sample_id);
+
+	}	
+	else 																//released with/without interim, so do not allow edit/delete
+	{
+		sample_id_barcode_button($sample_id);
+		//sample_id_edit_button($sample_id);
+		sample_id_prev_button($sample_id);
+		sample_id_view_button($sample_id);
+		sample_id_next_button($sample_id);
+		//sample_id_delete_button($sample_id);
+		
+		sample_id_unrelease_button($sample_id);			
+		
+		sample_id_print_button($sample_id);			
+		sample_id_email_button($sample_id);
+		sample_id_telegram_button($sample_id);
+		sample_id_sms_button($sample_id,$link);
+		sample_id_xmpp_button($sample_id);
+		sample_id_copy_button($sample_id);
+		sample_id_bill_button($sample_id);
+	}
+	echo '</div>';
+}
+
 
 function sample_exist($link,$sample_id)
 {
@@ -1062,6 +1143,15 @@ function sample_id_edit_button($sample_id,$target='',$label='Edit')
 	</form></div>';
 }
 
+function sample_id_edittt_button($sample_id,$target='',$label='Edit')
+{
+	echo '<div class="d-inline-block"  style="width:100%;"><form method=post '.$target.' action=edit_generalll.php class=print_hide>
+	<button class="btn btn-outline-primary btn-sm" name=sample_id value=\''.$sample_id.'\' >'.$label.'</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=edit_general>
+	</form></div>';
+}
+
 
 function sample_id_barcode_button($sample_id)
 {
@@ -1359,6 +1449,7 @@ function copy_bin_text($link)
 	}
 	
 }
+
 function edit_sample($link,$sample_id)
 {
 	$ex_list=get_result_of_sample_in_array($link,$sample_id);
@@ -1834,13 +1925,16 @@ function sync_all($link,$sample_id)
 
 function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',$frill=True)
 {
-	if(array_key_exists($examination_id,$result_array)){$result=$result_array[$examination_id];}else{$result='';}
+	//print_r($result_array);
+	$result=$result_array['result'];
+	
 	$examination_details=get_one_examination_details($link,$examination_id);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	if(!$edit_specification){$edit_specification=array();}
 	
 	$type=isset($edit_specification['type'])?$edit_specification['type']:'text';
 	$readonly=isset($edit_specification['readonly'])?$edit_specification['readonly']:'';
+	//echo $readonly;
 	
 	if($frill){
 				$help=isset($edit_specification['help'])?$edit_specification['help']:'';
@@ -1862,6 +1956,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	if($type=='yesno')
 	{
 				//////
+		//if(strlen('result')==0){$result='no';}
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
 			////
 			set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
@@ -2049,42 +2144,6 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 		edit_blob_field($link,$examination_id,$sample_id);
 	} 
 
-	elseif($type=='json')
-	{
-		//////
-		
-		$json=isset($edit_specification['json'])?$edit_specification['json']:'';
-		//$json_array=json_decode($json,true);
-		//$type=isset($edit_specification['type'])?$edit_specification['type']:'text';
-				
-		echo '<div class="basic_form  m-0 p-0 no-gutters">';
-			////
-			set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
-			////
-			echo '<div class="m-0 p-0 no-gutters">';
-				////
-				echo '<div class="d-inline-block no-gutters">';
-					//print_r($json_array);
-					echo '<pre>';print_r($edit_specification['json']);echo '</pre>';
-					echo '<textarea rows=1
-					'.$readonly.'
-					id="'.$element_id.'" 
-					name="'.$examination_id.'" 
-					data-exid="'.$examination_id.'" 
-					data-sid="'.$sample_id.'" 
-					data-user="'.$_SESSION['login'].'" 
-					pattern="'.$pattern.'" 
-					class="form-control autosave p-0 m-0 no-gutters" 
-					type=\''.$type.'\' >'.
-					htmlspecialchars($result,ENT_QUOTES).'</textarea>';
-				echo '</div>';
-				echo '<div class="d-inline  no-gutters">';
-					if($frill){get_primary_result($link,$sample_id,$examination_id);}
-				echo '</div>';
-			echo '</div>';
-			echo '<div class="help"><pre>'.$help.'</pre></div>';	
-		echo '</div>';
-	}
 	 else  if($type=='subsection')
 	{
 		//////
@@ -2095,27 +2154,16 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 			echo '<div class="m-0 p-0 no-gutters">';
 				////
 				echo '<div class="d-inline-block no-gutters">';
-				echo '<textarea rows=1
-					'.$readonly.'
-					id="'.$element_id.'" 
-					name="'.$examination_id.'" 
-					data-exid="'.$examination_id.'" 
-					data-sid="'.$sample_id.'" 
-					data-user="'.$_SESSION['login'].'" 
-					pattern="'.$pattern.'" 
-					class="form-control autosave p-0 m-0 no-gutters" 
-					type=\''.$type.'\' >'.
-					htmlspecialchars($result,ENT_QUOTES).'</textarea>';
+
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
-					if($frill){get_primary_result($link,$sample_id,$examination_id);}
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
 		echo '</div>';
 	} 
 
-	elseif($type=='realtext')
+	elseif($type=='realtext')	//type=text
 	{
 		//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
@@ -2150,7 +2198,8 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 		echo '</div>';
 	} 
 
-	else  
+
+	else 		//type=textarea 
 	{
 		//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
@@ -2187,7 +2236,73 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	} 
 }
 
+function edit_blob_field($link,$examination_id,$sample_id)
+{
+	//get examination details
+	
+	$examination_details=get_one_examination_details($link,$examination_id);
+	//get result_blob details
+	$sql_blob='select * from result_blob where sample_id=\''.$sample_id.'\' and examination_id=\''.$examination_id.'\' ';
+	$result_blob=run_query($link,$GLOBALS['database'],$sql_blob);
+	//$ar_blob=get_single_row($result_blob);
 
+	$element_id='r_id_'.$sample_id.'_'.$examination_id;
+
+	echo '<div class="basic_form">';
+	set_lable($_POST['session_name'],$_POST['sample_id'],$examination_details,$examination_id);
+	//echo '	<div class=my_label>'.$examination_details['name'].'</div>
+	echo'<div class="border ">';	
+	
+	if(get_row_count($result_blob)>0)
+	{
+		$ar_blob=get_single_row($result_blob);
+		echo_download_button_two_pk('result_blob','result',
+								'sample_id',$sample_id,
+								'examination_id',$examination_details['examination_id'],
+								$sample_id.'-'.$examination_details['examination_id'].'-'.$ar_blob['fname'],
+								round(strlen($ar_blob['result'])/1024,0));
+	}
+	echo_upload_two_pk($sample_id,$examination_id);	
+	echo '<input type=hidden
+					id="'.$element_id.'" 
+					name="'.$examination_id.'" 
+					data-exid="'.$examination_id.'" 
+					data-sid="'.$sample_id.'" 
+					data-type="blob" 
+					data-user="'.$_SESSION['login'].'" 
+					class="form-control autosave-blob p-0 m-0 no-gutters" 
+					>';
+	get_primary_result_blob($link,$sample_id,$examination_id);
+						
+	//echo
+	echo '</div>';
+	if(isset($ar_blob['fname']))
+	{
+		echo '<div  class=help  >Current File:'.$ar_blob['fname'].'</div>';
+	}
+	echo '</div>';
+}
+
+
+function edit_field_any($link,$ex_id,$sample_id)
+{
+	//echo $compact;
+	$examination_details=get_one_examination_details($link,$ex_id);
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	$type=isset($edit_specification['type'])?$edit_specification['type']:'';
+	$ex_compact=isset($edit_specification['compact'])?$edit_specification['compact']:'';
+
+		//echo 'xxxx';
+		if($type=='blob')
+		{	
+			edit_blob_field($link,$ex_id,$sample_id);
+		}
+		else
+		{
+			$ex_result=get_one_ex_result_row($link,$sample_id,$ex_id);
+			edit_field($link,$ex_id,$ex_result,$sample_id);
+		}
+}
 
 function edit_single_field($link,$examination_id,$result,$sample_id,$readonly='',$frill=True)
 {
@@ -2391,19 +2506,38 @@ function display_dw($ex_result,$label='')
 }
 
 
-function view_field_any($link,$ex_id,$sample_id)
+function view_field_any($link,$ex_id,$sample_id,$compact='no')
 {
+	//echo $compact;
 	$examination_details=get_one_examination_details($link,$ex_id);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	$type=isset($edit_specification['type'])?$edit_specification['type']:'';
-	if($type=='blob')
-	{	
-		view_field_blob($link,$ex_id,$sample_id);
+	$ex_compact=isset($edit_specification['compact'])?$edit_specification['compact']:'';
+
+	if($compact!='compact')
+	{
+		if($type=='blob')
+		{	
+			view_field_blob($link,$ex_id,$sample_id);
+		}
+		else
+		{
+			$ex_result=get_one_ex_result($link,$sample_id,$ex_id);
+			view_field($link,$ex_id,$ex_result);
+		}
 	}
 	else
 	{
-		$ex_result=get_one_ex_result($link,$sample_id,$ex_id);
-		view_field($link,$ex_id,$ex_result);
+		//echo 'xxxx';
+		if($type=='blob')
+		{	
+			//view_field_blob($link,$ex_id,$sample_id);
+		}
+		else if($ex_compact!=='no')
+		{
+			$ex_result=get_one_ex_result($link,$sample_id,$ex_id);
+			echo '<div class="d-inline-block">'.$examination_details['name'].':</div><div class="d-inline-block text-success">'.$ex_result.'</div><br>';
+		}
 	}
 }
 
@@ -2474,52 +2608,6 @@ function view_field_hr($link,$ex_id,$ex_result)
 		echo '</div>';
 }				
 
-function edit_blob_field($link,$examination_id,$sample_id)
-{
-	//get examination details
-	
-	$examination_details=get_one_examination_details($link,$examination_id);
-	//get result_blob details
-	$sql_blob='select * from result_blob where sample_id=\''.$sample_id.'\' and examination_id=\''.$examination_id.'\' ';
-	$result_blob=run_query($link,$GLOBALS['database'],$sql_blob);
-	//$ar_blob=get_single_row($result_blob);
-
-	$element_id='r_id_'.$sample_id.'_'.$examination_id;
-
-	echo '<div class="basic_form">';
-	set_lable($_POST['session_name'],$_POST['sample_id'],$examination_details,$examination_id);
-	//echo '	<div class=my_label>'.$examination_details['name'].'</div>
-	echo'<div class="border ">';	
-	
-	if(get_row_count($result_blob)>0)
-	{
-		$ar_blob=get_single_row($result_blob);
-		echo_download_button_two_pk('result_blob','result',
-								'sample_id',$sample_id,
-								'examination_id',$examination_details['examination_id'],
-								$sample_id.'-'.$examination_details['examination_id'].'-'.$ar_blob['fname'],
-								round(strlen($ar_blob['result'])/1024,0));
-	}
-	echo_upload_two_pk($sample_id,$examination_id);	
-	echo '<input type=hidden
-					id="'.$element_id.'" 
-					name="'.$examination_id.'" 
-					data-exid="'.$examination_id.'" 
-					data-sid="'.$sample_id.'" 
-					data-type="blob" 
-					data-user="'.$_SESSION['login'].'" 
-					class="form-control autosave-blob p-0 m-0 no-gutters" 
-					>';
-	get_primary_result_blob($link,$sample_id,$examination_id);
-						
-	//echo
-	echo '</div>';
-	if(isset($ar_blob['fname']))
-	{
-		echo '<div  class=help  >Current File:'.$ar_blob['fname'].'</div>';
-	}
-	echo '</div>';
-}
 
 function echo_upload_two_pk($sample_id,$examination_id)
 {
@@ -3512,14 +3600,17 @@ function get_one_field_for_insert($link,$examination_id)
 
 		$result='';
 
-	$type=isset($edit_specification['type'])?$edit_specification['type']:'text';
+	$type=isset($edit_specification['type'])?$edit_specification['type']:'text';//echo '<h4>'.$type.'</h4>';
 	$readonly=isset($edit_specification['readonly'])?$edit_specification['readonly']:'';
 	$help=isset($edit_specification['help'])?$edit_specification['help']:'';
 	$pattern=isset($edit_specification['pattern'])?$edit_specification['pattern']:'';
 	$required=isset($edit_specification['required'])?$edit_specification['required']:'';
 	$placeholder=isset($edit_specification['placeholder'])?$edit_specification['placeholder']:'';
+	$minlength=isset($edit_specification['minlength'])?$edit_specification['minlength']:'';
+	$zoom=isset($edit_specification['zoom'])?$edit_specification['zoom']:'';
 	
 	$element_id='r_id_'.$examination_id;
+
 
 	if($type=='yesno')
 	{
@@ -3531,14 +3622,14 @@ function get_one_field_for_insert($link,$examination_id)
 				echo '</div>';			////
 			echo '<div class="m-0 p-0 no-gutters">';
 					echo '
-							<button 
+							<select 
 							
 							id="'.$element_id.'" 
 								name="__ex__'.$examination_id.'" 
 								class="form-control btn btn-info mb-1"
 								type=button
-								>'.$result.'
-					</button>';
+								value=no
+								><option>no</option><option>yes</option></select>';
 			echo '</div>';
 			echo '<p class="help">'.nl2br(htmlspecialchars($help)).'</p>';	
 		echo '</div>';
@@ -3580,7 +3671,7 @@ function get_one_field_for_insert($link,$examination_id)
 		echo '</div>';
 	}
 	elseif($type=='number')
-	{
+	{//echo '<h4>'.$type.'</h4>';
 		$step=isset($edit_specification['step'])?$edit_specification['step']:1;
 		
 				//////
@@ -3602,7 +3693,7 @@ function get_one_field_for_insert($link,$examination_id)
 						
 						
 						class="form-control" 
-						type=text 
+						type=number 
 						step=\''.$step.'\' 
 						>';
 				echo '</div>';
@@ -3646,7 +3737,6 @@ function get_one_field_for_insert($link,$examination_id)
 	}
 	elseif($type=='datetime-local')
 	{
-		$step=isset($edit_specification['step'])?$edit_specification['step']:1;
 		//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
 			////
@@ -3701,42 +3791,60 @@ function get_one_field_for_insert($link,$examination_id)
 			echo '<p class="help">'.$help.'</p>';	
 		echo '</div>';
 	} 
-	elseif($type=='json')
+
+	 else  if($type=='subsection')
 	{
 		//////
-		
-		$json=isset($edit_specification['json'])?$edit_specification['json']:'';
-		//$json_array=json_decode($json,true);
-		//$type=isset($edit_specification['type'])?$edit_specification['type']:'text';
-				
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
 			////
-				echo '<div  class="my_lable">';
-					echo $examination_details['name'];
-				echo '</div>';
+			echo '<h3 class="bg-warning">'.$examination_details['name'].'</h3>';
 			////
 			echo '<div class="m-0 p-0 no-gutters">';
 				////
 				echo '<div class="d-inline-block no-gutters">';
-					//print_r($json_array);
-					echo '<pre>';print_r($edit_specification['json']);echo '</pre>';
-					echo '<textarea rows=1
-					
+
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				echo '</div>';
+			echo '</div>';
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
+		echo '</div>';
+	} 
+
+	elseif($type=='realtext')	//type=text
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+					echo $examination_details['name'];
+			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+				echo '<input 
+					'.$readonly.'
 					id="'.$element_id.'" 
 					name="__ex__'.$examination_id.'" 
 					data-exid="'.$examination_id.'" 
+					data-user="'.$_SESSION['login'].'" 
+					class="form-control autosave p-0 m-0 no-gutters " 
+					style="resize: both;"
+					';
+
+					if(strlen($required)>0)	{echo 'required=\''.$required.'\'';}
 					
-					pattern="'.$pattern.'" 
-					class="form-control autosave p-0 m-0 no-gutters" 
-					type=\''.$type.'\' ></textarea>';
+					echo 'type=text value=\''.
+					htmlspecialchars($result,ENT_QUOTES).'\'>';
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
-					//get_primary_result($link,$sample_id,$examination_id);
+					//if($frill){get_primary_result($link,$sample_id,$examination_id);}
 				echo '</div>';
 			echo '</div>';
-			echo '<p class="help">'.$help.'</p>';	
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
 		echo '</div>';
-	} 			
+	} 
+
 	else  
 	{
 		//////
@@ -3758,7 +3866,7 @@ function get_one_field_for_insert($link,$examination_id)
 						if(strlen($required)>0) {echo 'required=\''.$required.'\'';}
 
 						echo 'pattern="'.$pattern.'"
-						class="form-control autosave p-0 m-0 no-gutters"
+						class="form-control autosave p-0 m-0 no-gutters '.$zoom.' "
 						type=\''.$type.'\' ></textarea>';
 					echo '</div>';
 					echo '<div class="d-inline  no-gutters">';
@@ -3769,6 +3877,8 @@ function get_one_field_for_insert($link,$examination_id)
 			echo '<p class="help">'.nl2br(htmlspecialchars($help)).'</p>';
 		echo '</div>';
 	}
+
+
 }
 
 
@@ -4288,6 +4398,19 @@ function find_next_sample_id($link,$sample_requirement)
 		echo 'Another sample  was alloted  '.$ars['next_sample_id'].' sample _id. Retry';
 		return false;
 	}
+}
+
+function find_max_sample_id($link,$from,$to)
+{
+	$sqls='select ifnull(max(sample_id),'.$from.') as next_sample_id from sample_link where sample_id between '.$from.' and '.$to;
+	//echo '<h3>'.$sqls.'</h3>';
+	$results=run_query($link,$GLOBALS['database'],$sqls);
+	$ars=get_single_row($results);
+	//return $ars['next_sample_id'];
+	
+	//This is first table where sample_id is added and there it is primary key.
+	//This reserve sample id. Otherwise, somebody else will find same sample id and use it
+	return $ars['next_sample_id'];
 }
 
 function insert_one_examination_without_result($link,$sample_id,$examination_id)
@@ -7115,6 +7238,36 @@ function x_save_insert_specific($link)
 
 function showww_sid_button_release_status($link,$sid,$extra_post='')
 {
+	if(!sample_exist($link,$sid))
+	{
+		echo '<div class="btn-group-vertical m-0 p-0 border border-light print_hide">';
+
+
+			echo '<div class="btn-group d-inline-block">
+					<button type="button"  
+					class="m-0 p-0 btn btn-block btn-sm dropdown-toggle text-dark" 
+					data-toggle="dropdown">'.$sid.'</button>
+					
+					<ul class="dropdown-menu">
+						<li>XX</li><li>XX</li><li>XX</li>';
+						//if(!requestonly_check($link))
+						//{	
+						//	get_sample_action($link,$sid,$extra_post);
+						//}
+					echo '</ul>
+				</div>';
+
+		
+			sample_id_viewww_button(
+				$sid,
+				'target=_blank ',
+				colorize_eq_str(get_equipment_str($link,$sid))
+				);
+		echo '</div>';		
+	return;
+	}
+	
+	
 	$final_state=0;
 	foreach ($GLOBALS['sample_status'] as $status_index=>$status_array )
 	{
@@ -7455,7 +7608,7 @@ function display_one_examination($link,$ex_id,$prefix)
 				type=button
 				data-examination_name=\''.$ex_data['name'].'\'
 				data-status=off
-				class="bg-warning" 
+				class="bg-warning ex_btn" 
 				onclick="select_examination_js(this,\''.$e.'\', \'selected_examination_list\')" 
 				><pre>'.str_pad(substr($ex_data['name'],0,20),20,'.').'<br>'.str_pad(substr($sr,0,20),20,'.').'<br>'.str_pad(substr($method,0,20),20,'.').'</pre></button>';
 	}
@@ -8200,7 +8353,7 @@ function xxx_make_examination_tree($link,$sql,$route_field)
 }
 
 
-function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collapse ',$sample_id)
+function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collapse ',$sample_id,$compact='no')
 {
 	$collapse=' show ';
 	
@@ -8229,17 +8382,60 @@ function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collap
 						</div>';
 				echo '<ul style="list-style-type: none" class="border-left border-danger">';
 						echo '<li id='.$id.'_target class="'.$collapse.' ex_menu" style="padding-left:60px">';
-						xxx_tree_to_panel_for_view($link,$v,$id,' show ',$sample_id);
+						xxx_tree_to_panel_for_view($link,$v,$id,' show ',$sample_id,$compact);
 						echo '</li>';
 				echo'</ul>';
 		}
 		else
 		{
-			view_field_any($link,$v,$sample_id);
+			view_field_any($link,$v,$sample_id,$compact);
 			//display_one_examination($link,$v,$id);
 		}
 	}
 }
+
+
+function xxx_tree_to_panel_for_edit($link,$tree,$id_prefix='',$collapse=' collapse ',$sample_id)
+{
+	$collapse=' show ';
+	
+	foreach($tree as $k=>$v)
+	{
+		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',$k));
+		
+		if(is_array($v))
+		{
+			ksort($v);
+			
+				echo '
+						<div class=d-block>
+						<button
+							type=button
+							tabindex="0"
+							class="text-info  border border-primary rounded" ';
+							
+							//data-toggle="collapse"
+							
+							echo 'id=\''.$id.'\' 
+							data-target=#'.$id.'_target
+							>'
+							.$k.'
+						</button>
+						</div>';
+				echo '<ul style="list-style-type: none" class="border-left border-danger">';
+						echo '<li id='.$id.'_target class="'.$collapse.' ex_menu" style="padding-left:60px">';
+						xxx_tree_to_panel_for_edit($link,$v,$id,' show ',$sample_id);
+						echo '</li>';
+				echo'</ul>';
+		}
+		else
+		{
+			edit_field_any($link,$v,$sample_id);
+			//display_one_examination($link,$v,$id);
+		}
+	}
+}
+
 
 function xxx_tree_to_panel($link,$tree,$id_prefix='',$collapse=' collapse ')
 {
@@ -8296,7 +8492,7 @@ function xxx_tree_to_panel($link,$tree,$id_prefix='',$collapse=' collapse ')
 }
 
 
-function xxx_view_sample($link,$sample_id)
+function xxx_edit_sample($link,$sample_id,$compact='no')
 {
 	//echo '<pre>';	print_r($result_plus_blob_requested);echo '</pre>';
 	$sql=" (select examination.examination_id,display_route,name from examination,result 
@@ -8334,7 +8530,7 @@ echo '<div class=jumbotron>';
 									<span class="badge badge-info"><h5>'.$sample_id.'</h5></span>
 				</div>';
 			
-			show_all_buttons_for_sample($link,$sample_id);
+			xxx_show_all_buttons_for_sample($link,$sample_id);
 			echo '</div>
 			<div class="help print_hide">';
 				//echo '<button class="btn btn-success " type=button id=ex_all_expand onclick="expand_all()">Expand All</button>';
@@ -8343,11 +8539,114 @@ echo '<div class=jumbotron>';
 
 		echo '</div>';	
 
-		xxx_tree_to_panel_for_view($link,$ex_tree,$id_prefix='',$collapse=' collapse ',$sample_id);
+		xxx_tree_to_panel_for_edit($link,$ex_tree,$id_prefix='',$collapse=' collapse ',$sample_id,$compact);
 
 echo '</div>';
 }
 
+
+function xxx_view_sample($link,$sample_id,$compact='no')
+{
+	//echo '<pre>';	print_r($result_plus_blob_requested);echo '</pre>';
+	$sql=" (select examination.examination_id,display_route,name from examination,result 
+			where 
+				examination.examination_id=result.examination_id 
+				and
+				result.sample_id='".$sample_id."')
+
+				union
+
+		(select examination.examination_id,display_route,name from examination,result_blob 
+			where 
+				examination.examination_id=result_blob.examination_id 
+				and
+				result_blob.sample_id='".$sample_id."')
+				
+				
+			order by 
+				display_route,examination_id
+								
+				";
+
+	//echo '<br>'.$sql.'<br>';
+	$ex_tree=xxx_make_examination_tree($link,$sql,'display_route');
+
+	//echo '<pre>';print_r($ex_tree);echo '</pre>';
+	ksort($ex_tree);
+	//echo '<pre>';print_r($ex_tree);echo '</pre>';
+		
+	//return;
+	
+echo '<div class=jumbotron>';
+		echo '<div class="basic_form">
+				<div class=my_label ><span class="badge badge-primary ">Sample ID</span>
+									<span class="badge badge-info"><h5>'.$sample_id.'</h5></span>
+				</div>';
+			
+			xxx_show_all_buttons_for_sample($link,$sample_id);
+			echo '</div>
+			<div class="help print_hide">';
+				//echo '<button class="btn btn-success " type=button id=ex_all_expand onclick="expand_all()">Expand All</button>';
+				//echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
+				//echo '<button class="btn btn-success " data-status=off type=button id=ex_all_expand onclick="expand_all(this)"><h4>&darr;&darr;&darr;</h4></button>';
+
+		echo '</div>';	
+
+		xxx_tree_to_panel_for_view($link,$ex_tree,$id_prefix='',$collapse=' collapse ',$sample_id,$compact);
+
+echo '</div>';
+}
+
+
+function xxx_view_sample_compact($link,$sample_id)
+{
+	//echo '<pre>';	print_r($result_plus_blob_requested);echo '</pre>';
+	$sql=" (select examination.examination_id,display_route,name from examination,result 
+			where 
+				examination.examination_id=result.examination_id 
+				and
+				result.sample_id='".$sample_id."')
+
+				union
+
+		(select examination.examination_id,display_route,name from examination,result_blob 
+			where 
+				examination.examination_id=result_blob.examination_id 
+				and
+				result_blob.sample_id='".$sample_id."')
+				
+				
+			order by 
+				display_route,examination_id
+								
+				";
+
+	//echo '<br>'.$sql.'<br>';
+	$ex_tree=xxx_make_examination_tree($link,$sql,'display_route');
+
+	//echo '<pre>';print_r($ex_tree);echo '</pre>';
+	ksort($ex_tree);
+	//echo '<pre>';print_r($ex_tree);echo '</pre>';
+		
+	//return;
+	
+		echo '<div class="basic_form">
+				<div class=my_label ><span class="badge badge-primary ">Sample ID</span>
+									<span class="badge badge-info"><h5>'.$sample_id.'</h5></span>
+				</div>';
+			
+			//show_all_buttons_for_sample($link,$sample_id);
+			echo '</div>
+			<div class="help print_hide">';
+				//echo '<button class="btn btn-success " type=button id=ex_all_expand onclick="expand_all()">Expand All</button>';
+				//echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
+				//echo '<button class="btn btn-success " data-status=off type=button id=ex_all_expand onclick="expand_all(this)"><h4>&darr;&darr;&darr;</h4></button>';
+
+		echo '</div>';	
+
+		xxx_tree_to_panel_for_view($link,$ex_tree,$id_prefix='',$collapse=' collapse ',$sample_id,'compact');
+
+}
 
 function xxx_save_insert_specific($link,$selected_examination_list)
 {
@@ -8384,6 +8683,8 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 			$with_result[]=$tok[2];
 		}
 	}
+
+	echo '<pre>following examinations are filled with results:<br>';print_r($with_result);echo '</pre>';
 	
 ////Requested + filled examinations
 	$requested=array_merge($requested,$with_result);
@@ -8521,5 +8822,15 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 	}
 	return $sample_id_array	;
 }
+
+
+
+function show_id_range_options($link,$extra='')
+{
+	//echo 'id_range_dropdown:';
+	$sql='select distinct concat(lowest_id,"-",highest_id) as id_range from sample_id_strategy where lowest_id>0';
+	mk_select_from_sql($link,$sql,'id_range','id_range','id_range',$disabled='',$default=$_SESSION['id_range'],$blank='no',$extra);
+}
+
 
 ?>

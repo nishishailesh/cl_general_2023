@@ -325,7 +325,7 @@ function manage_all_button_for_ex_id(ex_id)
 
 function go_down_tree_for_ex_id(item,index)
 {
-	if(item.type=='button' )
+	if(item.type=='button' && item.classList.contains("ex_btn"))
 	{
 		item_id=item.id
 		if(item_id != null)
@@ -373,7 +373,7 @@ function update_sss()
 									{
 									//console.log("button[id$='_"+item+"']")
 									//jquery
-									$("button[id$='_"+item+"']").each(
+									$("button[id$='_"+item+"']").filter(".ex_btn").each(
 																		function (i, el) 
 																		{
 																			if(i==0)		//even if examination display multiple, status only one button 
@@ -382,7 +382,8 @@ function update_sss()
 																				//bb='<button class="btn btn-sm btn-outline-info" type=button>'+el.innerHTML+'</button><br>';
 																				//bb=el.innerHTML.split('<br>')[0];
 																				//document.getElementById("status-window").innerHTML = document.getElementById("status-window").innerHTML+bb
-document.getElementById("status-window").innerHTML = document.getElementById("status-window").innerHTML+ el.getAttribute("data-examination_name")+'<br>'
+//alert(document.getElementById("status-window").innerHTML+ el.getAttribute("data-examination_name"))
+document.getElementById("status-window").innerHTML = document.getElementById("status-window").innerHTML + el.getAttribute("data-examination_name") +'<br>'
 																			}
 																		}
 																	 );

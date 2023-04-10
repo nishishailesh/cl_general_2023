@@ -185,14 +185,6 @@ function monitor($link)
 
 
 
-function show_id_range_options($link)
-{
-	//echo 'id_range_dropdown:';
-	$sql='select distinct concat(lowest_id,"-",highest_id) as id_range from sample_id_strategy where lowest_id>0';
-	mk_select_from_sql($link,$sql,'id_range','id_range','id_range',$disabled='',$default=$_SESSION['id_range'],$blank='no');
-}
-
-
 function show_sample_requirement_options($link)
 {
 	//echo 'id_range_dropdown:';
