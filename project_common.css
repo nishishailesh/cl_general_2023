@@ -64,6 +64,26 @@
 	  grid-template-columns: 20% 50% 30%;
 	}	
 
+	.horizontal1 
+	{
+	  display: grid;
+	  grid-template-columns: auto;
+	}	
+
+	.horizontal2
+	{
+	  display: grid;
+	  grid-template-columns: 20% 79% 1%;
+	}	
+	
+	
+	.horizontal3
+	{
+	  display: grid;
+	  grid-template-columns: 20% 50% 30%;
+	}	
+	
+	
 	.basic_form_histo
 	{
 	  display: grid;

@@ -865,7 +865,7 @@ function view_field_blob($link,$kblob,$sample_id)
 		$examination_blob_details=get_one_examination_details($link,$kblob);
 		
 		//print_r($examination_blob_details);
-		echo '	<div class="basic_form print_hide">
+		echo '	<div class="basic_form">
 	
 				<div class="my_label border border-dark ">'.$examination_blob_details['name'].'</div>
 				<div>';
@@ -877,6 +877,8 @@ function view_field_blob($link,$kblob,$sample_id)
 
                 $edit_specification=json_decode($examination_blob_details['edit_specification'],true);
                 $img=isset($edit_specification['img'])?$edit_specification['img']:'';
+                $w=isset($edit_specification['width'])?$edit_specification['width']:'200';
+                $h=isset($edit_specification['height'])?$edit_specification['height']:'200';
 
 
                 if($img=='png')
@@ -886,7 +888,7 @@ function view_field_blob($link,$kblob,$sample_id)
                         echo ':</b></div>';
                         echo '<div>';
                         //no effect of last three parameters, not implemented
-                        display_png($ar_blob['result'],$ar_blob['fname'],500,200);      
+                        display_png($ar_blob['result'],$ar_blob['fname'],$w,$h);      
                         echo '</b></div>';
                 }
 
@@ -2544,6 +2546,7 @@ function view_field_any($link,$ex_id,$sample_id,$compact='no')
 function view_field($link,$ex_id,$ex_result)
 {
 		$examination_details=get_one_examination_details($link,$ex_id);
+		$display_format=$examination_details['display_format'];
 		$edit_specification=json_decode($examination_details['edit_specification'],true);
 		$help=isset($edit_specification['help'])?$edit_specification['help']:'';
 		$type=isset($edit_specification['type'])?$edit_specification['type']:'';
@@ -2578,13 +2581,47 @@ function view_field($link,$ex_id,$ex_result)
 
 		else
 		{
-			echo '<div class="basic_form " id="ex_'.$ex_id.'">';
-			echo '	<div class="my_label border border-dark text-wrap">'.$examination_details['name'].'</div>
-				<div class="border border-dark"><pre class="m-0 p-0 border-0">'.
-					htmlspecialchars($ex_result.' '.
-					decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>
-				<div class="help border border-dark"><pre style="border-color:white">'.$help.'</pre></div>';
-			echo '</div>';
+			if($display_format=='horizontal1')
+			{
+				echo '<div class="horizontal1" id="ex_'.$ex_id.'">';
+					echo '	<div class="my_label border border-dark text-wrap lead">'.$examination_details['name'].'</div>
+					<div class="border border-dark"><pre class="m-1 p-0 border-0" style="white-space: pre-wrap;">'.
+						htmlspecialchars($ex_result.' '.
+						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>
+					<div class="help border border-dark"><pre style="border-color:white">'.$help.'</pre></div>';
+				echo '</div>';
+			}
+			elseif($display_format=='horizontal2')
+			{
+				echo '<div class="'.$display_format.'" id="ex_'.$ex_id.'">';
+				echo '	<div class="my_label border border-dark text-wrap lead">'.$examination_details['name'].'</div>
+					<div class="border border-dark"><pre class="m-1 p-0 border-0">'.
+						htmlspecialchars($ex_result.' '.
+						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>
+					<div class="help border border-dark"><pre style="border-color:white">'.$help.'</pre></div>';
+				echo '</div>';
+			}
+			elseif($display_format=='horizontal3')
+			{
+				echo '<div class="'.$display_format.'" id="ex_'.$ex_id.'">';
+				echo '	<div class="my_label border border-dark text-wrap lead ">'.$examination_details['name'].'</div>
+					<div class="border border-dark"><pre class="m-1 p-0 border-0">'.
+						htmlspecialchars($ex_result.' '.
+						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>
+					<div class="help border border-dark"><pre style="border-color:white">'.$help.'</pre></div>';
+				echo '</div>';
+			}	
+									
+			else
+			{
+				echo '<div class="basic_form " id="ex_'.$ex_id.'">';
+				echo '	<div class="my_label border border-dark text-wrap lead">'.$examination_details['name'].'</div>
+					<div class="border border-dark"><pre class="m-1 p-0 border-0">'.
+						htmlspecialchars($ex_result.' '.
+						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>
+					<div class="help border border-dark"><pre style="border-color:white">'.$help.'</pre></div>';
+				echo '</div>';
+			}			
 		}
 		
 }				
@@ -4829,10 +4866,10 @@ function display_dw_png($ex_result,$label)
 
 
 
-function display_png($ex_result,$label='',$width=0,$height=0)
+function display_png($ex_result,$label='',$width=100,$height=100)
 {	
 	$encoded_image=base64_encode($ex_result);	
-	echo '<img src="data:image/png;base64,'.$encoded_image.'" />';
+	echo '<img src="data:image/png;base64,'.$encoded_image.'" width="'.$width.'" height="'.$height.'" />';
 }
 
 
@@ -8315,7 +8352,6 @@ function xxx_get_examination_data($link,$sql,$pk_name,$multi='no',$size=8)
 
 }
 
-
 function xxx_make_examination_tree($link,$sql,$route_field)
 {
 	$examination_tree=[];
@@ -8332,22 +8368,29 @@ function xxx_make_examination_tree($link,$sql,$route_field)
 				$temp=&$examination_tree;
 				foreach($path as $v)
 				{
-					$temp=&$temp[$v];
+						$rp_sql='select * from route_priority where route=\''.$one_path.'\' and node=\''.$v.'\'';
+						$rp_result=run_query($link,$GLOBALS['database'],$rp_sql);
+						$rp_ar=get_single_row($rp_result);
+						//echo '<pre>';print_r($rp_ar);echo '</pre>';
+						$rpvalue=isset($rp_ar[$route_field.'_'.'priority'])?$rp_ar[$route_field.'_'.'priority']:'';
+						//echo $rpvalue;
+					$temp=&$temp[$rpvalue.'^'.$v];
 				}
-				$temp[]=$ar['examination_id'];
+				$temp[  $ar[$route_field.'_'.'priority'].'^'.$ar['examination_id']  ]=$ar['examination_id'] ;
 			}
 		}
 		else if($ar[$route_field]==null)
 		{
-			$examination_tree['Others'][]=$ar['examination_id'];
+			$examination_tree['Others'][  $ar[$route_field.'_'.'priority'].'^'.$ar['examination_id']    ]=$ar['examination_id'];
 		}
 		else
 		{
-			$examination_tree['Others'][]=$ar['examination_id'];			
+			$examination_tree['Others'][  $ar[$route_field.'_'.'priority'].'^'.$ar['examination_id']  ]=$ar['examination_id'];			
 		}
 	}
 	//echo '<pre>';print_r($examination_tree);echo '</pre>';
 	ksort($examination_tree);			//for sorting root
+	//asort($examination_tree);			//for sorting root
 	//echo '<pre>';print_r($examination_tree);echo '</pre>';
 	return $examination_tree;
 }
@@ -8356,15 +8399,18 @@ function xxx_make_examination_tree($link,$sql,$route_field)
 function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collapse ',$sample_id,$compact='no')
 {
 	$collapse=' show ';
-	
+
 	foreach($tree as $k=>$v)
 	{
 		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',$k));
 		
 		if(is_array($v))
 		{
+			//echo '<pre>';print_r($v);echo '</pre>';
 			ksort($v);
-			
+			//asort($v);
+			//echo '<pre>';print_r($v);echo '</pre>';
+				
 				echo '
 						<div class=d-block>
 						<button
@@ -8377,7 +8423,7 @@ function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collap
 							echo 'id=\''.$id.'\' 
 							data-target=#'.$id.'_target
 							>'
-							.$k.'
+							.explode('^',$k)[1].'
 						</button>
 						</div>';
 				echo '<ul style="list-style-type: none" class="border-left border-danger">';
@@ -8419,7 +8465,7 @@ function xxx_tree_to_panel_for_edit($link,$tree,$id_prefix='',$collapse=' collap
 							echo 'id=\''.$id.'\' 
 							data-target=#'.$id.'_target
 							>'
-							.$k.'
+							.explode('^',$k)[1].'
 						</button>
 						</div>';
 				echo '<ul style="list-style-type: none" class="border-left border-danger">';
@@ -8495,7 +8541,7 @@ function xxx_tree_to_panel($link,$tree,$id_prefix='',$collapse=' collapse ')
 function xxx_edit_sample($link,$sample_id,$compact='no')
 {
 	//echo '<pre>';	print_r($result_plus_blob_requested);echo '</pre>';
-	$sql=" (select examination.examination_id,display_route,name from examination,result 
+	$sql=" (select examination.examination_id,display_route,name,display_route_priority from examination,result 
 			where 
 				examination.examination_id=result.examination_id 
 				and
@@ -8503,7 +8549,7 @@ function xxx_edit_sample($link,$sample_id,$compact='no')
 
 				union
 
-		(select examination.examination_id,display_route,name from examination,result_blob 
+		(select examination.examination_id,display_route,name,display_route_priority from examination,result_blob 
 			where 
 				examination.examination_id=result_blob.examination_id 
 				and
@@ -8548,7 +8594,7 @@ echo '</div>';
 function xxx_view_sample($link,$sample_id,$compact='no')
 {
 	//echo '<pre>';	print_r($result_plus_blob_requested);echo '</pre>';
-	$sql=" (select examination.examination_id,display_route,name from examination,result 
+	$sql=" (select examination.examination_id,display_route,name,display_route_priority from examination,result 
 			where 
 				examination.examination_id=result.examination_id 
 				and
@@ -8556,7 +8602,7 @@ function xxx_view_sample($link,$sample_id,$compact='no')
 
 				union
 
-		(select examination.examination_id,display_route,name from examination,result_blob 
+		(select examination.examination_id,display_route,name,display_route_priority from examination,result_blob 
 			where 
 				examination.examination_id=result_blob.examination_id 
 				and

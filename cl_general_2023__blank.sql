@@ -787,6 +787,9 @@ CREATE TABLE `examination` (
   `description` varchar(300) DEFAULT NULL,
   `request_route` varchar(1000) DEFAULT NULL,
   `display_route` varchar(1000) DEFAULT NULL,
+  `request_route_priority` varchar(10) DEFAULT NULL,
+  `display_route_priority` varchar(10) DEFAULT NULL,
+  `display_format` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`examination_id`),
   KEY `sample_requirement` (`sample_requirement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100024 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -1275,6 +1278,22 @@ CREATE TABLE `result_blob` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `route_priority`
+--
+
+DROP TABLE IF EXISTS `route_priority`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `route_priority` (
+  `route` varchar(100) NOT NULL,
+  `node` varchar(100) NOT NULL,
+  `request_route_priority` varchar(10) NOT NULL,
+  `display_route_priority` varchar(10) NOT NULL,
+  PRIMARY KEY (`route`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `sample_id_strategy`
 --
 
@@ -1500,4 +1519,4 @@ CREATE TABLE `view_info_data` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-10 10:26:54
+-- Dump completed on 2023-04-12  2:04:52
