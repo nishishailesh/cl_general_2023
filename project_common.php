@@ -478,84 +478,6 @@ function show_all_buttons_for_sample($link,$sample_id)
 
 
 
-function xxx_show_all_buttons_for_sample($link,$sample_id)
-{
-	$released_by=get_one_ex_result($link,$sample_id,$GLOBALS['released_by']);
-	$interim_released_by=get_one_ex_result($link,$sample_id,$GLOBALS['interim_released_by']);
-	
-	echo '<div class="btn-group" role="group">';
-	if(requestonly_check($link))		//no interim, no release, no edit , no delete 
-	{
-		sample_id_barcode_button($sample_id);
-		sample_id_prev_button($sample_id);
-		sample_id_view_button($sample_id);
-		sample_id_next_button($sample_id);
-		sample_id_bill_button($sample_id);
-		if(strlen($released_by)!=0 || strlen($interim_released_by)!=0)
-		{
-			sample_id_print_button($sample_id);						
-		}
-		return;
-	}
-	
-
-	
-	if(strlen($released_by)==0 && strlen($interim_released_by)==0)		//no interim, no release -> no print/xmpp/email/sms
-	{
-		sample_id_barcode_button($sample_id);
-		sample_id_prev_button($sample_id);
-		sample_id_view_button($sample_id);
-		sample_id_next_button($sample_id);
-		sample_id_release_button($sample_id);	
-		sample_id_interim_release_button($sample_id);	
-		sample_id_edittt_button($sample_id);
-		sample_id_delete_button($sample_id);
-		sample_id_copy_button($sample_id);
-		sample_id_bill_button($sample_id);
-	}
-	else if(strlen($released_by)==0 && strlen($interim_released_by)!=0)	//interim but not released, so allow telegram/print/xmpp/email/sms
-	{
-		sample_id_barcode_button($sample_id);		
-		sample_id_prev_button($sample_id);
-		sample_id_view_button($sample_id);
-		sample_id_next_button($sample_id);
-		sample_id_release_button($sample_id);	
-		sample_id_interim_release_button($sample_id);					
-		
-		sample_id_print_button($sample_id);			
-		sample_id_email_button($sample_id);
-		sample_id_telegram_button($sample_id);
-		sample_id_sms_button($sample_id,$link);
-		sample_id_xmpp_button($sample_id);
-		
-		sample_id_edittt_button($sample_id);
-		sample_id_delete_button($sample_id);
-		sample_id_copy_button($sample_id);
-		sample_id_bill_button($sample_id);
-
-	}	
-	else 																//released with/without interim, so do not allow edit/delete
-	{
-		sample_id_barcode_button($sample_id);
-		//sample_id_edit_button($sample_id);
-		sample_id_prev_button($sample_id);
-		sample_id_view_button($sample_id);
-		sample_id_next_button($sample_id);
-		//sample_id_delete_button($sample_id);
-		
-		sample_id_unrelease_button($sample_id);			
-		
-		sample_id_print_button($sample_id);			
-		sample_id_email_button($sample_id);
-		sample_id_telegram_button($sample_id);
-		sample_id_sms_button($sample_id,$link);
-		sample_id_xmpp_button($sample_id);
-		sample_id_copy_button($sample_id);
-		sample_id_bill_button($sample_id);
-	}
-	echo '</div>';
-}
-
 
 function sample_exist($link,$sample_id)
 {
@@ -855,7 +777,7 @@ function edit_sample_compact($link,$sample_id,$ex_id_array)
 }
 
 
-function view_field_blob($link,$kblob,$sample_id)
+function view_field_blob($link,$kblob,$sample_id,$display_class='horizontal3')
 {
 		$sql_blob='select * from result_blob where sample_id=\''.$sample_id.'\' and examination_id=\''.$kblob.'\'';
 		$result_blob=run_query($link,$GLOBALS['database'],$sql_blob);
@@ -865,9 +787,9 @@ function view_field_blob($link,$kblob,$sample_id)
 		$examination_blob_details=get_one_examination_details($link,$kblob);
 		
 		//print_r($examination_blob_details);
-		echo '	<div class="basic_form">
+		echo '	<div class="'.$display_class.'">
 	
-				<div class="my_label border border-dark ">'.$examination_blob_details['name'].'</div>
+				<div class="my_label border">'.$examination_blob_details['name'].'</div>
 				<div>';
 				echo_download_button_two_pk('result_blob','result',
 									'sample_id',$sample_id,
@@ -895,8 +817,8 @@ function view_field_blob($link,$kblob,$sample_id)
 
 
 				echo '</div>';
-				echo '<div  class="help border border-dark "  >Current File:'.$ar_blob['fname'].'</div>
-			</div>';
+				echo '<div  class="help border"  >Current File:'.$ar_blob['fname'].'</div>
+		</div>';
 }
 
 
@@ -1145,14 +1067,6 @@ function sample_id_edit_button($sample_id,$target='',$label='Edit')
 	</form></div>';
 }
 
-function sample_id_edittt_button($sample_id,$target='',$label='Edit')
-{
-	echo '<div class="d-inline-block"  style="width:100%;"><form method=post '.$target.' action=edit_generalll.php class=print_hide>
-	<button class="btn btn-outline-primary btn-sm" name=sample_id value=\''.$sample_id.'\' >'.$label.'</button>
-	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
-	<input type=hidden name=action value=edit_general>
-	</form></div>';
-}
 
 
 function sample_id_barcode_button($sample_id)
@@ -1409,7 +1323,7 @@ function echo_download_button_two_pk($table,$field,$primary_key,$primary_key_val
 			<input type=hidden name=primary_key_value2 value=\''.$primary_key_value2.'\'>
 			<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 			
-			<button class="btn btn-info  btn-sm"  
+			<button class="btn btn-info  btn-sm print_hide"  
 			formtarget=_blank
 			type=submit
 			name=action
@@ -2515,12 +2429,13 @@ function view_field_any($link,$ex_id,$sample_id,$compact='no')
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	$type=isset($edit_specification['type'])?$edit_specification['type']:'';
 	$ex_compact=isset($edit_specification['compact'])?$edit_specification['compact']:'';
+	$display_format=$examination_details['display_format'];
 
 	if($compact!='compact')
 	{
 		if($type=='blob')
 		{	
-			view_field_blob($link,$ex_id,$sample_id);
+			view_field_blob($link,$ex_id,$sample_id,$display_format);
 		}
 		else
 		{
@@ -2571,57 +2486,26 @@ function view_field($link,$ex_id,$ex_result)
 		elseif($type=='subsection')
 		{
 			echo '<div class="basic_form " id="ex_'.$ex_id.'">';
-			echo '	<div class="my_label border border-dark text-wrap"></h3></div>
-				<div class="border border-dark">
+				echo '	<div class="my_label text-wrap"></div>
+				<div class="border">
 				<h3 class="text-center">'.$examination_details['name'].'</h3>
 				</div>
-				<div class="help border border-dark"><pre style="border-color:white">'.$help.'</pre></div>';
+				<div class="help"></div>';
 			echo '</div>';
 		}
 
 		else
 		{
-			if($display_format=='horizontal1')
-			{
-				echo '<div class="horizontal1" id="ex_'.$ex_id.'">';
-					echo '	<div class="my_label text-wrap lead">'.$examination_details['name'].':</div>
-					<div class="border"><pre class="m-1 p-0 border-0" style="white-space: pre-wrap;">'.
-						htmlspecialchars($ex_result.' '.
-						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>
-					<div class="help"><pre style="border-color:white">'.$help.'</pre></div>';
-				echo '</div>';
-			}
-			elseif($display_format=='horizontal2')
-			{
-				echo '<div class="'.$display_format.'" id="ex_'.$ex_id.'">';
-				echo '	<div class="my_label text-wrap lead">'.$examination_details['name'].':</div>
-					<div class="border"><pre class="m-1 p-0 border-0">'.
-						htmlspecialchars($ex_result.' '.
-						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>
-					<div class="help "><pre style="border-color:white">'.$help.'</pre></div>';
-				echo '</div>';
-			}
-			elseif($display_format=='horizontal3')
-			{
-				echo '<div class="'.$display_format.'" id="ex_'.$ex_id.'">';
-				echo '	<div class="my_label border border-dark text-wrap lead ">'.$examination_details['name'].'</div>
-					<div class="border border-dark"><pre class="m-1 p-0 border-0">'.
-						htmlspecialchars($ex_result.' '.
-						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>
-					<div class="help border border-dark"><pre style="border-color:white">'.$help.'</pre></div>';
-				echo '</div>';
-			}	
-									
-			else
-			{
-				echo '<div class="basic_form " id="ex_'.$ex_id.'">';
-				echo '	<div class="my_label border border-dark text-wrap lead">'.$examination_details['name'].'</div>
-					<div class="border border-dark"><pre class="m-1 p-0 border-0">'.
-						htmlspecialchars($ex_result.' '.
-						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>
-					<div class="help border border-dark"><pre style="border-color:white">'.$help.'</pre></div>';
-				echo '</div>';
-			}			
+			if(strlen($display_format)==0){$display_format='horizontal3';}
+			echo '<div class="'.$display_format.'" id="ex_'.$ex_id.'">';
+				echo '	<div class="my_label text-wrap lead w-auto border">'.$examination_details['name'].':</div>';
+				
+				echo '<div class="border"><pre class="m-1 p-0 border-0" style="white-space: pre-wrap;">'.
+					htmlspecialchars($ex_result.' '.
+					decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>';
+					
+				echo '<div class="help border "><pre style="border-color:white" style="white-space: pre-wrap;">'.$help.'</pre></div>';
+			echo '</div>';
 		}
 		
 }				
@@ -7347,22 +7231,12 @@ function showww_sid_button_release_status($link,$sid,$extra_post='')
 			</div>';
 
 	
-		sample_id_viewww_button(
+		xxx_sample_id_view_button(
 			$sid,
 			'target=_blank style="background-color:'.$GLOBALS['sample_status'][$final_state][2].'" ',
 			colorize_eq_str(get_equipment_str($link,$sid))
 			);
 	echo '</div>';
-}
-
-
-function sample_id_viewww_button($sample_id,$target='',$label='View')
-{
-	echo '<div class="d-inline-block" style="width:100%;"><form method=post action=viewww_single.php class=print_hide '.$target.'>
-	<button class="btn btn-outline-success btn-sm text-dark " name=sample_id value=\''.$sample_id.'\' >'.$label.'</button>
-	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
-	<input type=hidden name=action value=view_single>';
-	echo '</form></div>';
 }
 
 
@@ -8429,7 +8303,7 @@ function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collap
 							.explode('^',$k)[1].'
 						</button>
 						</div>';
-				echo '<ul style="list-style-type: none" class="border-left border-danger">';
+				echo '<ul style="list-style-type: none" >';
 						echo '<li id='.$id.'_target class="'.$collapse.' ex_menu" style="padding-left:60px">';
 						xxx_tree_to_panel_for_view($link,$v,$id,' show ',$sample_id,$compact);
 						echo '</li>';
@@ -8573,7 +8447,7 @@ function xxx_edit_sample($link,$sample_id,$compact='no')
 		
 	//return;
 	
-echo '<div class=jumbotron>';
+echo '<div>';
 		echo '<div class="basic_form">
 				<div class=my_label ><span class="badge badge-primary ">Sample ID</span>
 									<span class="badge badge-info"><h5>'.$sample_id.'</h5></span>
@@ -8626,7 +8500,7 @@ function xxx_view_sample($link,$sample_id,$compact='no')
 		
 	//return;
 	
-echo '<div class=jumbotron>';
+echo '<div>';
 		echo '<div class="basic_form">
 				<div class=my_label ><span class="badge badge-primary ">Sample ID</span>
 									<span class="badge badge-info"><h5>'.$sample_id.'</h5></span>
@@ -8879,6 +8753,112 @@ function show_id_range_options($link,$extra='')
 	//echo 'id_range_dropdown:';
 	$sql='select distinct concat(lowest_id,"-",highest_id) as id_range from sample_id_strategy where lowest_id>0';
 	mk_select_from_sql($link,$sql,'id_range','id_range','id_range',$disabled='',$default=$_SESSION['id_range'],$blank='no',$extra);
+}
+
+
+function xxx_show_all_buttons_for_sample($link,$sample_id)
+{
+	$released_by=get_one_ex_result($link,$sample_id,$GLOBALS['released_by']);
+	$interim_released_by=get_one_ex_result($link,$sample_id,$GLOBALS['interim_released_by']);
+	
+	echo '<div class="btn-group" role="group">';
+	if(requestonly_check($link))		//no interim, no release, no edit , no delete 
+	{
+		sample_id_barcode_button($sample_id);
+		xxx_sample_id_prev_button($sample_id);
+		xxx_sample_id_view_button($sample_id);
+		sample_id_next_button($sample_id);
+		sample_id_bill_button($sample_id);
+		if(strlen($released_by)!=0 || strlen($interim_released_by)!=0)
+		{
+			sample_id_print_button($sample_id);						
+		}
+		return;
+	}
+	
+
+	
+	if(strlen($released_by)==0 && strlen($interim_released_by)==0)		//no interim, no release -> no print/xmpp/email/sms
+	{
+		sample_id_barcode_button($sample_id);
+		xxx_sample_id_prev_button($sample_id);
+		xxx_sample_id_view_button($sample_id);
+		sample_id_next_button($sample_id);
+		sample_id_release_button($sample_id);	
+		sample_id_interim_release_button($sample_id);	
+		xxx_sample_id_edit_button($sample_id);
+		sample_id_delete_button($sample_id);
+		sample_id_copy_button($sample_id);
+		sample_id_bill_button($sample_id);
+	}
+	else if(strlen($released_by)==0 && strlen($interim_released_by)!=0)	//interim but not released, so allow telegram/print/xmpp/email/sms
+	{
+		sample_id_barcode_button($sample_id);		
+		xxx_sample_id_prev_button($sample_id);
+		xxx_sample_id_view_button($sample_id);
+		sample_id_next_button($sample_id);
+		sample_id_release_button($sample_id);	
+		sample_id_interim_release_button($sample_id);					
+		
+		sample_id_print_button($sample_id);			
+		sample_id_email_button($sample_id);
+		sample_id_telegram_button($sample_id);
+		sample_id_sms_button($sample_id,$link);
+		sample_id_xmpp_button($sample_id);
+		
+		xxx_sample_id_edit_button($sample_id);
+		sample_id_delete_button($sample_id);
+		sample_id_copy_button($sample_id);
+		sample_id_bill_button($sample_id);
+
+	}	
+	else 																//released with/without interim, so do not allow edit/delete
+	{
+		sample_id_barcode_button($sample_id);
+		//sample_id_edit_button($sample_id);
+		xxx_sample_id_prev_button($sample_id);
+		xxx_sample_id_view_button($sample_id);
+		sample_id_next_button($sample_id);
+		//sample_id_delete_button($sample_id);
+		
+		sample_id_unrelease_button($sample_id);			
+		
+		sample_id_print_button($sample_id);			
+		sample_id_email_button($sample_id);
+		sample_id_telegram_button($sample_id);
+		sample_id_sms_button($sample_id,$link);
+		sample_id_xmpp_button($sample_id);
+		sample_id_copy_button($sample_id);
+		sample_id_bill_button($sample_id);
+	}
+	echo '</div>';
+}
+
+function xxx_sample_id_view_button($sample_id,$target='',$label='View')
+{
+	echo '<div class="d-inline-block" style="width:100%;"><form method=post action=viewww_single.php class=print_hide '.$target.'>
+	<button class="btn btn-outline-success btn-sm text-dark " name=sample_id value=\''.$sample_id.'\' >'.$label.'</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=view_single>';
+	echo '</form></div>';
+}
+
+function xxx_sample_id_edit_button($sample_id,$target='',$label='Edit')
+{
+	echo '<div class="d-inline-block"  style="width:100%;"><form method=post '.$target.' action=edit_generalll.php class=print_hide>
+	<button class="btn btn-outline-primary btn-sm" name=sample_id value=\''.$sample_id.'\' >'.$label.'</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=edit_general>
+	</form></div>';
+}
+
+function xxx_sample_id_prev_button($sample_id)
+{
+	echo '<div class="d-inline-block"  style="width:100%;" ><form method=post action=viewww_single.php class=print_hide>
+	<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=sample_id value=\''.($sample_id-1).'\' >Previous</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=view_single>
+	</form></div>';
 }
 
 
