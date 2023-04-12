@@ -2584,21 +2584,21 @@ function view_field($link,$ex_id,$ex_result)
 			if($display_format=='horizontal1')
 			{
 				echo '<div class="horizontal1" id="ex_'.$ex_id.'">';
-					echo '	<div class="my_label border border-dark text-wrap lead">'.$examination_details['name'].'</div>
-					<div class="border border-dark"><pre class="m-1 p-0 border-0" style="white-space: pre-wrap;">'.
+					echo '	<div class="my_label text-wrap lead">'.$examination_details['name'].':</div>
+					<div class="border"><pre class="m-1 p-0 border-0" style="white-space: pre-wrap;">'.
 						htmlspecialchars($ex_result.' '.
 						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>
-					<div class="help border border-dark"><pre style="border-color:white">'.$help.'</pre></div>';
+					<div class="help"><pre style="border-color:white">'.$help.'</pre></div>';
 				echo '</div>';
 			}
 			elseif($display_format=='horizontal2')
 			{
 				echo '<div class="'.$display_format.'" id="ex_'.$ex_id.'">';
-				echo '	<div class="my_label border border-dark text-wrap lead">'.$examination_details['name'].'</div>
-					<div class="border border-dark"><pre class="m-1 p-0 border-0">'.
+				echo '	<div class="my_label text-wrap lead">'.$examination_details['name'].':</div>
+					<div class="border"><pre class="m-1 p-0 border-0">'.
 						htmlspecialchars($ex_result.' '.
 						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>
-					<div class="help border border-dark"><pre style="border-color:white">'.$help.'</pre></div>';
+					<div class="help "><pre style="border-color:white">'.$help.'</pre></div>';
 				echo '</div>';
 			}
 			elseif($display_format=='horizontal3')
@@ -8381,11 +8381,11 @@ function xxx_make_examination_tree($link,$sql,$route_field)
 		}
 		else if($ar[$route_field]==null)
 		{
-			$examination_tree['Others'][  $ar[$route_field.'_'.'priority'].'^'.$ar['examination_id']    ]=$ar['examination_id'];
+			$examination_tree['^Others'][  $ar[$route_field.'_'.'priority'].'^'.$ar['examination_id']    ]=$ar['examination_id'];
 		}
 		else
 		{
-			$examination_tree['Others'][  $ar[$route_field.'_'.'priority'].'^'.$ar['examination_id']  ]=$ar['examination_id'];			
+			$examination_tree['^Others'][  $ar[$route_field.'_'.'priority'].'^'.$ar['examination_id']  ]=$ar['examination_id'];			
 		}
 	}
 	//echo '<pre>';print_r($examination_tree);echo '</pre>';
@@ -8400,9 +8400,12 @@ function xxx_tree_to_panel_for_view($link,$tree,$id_prefix='',$collapse=' collap
 {
 	$collapse=' show ';
 
+	//echo '<pre>';print_r($tree);echo '</pre>';
+
+
 	foreach($tree as $k=>$v)
 	{
-		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',$k));
+		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',    explode('^',$k)[1]    ));
 		
 		if(is_array($v))
 		{
@@ -8447,7 +8450,7 @@ function xxx_tree_to_panel_for_edit($link,$tree,$id_prefix='',$collapse=' collap
 	
 	foreach($tree as $k=>$v)
 	{
-		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',$k));
+		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',explode('^',$k)[1]));
 		
 		if(is_array($v))
 		{
@@ -8487,12 +8490,12 @@ function xxx_tree_to_panel($link,$tree,$id_prefix='',$collapse=' collapse ')
 {
 	foreach($tree as $k=>$v)
 	{
-		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',$k));
+		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',explode('^',$k)[1]));
 		
 		if(is_array($v))
 		{
 			ksort($v);
-
+		
 						//<span 	class="d-inline badge badge-primary rounded-circle p-2" onclick=select_all_children(\''.$id.'_target\') >&#x2713;</span>
 						//<span 	class="d-inline badge badge-primary rounded-circle p-2" onclick=invert_selection(\''.$id.'_target\') >X</span>
 									
@@ -8507,7 +8510,7 @@ function xxx_tree_to_panel($link,$tree,$id_prefix='',$collapse=' collapse ')
 								id=\''.$id.'\' 
 								data-status=off
 								>'
-								.$k.'
+								.explode('^',$k)[1].'
 							</button>
 						
 						

@@ -1,6 +1,6 @@
 <?php
 $GLOBALS['main_user_location']='/var/gmcs_config/staff.conf';
-$GLOBALS['user_database']='cl_general';
+$GLOBALS['user_database']='clg';
 $GLOBALS['user_table']='user';
 $GLOBALS['user_id']='user';
 $GLOBALS['user_pass']='password';
@@ -8,7 +8,7 @@ $GLOBALS['expiry_period']='+ 6 months';
 $GLOBALS['expirydate_field']='expirydate';
 $GLOBALS['application_name']='New Civil Hospital Surat Laboratory Services';
 
-$GLOBALS['database']='cl_general';
+$GLOBALS['database']='clg';
 
 
 
