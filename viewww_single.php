@@ -17,19 +17,19 @@ if($_SESSION['display_style']=='full')
 	echo '</div>';
 }
 
-	if(!sample_exist($link,$_POST['sample_id'])){ echo '<h5>Sample Id '.$_POST['sample_id'].' does not exist</h5>';return exit();}
 
 
-echo '<div class="print_hide">';
+echo '<div class="print_hide ">';
 
 	echo '<div class="d-inline-block ">';
 		select_display_style();
 	echo '</div>
 	<div class="d-inline-block print_hide">';
-		get_dbid_small();
+		get_dbid_small($_POST['sample_id']);
 	echo '</div>';
 echo '</div>';
 
+	if(!sample_exist($link,$_POST['sample_id'])){ echo '<h5>Sample Id '.$_POST['sample_id'].' does not exist</h5>';return exit();}
 
 if($_POST['action']=='Save_TAT_remark')
 {
@@ -100,13 +100,22 @@ function select_display_style()
 }
 
 
-function get_dbid_small()
+function get_dbid_small($sample_id)
 {
-echo '<form method=post action=view_single.php>';
-echo '<input name=sample_id value=\''.$_POST['sample_id'].'\' class="m-0 p-0 input-sm" type=text size=6>';
+echo '<form method=post action=viewww_single.php>';
+echo '<input name=sample_id value=\''.$sample_id.'\' class="m-0 p-0 input-sm" type=text size=6>';
 echo '<button type=submit class="btn btn-sm m-0 p-0 btn-primary" name=action value=view_dbid>View</button>';
 echo '<input  type=hidden name=session_name value=\''.session_name().'\'>';
 echo '</form>';
+
+		echo '<table><tr>';
+		echo '<td>';
+		xxx_sample_id_prev_button($sample_id);
+		echo '</td>';
+		echo '<td>';
+		xxx_sample_id_next_button($sample_id);
+		echo '</td>';
+		echo '</tr></table>';
 }
 
 /*
