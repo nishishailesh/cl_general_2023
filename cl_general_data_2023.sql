@@ -1,9 +1,6 @@
 -- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: examination profile report sample_id_strategy dashboard super_profile
--- 	copy_bin_text view_info_data prototype prototype_data host_code lab_reference_value
--- 	dementia equipment equipment_record_type record_tables table_field_specification
--- 	reagent reagent_name unit_name cal_equipment reagent_use copy_sample labels
+-- Host: localhost    Database: 
 -- ------------------------------------------------------
 -- Server version	10.5.18-MariaDB-0+deb11u1
 
