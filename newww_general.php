@@ -86,7 +86,7 @@ function get_data_specific($link,$sql,$ex_list)
 	echo '</form>';
 }
 
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
 //////////////user code ends////////////////
 tail();
 ?>

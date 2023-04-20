@@ -29,7 +29,7 @@ echo '<div class="print_hide ">';
 	echo '</div>';
 echo '</div>';
 
-	if(!sample_exist($link,$_POST['sample_id'])){ echo '<h5>Sample Id '.$_POST['sample_id'].' does not exist</h5>';return exit();}
+	if(!sample_exist($link,$_POST['sample_id'])){ echo '<h5>Sample Id '.$_POST['sample_id'].' does not exist</h5>';exit();}
 
 if($_POST['action']=='Save_TAT_remark')
 {

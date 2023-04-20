@@ -615,7 +615,7 @@ function view_sample($link,$sample_id)
 						
 				if($type!='blob')
 				{
-					view_field($link,$ex_id,$ex_list[$ex_id]);	
+					view_field($link,$ex_id,$ex_list[$ex_id],$sample_id);	
 				}
 				else
 				{
@@ -2215,7 +2215,14 @@ function edit_field_any($link,$ex_id,$sample_id)
 		}
 		else
 		{
-			$ex_result=get_one_ex_result_row($link,$sample_id,$ex_id);
+			if(in_array($type,['id_multi_sample','id_single_sample']))
+			{
+				$ex_result=['result'=>get_id_type_examination_result($link,$sample_id,$ex_id)];
+			}
+			else
+			{
+				$ex_result=get_one_ex_result_row($link,$sample_id,$ex_id);
+			}
 			edit_field($link,$ex_id,$ex_result,$sample_id);
 		}
 }
@@ -2439,8 +2446,15 @@ function view_field_any($link,$ex_id,$sample_id,$compact='no')
 		}
 		else
 		{
-			$ex_result=get_one_ex_result($link,$sample_id,$ex_id);
-			view_field($link,$ex_id,$ex_result);
+			if(in_array($type,['id_multi_sample','id_single_sample']))
+			{
+				$ex_result=get_id_type_examination_result($link,$sample_id,$ex_id);
+			}
+			else
+			{
+				$ex_result=get_one_ex_result($link,$sample_id,$ex_id);
+			}
+			view_field($link,$ex_id,$ex_result,$sample_id);
 		}
 	}
 	else
@@ -2452,16 +2466,35 @@ function view_field_any($link,$ex_id,$sample_id,$compact='no')
 		}
 		else if($ex_compact!=='no')
 		{
-			$ex_result=get_one_ex_result($link,$sample_id,$ex_id);
+
+			if(in_array($type,['id_multi_sample','id_single_sample']))
+			{
+				$ex_result=get_id_type_examination_result($link,$sample_id,$ex_id);
+			}
+			else
+			{
+				$ex_result=get_one_ex_result($link,$sample_id,$ex_id);
+			}
 			view_field_compact($link,$ex_id,$ex_result);
 			//echo '<div><div class="d-inline-block">'.$examination_details['name'].':</div><div class="d-inline-block text-success">'.$ex_result.'</div></div>';
 		}
 	}
 }
 
+function get_id_type_examination_result($link,$sample_id,$examination_id)
+{
+	$examination_details=get_one_examination_details($link,$examination_id);
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	if(!isset($edit_specification['table'])){'echo table for id allocation of examination_id='.$examination_id.' does not exist<br>';return false;}
+		
+	$sql='select * from `'.$edit_specification['table'] .'` where sample_id=\''.$sample_id.'\'';
+	//echo '<h3>'.$sql.'</h3>';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);
+	return isset($ar['id'])?$ar['id']:False;
+}
 
-
-function view_field($link,$ex_id,$ex_result)
+function view_field($link,$ex_id,$ex_result,$sample_id='')
 {
 		$examination_details=get_one_examination_details($link,$ex_id);
 		$display_format=$examination_details['display_format'];
@@ -2497,11 +2530,25 @@ function view_field($link,$ex_id,$ex_result)
 			echo '</div>';
 		}
 
+
+		
 		else
 		{
 			if(strlen($display_format)==0){$display_format='horizontal3';}
 			echo '<div class="'.$display_format.'" id="ex_'.$ex_id.'">';
-				echo '	<div class="my_label text-wrap lead w-auto border ">'.$examination_details['name'].':</div>';
+				//echo '	<div class="my_label text-wrap lead w-auto border ">'.$examination_details['name'].':';
+				//echo '	<div class="my_label text-wrap lead w-auto border ">'.$examination_details['name'].':';
+				if(in_array($type,['id_multi_sample','id_single_sample']))
+				{
+					echo '	<div class="my_label text-wrap lead w-auto border ">'.$examination_details['name'];
+					get_lables_button($link,$sample_id,$ex_id);
+				}
+				else
+				{
+					echo '	<div class="my_label text-wrap lead w-auto border ">'.$examination_details['name'].':';
+				}
+					
+				echo '</div>';
 				
 				echo '<div class="border"><pre class="m-1 p-0 border-0" style="white-space: pre-wrap;">'.
 					htmlspecialchars($ex_result.' '.
@@ -2512,6 +2559,28 @@ function view_field($link,$ex_id,$ex_result)
 		
 }				
 
+function get_lables_button($link,$sample_id,$examination_id)
+{
+	$sql='select * from labels where examination_id=\''.$examination_id.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	
+	
+	$examination_details=get_one_examination_details($link,$examination_id);
+	$ex_name=$examination_details['name'];
+	
+	echo '<div>';
+	while($ar=get_single_row($result))
+	{
+		//print_r($ar);
+		$data=json_decode($ar['data'],true);
+		$caption=isset($data['caption'])?$data['caption']:'';
+		echo '<div class="d-inline-block">';
+			xxx_any_id_barcode_button($sample_id,$ar['id'],'||'.($ex_name.$caption).'||');
+		echo '</div>';
+	}
+	echo '</div>';
+	
+}
 
 function view_field_compact($link,$ex_id,$ex_result)
 {
@@ -4437,14 +4506,14 @@ function insert_update_one_examination_with_result($link,$sample_id,$examination
 
 function update_id_type_examination_for_sample_array($link,$sample_id_array,$examination_id,$result)
 {
-	echo '>>>>processing update_id_type_examination_for_sample_array....<br>';
-	echo 'for id_multi_sample, the table should have id column(not unique) and sample_id(primary) column<br>';
-	echo 'for id_single_sample, the table should have id column(primary, autoincrement) and sample_id(unique) column<br>';
+	//echo '>>>>processing update_id_type_examination_for_sample_array....<br>';
+	//echo 'for id_multi_sample, the table should have id column(not unique) and sample_id(primary) column<br>';
+	//echo 'for id_single_sample, the table should have id column(primary, autoincrement) and sample_id(unique) column<br>';
 	if(strlen($result)!=0){echo ' examination_id='.$examination_id.' can not be edited once filled';return;}
 	$examination_details=get_one_examination_details($link,$examination_id);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	$type=isset($edit_specification['type'])?$edit_specification['type']:'';
-	echo $type.'<br>';
+	//echo $type.'<br>';
 	if($type=='id_multi_sample')
 	{
 		if(!isset($edit_specification['table'])){'echo table for id allocation of examination_id='.$examination_id.' does not exist<br>';return;}
@@ -4458,7 +4527,7 @@ function update_id_type_examination_for_sample_array($link,$sample_id_array,$exa
 		foreach($sample_id_array as $sid)
 		{
 			$sqli='insert into `'.$edit_specification['table'] .'` values ("'.$next_id.'","'.$sid.'")';
-			echo $sqli.'<br>';
+			//echo $sqli.'<br>';
 			if(!$resulti=run_query($link,$GLOBALS['database'],$sqli))
 			{
 				echo '<p>Data not updated</p>';
@@ -4471,19 +4540,19 @@ function update_id_type_examination_for_sample_array($link,$sample_id_array,$exa
 		foreach($sample_id_array as $sid)
 		{
 			$sqli='insert into `'.$edit_specification['table'] .'` (sample_id) values ("'.$sid.'")';
-			echo $sqli.'<br>';
+			//echo $sqli.'<br>';
 			if(!$resulti=run_query($link,$GLOBALS['database'],$sqli))
 			{
 				echo '<p>Data not updated</p>';
 			}
 			else
 			{
-				echo '<p>id='.last_autoincrement_insert($link).' inserted in to '.$edit_specification['table'] .' for '.$sid.' </p>';
+				//echo '<p>id='.last_autoincrement_insert($link).' inserted in to '.$edit_specification['table'] .' for '.$sid.' </p>';
 			}
 		}
 		
 	}
-	echo '>>>>end of update_id_type_examination_for_sample_array processing<br>';
+	//echo '>>>>end of update_id_type_examination_for_sample_array processing<br>';
 	
 }
 
@@ -8576,6 +8645,9 @@ echo '</div>';
 
 function xxx_view_sample($link,$sample_id,$compact='no')
 {
+
+	if(!sample_exist($link,$sample_id)){ echo '<h5>Sample Id '.$sample_id.' does not exist</h5>';return;}
+
 	//echo '<pre>';	print_r($result_plus_blob_requested);echo '</pre>';
 	$sql=" (select examination.examination_id,display_route,name,display_route_priority from examination,result 
 			where 
@@ -8703,7 +8775,7 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 		}
 	}
 
-	echo '<pre>following examinations are filled with results:<br>';print_r($with_result);echo '</pre>';
+	//echo '<pre>following examinations are filled with results:<br>';print_r($with_result);echo '</pre>';
 	
 ////Requested + filled examinations
 	$requested=array_merge($requested,$with_result);
@@ -8873,7 +8945,7 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		sample_id_barcode_button($sample_id);
 		xxx_sample_id_prev_button($sample_id);
 		xxx_sample_id_view_button($sample_id);
-		sample_id_next_button($sample_id);
+		xxx_sample_id_next_button($sample_id);
 		sample_id_bill_button($sample_id);
 		if(strlen($released_by)!=0 || strlen($interim_released_by)!=0)
 		{
@@ -8890,11 +8962,11 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		xxx_sample_id_prev_button($sample_id);
 		xxx_sample_id_view_button($sample_id);
 		xxx_sample_id_next_button($sample_id);
-		sample_id_release_button($sample_id);	
-		sample_id_interim_release_button($sample_id);	
+		xxx_sample_id_release_button($sample_id);	
+		xxx_sample_id_interim_release_button($sample_id);	
 		xxx_sample_id_edit_button($sample_id);
-		sample_id_delete_button($sample_id);
-		sample_id_copy_button($sample_id);
+		xxx_sample_id_delete_button($sample_id);
+		xxx_sample_id_copy_button($sample_id);
 		sample_id_bill_button($sample_id);
 	}
 	else if(strlen($released_by)==0 && strlen($interim_released_by)!=0)	//interim but not released, so allow telegram/print/xmpp/email/sms
@@ -8903,8 +8975,8 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		xxx_sample_id_prev_button($sample_id);
 		xxx_sample_id_view_button($sample_id);
 		xxx_sample_id_next_button($sample_id);
-		sample_id_release_button($sample_id);	
-		sample_id_interim_release_button($sample_id);					
+		xxx_sample_id_release_button($sample_id);	
+		xxx_sample_id_interim_release_button($sample_id);					
 		
 		sample_id_print_button($sample_id);			
 		sample_id_email_button($sample_id);
@@ -8913,8 +8985,8 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		sample_id_xmpp_button($sample_id);
 		
 		xxx_sample_id_edit_button($sample_id);
-		sample_id_delete_button($sample_id);
-		sample_id_copy_button($sample_id);
+		xxx_sample_id_delete_button($sample_id);
+		xxx_sample_id_copy_button($sample_id);
 		sample_id_bill_button($sample_id);
 
 	}	
@@ -8927,14 +8999,14 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		xxx_sample_id_next_button($sample_id);
 		//sample_id_delete_button($sample_id);
 		
-		sample_id_unrelease_button($sample_id);			
+		xxx_sample_id_unrelease_button($sample_id);			
 		
 		sample_id_print_button($sample_id);			
 		sample_id_email_button($sample_id);
 		sample_id_telegram_button($sample_id);
 		sample_id_sms_button($sample_id,$link);
 		sample_id_xmpp_button($sample_id);
-		sample_id_copy_button($sample_id);
+		xxx_sample_id_copy_button($sample_id);
 		sample_id_bill_button($sample_id);
 	}
 	echo '</div>';
@@ -8986,5 +9058,68 @@ function xxx_sample_id_analysis_started_button($sample_id)
         </form></div>';
 }
 
+
+function xxx_sample_id_delete_button($sample_id)
+{
+	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_delete_sample.php class=print_hide>
+	<button onclick="return confirm(\'delete really?\')" class="btn btn-outline-dark btn-sm" name=sample_id value=\''.$sample_id.'\' >Delete</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=delete_sample>
+	</form></div>';
+}
+
+
+function xxx_sample_id_release_button($sample_id)
+{
+	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_release_sample.php class=print_hide>
+	<button class="btn btn-outline-secondary btn-sm" name=sample_id value=\''.$sample_id.'\' >Release</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=release_sample>
+	</form></div>';
+}
+
+
+function xxx_sample_id_interim_release_button($sample_id)
+{
+	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_interim_release_sample.php class=print_hide>
+	<button class="btn btn-outline-secondary btn-sm" name=sample_id value=\''.$sample_id.'\' >Interim Release</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=interim_release_sample>
+	</form></div>';
+}
+
+function xxx_sample_id_unrelease_button($sample_id)
+{
+	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_unrelease_sample.php class=print_hide>
+	<button class="btn btn-outline-secondary btn-sm" name=sample_id value=\''.$sample_id.'\' >Un-Release</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=unrelease_sample>
+	</form></div>';
+}
+
+
+
+function xxx_sample_id_copy_button($sample_id)
+{
+        echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_copy_sample_id.php class=print_hide>
+        <button class="btn btn-outline-success btn-sm" name=sample_id value=\''.$sample_id.'\' >copy</button>
+        <input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+        <input type=hidden name=action value=copy_sample_id>
+        </form></div>';
+}
+
+
+function xxx_any_id_barcode_button($sample_id,$label_id,$label)
+{
+	echo '<div class="d-inline-block"  style="width:100%;">
+	<form method=post target=_blank action=xxx_print_single_barcode.php class=print_hide>
+	<div class="btn-group" role="group">
+	<button class="btn btn-outline-primary btn-sm" name=action value=one_barcode >'.$label.'</button>
+	</div>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=sample_id value=\''.$sample_id.'\'>
+	<input type=hidden name=label_id value=\''.$label_id.'\'>
+	</form></div>';
+}
 
 ?>

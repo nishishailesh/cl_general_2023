@@ -95,11 +95,16 @@
 	  grid-template-columns: 100%;
 	}
 
+/* these two styles ensure that
+ * report occupy 1/3 space horizontally (equally devided vetween name:result
+ * The help colum is hidden
+ * */
+ 
 	.compact_report 
 	{
 	  display: inline-grid;
 	  grid-template-columns: 50% 50%;		/*both given equal space*/
-	  width:33%;							/*itself occupy 50% of space*/
+	  width:33%;							/*itself occupy 33% of space*/
 	}
 
 	
@@ -107,6 +112,8 @@
 	{
 		display:none;
 	}
+
+/*********************************/
 		
 	.horiz
 	{

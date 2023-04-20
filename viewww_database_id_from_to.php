@@ -59,6 +59,9 @@ get_one_field_for_search($link,1004);
 get_one_field_for_search($link,1005);
 get_one_field_for_search($link,1006);
 get_one_field_for_search($link,1017);
+get_one_field_for_search($link,1045);
+get_one_field_for_search($link,100024);
+
 
 echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_summary>View (Summary)</button>';
 echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_detail>View (Detail)</button>';
