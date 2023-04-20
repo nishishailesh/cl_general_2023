@@ -7,7 +7,7 @@
 ####mysqldump  -d -uroot cl_general -p$password > cl_general_blank.sql 
 #####if unix plugin , as root 
 echo "database:"
-read $d
+read d
 mysqldump  -d $d > cl_general_blank_2023.sql 
 
 tnames='examination profile report sample_id_strategy dashboard super_profile
@@ -18,7 +18,7 @@ tnames='examination profile report sample_id_strategy dashboard super_profile
 #####if root password
 #####mysqldump  -uroot cl_general $tnames -p$password > "cl_general_data_2023.sql"
 #####if unix plugin , as root 
-#mysqldump  $d $tnames > "cl_general_data_2023.sql"
+mysqldump  $d $tnames > "cl_general_data_2023.sql"
 
 git add *
 git commit -a
