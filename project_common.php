@@ -20,8 +20,8 @@ function requestonly_check($link)
 
 function get_user_request_limit($link)
 {
-        $user=get_user_info($link,$_SESSION['login']);
-        $auth=explode(',',$user['authorization']);
+    $user=get_user_info($link,$_SESSION['login']);
+    $auth=explode(',',$user['authorization']);
 	foreach($auth as $value)
 	{
 		$limit=explode("=",$value);
@@ -2530,8 +2530,6 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
 			echo '</div>';
 		}
 
-
-		
 		else
 		{
 			if(strlen($display_format)==0){$display_format='horizontal3';}

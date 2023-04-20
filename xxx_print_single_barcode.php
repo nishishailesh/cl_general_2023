@@ -49,20 +49,83 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 		'vpadding' => '0',
 		'fgcolor' => array(0,0,0),
 		'bgcolor' => false, //array(255,255,255),
-		'text' => true,
+		'text' => false,
 		'font' => 'helvetica',
 		'fontsize' => 10,
 		'stretchtext' => 4
 	);
 
 		$label_details=get_lable_details($link,$label_id);
-		$id_value=get_id_type_examination_result($link,$sample_id,$label_details['examination_id']);
+		//echo '<pre>';print_r($label_details);echo '</pre>';
+		//return;
 		
+/*
+
+Array
+(
+    [caption] => -1
+    [data] => Array
+        (
+            [1] => sample_id,h,b,05,05,15,05
+            [2] => sample_id,h,t,05,10,15,05
+            [3] => 1045,h,t,05,15,15,05
+            [4] => 1045,h,t,05,20,15,05
+        )
+)
+ 
+*/ 
 		$pdf->AddPage();
-		$pdf->write1DBarcode($id_value, 'C128', 02, 5 , 30, 13, 0.4, $style, 'N');		
+		
+		$id_value=get_id_type_examination_result($link,$sample_id,$label_details['examination_id']);
+		$label_details=get_lable_details($link,$label_id);
+		$label_specification=json_decode($label_details['data'],true);
+		//echo '<pre>';print_r($label_specification);echo '</pre>';
+		$caption=isset($label_specification['caption'])?$label_specification['caption']:'';
+		$data=isset($label_specification['data'])?$label_specification['data']:'';
+		foreach($data as $item_csv)
+		{
+			$item=explode(',',$item_csv);
+			//print_r($item);
+			if($item[0]=='sample_id')
+			{
+				if($item[2]=='b')
+				{
+					$pdf->write1DBarcode($item[0], 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+				}
+				else if($item[2]=='t')
+				{
+					$pdf->SetFont('helveticaB', '', 5);
+					$pdf->SetXY($item[3],$item[4]);
+					$pdf->Cell($item[5],$item[6],$item[0],$border=0, $ln=0, $align='', $fill=false, $link='', $stretch=2, $ignore_min_height=false, $calign='T', $valign='M');	
+				}
+			}
+			else
+			{
+				if($item[2]=='b')
+				{
+					$pdf->write1DBarcode($item[0], 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+				}
+				else if($item[2]=='t')
+				{
+					$pdf->SetFont('helveticaB', '', 5);
+					$pdf->SetXY($item[3],$item[4]);
+					$pdf->Cell($item[5],$item[6],$item[0],$border=0, $ln=0, $align='', $fill=false, $link='', $stretch=2, $ignore_min_height=false, $calign='T', $valign='M');	
+				}
+			}
+		}
 }
 
 /*
+
+{
+ "caption":"-1",
+ "sample_id":"h,b,05,05,15,05",
+ "sample_id":"h,t,05,10,15,05",
+ "1045"     :"h,t,05,15,15,05",   
+ "1045"     :"h,t,05,20,15,05"   
+}
+
+
 
 
 function xxx_prepare_sample_barcode($link,$sample_id,$pdf)
