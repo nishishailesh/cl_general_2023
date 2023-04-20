@@ -333,9 +333,17 @@ function mk_select_from_sql_kv($link,$sql,$field_name_k,$field_name_v,$select_na
 
 function get_one_examination_details($link,$examination_id)
 {
+	//echo 'first dump++++++++++++++++++<br>';
+	//var_dump($link);
+	//echo '>>>>======get_one_examination_details==========<br>';
 	$sql='select * from examination where examination_id=\''.$examination_id.'\'';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	
+	//echo $sql.'mmmmmmmmm<br>';
+	//echo '2nd dump#######################<br>';
+	//	var_dump($link);
+
+	$result=run_query($link , $GLOBALS['database'],$sql);
+	//echo '<<<<=======end of =get_one_examination_details=======<br>';
+
 	return $ar=get_single_row($result);
 }
 
@@ -2481,18 +2489,7 @@ function view_field_any($link,$ex_id,$sample_id,$compact='no')
 	}
 }
 
-function get_id_type_examination_result($link,$sample_id,$examination_id)
-{
-	$examination_details=get_one_examination_details($link,$examination_id);
-	$edit_specification=json_decode($examination_details['edit_specification'],true);
-	if(!isset($edit_specification['table'])){'echo table for id allocation of examination_id='.$examination_id.' does not exist<br>';return false;}
-		
-	$sql='select * from `'.$edit_specification['table'] .'` where sample_id=\''.$sample_id.'\'';
-	//echo '<h3>'.$sql.'</h3>';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	$ar=get_single_row($result);
-	return isset($ar['id'])?$ar['id']:False;
-}
+
 
 function view_field($link,$ex_id,$ex_result,$sample_id='')
 {
@@ -4211,6 +4208,46 @@ function get_one_ex_result($link,$sample_id,$examination_id)
 			return false;
 		}
 }
+
+
+
+function get_id_type_examination_result($link,$sample_id,$examination_id)
+{
+	$examination_details=get_one_examination_details($link,$examination_id);
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	if(!isset($edit_specification['table'])){'echo table for id allocation of examination_id='.$examination_id.' does not exist<br>';return false;}
+		
+	$sql='select * from `'.$edit_specification['table'] .'` where sample_id=\''.$sample_id.'\'';
+	//echo '<h3>'.$sql.'</h3>';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);
+	return isset($ar['id'])?$ar['id']:False;
+}
+
+
+function get_any_examination_result($link,$sample_id,$examination_id)
+{
+	//echo 'pppppppppppp'.$examination_id.'<br>';
+	$examination_details=get_one_examination_details($link,$examination_id);
+	//echo '>>>>>>>>>>examination_id';
+	//print_r($examination_details);
+
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	//////print_r($edit_specification);
+	$type=isset($edit_specification['type'])?$edit_specification['type']:'';
+	//echo $type;
+	if(in_array($type,['id_multi_sample','id_single_sample']))
+	{
+		$ex_result=get_id_type_examination_result($link,$sample_id,$examination_id);
+	}
+	else
+	{
+		$ex_result=get_one_ex_result($link,$sample_id,$examination_id);
+	}
+	return $ex_result;
+}
+
+
 
 function get_one_ex_result_row($link,$sample_id,$examination_id)
 {
