@@ -10,10 +10,40 @@ echo "database:"
 read d
 mysqldump  -d $d > cl_general_blank_2023.sql 
 
-tnames='examination profile report sample_id_strategy dashboard super_profile
-	copy_bin_text view_info_data prototype prototype_data host_code lab_reference_value
-	dementia equipment equipment_record_type record_tables table_field_specification
-	reagent reagent_name unit_name cal_equipment reagent_use copy_sample labels'
+tnames='
+record_tables
+table_field_specification
+menu_new
+copy_bin_text
+route_priority
+examination
+equipment_record_type
+request_id
+prototype_data
+opd_id
+schedule
+sample_id_strategy
+user
+im_message
+moving_average
+display_examination
+equipment
+labels
+dementia
+report
+view_info_data
+prototype
+display_examination_view
+super_profile
+sample_type
+dashboard
+ward_id
+copy_sample
+profile
+Quality_manual_section
+host_code
+lis_to_vitros_sample_type
+'
 
 #####if root password
 #####mysqldump  -uroot cl_general $tnames -p$password > "cl_general_data_2023.sql"

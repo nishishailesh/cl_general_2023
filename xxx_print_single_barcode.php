@@ -36,13 +36,16 @@ function get_label_details($link,$label_id)
 
 function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 {
+		$border=0;
+		$barcode_border=False;
+		
 		$style = array(
 		'position' => '',
 		'align' => 'C',
 		'stretch' => True,
 		'fitwidth' => true,
 		'cellfitalign' => '',
-		'border' => true,
+		'border' => $barcode_border,
 		'hpadding' => 'auto',
 		'vpadding' => '0',
 		'fgcolor' => array(0,0,0),
@@ -67,7 +70,10 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 		$prefix=isset($edit_specification['unique_prefix'])?$edit_specification['unique_prefix']:'';
 		//echo '==================='.$prefix;
 				
-		$pdf->AddPage();		
+		$pdf->AddPage();
+		
+		//during setup border is good =>border=1 else border=0
+				
 		foreach($data as $item_csv)
 		{
 			$item=explode(',',$item_csv);
@@ -85,7 +91,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 						//$pdf->SetFont('helveticaB', '', 5);
 						$pdf->SetFont('helvetica', '', 7);
 						$pdf->SetXY($item[3],$item[4]);
-						$pdf->Cell($item[5],$item[6],$sample_id,$border=1, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+						$pdf->Cell($item[5],$item[6],$sample_id,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
 					}
 				}
 				
@@ -104,7 +110,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 						$pdf->SetXY($item[3],$item[4]);
 						//$pdf->Rotate(90, 0 , 0);
 						$pdf->Rotate(90);
-						$pdf->Cell($item[5],$item[6],$sample_id,$border=0, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+						$pdf->Cell($item[5],$item[6],$sample_id,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
 						
 						$pdf->StopTransform();
 					}
@@ -127,7 +133,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 						//$pdf->SetFont('helveticaB', '', 5);
 						$pdf->SetFont('helvetica', '', 7);
 						$pdf->SetXY($item[3],$item[4]);
-						$pdf->Cell($item[5],$item[6],$ex_result,$border=1, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+						$pdf->Cell($item[5],$item[6],$ex_result,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
 					}
 				}
 				
@@ -146,7 +152,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 						$pdf->SetXY($item[3],$item[4]);
 						//$pdf->Rotate(90, 0 , 0);
 						$pdf->Rotate(90);
-						$pdf->Cell($item[5],$item[6],$ex_result,$border=0, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+						$pdf->Cell($item[5],$item[6],$ex_result,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
 						
 						$pdf->StopTransform();
 					}
