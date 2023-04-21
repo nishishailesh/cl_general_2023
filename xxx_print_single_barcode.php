@@ -42,7 +42,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 		'stretch' => True,
 		'fitwidth' => true,
 		'cellfitalign' => '',
-		'border' => false,
+		'border' => true,
 		'hpadding' => 'auto',
 		'vpadding' => '0',
 		'fgcolor' => array(0,0,0),
@@ -74,41 +74,117 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 			//echo '<pre>--------->>';print_r($item);
 			if($item[0]=='sample_id')
 			{
-				if($item[2]=='b')
+				if($item[1]=='h')
 				{
-					$pdf->write1DBarcode($sample_id, 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($sample_id, 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						//$pdf->SetFont('helveticaB', '', 5);
+						$pdf->SetFont('helvetica', '', 7);
+						$pdf->SetXY($item[3],$item[4]);
+						$pdf->Cell($item[5],$item[6],$sample_id,$border=1, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+					}
 				}
-				else if($item[2]=='t')
+				
+				else if($item[1]=='v')
 				{
-					//$pdf->SetFont('helveticaB', '', 5);
-					$pdf->SetFont('helvetica', '', 7);
-					$pdf->SetXY($item[3],$item[4]);
-					$pdf->Cell($item[5],$item[6],$sample_id,$border=0, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($sample_id, 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						
+						$pdf->SetFont('helvetica', '', 7);
+
+						$pdf->StartTransform();
+						$pdf->SetXY($item[3],$item[4]);
+						//$pdf->Rotate(90, 0 , 0);
+						$pdf->Rotate(90);
+						$pdf->Cell($item[5],$item[6],$sample_id,$border=0, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+						
+						$pdf->StopTransform();
+					}
 				}
+								
 			}
 			else
 			{
-				//echo $label_details['examination_id'];
-				//	echo '>>>>======get_any_examination_result==========<br>';
-				//var_dump($link);
 				$ex_result=get_any_examination_result($link,$sample_id,$item[0]);
 				if($item[0]==$label_details['examination_id']){$ex_result=$prefix.$ex_result;}
+
+				if($item[1]=='h')
+				{
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($ex_result, 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						//$pdf->SetFont('helveticaB', '', 5);
+						$pdf->SetFont('helvetica', '', 7);
+						$pdf->SetXY($item[3],$item[4]);
+						$pdf->Cell($item[5],$item[6],$ex_result,$border=1, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+					}
+				}
 				
-				//	echo '>>>>====end of ==get_any_examination_result==========<br>';
-				if($item[2]=='b')
+				else if($item[1]=='v')
 				{
-					$pdf->write1DBarcode($ex_result, 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($ex_result, 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						
+						$pdf->SetFont('helvetica', '', 7);
+
+						$pdf->StartTransform();
+						$pdf->SetXY($item[3],$item[4]);
+						//$pdf->Rotate(90, 0 , 0);
+						$pdf->Rotate(90);
+						$pdf->Cell($item[5],$item[6],$ex_result,$border=0, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+						
+						$pdf->StopTransform();
+					}
 				}
-				else if($item[2]=='t')
-				{
-					//$pdf->SetFont('helveticaB', '', 5);
-					$pdf->SetFont('helvetica', '', 7);
-					$pdf->SetXY($item[3],$item[4]);
-					$pdf->Cell($item[5],$item[6],$ex_result,$border=0, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
-				}
+				
 			}
 		}
 }
 
+
+	/**
+	 * Rotate object.
+	 * @param $angle (float) angle in degrees for counter-clockwise rotation
+	 * @param $x (int) abscissa of the rotation center. Default is current x position
+	 * @param $y (int) ordinate of the rotation center. Default is current y position
+	 * @public
+	 * @since 2.1.000 (2008-01-07)
+	 * @see StartTransform(), StopTransform()
+	 */
+	 
+	/**
+	 * Prints a cell (rectangular area) with optional borders, background color and character string. The upper-left corner of the cell corresponds to the current position. The text can be aligned or centered. After the call, the current position moves to the right or to the next line. It is possible to put a link on the text.<br />
+	 * If automatic page breaking is enabled and the cell goes beyond the limit, a page break is done before outputting.
+	 * @param $w (float) Cell width. If 0, the cell extends up to the right margin.
+	 * @param $h (float) Cell height. Default value: 0.
+	 * @param $txt (string) String to print. Default value: empty string.
+	 * @param $border (mixed) Indicates if borders must be drawn around the cell. The value can be a number:<ul><li>0: no border (default)</li><li>1: frame</li></ul> or a string containing some or all of the following characters (in any order):<ul><li>L: left</li><li>T: top</li><li>R: right</li><li>B: bottom</li></ul> or an array of line styles for each border group - for example: array('LTRB' => array('width' => 2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)))
+	 * @param $ln (int) Indicates where the current position should go after the call. Possible values are:<ul><li>0: to the right (or left for RTL languages)</li><li>1: to the beginning of the next line</li><li>2: below</li></ul> Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value: 0.
+	 * @param $align (string) Allows to center or align the text. Possible values are:<ul><li>L or empty string: left align (default value)</li><li>C: center</li><li>R: right align</li><li>J: justify</li></ul>
+	 * @param $fill (boolean) Indicates if the cell background must be painted (true) or transparent (false).
+	 * @param $link (mixed) URL or identifier returned by AddLink().
+	 * @param $stretch (int) font stretch mode: <ul><li>0 = disabled</li><li>1 = horizontal scaling only if text is larger than cell width</li><li>2 = forced horizontal scaling to fit cell width</li><li>3 = character spacing only if text is larger than cell width</li><li>4 = forced character spacing to fit cell width</li></ul> General font stretching and scaling values will be preserved when possible.
+	 * @param $ignore_min_height (boolean) if true ignore automatic minimum height value.
+	 * @param $calign (string) cell vertical alignment relative to the specified Y value. Possible values are:<ul><li>T : cell top</li><li>C : center</li><li>B : cell bottom</li><li>A : font top</li><li>L : font baseline</li><li>D : font bottom</li></ul>
+	 * @param $valign (string) text vertical alignment inside the cell. Possible values are:<ul><li>T : top</li><li>C : center</li><li>B : bottom</li></ul>
+	 * @public
+	 * @since 1.0
+	 * @see SetFont(), SetDrawColor(), SetFillColor(), SetTextColor(), SetLineWidth(), AddLink(), Ln(), MultiCell(), Write(), SetAutoPageBreak()
+	 */
 
 ?>
