@@ -35,7 +35,6 @@ view_info_data
 prototype
 display_examination_view
 super_profile
-sample_type
 dashboard
 ward_id
 copy_sample

@@ -229,7 +229,8 @@ function main_menu($link)
 			<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">View-N</button>
 			<div class="dropdown-menu m-0 p-0 ">
 				<div class="btn-group-vertical d-block">
-					<button class="btn btn-outline-primary m-0 p-0 " formaction=viewww_database_id_from_to.php type=submit name=action value="get_dbids||">by Sample ID(s)</button>';
+					<button class="btn btn-outline-primary m-0 p-0 " formaction=viewww_database_id_from_to.php type=submit name=action value="get_dbids||">by Sample ID(s)</button>'; 
+					xxx_make_view_menu($link);
 				echo '</div>
 			</div>
 		</div>		
@@ -2537,6 +2538,7 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
 				{
 					echo '	<div class="my_label text-wrap lead w-auto border ">'.$examination_details['name'];
 					get_lables_button($link,$sample_id,$ex_id);
+					xxx_set_unique_id_prev_next_button($link,$sample_id,$ex_id);
 				}
 				else
 				{
@@ -2559,16 +2561,22 @@ function get_lables_button($link,$sample_id,$examination_id)
 	$sql='select * from labels where examination_id=\''.$examination_id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	
-	
-	$examination_details=get_one_examination_details($link,$examination_id);
-	$ex_name=$examination_details['name'];
-	
+	if($examination_id=='sample_id')
+	{
+		$ex_name='sample_id';
+	}
+	else
+	{
+		$examination_details=get_one_examination_details($link,$examination_id);
+		$ex_name=$examination_details['name'];
+	}
 	echo '<div>';
 	while($ar=get_single_row($result))
 	{
 		//print_r($ar);
 		$data=json_decode($ar['data'],true);
-		$caption=isset($data['caption'])?$data['caption']:'';
+		//$caption=isset($data['caption'])?$data['caption']:'';
+		$caption=$ar['caption'];
 		echo '<div class="d-inline-block">';
 			xxx_any_id_barcode_button($sample_id,$ar['id'],'||'.($ex_name.$caption).'||');
 		echo '</div>';
@@ -5855,7 +5863,17 @@ function show_examination_bin()
 
 
 //////////Barcode Functions////////////
-
+	/**
+	 * Defines the left, top and right margins.
+	 * @param $left (float) Left margin.
+	 * @param $top (float) Top margin.
+	 * @param $right (float) Right margin. Default value is the left one.
+	 * @param $keepmargins (boolean) if true overwrites the default page margins
+	 * @public
+	 * @since 1.0
+	 * @see SetLeftMargin(), SetTopMargin(), SetRightMargin(), SetAutoPageBreak()
+	 * public function SetMargins($left, $top, $right=-1, $keepmargins=false)
+	 */
 function get_pdf_link_for_barcode()
 {
 	class MYPDF_BARCODE extends TCPDF 
@@ -5864,17 +5882,15 @@ function get_pdf_link_for_barcode()
 		public function Footer() {}		//to prevent default footer
 	}
 
-
-
 	$pdf = new MYPDF_BARCODE('', 'mm', array("50","25"), true, 'UTF-8', true);
 	
-	$pdf->SetMargins(0,0, $right=-1, $keepmargins=false);
+	$pdf->SetMargins(0,0, $right=-1, $keepmargins=true);
 	$pdf->setPrintFooter(false);
 	$pdf->setPrintHeader(false);
 	$pdf->SetAutoPageBreak(TRUE, 0);
 	$pdf->setCellPaddings(0,0,0,0);
 
-	return $pdf;	
+	return $pdf;
 }
 
 function prepare_sample_barcode($link,$sample_id,$pdf)
@@ -8977,7 +8993,8 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 	echo '<div class="btn-group" role="group">';
 	if(requestonly_check($link))		//no interim, no release, no edit , no delete 
 	{
-		sample_id_barcode_button($sample_id);
+		get_lables_button($link,$sample_id,'sample_id');
+		//xxx_sample_id_barcode_button($sample_id);
 		xxx_sample_id_prev_button($sample_id);
 		xxx_sample_id_view_button($sample_id);
 		xxx_sample_id_next_button($sample_id);
@@ -8993,7 +9010,8 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 	
 	if(strlen($released_by)==0 && strlen($interim_released_by)==0)		//no interim, no release -> no print/xmpp/email/sms
 	{
-		sample_id_barcode_button($sample_id);
+		get_lables_button($link,$sample_id,'sample_id');
+		//xxx_sample_id_barcode_button($sample_id);
 		xxx_sample_id_prev_button($sample_id);
 		xxx_sample_id_view_button($sample_id);
 		xxx_sample_id_next_button($sample_id);
@@ -9006,7 +9024,8 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 	}
 	else if(strlen($released_by)==0 && strlen($interim_released_by)!=0)	//interim but not released, so allow telegram/print/xmpp/email/sms
 	{
-		sample_id_barcode_button($sample_id);		
+		get_lables_button($link,$sample_id,'sample_id');
+		//xxx_sample_id_barcode_button($sample_id);		
 		xxx_sample_id_prev_button($sample_id);
 		xxx_sample_id_view_button($sample_id);
 		xxx_sample_id_next_button($sample_id);
@@ -9027,7 +9046,8 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 	}	
 	else 																//released with/without interim, so do not allow edit/delete
 	{
-		sample_id_barcode_button($sample_id);
+		get_lables_button($link,$sample_id,'sample_id');
+		//xxx_sample_id_barcode_button($sample_id);
 		//sample_id_edit_button($sample_id);
 		xxx_sample_id_prev_button($sample_id);
 		xxx_sample_id_view_button($sample_id);
@@ -9155,6 +9175,75 @@ function xxx_any_id_barcode_button($sample_id,$label_id,$label)
 	<input type=hidden name=sample_id value=\''.$sample_id.'\'>
 	<input type=hidden name=label_id value=\''.$label_id.'\'>
 	</form></div>';
+}
+
+function xxx_make_view_menu($link)
+{
+	$sql="SELECT * from examination
+	where 
+	JSON_EXTRACT(edit_specification, '$.type')='id_single_sample'  or 
+	JSON_EXTRACT(edit_specification, '$.type')='id_multi_sample'";
+	
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	
+	//echo '<button 
+				//class="btn btn-outline-primary m-0 p-0 " 
+				//formaction=viewww_database_id_from_to.php 
+				//type=submit 
+				//name=action
+				//value=\'get_dbids|sample_id\'>by sample id</button>';
+						
+	while($ar=get_single_row($result))
+	{
+		echo '<button 
+					class="btn btn-outline-primary m-0 p-0 " 
+					formaction=viewww_database_id_from_to_for_unique_id.php 
+					type=submit 
+					name=action
+					value=\'get_dbids|'.$ar['examination_id'].'\'>by '.$ar['name'].'</button>';
+	}
+}
+
+
+function xxx_find_max_unique_id($link,$ex_id)
+{
+	$examination_details=get_one_examination_details($link,$ex_id);
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	$table=isset($edit_specification['table'])?$edit_specification['table']:'';
+	if(strlen($table)==0){return false;}
+
+	$sqls='select max(id) as max_id from `'.$table.'`';
+	//echo '<h3>'.$sqls.'</h3>';
+	$results=run_query($link,$GLOBALS['database'],$sqls);
+	$ars=get_single_row($results);
+	//return $ars['next_sample_id'];
+	
+	//This is first table where sample_id is added and there it is primary key.
+	//This reserve sample id. Otherwise, somebody else will find same sample id and use it
+	return $ars['max_id'];
+}
+
+
+function xxx_set_unique_id_prev_next_button($link,$sample_id,$examination_id)
+{
+	$current_id_value=get_one_ex_result($link,$sample_id,$examination_id);
+	
+
+	echo '<div class="btn-group" role="group">';
+	
+	echo '<div class="d-inline-block"  style="width:100%;" ><form method=post action=viewww_single.php class=print_hide>
+	<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=sample_id >Prev</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=view_single>
+	</form></div>';
+	
+	echo '<div class="d-inline-block"  style="width:100%;" ><form method=post action=viewww_single.php class=print_hide>
+	<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=sample_id >Next</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=view_single>
+	</form></div>';
+	
+	echo '</div>';
 }
 
 ?>

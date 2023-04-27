@@ -41,6 +41,7 @@ else
 		}
 	}
 }
+
 //echo '<pre>';print_r($conditions);echo '</pre>';
 
 
@@ -92,12 +93,9 @@ $extra_post='
 <input type=hidden name=to value=\''.$to.'\'>
 <input type=hidden name=conditions value=\''.json_encode($conditions).'\'>';
 
-
 //show samples as selected
 $sql='select sample_id from result where examination_id=\''.$GLOBALS['sample_requirement'].'\' and sample_id betweeen \''.$from.'\' and \''.$to.'\' ';
 //echo $sql.'<br>';
-
-
 
 	for ($i=$from;$i<=$to;$i++)
 	{
@@ -122,7 +120,7 @@ $sql='select sample_id from result where examination_id=\''.$GLOBALS['sample_req
 
 //////////////user code ends////////////////
 tail();
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 //echo '<pre>';print_r($_SESSION);echo '</pre>';
 
 //////////////Functions///////////////////////
