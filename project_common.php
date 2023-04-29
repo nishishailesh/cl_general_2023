@@ -1461,7 +1461,7 @@ function edit_sample($link,$sample_id)
 									
 				if($type!='blob')
 				{
-					edit_field($link,$ex_id,$ex_list,$sample_id,$readonly);	
+					edit_field($link,$ex_id,array('result'=>$ex_list[$ex_id]),$sample_id,$readonly);	
 				}
 				else
 				{
@@ -9226,21 +9226,26 @@ function xxx_find_max_unique_id($link,$ex_id)
 
 function xxx_set_unique_id_prev_next_button($link,$sample_id,$examination_id)
 {
-	$current_id_value=get_one_ex_result($link,$sample_id,$examination_id);
-	
+	$x=get_id_type_examination_result($link,$sample_id,$examination_id);
+	//echo 'xxxxxxxxxxxxxxxx'.$x.'<br>';
+	$current=intval($x);
+	$next=$current+1;
+	$prev=max($current-1,1);
 
 	echo '<div class="btn-group" role="group">';
 	
-	echo '<div class="d-inline-block"  style="width:100%;" ><form method=post action=viewww_single.php class=print_hide>
-	<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=sample_id >Prev</button>
+	echo '<div class="d-inline-block"  style="width:100%;" ><form method=post action=viewww_single_unique.php class=print_hide>
+	<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=action value=prev>Prev</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
-	<input type=hidden name=action value=view_single>
+	<input type=hidden name=unique_id_value value=\''.$prev.'\'>
+	<input type=hidden name=unique_id value=\''.$examination_id.'\'>
 	</form></div>';
 	
-	echo '<div class="d-inline-block"  style="width:100%;" ><form method=post action=viewww_single.php class=print_hide>
-	<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=sample_id >Next</button>
+	echo '<div class="d-inline-block"  style="width:100%;" ><form method=post action=viewww_single_unique.php class=print_hide>
+	<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=action value=next>Next</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
-	<input type=hidden name=action value=view_single>
+	<input type=hidden name=unique_id_value value=\''.$next.'\'>
+	<input type=hidden name=unique_id value=\''.$examination_id.'\'>
 	</form></div>';
 	
 	echo '</div>';
