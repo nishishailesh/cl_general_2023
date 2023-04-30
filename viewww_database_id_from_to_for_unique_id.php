@@ -32,7 +32,7 @@ if($tok[0]=='get_dbids')
 //////////////user code ends////////////////
 tail();
 
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
 
 //////////////Functions///////////////////////
 
@@ -90,9 +90,338 @@ function get_one_field_for_search($link,$examination_id)
 				echo '<input class="float-right" name=\'chk_'.$examination_id.'\' type=checkbox>';
 			echo '</div>';
 			echo '<div class="d-inline-block">';
-				get_one_field_for_insert($link,$examination_id);
+				get_one_field_for_insert_no_readonly($link,$examination_id);
 			echo '</div>';
 		echo '</div>';
+}
+
+
+function get_one_field_for_insert_no_readonly($link,$examination_id)
+{
+	$examination_details=get_one_examination_details($link,$examination_id);
+	if($examination_details===null || count($examination_details)<1){return;}
+	//echo 'yyy';
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	if(!$edit_specification){$edit_specification=array();}
+
+		$result='';
+
+	$type=isset($edit_specification['type'])?$edit_specification['type']:'text';//echo '<h4>'.$type.'</h4>';
+	//$readonly=isset($edit_specification['readonly'])?$edit_specification['readonly']:'';
+	$readonly='';
+	$help=isset($edit_specification['help'])?$edit_specification['help']:'';
+	$pattern=isset($edit_specification['pattern'])?$edit_specification['pattern']:'';
+	$required=isset($edit_specification['required'])?$edit_specification['required']:'';
+	$placeholder=isset($edit_specification['placeholder'])?$edit_specification['placeholder']:'';
+	$minlength=isset($edit_specification['minlength'])?$edit_specification['minlength']:'';
+	$zoom=isset($edit_specification['zoom'])?$edit_specification['zoom']:'';
+	
+	$element_id='r_id_'.$examination_id;
+
+
+	if($type=='yesno')
+	{
+				//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+					echo '
+							<select 
+							
+							id="'.$element_id.'" 
+								name="__ex__'.$examination_id.'" 
+								class="form-control btn btn-info mb-1"
+								type=button
+								value=no
+								><option>no</option><option>yes</option></select>';
+			echo '</div>';
+			echo '<p class="help">'.nl2br(htmlspecialchars($help)).'</p>';	
+		echo '</div>';
+	}
+	else if($type=='select')
+	{
+		$option=isset($edit_specification['option'])?explode(',',$edit_specification['option']):array();
+		$option_html='';
+		
+		foreach($option as $v)
+		{
+				$option_html=$option_html.'<option>'.$v.'</option>';
+		}
+		
+				//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block  no-gutters">';	
+				
+			echo '
+					<select  
+					id="'.$element_id.'" 
+						name="__ex__'.$examination_id.'" 
+						data-exid="'.$examination_id.'" 
+						
+						
+						class="form-control">'.$option_html.'</select>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//get_primary_result($link,$sample_id,$examination_id);
+				echo '</div>';
+			echo '</div>';
+			echo '<p class="help">'.$help.'</p>';	
+		echo '</div>';
+	}
+	elseif($type=='number')
+	{//echo '<h4>'.$type.'</h4>';
+		$step=isset($edit_specification['step'])?$edit_specification['step']:1;
+		
+				//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block  no-gutters">';	
+				
+			echo '
+					<input 
+						
+					id="'.$element_id.'" 
+						name="__ex__'.$examination_id.'" 
+						data-exid="'.$examination_id.'" 
+						
+						
+						class="form-control" 
+						type=number 
+						step=\''.$step.'\' 
+						>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//get_primary_result($link,$sample_id,$examination_id);
+				echo '</div>';
+			echo '</div>';
+			echo '<p class="help">'.$help.'</p>';	
+		echo '</div>';
+	}
+	elseif($type=='date' || $type=='time')
+	{
+		if($type=='date'){$default=strftime("%Y-%m-%d");}
+		elseif($type=='time'){$default=strftime("%H:%M");}
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block  no-gutters">';			
+			echo '
+						<input 
+						
+					id="'.$element_id.'" 
+						name="__ex__'.$examination_id.'" 
+						data-exid="'.$examination_id.'" 
+						
+						class="form-control" 
+						type=\''.$type.'\' 
+						>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					show_source_button($element_id,$default);
+				echo '</div>';
+			echo '</div>';
+			echo '<p class="help">'.$help.'</p>';	
+		echo '</div>';
+	}
+	elseif($type=='datetime-local')
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block  no-gutters">';
+			echo '
+						<input 
+						
+					id="'.$element_id.'" 
+						name="__ex__'.$examination_id.'" 
+						data-exid="'.$examination_id.'" 
+						
+					pattern="'.$pattern.'" 
+						class="form-control" 
+						type=\''.$type.'\' 
+						>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//get_primary_result($link,$sample_id,$examination_id);
+				echo '</div>';
+			echo '</div>';
+			echo '<p class="help">'.$help.'</p>';	
+		echo '</div>';
+	}
+	elseif($type=='blob')
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+				
+						echo '<input 
+									id="'.$element_id.'" 
+									name="__ex__'.$examination_id.'" 
+									data-exid="'.$examination_id.'" 
+									type=file 
+								>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//get_primary_result($link,$sample_id,$examination_id);
+				echo '</div>';
+			echo '</div>';
+			echo '<p class="help">'.$help.'</p>';	
+		echo '</div>';
+	} 
+
+	 else  if($type=='subsection')
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+			echo '<h3 class="bg-warning">'.$examination_details['name'].'</h3>';
+			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				echo '</div>';
+			echo '</div>';
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
+		echo '</div>';
+	} 
+
+	elseif($type=='realtext')	//type=text
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+					echo $examination_details['name'];
+			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+				echo '<input 
+					'.$readonly.'
+					id="'.$element_id.'" 
+					name="__ex__'.$examination_id.'" 
+					data-exid="'.$examination_id.'" 
+					data-user="'.$_SESSION['login'].'" 
+					class="form-control autosave p-0 m-0 no-gutters " 
+					style="resize: both;"
+					';
+
+					if(strlen($required)>0)	{echo 'required=\''.$required.'\'';}
+					
+					echo 'type=text value=\''.
+					htmlspecialchars($result,ENT_QUOTES).'\'>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				echo '</div>';
+			echo '</div>';
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
+		echo '</div>';
+	} 
+
+
+	elseif(in_array($type,['id_multi_sample','id_single_sample']))	//type=text
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+					echo $examination_details['name'];
+			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+				echo '<input 
+					'.$readonly.'
+					id="'.$element_id.'" 
+					name="__ex__'.$examination_id.'" 
+					data-exid="'.$examination_id.'" 
+					data-user="'.$_SESSION['login'].'" 
+					class="form-control autosave p-0 m-0 no-gutters " 
+					style="resize: both;"
+					';
+
+					if(strlen($required)>0)	{echo 'required=\''.$required.'\'';}
+					
+					echo 'type=text value=\''.
+					htmlspecialchars($result,ENT_QUOTES).'\'>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				echo '</div>';
+			echo '</div>';
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
+		echo '</div>';
+	} 
+
+
+	else  
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';
+			////
+				echo '<div class="m-0 p-0 no-gutters">';
+					////
+					echo '<div class="d-inline-block no-gutters">';
+					echo '<textarea rows=1
+					'.$readonly.'
+
+						id="'.$element_id.'"
+						name="__ex__'.$examination_id.'"
+						data-exid="'.$examination_id.'"';
+						
+						if(strlen($required)>0) {echo 'required=\''.$required.'\'';}
+
+						echo 'pattern="'.$pattern.'"
+						class="form-control autosave p-0 m-0 no-gutters '.$zoom.' "
+						type=\''.$type.'\' ></textarea>';
+					echo '</div>';
+					echo '<div class="d-inline  no-gutters">';
+						//get_primary_result($link,$sample_id,$examination_id);
+					echo '</div>';
+				echo '</div>';
+			////
+			echo '<p class="help">'.nl2br(htmlspecialchars($help)).'</p>';
+		echo '</div>';
+	}
+
+
 }
 
 

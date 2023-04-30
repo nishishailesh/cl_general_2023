@@ -16,6 +16,33 @@ echo '		  <link rel="stylesheet" href="project_common.css">
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 
+
+if($_POST['action']=='sample_collected')
+{
+	//echo 'analysis_started';
+	update_sample_status($link,$_POST['sample_id'],'sample_collected');
+}
+
+if($_POST['action']=='sample_received')
+{
+	//echo 'analysis_started';
+	update_sample_status($link,$_POST['sample_id'],'sample_received');
+}
+
+if($_POST['action']=='sample_prepared')
+{
+	//echo 'analysis_started';
+	update_sample_status($link,$_POST['sample_id'],'sample_prepared');
+}
+
+if($_POST['action']=='analysis_started')
+{
+	//echo 'analysis_started';
+	update_sample_status($link,$_POST['sample_id'],'analysis_started');
+}
+
+
+
 //Set conditions
 $conditions=array();
 if(isset($_POST['conditions']))
@@ -41,7 +68,7 @@ else
 	}
 }
 
-echo '<pre>';print_r($conditions);echo '</pre>';
+//echo '<pre>';print_r($conditions);echo '</pre>';
 
 
 //update if required
@@ -85,7 +112,7 @@ $extra_post='
 	
 //show samples as selected
 $sql='select sample_id from `'.$table.'` where id between \''.$from.'\' and \''.$to.'\' ';
-echo $sql.'<br>';
+//echo $sql.'<br>';
 $result=run_query($link,$GLOBALS['database'],$sql);
 
 
@@ -99,7 +126,13 @@ $result=run_query($link,$GLOBALS['database'],$sql);
 			}
 			else
 			{
-				showww_sid_button_release_status($link,$ar['sample_id'],$extra_post);
+				$extra_post='
+				<input type=hidden name=examination_id value=\''.$_POST['examination_id'].'\'>
+				<input type=hidden name=from value=\''.$from.'\'>
+				<input type=hidden name=to value=\''.$to.'\'>
+				<input type=hidden name=conditions value=\''.json_encode($conditions).'\'>';
+				
+				showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$_POST['examination_id']);
 			}
 		}
 
@@ -112,7 +145,7 @@ $result=run_query($link,$GLOBALS['database'],$sql);
 
 //////////////user code ends////////////////
 tail();
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
 //echo '<pre>';print_r($_SESSION);echo '</pre>';
 
 //////////////Functions///////////////////////

@@ -1,6 +1,6 @@
 <?php
 //$GLOBALS['nojunk']='';
-echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
+//echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
 
 require_once 'project_common.php';
 require_once 'base/verify_login.php';
@@ -11,7 +11,44 @@ echo '	<link rel="stylesheet" href="project_common.css">
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
 main_menu($link);
-echo '<div id=response></div>';
+
+echo '<div class="two_column_two_by_one">';
+
+	echo '<div>';
+
+
+if($_POST['action']=='sample_collected')
+{
+	//echo 'analysis_started';
+	update_sample_status($link,$_POST['sample_id'],'sample_collected');
+	showww_sid_button_release_status($link,$_POST['sample_id'],'');
+	xxx_edit_sample($link,$_POST['sample_id']);
+}
+
+if($_POST['action']=='sample_received')
+{
+	//echo 'analysis_started';
+	update_sample_status($link,$_POST['sample_id'],'sample_received');
+	showww_sid_button_release_status($link,$_POST['sample_id'],'');
+	xxx_edit_sample($link,$_POST['sample_id']);
+}
+
+if($_POST['action']=='sample_prepared')
+{
+	//echo 'analysis_started';
+	update_sample_status($link,$_POST['sample_id'],'sample_prepared');
+	showww_sid_button_release_status($link,$_POST['sample_id'],'');
+	xxx_edit_sample($link,$_POST['sample_id']);
+}
+
+if($_POST['action']=='analysis_started')
+{
+	//echo 'analysis_started';
+	update_sample_status($link,$_POST['sample_id'],'analysis_started');
+	showww_sid_button_release_status($link,$_POST['sample_id'],'');
+	xxx_edit_sample($link,$_POST['sample_id']);
+}
+
 
 if($_POST['action']=='edit_general')
 {
@@ -32,10 +69,9 @@ if($_POST['action']=='delete')
 }
 if($_POST['action']=='insert')
 {
-	add_new_examination_and_profile($link,$_POST['sample_id'],
-											$_POST['list_of_selected_examination'],
-											$_POST['list_of_selected_profile'],
-											$_POST['list_of_selected_super_profile']);
+	//echo 'new examination insertion required';
+	xxx_save_insert_specific_for_edit($link,$_POST['selected_examination_list'],$_POST['sample_id']);
+	
 	showww_sid_button_release_status($link,$_POST['sample_id'],'');
 
 	xxx_edit_sample($link,$_POST['sample_id']);
@@ -107,6 +143,22 @@ if($_POST['action']=='save_primary_result')
 	xxx_edit_sample($link,$_POST['sample_id']);
     
 }
+
+
+	echo '</div>';
+	echo '<div>';
+
+$request_sql="select * from examination order by request_route,name";
+xxx_get_data_specific_for_edit($link,$request_sql,$_POST['sample_id']);
+echo '<div>
+			<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
+			echo '	<div id="status-window" 
+						class="border border-success">status:
+					</div>
+		</div>';
+		
+echo '</div>';
+
 //////////////user code ends////////////////
 tail();
 
@@ -228,7 +280,70 @@ function insert_primary_result($link,$sample_id,$examination_id,$ex_result,$uniq
 		}				
 	}
 }
+
+
+
+function xxx_get_data_specific_for_edit($link,$sql,$sample_id)
+{
+	
+	echo '<form method=post class="bg-light jumbotron" enctype="multipart/form-data">';
+	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
+	echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';
+	echo '<button type=submit class="btn btn-primary form-control" name=action value=insert>Save</button>';
+	
+	echo '<div class="two_column_one_by_two">';
+		echo '<div class="border">';
+
+		echo '</div>';
+		echo '<div>';
+	
+			//echo '<button class="btn btn-sm btn-outline-success " type=button id=my_lft onclick="select_super_profile(this,\'selected_examination_list\') " data-status="off" data-ex_list="1002,1031,1032,1034,5001">My LFT</button>';
+			xxx_get_examination_data($link,$sql,'id',$multi='no',$size=10);
+		echo '</div>';
+	echo '</div>';
+	
+	echo '<button type=submit class="btn btn-primary form-control" name=action value=insert>Save</button>';
+	echo '</form>';
+}
+
+
+function xxx_save_insert_specific_for_edit($link,$selected_examination_list,$sample_id)
+{
+
+
+////Requested examinations
+	$requested=array_filter(explode(',',$selected_examination_list));
+	//echo '<pre>following examinations are requested:<br>';print_r($requested);echo '</pre>';
+
+	foreach($requested as $ex)
+	{
+		$examination_details=get_one_examination_details($link,$ex);
+		$edit_specification=json_decode($examination_details['edit_specification'],true);
+		$type=isset($edit_specification['type'])?$edit_specification['type']:'';
+		
+		if(
+			$examination_details['sample_requirement']==get_one_ex_result($link,$sample_id,$GLOBALS['sample_requirement'])
+			||
+			$examination_details['sample_requirement']=='None'
+			)
+		{
+			if($type!='blob')
+			{
+				insert_one_examination_without_result($link,$sample_id,$ex,$error='no');
+			}
+			else
+			{
+				insert_one_examination_blob_without_result($link,$sample_id,$ex,$error='no');
+			}
+		}
+		else
+		{
+			echo '<span class="text-danger">examination_id='.$ex.' require '.$examination_details['sample_requirement'].'</span><br>';
+		}
+	}
+}
 //////////////Functions///////////////////////
+
 
 ?>
 

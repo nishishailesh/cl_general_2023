@@ -90,7 +90,8 @@ function get_data_specific($link,$sql,$ex_list)
 //////////////user code ends////////////////
 tail();
 ?>
-<script>
+
+<script>/*
 var selected_examination=[]
 
 
@@ -450,7 +451,7 @@ function select_super_profile(me,list_id)
 	update_sss()
 }
 
-
+*/
 //////////////////////////////////////////
 
 </script>

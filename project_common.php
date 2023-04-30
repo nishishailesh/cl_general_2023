@@ -4497,13 +4497,13 @@ function find_max_sample_id($link,$from,$to)
 	return $ars['next_sample_id'];
 }
 
-function insert_one_examination_without_result($link,$sample_id,$examination_id)
+function insert_one_examination_without_result($link,$sample_id,$examination_id,$error='yes')
 {
 	//This function is used for inserting new examination without result. Target for INSERT_CONTROL
 	$sql='insert into result (sample_id,examination_id)
 			values ("'.$sample_id.'","'.$examination_id.'")';
 	//echo $sql.'(without)<br>';
-	if(!run_query($link,$GLOBALS['database'],$sql))
+	if(!run_query($link,$GLOBALS['database'],$sql,$error))
 	{
 		//echo $sql.'(without)<br>';
 		//echo 'Data not inserted(without)<br>'; 
@@ -4630,12 +4630,12 @@ function update_one_examination_with_result($link,$sample_id,$examination_id,$re
 }
 
 
-function insert_one_examination_blob_without_result($link,$sample_id,$examination_id)
+function insert_one_examination_blob_without_result($link,$sample_id,$examination_id,$error='yes')
 {
 	//Target for INSERT_CONTROL
 	$sql='insert into result_blob (sample_id,examination_id)
 			values ("'.$sample_id.'","'.$examination_id.'")';
-	if(!run_query($link,$GLOBALS['database'],$sql))
+	if(!run_query($link,$GLOBALS['database'],$sql,$error))
 	{	
 		//echo $sql.'(without)<br>';
 		//echo 'Data not inserted(without)<br>'; 
@@ -7379,7 +7379,7 @@ function x_save_insert_specific($link)
 }
 
 
-function showww_sid_button_release_status($link,$sid,$extra_post='')
+function showww_sid_button_release_status($link,$sid,$extra_post='',$uid=0)
 {
 	if(!sample_exist($link,$sid))
 	{
@@ -7433,6 +7433,19 @@ function showww_sid_button_release_status($link,$sid,$extra_post='')
 	$mrd_local=get_one_ex_result($link,$sid,$GLOBALS['mrd']);
 	$location=get_one_ex_result($link,$sid,$GLOBALS['OPD/Ward']);
 	
+	if($uid>0)
+	{
+		$ex_value=get_id_type_examination_result($link,$sid,$uid);
+		$examination_details=get_one_examination_details($link,$uid);
+		$edit_specification=json_decode($examination_details['edit_specification'],true);
+		$prefix=isset($edit_specification['unique_prefix'])?$edit_specification['unique_prefix']:'';
+		//echo '<h1>XXX'.$did.'XXX</h1>';
+		$did=str_pad($prefix.$ex_value,7,'_');
+	}
+	else
+	{
+		 $did=$sid;
+	}
 	
 	echo '<div class="btn-group-vertical m-0 p-0 border border-light print_hide">';
 
@@ -7441,12 +7454,12 @@ function showww_sid_button_release_status($link,$sid,$extra_post='')
 				<button type="button" 
 				style="background-color:'.$GLOBALS['sample_status'][$final_state][2].'" 
 				class="m-0 p-0 btn btn-success btn-block btn-sm dropdown-toggle text-dark" 
-				data-toggle="dropdown">'.$sid.'</button>
+				data-toggle="dropdown">'.$did.'</button>
 				
 				<ul class="dropdown-menu">
 					<li>'.$pid.'</li><li>'.$mrd_local.'</li><li>'.$location.'</li>';
 					if(!requestonly_check($link))
-					{	
+					{
 						get_sample_action($link,$sid,$extra_post);
 					}
 				echo '</ul>
@@ -8691,6 +8704,8 @@ echo '<div>';
 		xxx_tree_to_panel_for_edit($link,$ex_tree,$id_prefix='',$collapse=' collapse ',$sample_id,$compact);
 
 echo '</div>';
+
+
 }
 
 
@@ -9250,5 +9265,6 @@ function xxx_set_unique_id_prev_next_button($link,$sample_id,$examination_id)
 	
 	echo '</div>';
 }
+
 
 ?>

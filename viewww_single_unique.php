@@ -73,6 +73,7 @@ function show_sample_id_for_unique_id($link,$unique_id,$unique_id_value)
 	$sqls='select * from `'.$table.'` where id=\''.$unique_id_value.'\'';
 	//echo '<h3>'.$sqls.'</h3>';
 	$results=run_query($link,$GLOBALS['database'],$sqls);
+	$sample_id_array=array();
 	if(get_row_count($results)<=0)
 	{
 		echo 'no next/previous id '.$unique_id_value.' exist';
@@ -85,12 +86,22 @@ function show_sample_id_for_unique_id($link,$unique_id,$unique_id_value)
 	}
 	while($ar=get_single_row($results))
 	{
-		echo '<div class=jumbotron>';
+		echo '<div class="btn-group" role="group">';
 		showww_sid_button_release_status($link,$ar['sample_id']);
-		xxx_view_sample($link,$ar['sample_id']);
+		//xxx_view_sample($link,$ar['sample_id']);
+		echo '</div>';
+		$sample_id_array[]=$ar['sample_id'];
+	}
+
+	foreach ($sample_id_array as $sample_id)
+	{
+		echo '<div class="border p-3 m-3 border-danger">';
+		//showww_sid_button_release_status($link,$ar['sample_id']);
+		xxx_view_sample($link,$sample_id);
 		echo '</div>';
 	}
 }
+
 
 ?>
 
