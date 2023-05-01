@@ -887,6 +887,25 @@ CREATE TABLE `sample_link` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `sample_status`
+--
+
+DROP TABLE IF EXISTS `sample_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sample_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `priority` decimal(10,3) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `examination` int(11) NOT NULL,
+  `style` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `examination` (`examination`),
+  CONSTRAINT `sample_status_ibfk_2` FOREIGN KEY (`examination`) REFERENCES `examination` (`examination_id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `schedule`
 --
 
@@ -986,7 +1005,7 @@ CREATE TABLE `ward_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -998,4 +1017,4 @@ CREATE TABLE `ward_id` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-01  0:05:01
+-- Dump completed on 2023-05-02  1:30:41

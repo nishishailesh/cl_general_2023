@@ -233,7 +233,15 @@ function main_menu($link)
 					xxx_make_view_menu($link);
 				echo '</div>
 			</div>
-		</div>		
+		</div>
+		<div class="dropdown m-0 p-0">
+			<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Manage Status</button>
+			<div class="dropdown-menu m-0 p-0 ">
+				<div class="btn-group-vertical d-block">
+					<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_start.php type=submit name=action value="view">Status</button>'; 
+				echo '</div>
+			</div>
+		</div>			
 	</div>
 
 	</form>';		

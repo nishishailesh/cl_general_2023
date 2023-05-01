@@ -14,7 +14,7 @@ main_menu($link);
 
 echo '<div class="two_column_two_by_one">';
 
-	echo '<div>';
+echo '<div>';
 
 
 if($_POST['action']=='sample_collected')
@@ -145,10 +145,11 @@ if($_POST['action']=='save_primary_result')
 }
 
 
-	echo '</div>';
-	echo '<div>';
+echo '</div>';
+echo '<div>';
 
 $request_sql="select * from examination order by request_route,name";
+echo '<h3 class="bg-warning">Add new examinations</h3>';
 xxx_get_data_specific_for_edit($link,$request_sql,$_POST['sample_id']);
 echo '<div>
 			<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';

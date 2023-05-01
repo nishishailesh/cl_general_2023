@@ -81,7 +81,7 @@ function show_sample_id_for_unique_id($link,$unique_id,$unique_id_value)
 	}
 	else
 	{
-				echo '<h5 class="bg-warning" >Following '.get_row_count($results).' is/are  samples with the required condition</h5>';
+				echo '<h5 class="bg-warning print_hide" >Following '.get_row_count($results).' is/are  samples with the required condition</h5>';
 
 	}
 	while($ar=get_single_row($results))
