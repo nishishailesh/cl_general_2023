@@ -38,10 +38,8 @@ echo '<pre>';print_r($_POST);echo '</pre>';
 
 function get_dbid($link,$examination_id)
 {
-
 		$ex_name='sample_id';
 
-		
 	echo '<form method=post action=viewww_from_to_opd.php>';
 	echo '<input type=hidden size=13 id=from name=examination_id value=\''.$examination_id.'\' class="form-control text-danger"\>';
 
