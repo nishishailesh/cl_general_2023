@@ -14,24 +14,25 @@ $sql='select distinct priority from `sample_status` order by priority';
 $result=run_query($link,$GLOBALS['database'],$sql);
 
 echo '<div>';
-
-	while($ar=get_single_row($result))
-	{
-		echo '<div class="d-inline-block align-top m-1">';
-			$sql_b='select * from `sample_status` where priority=\''.$ar['priority'].'\'';
-			$result_b=run_query($link,$GLOBALS['database'],$sql_b);
-			while($ar_b=get_single_row($result_b))
-			{	
-			echo '<div class="d-block">';
-			echo '<button class="btn  w-100 btn-primary btn-rounded-right p-1 m-1 btn-sm"
-						style="	border:solid black 1px;padding:3px;  
-								border-top-right-radius: 25px; 
-								border-bottom-right-radius: 25px;">'.$ar_b['name'].'
-					</button>';
-			echo '</div>';
-			}
+$prev=-1;
+while($ar=get_single_row($result))
+{
+	echo '<div class="d-inline-block align-top m-1">';
+		$sql_b='select * from `sample_status` where priority=\''.$ar['priority'].'\'';
+		$result_b=run_query($link,$GLOBALS['database'],$sql_b);
+		while($ar_b=get_single_row($result_b))
+		{	
+		echo '<div class="d-block">';
+		echo '<button class="btn  w-100 btn-primary btn-rounded-right p-1 m-1 btn-sm"
+					style="	border:solid black 1px;padding:3px;  
+							border-top-right-radius: 25px; 
+							border-bottom-right-radius: 25px;">'.$ar_b['name'].'
+				</button>';
 		echo '</div>';
-	}
+		}
+	echo '</div>';
+
+}
 echo '</div>';
 
 xxx_make_unique_id_option($link);
@@ -40,7 +41,7 @@ echo '<div id=monitor>Wait for update of recent sample status</div>';
 
 //////////////user code ends////////////////
 tail();
-//echo '<pre>start:post';print_r($_POST);echo '</pre>';
+echo '<pre>start:post';print_r($_POST);echo '</pre>';
 //echo '<pre>start:session';print_r($_SESSION);echo '</pre>';
 
 ///////////////////Functions////////////////
@@ -54,23 +55,9 @@ function xxx_make_unique_id_option($link)
 	
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	
-	//echo '<button 
-				//class="btn btn-outline-primary m-0 p-0 " 
-				//formaction=viewww_database_id_from_to.php 
-				//type=submit 
-				//name=action
-				//value=\'get_dbids|sample_id\'>by sample id</button>';
-	
 	echo '<div class="btn-group d-block">';					
 	
 	echo '<form method=post>';
-	
-	echo '<button 
-			class="btn btn-outline-primary m-1 p-1 " 
-			type=submit 
-			name=unique_id
-			value=sample_id>sample_id</button>';
-					
 	while($ar=get_single_row($result))
 	{
 		echo '<button 
@@ -82,8 +69,8 @@ function xxx_make_unique_id_option($link)
 	echo '</div>';
 	echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
 	echo '</form>';
-}
 
+}
 
 ?>
 
@@ -97,6 +84,7 @@ jQuery(document).ready(
 		show_offset=0;
 	}
 );
+
 
 function start()
 {
@@ -115,7 +103,7 @@ function callServer()
 		}
 	};
 	post='unique_id=<?php echo $_POST["unique_id"];?>&session_name=<?php echo $_POST["session_name"];?>&login=<?php echo $_SESSION["login"];?>&password=<?php echo $_SESSION["password"];?>&show_offset='+show_offset;
-	xhttp.open('POST', 'xxx_monitor.php', true);
+	xhttp.open('POST', 'xxx_monitor_button.php', true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(post);	
 	setTimeout(callServer, 10000);

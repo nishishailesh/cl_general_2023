@@ -48,7 +48,7 @@ function head($title='blank')
 				}	
 		  </style>
 		</head>
-		<body>';
+		<body class="p-3">';
 	}
 }
 

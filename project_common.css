@@ -237,7 +237,7 @@
 
 *
 {
-	word-wrap: break-word;
+	word-wrap: break-all;
 	overflow: visible;
 	overflow-wrap: anywhere;
 }

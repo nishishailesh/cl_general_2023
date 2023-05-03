@@ -238,7 +238,8 @@ function main_menu($link)
 			<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Manage Status</button>
 			<div class="dropdown-menu m-0 p-0 ">
 				<div class="btn-group-vertical d-block">
-					<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_start.php type=submit name=action value="view">Status</button>'; 
+					<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_start.php type=submit name=action value="view">Status-1</button>
+					<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_start_button.php type=submit name=action value="view">Status-2</button>'; 
 				echo '</div>
 			</div>
 		</div>			
@@ -2043,6 +2044,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	}
 	elseif($type=='datetime-local')
 	{
+		$default=strftime("%Y-%m-%d %H:%M");
 		$step=isset($edit_specification['step'])?$edit_specification['step']:1;
 		//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
@@ -2067,6 +2069,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
 					if($frill){get_primary_result($link,$sample_id,$examination_id);}
+					show_source_button($element_id,$default);
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
