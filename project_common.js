@@ -383,7 +383,8 @@ function expand_all(me)
 	{
 		me.setAttribute('data-status','on')
 		me.innerHTML="<h4>&uarr;&uarr;&uarr;</h4>"
-		ul = document.getElementsByTagName("html")[0]; 
+		//ul = document.getElementsByTagName("html")[0]; 
+		ul = document.getElementById("get_examination_data"); 
 		ul.childNodes.forEach(go_down_tree_for_expand);
 		$(".my-toggle").html("&uarr;")
 		$(".my-toggle").attr("data-status","on")
@@ -393,7 +394,8 @@ function expand_all(me)
 	{
 		me.setAttribute('data-status','off')
 		me.innerHTML="<h4>&darr;&darr;&darr;</h4>"
-		ul = document.getElementsByTagName("html")[0]; 
+		//ul = document.getElementsByTagName("html")[0]; 
+		ul = document.getElementById("get_examination_data"); 
 		ul.childNodes.forEach(go_down_tree_for_collapse);
 		$(".my-toggle").html("&darr;")
 		$(".my-toggle").attr("data-status","off")

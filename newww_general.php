@@ -41,7 +41,7 @@ echo '<div class="two_column_nine">';
 			foreach ($all_samples as $sample_id)
 			{
 					showww_sid_button_release_status($link,$sample_id,'');
-					//xxx_view_sample($link,$sample_id);
+					xxx_view_sample($link,$sample_id);
 			}
 		}
 

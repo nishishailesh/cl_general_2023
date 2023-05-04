@@ -292,17 +292,9 @@ function xxx_get_data_specific_for_edit($link,$sql,$sample_id)
 	echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';
 	echo '<button type=submit class="btn btn-primary form-control" name=action value=insert>Save</button>';
 	
-	echo '<div class="two_column_one_by_two">';
-		echo '<div class="border">';
-
-		echo '</div>';
 		echo '<div>';
-	
-			//echo '<button class="btn btn-sm btn-outline-success " type=button id=my_lft onclick="select_super_profile(this,\'selected_examination_list\') " data-status="off" data-ex_list="1002,1031,1032,1034,5001">My LFT</button>';
-			xxx_get_examination_data($link,$sql,'id',$multi='no',$size=10);
+			xxx_get_examination_data($link,$sql);
 		echo '</div>';
-	echo '</div>';
-	
 	echo '<button type=submit class="btn btn-primary form-control" name=action value=insert>Save</button>';
 	echo '</form>';
 }
@@ -330,17 +322,31 @@ function xxx_save_insert_specific_for_edit($link,$selected_examination_list,$sam
 		{
 			if($type!='blob')
 			{
-				insert_one_examination_without_result($link,$sample_id,$ex,$error='no');
+				if(in_array($type,['id_multi_sample','id_single_sample']))
+				{
+					//echo 'hu';
+					update_id_type_examination_for_sample_array($link,array($sample_id),$ex,'');
+					insert_one_examination_without_result($link,$sample_id,$ex,$error='no');
+					//echo 'hbu';
+				}
+				else
+				{
+					//echo 'ggg';
+					insert_one_examination_without_result($link,$sample_id,$ex,$error='no');
+				}
 			}
 			else
 			{
-				insert_one_examination_blob_without_result($link,$sample_id,$ex,$error='no');
+					insert_one_examination_blob_without_result($link,$sample_id,$ex,$error='no');
 			}
 		}
 		else
 		{
 			echo '<span class="text-danger">examination_id='.$ex.' require '.$examination_details['sample_requirement'].'</span><br>';
 		}
+		
+		
+			
 	}
 }
 //////////////Functions///////////////////////

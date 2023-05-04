@@ -29,25 +29,7 @@ if(!isset($_SESSION['password']) && !isset($_POST['password']))
 	exit(0);
 }
 
-echo '
-<style>
 
-.two_column 
-{
-  display: grid;
-  grid-template-columns: auto auto;
-}
-
-.ten_column 
-{
-  display: grid;
-  grid-template-columns: repeat(20 , 1fr);
-  grid-template-rows: repeat(10, 1fr);
-  justify-items: start;
-  
-}
-</style>
-';
 
 $max_unique_id=xxx_find_max_unique_id($link,$_POST['unique_id']);
 
@@ -62,12 +44,15 @@ $sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-20
 $result=run_query($link,$GLOBALS['database'],$sql);
 
 $extra_post='<input type=hidden name=examination_id value=\''.$_POST['unique_id'].'\'>';
-echo '<div class="ten_column">';
+echo '<div class="monitor_grid">';
 while($ar=get_single_row($result))
 {
-	//echo '<div class="btn-group-vertical m-0 p-0 rounded">';
-	showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$_POST['unique_id']);					
-	//echo '</div>';
+	echo '<div style="grid-area: a'.(str_pad(get_id_type_examination_result($link,$ar['sample_id'],$_POST['unique_id'])%200,3,'0',STR_PAD_LEFT)).';">';
+	//echo str_pad(get_id_type_examination_result($link,$ar['sample_id'],$_POST['unique_id'])%200,3,'0',STR_PAD_LEFT);
+	echo '<div>';
+	showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$_POST['unique_id']);	
+	echo '</div>';				
+	echo '</div>';
 }
 echo '</div>';
 //echo '<pre>monitor:post';print_r($_POST);echo '</pre>';

@@ -18,7 +18,7 @@ if($_POST['action']=='copy_sample_id')
 }
 else if($_POST['action']=='copy_type_selected')
 {
-	copy_sample($link,$_POST['sample_id'],$_POST['copy_type_id']);
+	xxx_copy_sample($link,$_POST['sample_id'],$_POST['copy_type_id']);
 }
 
 //////////////user code ends////////////////
@@ -59,7 +59,7 @@ function show_copy_type_button($sample_id,$ar)
 	echo '</form></div>';
 }
 
-function copy_sample($link,$sample_id,$copy_type_id)
+function xxx_copy_sample($link,$sample_id,$copy_type_id)
 {
 	$old=get_result_of_sample_in_array($link,$sample_id);
 	//echo '<pre>';print_r($old);echo '</pre>';
@@ -72,8 +72,10 @@ function copy_sample($link,$sample_id,$copy_type_id)
 	//echo '<pre>';echo($ar['add_ex_with_result']);echo '</pre>';
 	$add_ex_with_result=json_decode($ar['add_ex_with_result'],true);
 	//echo '<pre>--->';print_r($add_ex_with_result);echo '</pre>';
-		
-	$sample_id_array=save_insert_specific_with_parameters($link,$ar['keep_ex_list'].','.$ar['add_ex_list']);
+
+	$sample_id_array=xxx_save_insert_specific($link,$ar['keep_ex_list'].','.$ar['add_ex_list']);
+	print_r($sample_id_array);
+	return;
 	
 	if(count($sample_id_array)==0){echo '<h3>No sample required // Nothing to be done</h3>'; return;}
 	foreach($sample_id_array as $sample_id)

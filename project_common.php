@@ -4517,7 +4517,7 @@ function insert_one_examination_without_result($link,$sample_id,$examination_id,
 	if(!run_query($link,$GLOBALS['database'],$sql,$error))
 	{
 		//echo $sql.'(without)<br>';
-		//echo 'Data not inserted(without)<br>'; 
+		echo '<p class="text-danger">Data Exist? Data not inserted</p>'; 
 		return false;
 	}	else{return true;}
 }
@@ -4582,9 +4582,9 @@ function update_id_type_examination_for_sample_array($link,$sample_id_array,$exa
 		{
 			$sqli='insert into `'.$edit_specification['table'] .'` values ("'.$next_id.'","'.$sid.'")';
 			//echo $sqli.'<br>';
-			if(!$resulti=run_query($link,$GLOBALS['database'],$sqli))
+			if(!$resulti=run_query($link,$GLOBALS['database'],$sqli,$error='no'))
 			{
-				echo '<p>Data not updated</p>';
+				echo '<p class="text-danger">func update_id_type...() Record Exist? Data not inserted</p>';
 			}
 		}
 	}
@@ -4595,9 +4595,9 @@ function update_id_type_examination_for_sample_array($link,$sample_id_array,$exa
 		{
 			$sqli='insert into `'.$edit_specification['table'] .'` (sample_id) values ("'.$sid.'")';
 			//echo $sqli.'<br>';
-			if(!$resulti=run_query($link,$GLOBALS['database'],$sqli))
+			if(!$resulti=run_query($link,$GLOBALS['database'],$sqli,$error='no'))
 			{
-				echo '<p>Data not updated</p>';
+				echo '<p class="text-danger">func update_id_type...() Record Exist? Data not inserted</p>';
 			}
 			else
 			{
@@ -8463,18 +8463,17 @@ function viewww_sample_compact($link,$sample_id)
 }
 
 ///////////////////////ex all////////////
-function xxx_get_examination_data($link,$sql,$pk_name,$multi='no',$size=8)
+function xxx_get_examination_data($link,$sql)
 {
 	echo '<button class="btn btn-success " data-status=off type=button id=ex_all_expand onclick="expand_all(this)"><h4>&darr;&darr;&darr;</h4></button>';
 	//echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
 	$tree=xxx_make_examination_tree($link,$sql,'request_route');
 	//tree_to_div($tree);
-	echo '<ul style="list-style-type: none">';
+	echo '<ul id="get_examination_data" style="list-style-type: none">';
 	xxx_tree_to_panel($link,$tree,'',' collapse ');
 	echo '</ul>';
 	echo '<input type=text readonly class="w-100" name=selected_examination_list type=text id=selected_examination_list>';
 	//tree_to_table($link,$tree,'',' show ');
-
 }
 
 function xxx_make_examination_tree($link,$sql,$route_field)
@@ -8712,7 +8711,8 @@ echo '<div>';
 
 		echo '</div>';	
 
-		xxx_tree_to_panel_for_edit($link,$ex_tree,$id_prefix='',$collapse=' collapse ',$sample_id,$compact);
+		//prefix x_ is just to make sure it is not used
+		xxx_tree_to_panel_for_edit($link,$ex_tree,$id_prefix='x_',$collapse=' collapse ',$sample_id,$compact);
 
 echo '</div>';
 
@@ -8818,14 +8818,9 @@ echo '</div>';
 
 function xxx_save_insert_specific($link,$selected_examination_list)
 {
-
-
 ////Requested examinations
 	$requested=array_filter(explode(',',$selected_examination_list));
 	//echo '<pre>following examinations are requested:<br>';print_r($requested);echo '</pre>';
-
-
-
 
 ////filled examinations
 
@@ -8882,7 +8877,7 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 	//echo '<pre>following samples ids are alloted:<br>';print_r($sample_id_array);echo '</pre>';
 	
 ////Display Properly with sample ID and container types and barcode buttons
-	show_sample_required($sample_id_array);
+	xxx_show_sample_required($sample_id_array);
 
 ////insert examinations////////////////////////////////////////////
 
@@ -8892,6 +8887,18 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 	{
 		foreach($sample_requirement_array['None'] as $ex)
 		{
+			$examination_details=get_one_examination_details($link,$ex);
+			$edit_specification=json_decode($examination_details['edit_specification'],true);
+			$type=isset($edit_specification['type'])?$edit_specification['type']:'';
+
+
+			if(in_array($type,['id_multi_sample','id_single_sample']))
+			{
+				update_id_type_examination_for_sample_array($link,$sample_id_array,$ex,'');
+				//insertion in result will be done below
+				//insert_one_examination_without_result($link,$sid,$ex);
+			}
+
 			foreach($sample_id_array as $sid)
 			{
 				if($ex==$GLOBALS['sample_requirement'])
@@ -8900,16 +8907,22 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 				}
 				else
 				{
-					$examination_details=get_one_examination_details($link,$ex);
-					$edit_specification=json_decode($examination_details['edit_specification'],true);
-					$type=isset($edit_specification['type'])?$edit_specification['type']:'';
 					if($type!='blob')
 					{
-						insert_one_examination_without_result($link,$sid,$ex);
+						if(in_array($type,['id_multi_sample','id_single_sample']))
+						{
+							//update in unique tables already done above. Now just insert placeholder
+							//update_id_type_examination_for_sample_array($link,$sample_id_array,$ex,'');
+							insert_one_examination_without_result($link,$sid,$ex,$error='no');
+						}
+						else
+						{
+							insert_one_examination_without_result($link,$sid,$ex,$error='no');
+						}
 					}
 					else
 					{
-						insert_one_examination_blob_without_result($link,$sid,$ex);
+							insert_one_examination_blob_without_result($link,$sid,$ex);
 					}
 				}
 			}
@@ -8932,9 +8945,6 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 				{
 					insert_one_examination_without_result($link,$sample_id_array[$stype],$ex);
 				}
-				
-				
-				
 				else
 				{
 					insert_one_examination_blob_without_result($link,$sample_id_array[$stype],$ex);
@@ -8969,7 +8979,8 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 				
 				if(in_array($type,['id_multi_sample','id_single_sample']))
 				{
-						update_id_type_examination_for_sample_array($link,$sample_id_array,$ex_id,$v);
+					//already inserted and update automatically at //1// 
+					//update_id_type_examination_for_sample_array($link,$sample_id_array,$ex_id,$v);
 				}
 				
 				
@@ -9278,4 +9289,15 @@ function xxx_set_unique_id_prev_next_button($link,$sample_id,$examination_id)
 }
 
 
+function xxx_show_sample_required($sar)
+{
+	//print_r(array_values($sar));
+	echo '<h5 class="text-dark d-inline  ">Required Samples with alloted Sample ID are as follows</h5>';
+	//sample_id_barcode_button_array(array_values($sar));
+
+	foreach($sar as $k=>$v)
+	{
+		echo '<h5 ><span class="text-success">'.$k.'</span>:<span class="text-primary">'.$v.'</span></h5>';
+	}
+}
 ?>
