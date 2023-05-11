@@ -98,7 +98,6 @@ else if($_POST['unique_id']=='sample_id')
 	$extra_post='<input type=hidden name=examination_id value=sample_id>';
 }
 
-
 echo '<div class="ten_column">';
 
 while($ar=get_single_row($result))

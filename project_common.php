@@ -2068,8 +2068,11 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 						value=\''.$result.'\'>';
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
+				if($readonly!='readonly')
+				{
 					if($frill){get_primary_result($link,$sample_id,$examination_id);}
 					show_source_button($element_id,$default);
+				}
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
@@ -4567,6 +4570,7 @@ function update_id_type_examination_for_sample_array($link,$sample_id_array,$exa
 	$examination_details=get_one_examination_details($link,$examination_id);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	$type=isset($edit_specification['type'])?$edit_specification['type']:'';
+	$minimum=isset($edit_specification['minimum'])?$edit_specification['minimum']:0;
 	//echo $type.'<br>';
 	if($type=='id_multi_sample')
 	{
@@ -4576,7 +4580,7 @@ function update_id_type_examination_for_sample_array($link,$sample_id_array,$exa
 		//echo '<h3>'.$sqls.'</h3>';
 		$results=run_query($link,$GLOBALS['database'],$sqls);
 		$ars=get_single_row($results);
-		$next_id=$ars['max_id']+1;
+		$next_id=max($ars['max_id'],$minimum)+1;
 		
 		foreach($sample_id_array as $sid)
 		{
@@ -7457,29 +7461,33 @@ function showww_sid_button_release_status($link,$sid,$extra_post='',$uid=0)
 	{
 		 $did=$sid;
 	}
+
+	$final_state=xxx_get_sample_action_last($link,$sid);
+	$bgcolor=isset($final_state['color'])?$final_state['color']:'#FFFFFF';
 	
 	echo '<div class="btn-group-vertical m-0 p-0 border border-light print_hide">';
-
-
 		echo '<div class="btn-group d-inline-block">
 				<button type="button" 
-				style="background-color:'.$GLOBALS['sample_status'][$final_state][2].'" 
+				style="background-color:'.$bgcolor.'" 
 				class="m-0 p-0 btn btn-success btn-block btn-sm dropdown-toggle text-dark" 
 				data-toggle="dropdown">'.$did.'</button>
 				
-				<ul class="dropdown-menu">
-					<li>'.$pid.'</li><li>'.$mrd_local.'</li><li>'.$location.'</li>';
-					if(!requestonly_check($link))
-					{
-						get_sample_action($link,$sid,$extra_post);
-					}
-				echo '</ul>
+				<div class="dropdown-menu">
+					<div>'.$pid.'</div><div>'.$mrd_local.'</div><div>'.$location.'</div>';
+					echo '<div>';
+						if(!requestonly_check($link))
+						{
+							//get_sample_action($link,$sid,$extra_post);
+							xxx_get_sample_action($link,$sid,$extra_post);
+						}
+					echo '</div>
+				</div>
 			</div>';
 
 	
 		xxx_sample_id_view_button(
 			$sid,
-			'target=_blank style="background-color:'.$GLOBALS['sample_status'][$final_state][2].'" ',
+			'target=_blank style="background-color:'.$bgcolor.'" ',
 			colorize_eq_str(get_equipment_str($link,$sid))
 			);
 	echo '</div>';
@@ -9014,11 +9022,11 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 
 
 
-function show_id_range_options($link,$extra='')
+function show_id_range_options($link,$extra='',$default='')
 {
 	//echo 'id_range_dropdown:';
 	$sql='select distinct concat(lowest_id,"-",highest_id) as id_range from sample_id_strategy where lowest_id>0';
-	mk_select_from_sql($link,$sql,'id_range','id_range','id_range',$disabled='',$default=$_SESSION['id_range'],$blank='no',$extra);
+	mk_select_from_sql($link,$sql,'id_range','id_range','id_range',$disabled='',$default,$blank='no',$extra);
 }
 
 
@@ -9300,4 +9308,68 @@ function xxx_show_sample_required($sar)
 		echo '<h5 ><span class="text-success">'.$k.'</span>:<span class="text-primary">'.$v.'</span></h5>';
 	}
 }
+
+
+function xxx_get_sample_action($link,$sample_id,$extra_post='')
+{
+	echo '<div class="d-inline-block" >';
+			$sql='select distinct priority from `sample_status` order by priority';
+			$result=run_query($link,$GLOBALS['database'],$sql);
+
+				while($ar=get_single_row($result))
+				{
+					echo '<div class="d-block align-top ">';
+						$sql_b='select * from `sample_status` where priority=\''.$ar['priority'].'\'';
+						$result_b=run_query($link,$GLOBALS['database'],$sql_b);
+						while($ar_b=get_single_row($result_b))
+						{	
+							$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);
+							echo '<div class="d-block">';
+								echo '<form method=post>';
+											echo '<button class="btn  text-left btn-light btn-sm d-block"
+												name=action value=set_sample_status
+													style="	border:solid black 0.3px;padding:1px;  
+															background-color:'.$ar_b['color'].'; 
+															">'.$ar_b['name'].'-'.$val.'
+											</button>';
+											echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+											echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';
+											echo '<input type=hidden name=status_examination_id value=\''.$ar_b['examination_id'].'\'>';
+											echo $extra_post;
+								echo '</form>';
+							echo '</div>';
+						}
+					echo '</div>';
+				}
+
+
+	echo '</div>';	
+}
+
+
+
+function xxx_get_sample_action_last($link,$sample_id)
+{
+	$sql='select  * 
+			from `sample_status` s,result r 
+			
+			where 
+			sample_id=\''.$sample_id.'\' 
+			and 
+			s.examination_id=r.examination_id
+			and
+			length(r.result)>0
+			
+			order by s.priority desc';
+	
+	//echo $sql;
+	//return;		
+	$result=run_query($link,$GLOBALS['database'],$sql);
+
+	$ar=get_single_row($result); //just take first
+	return $ar;		
+}
+
+
+
 ?>
