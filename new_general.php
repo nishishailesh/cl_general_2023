@@ -27,6 +27,12 @@ elseif($_POST['action']=='insert')
 	}
 }
 
+	echo '<div>
+				<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
+				echo '	<div id="status-window" 
+							class="border border-success">status:
+						</div>
+			</div>';
 
 function get_data_specific($link)
 {

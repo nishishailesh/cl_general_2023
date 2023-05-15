@@ -461,7 +461,7 @@ var selected_examination=[]
 /////for tree
 
 //when clicked on a button
-function select_examination_js(me,ex_id,list_id)
+function xxx_select_examination_js(me,ex_id,list_id)
 {
 	if(selected_examination.indexOf(ex_id) !== -1)
 	{

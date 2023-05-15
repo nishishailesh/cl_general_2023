@@ -63,6 +63,9 @@ function get_data_specific($link,$ex_list)
 }
 
 
+
+echo '</div>';
+echo '<div id=status-window>status</div>';
 //////////////user code ends////////////////
 tail();
 

@@ -499,6 +499,18 @@ function show_all_buttons_for_sample($link,$sample_id)
 
 function sample_exist($link,$sample_id)
 {
+	$sql='select  * from sample_link where sample_id=\''.$sample_id.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	if(get_row_count($result)==1)
+	{
+		return True;
+	}
+	else
+	{
+		return false;
+	}
+	
+	/*	
 	$ex_list=get_result_of_sample_in_array($link,$sample_id);
 	//print_r($ex_list);
 	$rblob=get_result_blob_of_sample_in_array($link,$sample_id);
@@ -511,6 +523,7 @@ function sample_exist($link,$sample_id)
 		return true;
 	}	
 	return false;
+	*/
 }
 
 
@@ -2920,7 +2933,6 @@ function get_examination_data($link)
 									{
 										my_on_off_ex($ex_data['name'].'<br>'.$sr.'<br>'.$method,$ex_data['examination_id']);
 									}
-
 								}
 							echo '</div>';
 
@@ -4552,7 +4564,7 @@ function insert_update_one_examination_with_result($link,$sample_id,$examination
 			recording_time=now() ,
 			recorded_by=\''.$_SESSION['login'].'\''; 
 			
-	//echo $sql.'(without)<br>';
+	//echo $sql.'(with)<br>';
 	if(!run_query($link,$GLOBALS['database'],$sql))
 	{
 		//echo $sql.'(without)<br>';
@@ -7774,7 +7786,7 @@ function display_one_examination($link,$ex_id,$prefix)
 				data-examination_name=\''.$ex_data['name'].'\'
 				data-status=off
 				class="bg-warning ex_btn" 
-				onclick="select_examination_js(this,\''.$e.'\', \'selected_examination_list\')" 
+				onclick="xxx_select_examination_js(this,\''.$e.'\', \'selected_examination_list\')" 
 				><pre>'.str_pad(substr($ex_data['name'],0,20),20,'.').'<br>'.str_pad(substr($sr,0,20),20,'.').'<br>'.str_pad(substr($method,0,20),20,'.').'</pre></button>';
 	}
 }
@@ -9369,7 +9381,5 @@ function xxx_get_sample_action_last($link,$sample_id)
 	$ar=get_single_row($result); //just take first
 	return $ar;		
 }
-
-
 
 ?>
