@@ -57,12 +57,6 @@ while($ar=get_single_row($result))
 //$json='['.implode(",",$data).']';
 $json=implode(",",$data);
 //echo $json;
-function get_user_info($link,$user)
-{
-	$sql='select * from user where user=\''.$user.'\'';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	return get_single_row($result);
-}
 
 
 function echo_png_from_python($png_bytes)

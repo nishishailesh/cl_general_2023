@@ -110,12 +110,7 @@ echo '</div>';
 //echo '<pre>monitor:post';print_r($_POST);echo '</pre>';
 //echo '<pre>monitor:session';print_r($_SESSION);echo '</pre>';
 
-function get_user_info($link,$user)
-{
-	$sql='select * from user where user=\''.$user.'\'';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	return get_single_row($result);
-}
+
 
 function showww_sid_button_release_status_horizontal($link,$sid,$extra_post='',$uid=0,$ex_list=array())
 {

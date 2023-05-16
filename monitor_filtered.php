@@ -176,13 +176,6 @@ echo '<pre>monitor:session';print_r($_SESSION);echo '</pre>';
 //echo '<pre>monitor:post';print_r($_POST);echo '</pre>';
 //echo '<pre>';print_r($GLOBALS['sample_status']);echo '</pre>';
 
-function get_user_info($link,$user)
-{
-	$sql='select * from user where user=\''.$user.'\'';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	return get_single_row($result);
-}
-
 function get_sample_status($link,$sample_id)
 {
 	$final_status=0;

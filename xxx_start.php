@@ -1,7 +1,7 @@
 <?php
-require_once 'base/verify_login.php';
 	////////User code below/////////////////////
 require_once 'project_common.php';
+require_once 'base/verify_login.php';
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //echo '<div>';
 main_menu($link); 

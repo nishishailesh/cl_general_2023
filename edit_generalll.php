@@ -146,18 +146,24 @@ if($_POST['action']=='save_primary_result')
 
 
 echo '</div>';
-echo '<div>';
 
-$request_sql="select * from examination order by request_route,name";
-echo '<h3 class="bg-warning">Add new examinations</h3>';
-xxx_get_data_specific_for_edit($link,$request_sql,$_POST['sample_id']);
-echo '<div>
+echo '<div>';
+	$request_sql="select * from examination order by request_route,name";
+	echo '<h3 class="bg-warning">Add new examinations</h3>';
+	xxx_get_data_specific_for_edit($link,$request_sql,$_POST['sample_id']);
+	echo '<div>
 			<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
 			echo '	<div id="status-window" 
 						class="border border-success">status:
 					</div>
-		</div>';
-		
+			<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Select Examinations</span>';
+			echo '	<div id="status-window" class="border border-success">
+						<input type=text id=my_search_text>
+						<button type=button id=my_search onclick="my_search_test()">search</button>
+						<div id=my_search_result></div>
+					</div>						
+	</div>';
+						
 echo '</div>';
 
 //////////////user code ends////////////////
@@ -287,7 +293,7 @@ function insert_primary_result($link,$sample_id,$examination_id,$ex_result,$uniq
 function xxx_get_data_specific_for_edit($link,$sql,$sample_id)
 {
 	
-	echo '<form method=post class="bg-light jumbotron" enctype="multipart/form-data">';
+	echo '<form method=post class="bg-light" enctype="multipart/form-data">';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';
 	echo '<button type=submit class="btn btn-primary form-control" name=action value=insert>Save</button>';
@@ -353,4 +359,30 @@ function xxx_save_insert_specific_for_edit($link,$selected_examination_list,$sam
 
 
 ?>
+
+<script>
+function my_search_test()
+{
+	search_text=document.getElementById("my_search_text").value;
+	//alert("search="+search_text)
+
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function(){
+		if (this.readyState == 4 && this.status == 200) 
+		{
+			document.getElementById('my_search_result').innerHTML = xhttp.responseText;
+		}
+	};
+
+	post1='search_text='+search_text
+	post2='session_name=<?php echo $_POST["session_name"];?>'
+	post3='login=<?php echo $_SESSION["login"];?>'
+	post4='password=<?php echo $_SESSION["password"];?>'
+	
+	post=post1+'&'+post2+'&'+post3+'&'+post4
+	xhttp.open('POST', 'xxx_search_examination.php', true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(post);	
+}
+</script>
 

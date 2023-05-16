@@ -1,11 +1,12 @@
 <?php
+require_once 'project_common.php';
 require_once 'base/verify_login.php';
 	////////User code below/////////////////////
-require_once 'project_common.php';
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //echo '<div>';
 main_menu($link); 
 $user=get_user_info($link,$_SESSION['login']);
+//print_r($user);
 $auth=explode(',',$user['authorization']);
 
 if(isset($_POST['action']))
@@ -24,6 +25,163 @@ if(isset($_POST['action']))
 		}
 	}
 }
+
+
+
+echo '<style>
+.monitor_grid
+{
+display: grid;
+grid-template-areas:
+';
+	for ($i=1;$i<=200;$i++)
+	{
+		if($i%10==1 && ($i/10)%2==0){echo '\'';}	
+		echo 'a'.str_pad($i,3,0,STR_PAD_LEFT).' ';
+		if($i%10==0 && ($i/10)%2==0){echo '\' ';}
+	}
+echo ';}
+
+.one_cell
+{
+ display:grid;  
+ grid-template-columns:auto auto;
+}
+</style>';
+
+////////for status change display//////////////
+
+
+
+/////////////for status display/////////////
+xxx_make_unique_id_option($link);
+echo '<div id=monitor>write offset(optional, for all ids), write id_range(optional, only for sample_id) and press appropriate id button</div>';
+
+echo '<div class="m-3"><fieldset  ><legend>Change Sample Status</legend>';
+manage_bulk_status_change($link);
+echo '</fieldset></div>';
+
+//////////////user code ends////////////////
+tail();
+//echo '<pre>start:post';print_r($_POST);echo '</pre>';
+//echo '<pre>start:session';print_r($_SESSION);echo '</pre>';
+
+///////////////////Functions////////////////
+function manage_bulk_status_change($link)
+{
+$sql='select distinct priority from `sample_status` order by priority';
+$result=run_query($link,$GLOBALS['database'],$sql);
+
+
+	$show_offset=isset($_POST['show_offset'])?$_POST['show_offset']:0;
+	$unique_id=isset($_POST['unique_id'])?$_POST['unique_id']:'sample_id';
+	$id_range=isset($_POST['id_range'])?$_POST['id_range']:'';
+
+echo '<div>';
+echo '<form method=post id="status_change_form" class="d-inline">';
+	echo '<textarea 
+					readonly 
+					class="d-block w-100" 
+					onfocus="document.getElementById(\'id_for_status_change\').focus()" 
+					name=list_of_id name=list_of_id id=list_of_id  
+					aria-multiline="true">
+			</textarea>';
+			//					style="minimum-height:30px;" 
+
+	while($ar=get_single_row($result))
+	{
+		echo '<div class="d-inline-block align-top m-1">';
+			$sql_b='select * from `sample_status` where priority=\''.$ar['priority'].'\'';
+			$result_b=run_query($link,$GLOBALS['database'],$sql_b);
+			while($ar_b=get_single_row($result_b))
+			{	
+			echo '<div class="d-block">';
+			echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
+						style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
+								border-top-right-radius: 25px; 
+								border-bottom-right-radius: 25px;"
+						name=status_change_examination_id value='.$ar_b['examination_id'].'>'.$ar_b['name'].'
+					</button>';
+			echo '</div>';
+			}
+		echo '</div>';
+	}
+
+	echo '<input type=hidden name=action value=bulk_status_change>';
+	echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+	echo '<input type=hidden name=show_offset value=\''.$show_offset.'\'>';
+	echo '<input type=hidden name=unique_id value=\''.$unique_id.'\'>';
+	echo '<input type=hidden name=id_range value=\''.$id_range.'\'>';
+ 
+echo '</form>';
+echo '<input type=text class="d-block align-top p-1 m-1 " placeholder="scan barcode here" id=id_for_status_change onchange="update_list_of_id(this)">';
+echo '</div>';
+
+}
+
+function xxx_make_unique_id_option($link)
+{
+	$show_offset=isset($_POST['show_offset'])?$_POST['show_offset']:0;
+	$id_range=isset($_POST['id_range'])?$_POST['id_range']:'';
+
+
+	
+
+	
+	$sql="SELECT * from examination
+	where 
+	JSON_EXTRACT(edit_specification, '$.type')='id_single_sample'  or 
+	JSON_EXTRACT(edit_specification, '$.type')='id_multi_sample'";
+	
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	
+	echo '<div class="btn-group d-block">';					
+	
+		echo '<form method=post>';
+		
+			echo '<div class="border border-success m-1 p-0 d-inline-block">
+					<label class="m-0 -p-0 " for=show_offset>offset:</label> <input type=number class="m-0 p-0" id=show_offset name=show_offset step=200 value=\''.$show_offset.'\'>
+			</div>';
+		
+			echo '<div class="border border-success m-1 p-0 d-inline-block">
+				<label class="m-0 -p-0 ">id_range for sample_id:</label>';
+				show_id_range_options($link,$extra='',$default=$id_range);
+			echo '</div>';
+				
+			echo '<button 
+				class="btn btn-outline-primary m-1 p-1 " 
+				type=submit 
+				name=unique_id
+				value=sample_id>sample_id</button>';
+					
+		
+			while($ar=get_single_row($result))
+			{
+				echo '<button 
+							class="btn btn-outline-primary m-1 p-1 " 
+							type=submit 
+							name=unique_id
+							value=\''.$ar['examination_id'].'\'> '.$ar['name'].'</button>';
+			}
+		
+
+		
+		echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+		echo '</form>';
+	echo '</div>';
+
+}
+
+
+/*
+function get_id_to_change_status()
+{
+	echo '<div>';
+	echo '<input type=text class="d-block" id=id_for_status_change onchange="update_list_of_id(this)">';
+	echo '<textarea readonly onfocus="document.getElementById(\'id_for_status_change\').focus()" name=list_of_id name=list_of_id id=list_of_id  style="minimum-height:30px;" aria-multiline="true"></textarea>';
+	echo '</div>';
+}
+*/
 
 function insert_update_one_examination_with_result_using_unique_id($link,$unique_id,$examination_id,$result)
 {
@@ -102,143 +260,6 @@ function my_is_int($string)
 }
 
 
-echo '<style>
-.monitor_grid
-{
-display: grid;
-grid-template-areas:
-';
-	for ($i=1;$i<=200;$i++)
-	{
-		if($i%10==1 && ($i/10)%2==0){echo '\'';}	
-		echo 'a'.str_pad($i,3,0,STR_PAD_LEFT).' ';
-		if($i%10==0 && ($i/10)%2==0){echo '\' ';}
-	}
-echo ';}
-
-.one_cell
-{
- display:grid;  
- grid-template-columns:auto auto;
-}
-</style>';
-
-////////for status change display//////////////
-
-manage_bult_status_change($link);
-
-/////////////for status display/////////////
-xxx_make_unique_id_option($link);
-
-echo '<div id=monitor>write offset(optional, for all ids), write id_range(optional, only for sample_id) and press appropriate id button</div>';
-
-//////////////user code ends////////////////
-tail();
-echo '<pre>start:post';print_r($_POST);echo '</pre>';
-//echo '<pre>start:session';print_r($_SESSION);echo '</pre>';
-
-///////////////////Functions////////////////
-function manage_bult_status_change($link)
-{
-$sql='select distinct priority from `sample_status` order by priority';
-$result=run_query($link,$GLOBALS['database'],$sql);
-
-
-	$show_offset=isset($_POST['show_offset'])?$_POST['show_offset']:0;
-	$unique_id=isset($_POST['unique_id'])?$_POST['unique_id']:'sample_id';
-	$id_range=isset($_POST['id_range'])?$_POST['id_range']:'';
-
-echo '<div>';
-echo '<input type=text class="d-inline align-top p-1 m-1 " id=id_for_status_change onchange="update_list_of_id(this)">';
-echo '<form method=post id="status_change_form" class="d-inline">';
-	echo '<textarea readonly onfocus="document.getElementById(\'id_for_status_change\').focus()" name=list_of_id name=list_of_id id=list_of_id  style="minimum-height:30px;" aria-multiline="true"></textarea>';
-	while($ar=get_single_row($result))
-	{
-		echo '<div class="d-inline-block align-top m-1">';
-			$sql_b='select * from `sample_status` where priority=\''.$ar['priority'].'\'';
-			$result_b=run_query($link,$GLOBALS['database'],$sql_b);
-			while($ar_b=get_single_row($result_b))
-			{	
-			echo '<div class="d-block">';
-			echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
-						style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
-								border-top-right-radius: 25px; 
-								border-bottom-right-radius: 25px;"
-						name=status_change_examination_id value='.$ar_b['examination_id'].'>'.$ar_b['name'].'
-					</button>';
-			echo '</div>';
-			}
-		echo '</div>';
-	}
-
-	echo '<input type=hidden name=action value=bulk_status_change>';
-	echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
-	echo '<input type=hidden name=show_offset value=\''.$show_offset.'\'>';
-	echo '<input type=hidden name=unique_id value=\''.$unique_id.'\'>';
-	echo '<input type=hidden name=id_range value=\''.$id_range.'\'>';
- 
-echo '</form>';
-echo '</div>';
-
-}
-
-function xxx_make_unique_id_option($link)
-{
-	$show_offset=isset($_POST['show_offset'])?$_POST['show_offset']:0;
-	$id_range=isset($_POST['id_range'])?$_POST['id_range']:'';
-	
-	$sql="SELECT * from examination
-	where 
-	JSON_EXTRACT(edit_specification, '$.type')='id_single_sample'  or 
-	JSON_EXTRACT(edit_specification, '$.type')='id_multi_sample'";
-	
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	
-	echo '<div class="btn-group d-block">';					
-	
-	echo '<form method=post>';
-	
-	echo '<button 
-			class="btn btn-outline-primary m-1 p-1 " 
-			type=submit 
-			name=unique_id
-			value=sample_id>sample_id</button>';
-				
-	
-	while($ar=get_single_row($result))
-	{
-		echo '<button 
-					class="btn btn-outline-primary m-1 p-1 " 
-					type=submit 
-					name=unique_id
-					value=\''.$ar['examination_id'].'\'> '.$ar['name'].'</button>';
-	}
-	echo '</div>';
-	
-	echo '<div class="border border-success m-1 p-0 d-inline-block">
-			<label class="m-0 -p-0 " for=show_offset>offset:</label> <input type=number class="m-0 p-0" id=show_offset name=show_offset step=200 value=\''.$show_offset.'\'>
-	</div>';
-	
-	echo '<div class="border border-success m-1 p-0 d-inline-block">
-		<label class="m-0 -p-0 ">id_range for sample_id:</label>';
-	show_id_range_options($link,$extra='',$default=$id_range);
-	echo '</div>';
-	
-	echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
-	echo '</form>';
-
-}
-
-
-
-function get_id_to_change_status()
-{
-	echo '<div>';
-	echo '<input type=text class="d-block" id=id_for_status_change onchange="update_list_of_id(this)">';
-	echo '<textarea readonly onfocus="document.getElementById(\'id_for_status_change\').focus()" name=list_of_id name=list_of_id id=list_of_id  style="minimum-height:30px;" aria-multiline="true"></textarea>';
-	echo '</div>';
-}
-
 ?>
 
 <script>
@@ -303,3 +324,15 @@ function callServer()
 }
 
 </script>
+<style>
+fieldset {
+  border:1px solid;
+}
+
+legend {
+  width:auto;
+  margin-left: 10%;
+}
+
+
+</style>

@@ -196,11 +196,4 @@ function read_new_passoword()
 	';
 }
 
-
-function get_user_info($link,$user)
-{
-	$sql='select * from user where user=\''.$user.'\'';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	return get_single_row($result);
-}
 ?>

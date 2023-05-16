@@ -41,6 +41,17 @@ if($_POST['action']=='Save_TAT_remark')
                                                 );
 }
 
+
+if(isset($_POST['action']))
+{
+	if($_POST['action']=='set_sample_status')
+	{
+		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
+	}
+}
+
+
+
 if($_POST['action']=='sample_collected')
 {
 	//echo 'analysis_started';

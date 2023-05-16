@@ -7149,12 +7149,13 @@ function x_mk_select_from_array_with_description($name, $select_array,$disabled=
 					size=\''.$size.'\'  '.$disabled.'  
 					id=\''.$name.'\' name=\''.$name.'[]\' 
 					onclick="add_to_storage(this,\''.$selected.'\',event)"
-					onkeypress=" 
-					if(event.key==\' \')
-					{
-						//alert(\'space bar pressed\');
-						add_to_storage(this,\''.$selected.'\',event)
-					}"
+					
+					//onkeypress=" 
+					//if(event.key==\' \')
+					//{
+					//	//alert(\'space bar pressed\');
+					//	add_to_storage(this,\''.$selected.'\',event)
+					//}"
 				">';
 
 		echo '<script>
@@ -7206,6 +7207,7 @@ function x_mk_select_from_array_with_description($name, $select_array,$disabled=
 	}
 
 	echo '</select>';
+
 
 	if($multi=='yes')
 	{	
@@ -9382,4 +9384,10 @@ function xxx_get_sample_action_last($link,$sample_id)
 	return $ar;		
 }
 
+function get_user_info($link,$user)
+{
+	$sql='select * from user where user=\''.$user.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	return get_single_row($result);
+}
 ?>
