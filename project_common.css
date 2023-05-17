@@ -241,3 +241,12 @@
 	overflow: visible;
 	overflow-wrap: anywhere;
 }
+
+fieldset {
+  border:1px solid;
+}
+
+legend {
+  width:auto;
+  margin-left: 10%;
+}

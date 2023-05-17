@@ -22,11 +22,11 @@ echo '<h4 id=last_sample_id >last sample_id in range:'.$_SESSION['id_range'].' i
 */
 
 $tok=explode("|",$_POST['action']);
-//print_r($tok);
+print_r($tok);
 
 if($tok[0]=='get_dbids')
 {
-	get_dbid($link,$tok[1]);
+	get_dbid($link,$tok[1],explode(',',$tok[2]));
 }
 
 //////////////user code ends////////////////
@@ -36,7 +36,7 @@ echo '<pre>';print_r($_POST);echo '</pre>';
 
 //////////////Functions///////////////////////
 
-function get_dbid($link,$examination_id)
+function get_dbid($link,$examination_id,$search_list_of_examination_id)
 {
 		$ex_name='sample_id';
 
@@ -58,13 +58,16 @@ function get_dbid($link,$examination_id)
 			
 	echo '</div>';
 
-	get_one_field_for_search($link,1001);
-	get_one_field_for_search($link,1002);
-	get_one_field_for_search($link,1004);
-	get_one_field_for_search($link,1005);
-	get_one_field_for_search($link,1006);
-	get_one_field_for_search($link,1017);
-	get_one_field_for_search($link,1045);
+	foreach($search_list_of_examination_id as $examination_id)
+	{
+		get_one_field_for_search($link,$examination_id);
+		//get_one_field_for_search($link,1002);
+		//get_one_field_for_search($link,1004);
+		//get_one_field_for_search($link,1005);
+		//get_one_field_for_search($link,1006);
+		//get_one_field_for_search($link,1017);
+		//get_one_field_for_search($link,1045);
+	}
 
 
 	echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_summary>View (Summary)</button>';

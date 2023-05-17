@@ -22,11 +22,10 @@ echo '<h4 id=last_sample_id >last sample_id in range:'.$_SESSION['id_range'].' i
 */
 
 $tok=explode("|",$_POST['action']);
-//print_r($tok);
 
 if($tok[0]=='get_dbids')
 {
-	get_dbid($link,$tok[1]);
+	get_dbid($link,$tok[1],explode(',',$tok[2]),explode(',',$tok[3]));
 }
 
 //////////////user code ends////////////////
@@ -36,7 +35,7 @@ tail();
 
 //////////////Functions///////////////////////
 
-function get_dbid($link,$examination_id)
+function get_dbid($link,$examination_id,$search_list_of_examination_id,$range_search_list_of_examination_id)
 {
 	if($examination_id=='sample_id')
 	{
@@ -55,26 +54,24 @@ function get_dbid($link,$examination_id)
 	//	echo '<div>ID Range</div>';
 	//	show_id_range_options($link);
 	//echo '</div>';
+	
+	foreach($search_list_of_examination_id as $examination_id)
+	{
+		get_one_field_for_search($link,$examination_id);
+	}
 
-	echo '<div class="basic_form">';
-		echo '	<label class="my_label text-danger" for="from">From '.$ex_name.'</label>
-				<input type=number size=13 id=from name=from class="form-control text-danger"\>
-				<p class="help"><span class=text-danger>Must be</span> number</p>';
-		echo '	<label class="my_label text-danger" for="to">To '.$ex_name.'</label>
-				<input type=number size=13 id=from name=to class="form-control text-danger"\>
-				<p class="help"><span class=text-danger>Must be</span> number</p>';
-			
-	echo '</div>';
-
-	get_one_field_for_search($link,1001);
-	get_one_field_for_search($link,1002);
-	get_one_field_for_search($link,1004);
-	get_one_field_for_search($link,1005);
-	get_one_field_for_search($link,1006);
-	get_one_field_for_search($link,1017);
-	get_one_field_for_search($link,1045);
-
-
+	foreach($range_search_list_of_examination_id as $examination_id)
+	{
+		if($examination_id=='sample_id')
+		{
+			get_sample_id_for_range_search($link);
+		}
+		else
+		{
+			get_one_field_for_range_search($link,$examination_id);
+		}
+	}
+	
 	echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_summary>View (Summary)</button>';
 	echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_detail>View (Detail)</button>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
@@ -84,16 +81,98 @@ function get_dbid($link,$examination_id)
 
 function get_one_field_for_search($link,$examination_id)
 {
+	$ex_data=get_one_examination_details($link,$examination_id);
+	//echo 'x';print_r($ex_data);echo 'x';
+	if(!is_array($ex_data)){return;}
+	$ex_name=$ex_data['name'];
 
 		echo '<div class="basic_form">';
 			echo '<div class="d-inline p-2">';
+			echo '	<label class="my_label text-danger" for="from">'.$ex_name.'</label>';
 				echo '<input class="float-right" name=\'chk_'.$examination_id.'\' type=checkbox>';
 			echo '</div>';
 			echo '<div class="d-inline-block">';
-				get_one_field_for_insert_no_readonly($link,$examination_id);
+				//get_one_field_for_insert_no_readonly($link,$examination_id);
+				echo '		<input type=text size=13 id=from name=\'__ex__'.$examination_id.'\' class="form-control text-danger"\>';
+
 			echo '</div>';
 		echo '</div>';
 }
+
+function get_one_field_for_range_search($link,$examination_id)
+{
+	$ex_data=get_one_examination_details($link,$examination_id);
+	//echo 'x';print_r($ex_data);echo 'x';
+	if(!is_array($ex_data)){return;}
+	$ex_name=$ex_data['name'];
+
+
+	echo '<fieldset ><legend>'.$ex_name.'</legend>';
+
+	echo '<div class="basic_form">';	
+		echo '<div class="d-inline p-2">';
+			echo '	<label class="my_label text-danger" for="from">From '.$ex_name.'</label>';
+			echo '<input class="float-right" name=\'chk_'.$examination_id.'\' type=checkbox>';
+		echo '</div>';
+		
+		echo '<div class="d-inline p-2">';
+		echo '		<input type=text size=13 id=from  	name=\'__from__'.$examination_id.'\' 	class="form-control text-danger"\>';
+			echo '<input type=hidden 					name=\'__ex__'.$examination_id.'\' 		value=\'\'>';
+
+			//get_one_field_for_insert_no_readonly($link,$examination_id);
+		echo '</div>';		
+	echo '</div>';		
+		
+	echo '<div class="basic_form">';	
+		echo '<div class="d-inline p-2">';
+			echo '	<label class="my_label text-danger" for="to">To '.$ex_name.'</label>';
+		echo '</div>';
+		
+		echo '<div class="d-inline p-2">';
+		echo '		<input type=text size=13 id=from  	name=\'__to__'.$examination_id.'\' 		class="form-control text-danger"\>';
+			//echo '<input type=hidden 					name=\'__ex__'.$examination_id.'\' 		value=\'\'>';
+		echo '</div>';		
+	echo '</div>';
+	echo '</fieldset>';						
+}
+
+
+function get_sample_id_for_range_search($link)
+{
+	$ex_name='sample_id';
+
+
+	echo '<fieldset ><legend>'.$ex_name.'</legend>';
+
+		echo '<div class="basic_form">';
+		echo '<p class="my_label text-danger" >Select sample ID range</p>';	
+		show_id_range_options($link);
+		echo '</div>';
+		
+	echo '<div class="basic_form">';	
+			echo '<div class="d-inline p-2">';
+				echo '	<label class="my_label text-danger" for="from">From '.$ex_name.'</label>';
+				echo '<input class="float-right" name=\'chk_sample_id\' type=checkbox>';
+			echo '</div>';
+		
+			echo '<div class="d-inline p-2">';
+				echo '		<input type=text size=13 id=from  	name=\'__from__sample_id\'	class="form-control text-danger"\>';
+				echo '<input type=hidden 					name=\'__ex__sample_id\'		value=\'\'>';
+		echo '</div>';		
+	echo '</div>';		
+		
+	echo '<div class="basic_form">';	
+		echo '<div class="d-inline p-2">';
+			echo '	<label class="my_label text-danger" for="to">To '.$ex_name.'</label>';
+		echo '</div>';
+		
+		echo '<div class="d-inline p-2">';
+		echo '		<input type=text size=13 id=from  	name=\'__to__sample_id\' 		class="form-control text-danger"\>';
+		echo '</div>';		
+	echo '</div>';
+	echo '</fieldset>';						
+}
+
 
 
 function get_one_field_for_insert_no_readonly($link,$examination_id)
@@ -426,3 +505,15 @@ function get_one_field_for_insert_no_readonly($link,$examination_id)
 
 
 ?>
+<style>
+fieldset {
+  border:1px solid;
+}
+
+legend {
+  width:auto;
+  margin-left: 10%;
+}
+
+
+</style>

@@ -220,7 +220,7 @@ function main_menu($link)
 			<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New-N</button>
 			<div class="dropdown-menu m-0 p-0 ">
 				<div class="btn-group-vertical d-block">
-					<button class="btn btn-outline-primary m-0 p-0 " formaction=newww_general.php type=submit name=action value="newww_general||">Newww</button>';
+					<!--<button class="btn btn-outline-primary m-0 p-0 " formaction=newww_general.php type=submit name=action value="newww_general||">New</button>-->';
 					create_newww_special($link);
 				echo '</div>
 			</div>
@@ -229,7 +229,7 @@ function main_menu($link)
 			<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">View-N</button>
 			<div class="dropdown-menu m-0 p-0 ">
 				<div class="btn-group-vertical d-block">
-					<button class="btn btn-outline-primary m-0 p-0 " formaction=viewww_database_id_from_to.php type=submit name=action value="get_dbids||">by Sample ID(s)</button>'; 
+					<!--<button class="btn btn-outline-primary m-0 p-0 " formaction=viewww_database_id_from_to.php type=submit name=action value="get_dbids||">by Sample ID(s)</button>-->'; 
 					xxx_make_view_menu($link);
 				echo '</div>
 			</div>
@@ -9236,7 +9236,7 @@ function xxx_any_id_barcode_button($sample_id,$label_id,$label)
 	</form></div>';
 }
 
-function xxx_make_view_menu($link)
+function xxx_make_view_menu_old_with_programming_dependancy($link)
 {
 	$sql="SELECT * from examination
 	where 
@@ -9260,6 +9260,23 @@ function xxx_make_view_menu($link)
 					type=submit 
 					name=action
 					value=\'get_dbids|'.$ar['examination_id'].'\'>by '.$ar['name'].'</button>';
+	}
+}
+
+function xxx_make_view_menu($link)
+{
+	$sql="SELECT * from menu_view";
+	
+	$result=run_query($link,$GLOBALS['database'],$sql);
+						
+	while($ar=get_single_row($result))
+	{
+		echo '<button 
+					class="btn btn-outline-primary m-0 p-0 " 
+					formaction=viewww_database_id_from_to_for_unique_id.php 
+					type=submit 
+					name=action
+					value=\'get_dbids|'.$ar['unique_id'].'|'.$ar['additional_search_id'].'|'.$ar['additional_range_search_id'].'\'>'.$ar['caption'].'</button>';
 	}
 }
 

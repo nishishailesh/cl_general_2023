@@ -14,6 +14,7 @@ tnames='
 record_tables
 table_field_specification
 menu_new
+menu_view
 copy_bin_text
 route_priority
 examination

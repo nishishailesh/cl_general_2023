@@ -58,33 +58,45 @@ else
 		//print_r($ex);
 		if($ex[0]=='chk')
 		{
-			//echo '>>>'.$_POST['__ex__'.$ex[1]];
-			if(strlen($_POST['__ex__'.$ex[1]])>0)
+			if(isset($_POST['__from__'.$ex[1]]))
+			{
+				//this is range inquiry
+				$conditions[$ex[1]]=array($_POST['__from__'.$ex[1]],$_POST['__to__'.$ex[1]]);
+			}
+			
+			else
 			{
 				//echo '>>>'.$_POST['__ex__'.$ex[1]];
-				$conditions[$ex[1]]=$_POST['__ex__'.$ex[1]];
+				if(strlen($_POST['__ex__'.$ex[1]])>0)
+				{
+					//echo '>>>'.$_POST['__ex__'.$ex[1]];
+					$conditions[$ex[1]]=$_POST['__ex__'.$ex[1]];
+				}
 			}
+		}
+		else
+		{
+			//un-checked, not interested
 		}
 	}
 }
 
-//echo '<pre>';print_r($conditions);echo '</pre>';
+echo '<pre>';print_r($conditions);echo '</pre>';
 
-
-//update if required
-//if (isset($_POST['action']) && isset($_POST['sample_id']))
-//{
-	//update_sample_status($link,$_POST['sample_id'],$_POST['action']);
-	
-//}
-
-
-
+/*
 	$from=$_POST['from'];
 	$to=$_POST['to'];
 	if(strlen($from)==0)
 	{
-		$to=xxx_find_max_unique_id($link,$_POST['examination_id']);
+		if($_POST['examination_id']=='sample_id')
+		{
+			$exp=explode('-',$_POST['id_range']);
+			$to=find_max_sample_id($link,$exp[0],$exp[1]);
+		}
+		else
+		{
+			$to=xxx_find_max_unique_id($link,$_POST['examination_id']);
+		}
 		$from=max($to-200,1);
 	}
 	else
@@ -98,12 +110,18 @@ else
 			//altready set from POST
 		}
 	}
+*/
 
 //set post for update
+
+/*
 $extra_post='
 <input type=hidden name=from value=\''.$from.'\'>
 <input type=hidden name=to value=\''.$to.'\'>
 <input type=hidden name=conditions value=\''.json_encode($conditions).'\'>';
+*/
+
+$extra_post='<input type=hidden name=conditions value=\''.json_encode($conditions).'\'>';
 
 	$examination_details=get_one_examination_details($link,$_POST['examination_id']);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
@@ -111,13 +129,16 @@ $extra_post='
 	if(strlen($table)==0){echo 'error: the examination_id is not id_multiple_sample or id_unique_sample';}
 	
 //show samples as selected
-$sql='select sample_id from `'.$table.'` where id between \''.$from.'\' and \''.$to.'\' ';
+
+$sql='select sample_id from `'.$table.'` order by id desc';
 //echo $sql.'<br>';
 $result=run_query($link,$GLOBALS['database'],$sql);
 
-
+	$count=0;
 	while($ar=get_single_row($result))
 	{
+		if($count>=100){break;}
+		
 		if(check_for_conditions($link,$ar['sample_id'],$conditions))
 		{
 			if($_POST['action']=='view_dbid_detail')
@@ -128,8 +149,6 @@ $result=run_query($link,$GLOBALS['database'],$sql);
 			{
 				$extra_post='
 				<input type=hidden name=examination_id value=\''.$_POST['examination_id'].'\'>
-				<input type=hidden name=from value=\''.$from.'\'>
-				<input type=hidden name=to value=\''.$to.'\'>
 				<input type=hidden name=conditions value=\''.json_encode($conditions).'\'>';
 				
 				showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$_POST['examination_id']);
@@ -140,31 +159,47 @@ $result=run_query($link,$GLOBALS['database'],$sql);
 		{
 			echo '<div style="page-break-after: always;"></div>';
 		}
+		$count++;
 	}
 				
 
 //////////////user code ends////////////////
 tail();
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 //echo '<pre>';print_r($_SESSION);echo '</pre>';
 
 //////////////Functions///////////////////////
 
 function check_for_conditions($link,$sid,$conditions)
 {
-	$ret=True;
 	foreach($conditions as $ex_id => $value)
 	{
-		$result=get_one_ex_result($link,$sid,$ex_id);
-		if(strpos($result,$value)!==False)
+		$result=get_any_examination_result($link,$sid,$ex_id);
+		if(is_array($value))
 		{
-			
+			//echo $sid.'>>>'.$ex_id.'---->'.$result.'<br>';
+			if($result>=$value[0] && $result<=$value[1])
+			{
+				//next
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
-			$ret=False;
+			if(stripos($result,$value)!==False)
+			{
+				//next
+			}
+			else
+			{
+				return False;
+			}
 		}
 	}
-	return $ret;
+	
+	return true;
 }
 ?>

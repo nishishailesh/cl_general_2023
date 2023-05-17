@@ -41,7 +41,7 @@ $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 									</div>
 							<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Select Examinations</span>';
 							echo '	<div id="status-window" class="border border-success">
-										<input type=text id=my_search_text>
+										<input type=text id=my_search_text onchange="my_search_test()">
 										<button type=button id=my_search onclick="my_search_test()">search</button>
 										<div id=my_search_result></div>
 									</div>						

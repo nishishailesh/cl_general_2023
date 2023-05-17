@@ -365,7 +365,7 @@ CREATE TABLE `examination` (
   `examination_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `sample_requirement` varchar(100) NOT NULL DEFAULT 'NULL',
-  `edit_specification` varchar(1000) NOT NULL,
+  `edit_specification` varchar(5000) NOT NULL,
   `description` varchar(300) DEFAULT NULL,
   `request_route` varchar(300) DEFAULT NULL,
   `display_route` varchar(300) DEFAULT NULL,
@@ -500,6 +500,23 @@ CREATE TABLE `menu_new` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `menu_view`
+--
+
+DROP TABLE IF EXISTS `menu_view`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `menu_view` (
+  `id` int(11) NOT NULL,
+  `caption` varchar(100) NOT NULL,
+  `unique_id` varchar(200) NOT NULL,
+  `additional_search_id` varchar(200) NOT NULL,
+  `additional_range_search_id` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `moving_average`
 --
 
@@ -547,7 +564,7 @@ CREATE TABLE `opd_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=224 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=227 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1006,7 +1023,7 @@ CREATE TABLE `ward_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1039 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1042 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -1018,4 +1035,4 @@ CREATE TABLE `ward_id` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-17  1:21:36
+-- Dump completed on 2023-05-18  2:36:37
