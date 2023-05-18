@@ -13,14 +13,6 @@ $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 echo '<h3>Search Samples</h3>';
 
-/*
-echo '<h4>If From/To not given, last 200 ids will be searched</h4>';
-$range=explode('-',$_SESSION['id_range']);
-$min=$range[0];
-$max=$range[1];
-echo '<h4 id=last_sample_id >last sample_id in range:'.$_SESSION['id_range'].' is <span class="text-danger"> '.find_max_sample_id($link,$min,$max).'</span></h4>';
-*/
-
 $tok=explode("|",$_POST['action']);
 
 if($tok[0]=='get_dbids')
@@ -82,14 +74,18 @@ function get_dbid($link,$examination_id,$search_list_of_examination_id,$range_se
 function get_one_field_for_search($link,$examination_id)
 {
 	$ex_data=get_one_examination_details($link,$examination_id);
+	$edit_specification=json_decode($ex_data['edit_specification'],true);
+	$accr_status=isset($edit_specification['accr_status'])?$edit_specification['accr_status']:'';
+
+
 	//echo 'x';print_r($ex_data);echo 'x';
 	if(!is_array($ex_data)){return;}
 	$ex_name=$ex_data['name'];
 
 		echo '<div class="basic_form">';
 			echo '<div class="d-inline p-2">';
-			echo '	<label class="my_label text-danger" for="from">'.$ex_name.'</label>';
-				echo '<input class="float-right" name=\'chk_'.$examination_id.'\' type=checkbox>';
+			echo '<button type=button formtarget=_blank class="btn btn-sm btn-info d-inline-block w-75" onclick="my_view_table(\''.$ex_name.'\')">'.$ex_name.'</button>';
+				echo '<input class="float-right d-inline-block w-25" name=\'chk^'.$examination_id.'\' type=checkbox>';
 			echo '</div>';
 			echo '<div class="d-inline-block">';
 				//get_one_field_for_insert_no_readonly($link,$examination_id);
@@ -112,7 +108,7 @@ function get_one_field_for_range_search($link,$examination_id)
 	echo '<div class="basic_form">';	
 		echo '<div class="d-inline p-2">';
 			echo '	<label class="my_label text-danger" for="from">From '.$ex_name.'</label>';
-			echo '<input class="float-right" name=\'chk_'.$examination_id.'\' type=checkbox>';
+			echo '<input class="float-right" name=\'chk^'.$examination_id.'\' type=checkbox>';
 		echo '</div>';
 		
 		echo '<div class="d-inline p-2">';
@@ -152,7 +148,7 @@ function get_sample_id_for_range_search($link)
 	echo '<div class="basic_form">';	
 			echo '<div class="d-inline p-2">';
 				echo '	<label class="my_label text-danger" for="from">From '.$ex_name.'</label>';
-				echo '<input class="float-right" name=\'chk_sample_id\' type=checkbox>';
+				echo '<input class="float-right" name=\'chk^sample_id\' type=checkbox>';
 			echo '</div>';
 		
 			echo '<div class="d-inline p-2">';
@@ -500,7 +496,6 @@ function get_one_field_for_insert_no_readonly($link,$examination_id)
 		echo '</div>';
 	}
 
-
 }
 
 
@@ -517,3 +512,29 @@ legend {
 
 
 </style>
+
+
+<script>
+function my_view_table()
+{
+	//alert("search="+search_text)
+
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function(){
+		if (this.readyState == 4 && this.status == 200) 
+		{
+			document.getElementById('my_search_result').innerHTML = xhttp.responseText;
+		}
+	};
+
+	post1='search_text='+search_text
+	post2='session_name=<?php echo $_POST["session_name"];?>'
+	post3='login=<?php echo $_SESSION["login"];?>'
+	post4='password=<?php echo $_SESSION["password"];?>'
+	
+	post=post1+'&'+post2+'&'+post3+'&'+post4
+	xhttp.open('POST', 'xxx_search_examination.php', true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send(post);	
+}
+</script>

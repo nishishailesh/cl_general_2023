@@ -3772,6 +3772,7 @@ function get_one_field_for_insert($link,$examination_id)
 	elseif($type=='datetime-local')
 	{
 		//////
+		$default=strftime("%Y-%m-%d %H:%M");
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
 			////
 				echo '<div  class="my_lable">';
@@ -3794,6 +3795,8 @@ function get_one_field_for_insert($link,$examination_id)
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
 					//get_primary_result($link,$sample_id,$examination_id);
+					show_source_button($element_id,$default);
+					
 				echo '</div>';
 			echo '</div>';
 			echo '<p class="help">'.$help.'</p>';	
@@ -4647,7 +4650,7 @@ function update_one_examination_with_result($link,$sample_id,$examination_id,$re
 	{
 		if(rows_affected($link)==1)
 		{
-			echo '<p>'.$sample_id.'|'.$examination_id.'|'.$result.'|Saved</p>';				
+			//echo '<p>'.$sample_id.'|'.$examination_id.'|'.$result.'|Saved</p>';				
 		}
 		else
 		{

@@ -9,57 +9,68 @@ echo '		  <link rel="stylesheet" href="project_common.css">
 		  	
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
-		main_menu($link);
+main_menu($link);
 
 
-		$tok=explode("|",$_POST['action']);
-		//print_r($tok);
+$tok=explode("|",$_POST['action']);
+//print_r($tok);
 
-		if($tok[0]=='newww_general')
-		{
-			echo '<div class="two_column_nine">';
-				echo '<div>';
-					if(strlen($tok[2])>0)
-					{
-						$rlike=str_replace(',','|',$tok[2]);
-						$sql="select * from examination where request_route rlike '".$rlike."' order by request_route,name";
-						//echo $sql;
-					}
-					else
-					{
-						$sql="select * from examination order by request_route,name";
-					}
-					//echo $sql;
-					
-					get_data_specific($link,$sql,$tok[1]);
-				echo '</div>';
-				
-				echo '<div>
-							<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
-							echo '	<div id="status-window" 
-										class="border border-success">status:
-									</div>
-							<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Select Examinations</span>';
-							echo '	<div id="status-window" class="border border-success">
-										<input type=text id=my_search_text onchange="my_search_test()">
-										<button type=button id=my_search onclick="my_search_test()">search</button>
-										<div id=my_search_result></div>
-									</div>						
-				</div>';
-
-			echo '</div>';			
-		}
-		elseif($_POST['action']=='insert')
-		{
-			$all_samples=xxx_save_insert_specific($link,$_POST['selected_examination_list']);
-			foreach ($all_samples as $sample_id)
+if($tok[0]=='newww_general')
+{
+	echo '<div class="two_column_nine">';
+		echo '<div>';
+			if(strlen($tok[2])>0)
 			{
-					showww_sid_button_release_status($link,$sample_id,'');
-					xxx_view_sample($link,$sample_id);
+				$rlike=str_replace(',','|',$tok[2]);
+				$sql="select * from examination where request_route rlike '".$rlike."' order by request_route,name";
+				//echo $sql;
 			}
-		}
+			else
+			{
+				$sql="select * from examination order by request_route,name";
+			}
+			//echo $sql;
+			
+			get_data_specific($link,$sql,$tok[1]);
+		echo '</div>';
+		
+		echo '<div>
+					<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
+					echo '	<div id="status-window" 
+								class="border border-success">status:
+							</div>
+					<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Select Examinations</span>';
+					echo '	<div id="status-window" class="border border-success">
+								<input type=text id=my_search_text onchange="my_search_test()">
+								<button type=button id=my_search onclick="my_search_test()">search</button>
+								<div id=my_search_result></div>
+							</div>						
+		</div>';
 
-	
+	echo '</div>';			
+}
+elseif($_POST['action']=='insert')
+{
+	$all_samples=xxx_save_insert_specific($link,$_POST['selected_examination_list']);
+	foreach ($all_samples as $sample_id)
+	{
+			showww_sid_button_release_status($link,$sample_id,'');
+			xxx_view_sample($link,$sample_id);
+	}
+}
+
+
+
+if(isset($_POST['action']))
+{
+	if($_POST['action']=='set_sample_status')
+	{
+		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
+		showww_sid_button_release_status($link,$_POST['sample_id'],'');
+		xxx_view_sample($link,$_POST['sample_id']);
+	}
+}
+
 
 //x_get_examination_data($link,$sql='select examination_id ,name as description from examination order by description ','examination_id',$multi='no',$size=8);
 

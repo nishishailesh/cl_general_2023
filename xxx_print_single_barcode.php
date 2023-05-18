@@ -90,7 +90,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 				{
 					if($item[2]=='b')
 					{
-						$pdf->write1DBarcode($sample_id, 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+						$pdf->write1DBarcode($sample_id, $label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
 					}
 					else if($item[2]=='t')
 					{
@@ -105,7 +105,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 				{
 					if($item[2]=='b')
 					{
-						$pdf->write1DBarcode($sample_id, 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+						$pdf->write1DBarcode($sample_id, $label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
 					}
 					else if($item[2]=='t')
 					{
