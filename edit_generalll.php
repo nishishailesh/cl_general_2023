@@ -11,83 +11,73 @@ echo '	<link rel="stylesheet" href="project_common.css">
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
 main_menu($link);
+//echo '<pre>';print_r($_POST);echo '</pre>';
 
 echo '<div class="two_column_two_by_one">';
 
 echo '<div>';
 
 
-if($_POST['action']=='sample_collected')
+if($_POST['action']=='set_sample_status')
 {
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'sample_collected');
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
-}
+	insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
 
-if($_POST['action']=='sample_received')
-{
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'sample_received');
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
-}
+	echo '<div class="d-inline-block"">';
+	//showww_sid_button_release_status($link,$_POST['sample_id'],'');
+	xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 
-if($_POST['action']=='sample_prepared')
-{
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'sample_prepared');
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
+	echo '</div>';	
 	xxx_edit_sample($link,$_POST['sample_id']);
-}
 
-if($_POST['action']=='analysis_started')
-{
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'analysis_started');
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
 }
-
 
 if($_POST['action']=='edit_general')
 {
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '<div class="d-inline-block"">';
+		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
+
+		echo '</div>';	
+		xxx_edit_sample($link,$_POST['sample_id']);
 }
+
 if($_POST['action']=='upload')
 {
 	save_result_blob($link,$_POST['sample_id']);
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '<div class="d-inline-block"">';
+		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
+		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
 }
 if($_POST['action']=='delete')
 {
 	delete_examination($link,$_POST['sample_id'],$_POST['examination_id']);
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '<div class="d-inline-block"">';
+		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
+		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
 }
 if($_POST['action']=='insert')
 {
 	//echo 'new examination insertion required';
 	xxx_save_insert_specific_for_edit($link,$_POST['selected_examination_list'],$_POST['sample_id']);
 	
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-
+		echo '<div class="d-inline-block"">';
+		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
+		echo '</div>';
 	xxx_edit_sample($link,$_POST['sample_id']);
 }
 if($_POST['action']=='calculate')
 {
 	calculate_and_update($link,$_POST['sample_id']);
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '<div class="d-inline-block"">';
+		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
+		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
 }
 
 if($_POST['action']=='sync_ALL')
 {
 	sync_all($link,$_POST['sample_id']);
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '<div class="d-inline-block"">';
+		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
+		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
 }
 
 if($_POST['action']=='sync_single')
@@ -100,15 +90,17 @@ if($_POST['action']=='sync_single')
 	{
 		save_single_result_blob($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq']);
 	}
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '<div class="d-inline-block"">';
+		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
+		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
 }
 
 if($_POST['action']=='verify')
 {
 	verify_sample($link,$_POST['sample_id']);
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '<div class="d-inline-block"">';
+		showww_sid_button_release_status($link,$_POST['sample_id'],'');
+		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
 }
 
 if($_POST['action']=='verification_done')
@@ -126,8 +118,9 @@ if($_POST['action']=='verification_done')
 	//{
 		update_sample_status($link,$_POST['sample_id'],'verification_done');
 	//}
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '<div class="d-inline-block"">';
+		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
+		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
 }
 
 if($_POST['action']=='save_primary_result')
@@ -139,8 +132,9 @@ if($_POST['action']=='save_primary_result')
     //[action] => save_primary_result
     
     	insert_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['result'],$_POST['uniq']);
-	showww_sid_button_release_status($link,$_POST['sample_id'],'');
-	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '<div class="d-inline-block"">';
+		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
+		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
     
 }
 
@@ -158,7 +152,7 @@ echo '<div>';
 					</div>
 			<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Select Examinations</span>';
 			echo '	<div id="status-window" class="border border-success">
-						<input type=text id=my_search_text>
+						<input type=text id=my_search_text  onchange="my_search_test()">
 						<button type=button id=my_search onclick="my_search_test()">search</button>
 						<div id=my_search_result></div>
 					</div>						

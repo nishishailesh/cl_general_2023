@@ -199,6 +199,19 @@ CREATE TABLE `calibration` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `config`
+--
+
+DROP TABLE IF EXISTS `config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `config` (
+  `name` varchar(100) NOT NULL,
+  `value` varchar(500) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `copy_bin_text`
 --
 
@@ -372,6 +385,10 @@ CREATE TABLE `examination` (
   `request_route_priority` varchar(10) DEFAULT NULL,
   `display_route_priority` varchar(10) DEFAULT NULL,
   `display_format` varchar(50) DEFAULT NULL,
+  `insert_minimum_authorization_level` int(11) DEFAULT NULL,
+  `update_minimum_authorization_level` int(11) DEFAULT NULL,
+  `show_minimum_authorization_level` int(11) DEFAULT NULL,
+  `delete_minimum_authorization_level` int(11) DEFAULT NULL,
   PRIMARY KEY (`examination_id`),
   KEY `sample_requirement` (`sample_requirement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100024 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -564,7 +581,7 @@ CREATE TABLE `opd_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=237 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=241 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -682,6 +699,21 @@ CREATE TABLE `prototype_data` (
   CONSTRAINT `prototype_data_ibfk_1` FOREIGN KEY (`examination_id`) REFERENCES `examination` (`examination_id`),
   CONSTRAINT `prototype_data_ibfk_2` FOREIGN KEY (`prototype_id`) REFERENCES `prototype` (`prototype_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `qc1_id`
+--
+
+DROP TABLE IF EXISTS `qc1_id`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `qc1_id` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `sample_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sample_id` (`sample_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=243 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -916,9 +948,10 @@ CREATE TABLE `sample_status` (
   `name` varchar(50) NOT NULL,
   `examination_id` int(11) NOT NULL,
   `color` varchar(50) NOT NULL,
-  `button_display` int(11) NOT NULL,
+  `shortcut` int(11) NOT NULL,
+  `dependancy_examination_id` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `examination_id` (`examination_id`),
+  UNIQUE KEY `examination_id` (`examination_id`),
   CONSTRAINT `sample_status_ibfk_1` FOREIGN KEY (`examination_id`) REFERENCES `examination` (`examination_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -991,6 +1024,10 @@ CREATE TABLE `user` (
   `password` varchar(1000) NOT NULL,
   `expirydate` date NOT NULL,
   `authorization` varchar(300) NOT NULL,
+  `insert_authorization_level` int(11) NOT NULL,
+  `update_authorization_level` int(11) NOT NULL,
+  `select_authorization_level` int(11) NOT NULL,
+  `delete_authorization_level` int(11) NOT NULL,
   PRIMARY KEY (`user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1035,4 +1072,4 @@ CREATE TABLE `ward_id` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-19  1:10:25
+-- Dump completed on 2023-05-24  1:35:18

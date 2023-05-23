@@ -32,6 +32,7 @@ echo '<style>
 .monitor_grid
 {
 display: grid;
+grid-gap: 5px;
 grid-template-areas:
 ';
 	for ($i=1;$i<=200;$i++)
@@ -78,6 +79,7 @@ $result=run_query($link,$GLOBALS['database'],$sql);
 	$id_range=isset($_POST['id_range'])?$_POST['id_range']:'';
 
 echo '<div>';
+echo '<input type=text class="d-block align-top p-1 m-1 " placeholder="scan barcode here" id=id_for_status_change onchange="update_list_of_id(this)">';
 echo '<form method=post id="status_change_form" class="d-inline">';
 	echo '<textarea 
 					readonly 
@@ -95,6 +97,7 @@ echo '<form method=post id="status_change_form" class="d-inline">';
 			$result_b=run_query($link,$GLOBALS['database'],$sql_b);
 			while($ar_b=get_single_row($result_b))
 			{	
+			if($ar_b['shortcut']<1){continue;}
 			echo '<div class="d-block">';
 			echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
 						style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
@@ -114,7 +117,6 @@ echo '<form method=post id="status_change_form" class="d-inline">';
 	echo '<input type=hidden name=id_range value=\''.$id_range.'\'>';
  
 echo '</form>';
-echo '<input type=text class="d-block align-top p-1 m-1 " placeholder="scan barcode here" id=id_for_status_change onchange="update_list_of_id(this)">';
 echo '</div>';
 
 }
@@ -125,13 +127,16 @@ function xxx_make_unique_id_option($link)
 	$id_range=isset($_POST['id_range'])?$_POST['id_range']:'';
 
 
-	
+	//id_multi_sample is not suitable box box placement, due to multiple items making sequence impossible
+	/*$sql="SELECT * from examination
+	where 
+	JSON_EXTRACT(edit_specification, '$.type')='id_single_sample'  or 
+	JSON_EXTRACT(edit_specification, '$.type')='id_multi_sample'";	*/
 
 	
 	$sql="SELECT * from examination
 	where 
-	JSON_EXTRACT(edit_specification, '$.type')='id_single_sample'  or 
-	JSON_EXTRACT(edit_specification, '$.type')='id_multi_sample'";
+	JSON_EXTRACT(edit_specification, '$.type')='id_single_sample'";
 	
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	
@@ -142,12 +147,30 @@ function xxx_make_unique_id_option($link)
 			echo '<div class="border border-success m-1 p-0 d-inline-block">
 					<label class="m-0 -p-0 " for=show_offset>offset:</label> <input type=number class="m-0 p-0" id=show_offset name=show_offset step=200 value=\''.$show_offset.'\'>
 			</div>';
-		
 			echo '<div class="border border-success m-1 p-0 d-inline-block">
 				<label class="m-0 -p-0 ">id_range for sample_id:</label>';
 				show_id_range_options($link,$extra='',$default=$id_range);
 			echo '</div>';
-				
+			
+			echo '<div class="border border-success m-1 p-0 d-inline-block">
+				<button 
+					class="btn"
+					id=autoupdate_button 
+					type=button 
+					onclick=
+							"autoupdate=autoupdate*-1; 
+							if(autoupdate==1)
+							{
+								this.textContent=\'update-on\';callServer();
+							};
+							if(autoupdate==-1)
+							{
+								this.textContent=\'update-off\';callServer();
+							}" 
+							>update-on
+				</button>';
+			echo '</div>';		
+					
 			echo '<button 
 				class="btn btn-outline-primary m-1 p-1 " 
 				type=submit 
@@ -172,16 +195,6 @@ function xxx_make_unique_id_option($link)
 
 }
 
-
-/*
-function get_id_to_change_status()
-{
-	echo '<div>';
-	echo '<input type=text class="d-block" id=id_for_status_change onchange="update_list_of_id(this)">';
-	echo '<textarea readonly onfocus="document.getElementById(\'id_for_status_change\').focus()" name=list_of_id name=list_of_id id=list_of_id  style="minimum-height:30px;" aria-multiline="true"></textarea>';
-	echo '</div>';
-}
-*/
 
 function insert_update_one_examination_with_result_using_unique_id($link,$unique_id,$examination_id,$result)
 {
@@ -267,40 +280,54 @@ function my_is_int($string)
 jQuery(document).ready(
 	function() 
 	{
-		//console.log( "ready!" );
-		start();
+		callServer()
 	}
 );
-/*
-$("#status_change_form").bind("keypress", function (e) {
-    if (e.keyCode == 13) {
-		update_list_of_id(me)        
-		return false;
-    }
-});
-*/
 
 list_of_id_to_update=[]
-
+autoupdate=1
+timeOutVar=false
+ 
 function update_list_of_id(me)
 {
+	//update variable
 	if(list_of_id_to_update.includes(me.value))
 	{
 		index=list_of_id_to_update.indexOf(me.value)
+		//alert(" before removal:: index:"+index+" index value: "+list_of_id_to_update[index]+" list:"+list_of_id_to_update)
 		list_of_id_to_update.splice(index,1)
+		//alert(" before removal:: index:"+index+" index value: "+list_of_id_to_update[index]+" list:"+list_of_id_to_update)
 	}
 	else
 	{
+		//alert("before addition:: list:"+list_of_id_to_update)
 		list_of_id_to_update.push(me.value);
+		//alert("before addition:: list:"+list_of_id_to_update)
 	}
 	
+	//display selected
 	document.getElementById('list_of_id').value=list_of_id_to_update.join()
-	me.value=''
-}
+	
+	
+	//uncheck all
+	x=document.getElementsByClassName("status_check_box")
+	for (i=0;i<x.length;i++){x[i].checked=false}
+	
+	//check if in list
+	for(i=0;i<list_of_id_to_update.length;i++)
+	{
+		if(document.getElementById('status_check_box^'+list_of_id_to_update[i]))
+		{
+			document.getElementById('status_check_box^'+list_of_id_to_update[i]).checked=true
+		}
+	}
+	
+	//clear textbox
+	if(document.getElementById('id_for_status_change')==me)
+	{
+		me.value=''
+	}
 
-function start()
-{
-	setTimeout(callServer, 0);
 }
 
 function callServer()
@@ -320,7 +347,14 @@ function callServer()
 	xhttp.open('POST', 'xxx_monitor_button.php', true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(post);	
-	setTimeout(callServer, 10000);
+	if(autoupdate==1)
+	{
+		 timeOutVar=setTimeout(callServer, 10000);
+	}
+	else if(autoupdate==-1)
+	{
+		clearTimeout(timeOutVar);
+	}
 }
 
 </script>
@@ -333,6 +367,4 @@ legend {
   width:auto;
   margin-left: 10%;
 }
-
-
 </style>

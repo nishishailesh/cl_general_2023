@@ -141,7 +141,9 @@ $result=run_query($link,$GLOBALS['database'],$sql);
 				{
 					$extra_post=$extra_post.'<input type=hidden name=id_range value=\''.$_POST['id_range'].'\'>';
 				}
-				showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$_POST['examination_id']);
+					echo '<div class="d-inline-block"">';
+					showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$_POST['examination_id']);
+					echo '</div>';
 			}
 		}
 

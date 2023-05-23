@@ -50,34 +50,7 @@ if(isset($_POST['action']))
 	}
 }
 
-
-
-if($_POST['action']=='sample_collected')
-{
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'sample_collected');
-}
-
-if($_POST['action']=='sample_received')
-{
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'sample_received');
-}
-
-if($_POST['action']=='sample_prepared')
-{
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'sample_prepared');
-}
-
-if($_POST['action']=='analysis_started')
-{
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'analysis_started');
-}
-
-
-showww_sid_button_release_status($link,$_POST['sample_id'],'');
+xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 
 if($_SESSION['display_style']=='full')
 {
@@ -128,15 +101,6 @@ echo '</form>';
 		echo '</td>';
 		echo '</tr></table>';
 }
-
-/*
-
-view
-  tree 
-
-each examination release
-*/
-
 ?>
 
 

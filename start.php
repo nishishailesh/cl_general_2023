@@ -9,6 +9,30 @@ $user=get_user_info($link,$_SESSION['login']);
 $auth=explode(',',$user['authorization']);
 
 $offset=isset($_POST['offset'])?$_POST['offset']:0;
+
+
+
+
+if(isset($_POST['action']))
+{
+	if($_POST['action']=='set_sample_status')
+	{
+		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
+	}
+
+	if($_POST['action']=='bulk_status_change')
+	{
+		$list_of_unique_id=explode(',',$_POST['list_of_id']);
+		foreach($list_of_unique_id as $unique_id)
+		{
+			insert_update_one_examination_with_result_using_unique_id($link,$unique_id,$_POST['status_change_examination_id'],strftime("%Y-%m-%d %H:%M"));
+		}
+	}
+}
+
+
+
+
 foreach($GLOBALS['sample_status'] as $k=>$v)
 {
 	echo '<span  style=" margin:2px; background-color:'.$v[2].'" >'.$v[0].'</span>';
@@ -75,7 +99,7 @@ if (isset($_POST['action']) && isset($_POST['sample_id']))
 
 //////////////user code ends////////////////
 tail();
-//echo '<pre>start:post';print_r($_POST);echo '</pre>';
+echo '<pre>start:post';print_r($_POST);echo '</pre>';
 //echo '<pre>start:session';print_r($_SESSION);echo '</pre>';
 
 ///////////////////Functions////////////////

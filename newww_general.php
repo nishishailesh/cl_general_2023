@@ -49,12 +49,17 @@ if($tok[0]=='newww_general')
 
 	echo '</div>';			
 }
+
+
 elseif($_POST['action']=='insert')
 {
 	$all_samples=xxx_save_insert_specific($link,$_POST['selected_examination_list']);
 	foreach ($all_samples as $sample_id)
 	{
-			showww_sid_button_release_status($link,$sample_id,'');
+		echo '<div class="d-inline-block"">';
+		xxx_manage_sample_status_change_horizontal($link,$sample_id);
+		echo '</div>';
+		
 			xxx_view_sample($link,$sample_id);
 	}
 }
@@ -66,7 +71,9 @@ if(isset($_POST['action']))
 	if($_POST['action']=='set_sample_status')
 	{
 		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
-		showww_sid_button_release_status($link,$_POST['sample_id'],'');
+		echo '<div class="d-inline-block"">';
+		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
+		echo '</div>';
 		xxx_view_sample($link,$_POST['sample_id']);
 	}
 }
@@ -107,8 +114,8 @@ function get_data_specific($link,$sql,$ex_list)
 //////////////user code ends////////////////
 tail();
 ?>
-
 <script>
+	
 function my_search_test()
 {
 	search_text=document.getElementById("my_search_text").value;
@@ -132,4 +139,6 @@ function my_search_test()
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(post);	
 }
+
+
 </script>

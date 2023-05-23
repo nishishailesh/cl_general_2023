@@ -125,6 +125,8 @@ $GLOBALS['interim_release_date']=1037;
 $GLOBALS['interim_release_time']=1038;
 $GLOBALS['interim_released_by']=1019;
 
+$GLOBALS['sample_interim_release']=10010;
+
 #for records
 $GLOBALS['record_tables']='record_tables';
 $GLOBALS['ongoing_acceptibility_record_type_id']=3;

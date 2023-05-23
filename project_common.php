@@ -4266,7 +4266,7 @@ function get_any_examination_result($link,$sample_id,$examination_id)
 {
 	//echo 'pppppppppppp'.$examination_id.'<br>';
 	$examination_details=get_one_examination_details($link,$examination_id);
-	//echo '>>>>>>>>>>examination_id';
+	//echo '>>>>>>>>>>examination_id='.$examination_id;
 	//print_r($examination_details);
 
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
@@ -4896,9 +4896,9 @@ function set_sample_id($link, $sample_required_array)
 			//echo 'pp';
 			//echo $GLOBALS['sample_requirement'];
 			insert_one_examination_with_result($link,$sample_id_array[$stype],$GLOBALS['sample_requirement'],$stype);
-			insert_one_examination_with_result($link,$sample_id_array[$stype],$GLOBALS['released_by'],'');
-			insert_one_examination_with_result($link,$sample_id_array[$stype],$GLOBALS['release_date'],'');
-			insert_one_examination_with_result($link,$sample_id_array[$stype],$GLOBALS['release_time'],'');			
+			//insert_one_examination_with_result($link,$sample_id_array[$stype],$GLOBALS['released_by'],'');
+			//insert_one_examination_with_result($link,$sample_id_array[$stype],$GLOBALS['release_date'],'');
+			//insert_one_examination_with_result($link,$sample_id_array[$stype],$GLOBALS['release_time'],'');			
 			//echo 'qq';
 		}
 	}
@@ -7411,7 +7411,7 @@ function x_save_insert_specific($link)
 }
 
 
-function showww_sid_button_release_status($link,$sid,$extra_post='',$uid=0)
+function showww_sid_button_release_status($link,$sid,$extra_post='',$uid=0,$checkbox='no')
 {
 	if(!sample_exist($link,$sid))
 	{
@@ -7424,46 +7424,22 @@ function showww_sid_button_release_status($link,$sid,$extra_post='',$uid=0)
 					data-toggle="dropdown">'.$sid.'</button>
 					
 					<ul class="dropdown-menu">
-						<li>XX</li><li>XX</li><li>XX</li>';
-						//if(!requestonly_check($link))
-						//{	
-						//	get_sample_action($link,$sid,$extra_post);
-						//}
+						<li>No sample</li>';
 					echo '</ul>
 				</div>';
-
-		
-			xxx_sample_id_view_button(
-				$sid,
-				'target=_blank ',
-				colorize_eq_str(get_equipment_str($link,$sid))
-				);
 		echo '</div>';		
 	return;
 	}
-	
-	
-	$final_state=0;
-	foreach ($GLOBALS['sample_status'] as $status_index=>$status_array )
-	{
-		$temp_state=0;
-		foreach($status_array[1] as $key=>$ex_id)
-		{
-			$len=strlen(get_one_ex_result($link,$sid,$ex_id));
-			if($len>0)
-			{
-				$temp_state=$temp_state+1;
-			}
-			if($temp_state==count($status_array[1]))
-			{
-				$final_state=$status_index;
-			}
-		}
-	}
 
-	$pid=get_one_ex_result($link,$sid,$GLOBALS['patient_name']);
-	$mrd_local=get_one_ex_result($link,$sid,$GLOBALS['mrd']);
-	$location=get_one_ex_result($link,$sid,$GLOBALS['OPD/Ward']);
+	$status_button_info=get_config_value($link,'status_button_info');
+	$ex_for_status_button=explode(',',$status_button_info);
+	
+	$status_info_string='';
+	foreach($ex_for_status_button as $status_ex_id)
+	{
+		$ex_value=get_any_examination_result($link,$sid,$status_ex_id);
+		$status_info_string=$status_info_string.'<div>'.$ex_value.'</div>';
+	}
 	
 	if($uid>0)
 	{
@@ -7471,8 +7447,8 @@ function showww_sid_button_release_status($link,$sid,$extra_post='',$uid=0)
 		$examination_details=get_one_examination_details($link,$uid);
 		$edit_specification=json_decode($examination_details['edit_specification'],true);
 		$prefix=isset($edit_specification['unique_prefix'])?$edit_specification['unique_prefix']:'';
-		//echo '<h1>XXX'.$did.'XXX</h1>';
-		$did=str_pad($prefix.$ex_value,7,'_');
+		//$did=str_pad($prefix.$ex_value,7,'.');
+		$did=$prefix.$ex_value;
 	}
 	else
 	{
@@ -7482,31 +7458,48 @@ function showww_sid_button_release_status($link,$sid,$extra_post='',$uid=0)
 	$final_state=xxx_get_sample_action_last($link,$sid);
 	$bgcolor=isset($final_state['color'])?$final_state['color']:'#FFFFFF';
 	
-	echo '<div class="btn-group-vertical m-0 p-0 border border-light print_hide">';
-		echo '<div class="btn-group d-inline-block">
-				<button type="button" 
-				style="background-color:'.$bgcolor.'" 
-				class="m-0 p-0 btn btn-success btn-block btn-sm dropdown-toggle text-dark" 
-				data-toggle="dropdown">'.$did.'</button>
-				
-				<div class="dropdown-menu">
-					<div>'.$pid.'</div><div>'.$mrd_local.'</div><div>'.$location.'</div>';
-					echo '<div>';
-						if(!requestonly_check($link))
-						{
-							//get_sample_action($link,$sid,$extra_post);
-							xxx_get_sample_action($link,$sid,$extra_post);
-						}
-					echo '</div>
-				</div>
-			</div>';
-
 	
-		xxx_sample_id_view_button(
-			$sid,
-			'target=_blank style="background-color:'.$bgcolor.'" ',
-			colorize_eq_str(get_equipment_str($link,$sid))
-			);
+	echo '<div class="btn-group-vertical m-0 p-0 border border-light print_hide w-100">';
+				echo '<div class="btn-group border border-warning border-2">';
+				
+									////button
+									echo '		 <button type="button" 
+									style="background-color:'.$bgcolor.'" 
+									class="m-0 p-0 btn btn-success btn-block btn-sm dropdown-toggle text-dark" 
+									data-toggle="dropdown">'.$did.'</button>';
+									
+									////menu
+									echo '<div class="dropdown-menu ">';
+									
+										echo $status_info_string;
+									
+										echo '<div>';
+											if(!requestonly_check($link))
+											{
+												xxx_get_sample_action($link,$sid,$extra_post);
+											}
+										echo '</div>
+									</div>';
+									if($checkbox=='yes')
+									{
+										echo '<input 
+										onclick="
+														//alert(\'hi\')
+														update_list_of_id(this)
+												"
+										class="status_check_box" value='.$did.' id=status_check_box^'.$did.'  style="background-color:'.$bgcolor.';" type=checkbox>';
+									}
+				echo '</div>';
+
+
+
+				echo '<div class="d-block w-100">
+					<form method=post action=viewww_single.php class=print_hide target=_blank style="background-color:'.$bgcolor.'" >
+					<button style="width:100%;height:100%;" class="btn btn-outline-success btn-sm btn-block text-dark " name=sample_id value=\''.$sid.'\' >.'.colorize_eq_str(get_equipment_str($link,$sid)).'</button>
+					<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+					<input type=hidden name=action value=view_single>';
+					echo '</form>
+				</div>';		
 	echo '</div>';
 }
 
@@ -9060,7 +9053,7 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		xxx_sample_id_prev_button($sample_id);
 		xxx_sample_id_view_button($sample_id);
 		xxx_sample_id_next_button($sample_id);
-		sample_id_bill_button($sample_id);
+		//sample_id_bill_button($sample_id);
 		if(strlen($released_by)!=0 || strlen($interim_released_by)!=0)
 		{
 			sample_id_print_button($sample_id);						
@@ -9081,8 +9074,8 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		xxx_sample_id_interim_release_button($sample_id);	
 		xxx_sample_id_edit_button($sample_id);
 		xxx_sample_id_delete_button($sample_id);
-		xxx_sample_id_copy_button($sample_id);
-		sample_id_bill_button($sample_id);
+		//xxx_sample_id_copy_button($sample_id);
+		//sample_id_bill_button($sample_id);
 	}
 	else if(strlen($released_by)==0 && strlen($interim_released_by)!=0)	//interim but not released, so allow telegram/print/xmpp/email/sms
 	{
@@ -9102,8 +9095,8 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		
 		xxx_sample_id_edit_button($sample_id);
 		xxx_sample_id_delete_button($sample_id);
-		xxx_sample_id_copy_button($sample_id);
-		sample_id_bill_button($sample_id);
+		//xxx_sample_id_copy_button($sample_id);
+		//sample_id_bill_button($sample_id);
 
 	}	
 	else 																//released with/without interim, so do not allow edit/delete
@@ -9123,8 +9116,8 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		sample_id_telegram_button($sample_id);
 		sample_id_sms_button($sample_id,$link);
 		sample_id_xmpp_button($sample_id);
-		xxx_sample_id_copy_button($sample_id);
-		sample_id_bill_button($sample_id);
+		//xxx_sample_id_copy_button($sample_id);
+		//sample_id_bill_button($sample_id);
 	}
 	echo '</div>';
 }
@@ -9343,7 +9336,8 @@ function xxx_show_sample_required($sar)
 	}
 }
 
-
+//this is box type status
+//it donot display if sortcut fieldis <0
 function xxx_get_sample_action($link,$sample_id,$extra_post='')
 {
 	echo '<div class="d-inline-block" >';
@@ -9357,7 +9351,14 @@ function xxx_get_sample_action($link,$sample_id,$extra_post='')
 						$result_b=run_query($link,$GLOBALS['database'],$sql_b);
 						while($ar_b=get_single_row($result_b))
 						{	
-							$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);
+							//if shortcut not allowed do not put in box
+							if($ar_b['shortcut']<1){continue;}
+		 
+							//check dependancy
+							if(!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id'])){continue;}
+
+							$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);	//false if not yet requested
+							
 							echo '<div class="d-block">';
 								echo '<form method=post>';
 											echo '<button class="btn  text-left btn-light btn-sm d-block"
@@ -9375,11 +9376,97 @@ function xxx_get_sample_action($link,$sample_id,$extra_post='')
 						}
 					echo '</div>';
 				}
-
-
 	echo '</div>';	
 }
 
+function is_status_dependancy_satisfied($link,$sample_id,$status_examination_id)
+{
+	/* if examination dependent on other
+	 *    
+	 *       if dependent have result
+	 *          prompt
+	 *       else
+	 *          do not prompt
+	 * else
+	 *    prompt
+	 * */	
+		
+	$sql='select * from sample_status where examination_id=\''.$status_examination_id.'\'';
+			
+	//this is 0 or 1 records because s.examination_id is unique field
+				
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);
+	
+	$dep_ex_array=explode(',',$ar['dependancy_examination_id']);
+	//print_r($dep_ex_array);
+	
+	$ret=true;	//if array is empty
+	
+	foreach($dep_ex_array as $dep_ex)
+	{
+		if($dep_ex>0)		//it have dependancy, because examination_id>0
+		{
+			$dep_result=get_any_examination_result($link,$sample_id,$dep_ex);
+			if(strlen($dep_result)>0)
+			{
+				return true;	//one of its dependancy have result
+			}
+			else
+			{
+				$ret=false;	//dependancy is not requested or not filled but, there may be other alternate dependancy, so wait till end
+			}
+		}
+		else
+		{
+			$ret=true;		//no dependancy, but , there can be other. so, wait till end
+		}
+	}
+	
+	return $ret;
+}
+
+//this is horizontal status
+function xxx_manage_sample_status_change_horizontal($link,$sample_id)
+{
+$sql='select distinct priority from `sample_status` order by priority';
+$result=run_query($link,$GLOBALS['database'],$sql);
+
+
+echo '<div class="bg-light border border-info">';
+echo '<form method=post id="status_change_form" class="d-inline">';
+	while($ar=get_single_row($result))
+	{
+		echo '<div class="d-inline-block align-top m-1">';
+			$sql_b='select * from `sample_status` where priority=\''.$ar['priority'].'\'';
+			$result_b=run_query($link,$GLOBALS['database'],$sql_b);
+			while($ar_b=get_single_row($result_b))
+			{	
+			//if($ar_b['shortcut']<1){continue;} //during view and edit mode we wish to display everything
+			
+			if(!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id'])){continue;}
+
+			$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);
+			echo '<div class="d-block">';
+			echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
+						style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
+								border-top-right-radius: 25px; 
+								border-bottom-right-radius: 25px;"
+						name=status_examination_id value='.$ar_b['examination_id'].'>'.$ar_b['name'].'<br>'.$val.'
+					</button>';
+			echo '</div>';
+			}
+		echo '</div>';
+	}
+
+	echo '<input type=hidden name=action value=set_sample_status>';
+	echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+	echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';
+
+echo '</form>';
+echo '</div>';
+
+}
 
 
 function xxx_get_sample_action_last($link,$sample_id)
@@ -9410,4 +9497,14 @@ function get_user_info($link,$user)
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	return get_single_row($result);
 }
+
+function get_config_value($link,$config_item)
+{
+	$sql='select * from config where name=\''.$config_item.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);	
+	return $ar['value'];
+}
+
+
 ?>
