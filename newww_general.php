@@ -90,8 +90,8 @@ function get_data_specific($link,$sql,$ex_list)
 	
 	echo '<div class="two_column_one_by_two">';
 		echo '<div class="border">';
-			xx_get_basic_specific();
-	
+			//xxx_get_basic_specific();
+
 			$ex_array=array_filter(explode(",",$ex_list));
 			//print_r($ex_array);xr
 			foreach($ex_array as $ex_id)

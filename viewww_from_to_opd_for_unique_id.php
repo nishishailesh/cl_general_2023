@@ -11,32 +11,6 @@ $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 
 
-if($_POST['action']=='sample_collected')
-{
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'sample_collected');
-}
-
-if($_POST['action']=='sample_received')
-{
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'sample_received');
-}
-
-if($_POST['action']=='sample_prepared')
-{
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'sample_prepared');
-}
-
-if($_POST['action']=='analysis_started')
-{
-	//echo 'analysis_started';
-	update_sample_status($link,$_POST['sample_id'],'analysis_started');
-}
-
-
-
 if(isset($_POST['action']))
 {
 	if($_POST['action']=='set_sample_status')
@@ -96,7 +70,7 @@ else
 }
 //echo '</pre>';
 
-//echo '<pre>';print_r($conditions);echo '</pre>';
+echo '<pre>';print_r($conditions);echo '</pre>';
 
 $extra_post='<input type=hidden name=conditions value=\''.json_encode($conditions).'\'>';
 
@@ -111,13 +85,15 @@ if($_POST['examination_id']!='sample_id')
 else if($_POST['examination_id']=='sample_id')
 {
 	$id_range_array=explode("-",$_POST['id_range']);
-	$sql='select sample_id from sample_link where sample_id between \''.$id_range_array[0].'\' and  \''.$id_range_array[1].'\' order by sample_id desc';
+	$sql='select sample_id from sample_link 
+			where 
+			sample_id between \''.$id_range_array[0].'\' and  \''.$id_range_array[1].'\' order by sample_id desc';
 	//echo $sql;
 }
 	
 //show samples as selected
 
-//echo $sql.'<br>';
+echo $sql.'<br>';
 $result=run_query($link,$GLOBALS['database'],$sql);
 
 	$count=0;
@@ -145,19 +121,20 @@ $result=run_query($link,$GLOBALS['database'],$sql);
 					showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$_POST['examination_id']);
 					echo '</div>';
 			}
+
+		$count++;	//increase only if successful
 		}
 
 		if($_POST['action']=='view_dbid_detail')
 		{
 			echo '<div style="page-break-after: always;"></div>';
 		}
-		$count++;
 	}
 				
 
 //////////////user code ends////////////////
 tail();
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 //echo '<pre>';print_r($_SESSION);echo '</pre>';
 
 //////////////Functions///////////////////////

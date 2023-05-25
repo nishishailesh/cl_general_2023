@@ -1582,7 +1582,11 @@ function edit_basic($link,$result_array)//not used
 
 function delete_examination($link,$sample_id,$examination_id)
 {
-
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'delete'))
+	{
+		echo '<h5 class="bg-warning">This user is not authorized for [delete] with examination_id='.$examination_id.'</h5>';
+		return;
+	}
 	$examination_details=get_one_examination_details($link,$examination_id);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	if(!$edit_specification){$edit_specification=array();}
@@ -1881,6 +1885,8 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	
 	$type=isset($edit_specification['type'])?$edit_specification['type']:'text';
 	$readonly=isset($edit_specification['readonly'])?$edit_specification['readonly']:'';
+	if(!is_authorized($link,$_SESSION['login'],$examination_id,'update')){$readonly='readonly';}
+	
 	//echo $readonly;
 	
 	if($frill){
@@ -1914,10 +1920,11 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 					echo '
 					<button 
 						'.$readonly.'
-					id="'.$element_id.'" 
+						id="'.$element_id.'" 
 						name="'.$examination_id.'" 
 						data-exid="'.$examination_id.'" 
 						data-sid="'.$sample_id.'" 
+						data-session_name="'.$_POST['session_name'].'", 
 						data-user="'.$_SESSION['login'].'" 
 						class="form-control btn btn-info mb-1 autosave-yesno"
 						value=\''.$result.'\'
@@ -1925,7 +1932,10 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 						>'.$result.'</button>';
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
+				if($readonly!='readonly')
+				{
 						if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				}
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
@@ -1957,17 +1967,23 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 				////
 				echo '<div class="d-inline-block  no-gutters">';	
 				
+			if($readonly=='readonly'){$select_readonly='disabled';}else{$select_readonly='';}
+			
 			echo '
-					<select '.$readonly.' 
+					<select '.$select_readonly.' 
 					id="'.$element_id.'" 
 						name="'.$examination_id.'" 
 						data-exid="'.$examination_id.'" 
 						data-sid="'.$sample_id.'" 
+						data-session_name="'.$_POST['session_name'].'", 
 						data-user="'.$_SESSION['login'].'" 
 						class="form-control autosave-select">'.$option_html.'</select>';
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
+				if($readonly!='readonly')
+				{
 					if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				}
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
@@ -2001,6 +2017,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 					id="'.$element_id.'" 
 						name="'.$examination_id.'" 
 						data-exid="'.$examination_id.'" 
+						data-session_name="'.$_POST['session_name'].'", 
 						data-sid="'.$sample_id.'" 
 						data-user="'.$_SESSION['login'].'" 
 						class="form-control autosave" 
@@ -2010,11 +2027,10 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 						value=\''.$result.'\'>';
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
+				if($readonly!='readonly')
+				{
 					if($frill){get_primary_result($link,$sample_id,$examination_id);}
-					if(strlen($calculate)>0)
-					{
-						//show_source_button($element_id,calculate_result($link,$calculate,$ex_list,$sample_id,$decimal));
-					}
+				}
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
@@ -2038,6 +2054,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 					id="'.$element_id.'" 
 						name="'.$examination_id.'" 
 						data-exid="'.$examination_id.'" 
+						data-session_name="'.$_POST['session_name'].'", 
 						data-sid="'.$sample_id.'" 
 						data-user="'.$_SESSION['login'].'" 
 						class="form-control autosave" 
@@ -2074,6 +2091,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 						name="'.$examination_id.'" 
 						data-exid="'.$examination_id.'" 
 						data-sid="'.$sample_id.'" 
+						data-session_name="'.$_POST['session_name'].'", 
 						data-user="'.$_SESSION['login'].'" 
 					pattern="'.$pattern.'" 
 						class="form-control autosave" 
@@ -2083,8 +2101,8 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 				echo '<div class="d-inline  no-gutters">';
 				if($readonly!='readonly')
 				{
-					if($frill){get_primary_result($link,$sample_id,$examination_id);}
-					show_source_button($element_id,$default);
+						if($frill){get_primary_result($link,$sample_id,$examination_id);}
+						show_source_button($element_id,$default);
 				}
 				echo '</div>';
 			echo '</div>';
@@ -2132,6 +2150,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 					data-exid="'.$examination_id.'" 
 					data-sid="'.$sample_id.'" 
 					data-user="'.$_SESSION['login'].'" 
+					data-session_name="'.$_POST['session_name'].'", 
 					pattern="'.$pattern.'" 
 					class="form-control autosave p-0 m-0 no-gutters '.$zoom.' " 
 					style="resize: both;"
@@ -2143,7 +2162,10 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 					htmlspecialchars($result,ENT_QUOTES).'\'>';
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
+				if($readonly!='readonly')
+				{
 					if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				}
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
@@ -2169,6 +2191,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 					data-sid="'.$sample_id.'" 
 					data-user="'.$_SESSION['login'].'" 
 					pattern="'.$pattern.'" 
+					data-session_name="'.$_POST['session_name'].'", 
 					class="form-control autosave p-0 m-0 no-gutters '.$zoom.' " 
 					style="resize: both;"
 					minlength=\''.$minlength.'\'';
@@ -2467,6 +2490,11 @@ function display_dw($ex_result,$label='')
 
 function view_field_any($link,$ex_id,$sample_id,$compact='no')
 {
+	//if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$ex_id,'select'))
+	//{
+	//	echo '<h5 class="bg-warning">This user is not authorized for [select] with examination_id='.$ex_id.'</h5>';
+	//	return false;
+	//}	
 	//echo $compact;
 	$examination_details=get_one_examination_details($link,$ex_id);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
@@ -4228,7 +4256,13 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 
 function get_one_ex_result($link,$sample_id,$examination_id)
 {
-		$sql='select * from result where sample_id=\''.$sample_id.'\' and examination_id=\''.$examination_id.'\'';
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'select'))
+	{
+		//echo '<h5 class="bg-warning">This user is not authorized for [select] with examination_id='.$examination_id.'</h5>';
+		return false;
+	}
+	
+	$sql='select * from result where sample_id=\''.$sample_id.'\' and examination_id=\''.$examination_id.'\'';
 		//echo 'xxx'.$sql.'<br>';
 		$result=run_query($link,$GLOBALS['database'],$sql);
 		//if(!$result){return false;}
@@ -4528,6 +4562,11 @@ function find_max_sample_id($link,$from,$to)
 
 function insert_one_examination_without_result($link,$sample_id,$examination_id,$error='yes')
 {
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'insert'))
+	{
+		echo '<h5 class="bg-warning">This user is not authorized for [insert] with examination_id='.$examination_id.'</h5>';
+		return;
+	}
 	//This function is used for inserting new examination without result. Target for INSERT_CONTROL
 	$sql='insert into result (sample_id,examination_id)
 			values ("'.$sample_id.'","'.$examination_id.'")';
@@ -4542,8 +4581,12 @@ function insert_one_examination_without_result($link,$sample_id,$examination_id,
 
 function insert_one_examination_with_result($link,$sample_id,$examination_id,$result)
 {
-	//recording_time=now(),recorded_by=\''.$_POST['user'].'\'
-
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'insert'))
+	{
+		echo '<h5 class="bg-warning">This user is not authorized for [insert] with examination_id='.$examination_id.'</h5>';
+		return false;
+	}	//recording_time=now(),recorded_by=\''.$_POST['user'].'\'
+	
 	$sql='insert into result (sample_id,examination_id,result,recording_time,recorded_by)
 			values ("'.$sample_id.'","'.$examination_id.'","'.my_safe_string($link,$result).'",now(),"'.$_SESSION['login'].'")';
 	//echo $sql.'(without)<br>';
@@ -4558,6 +4601,18 @@ function insert_one_examination_with_result($link,$sample_id,$examination_id,$re
 
 function insert_update_one_examination_with_result($link,$sample_id,$examination_id,$result)
 {
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'insert'))
+	{
+		echo '<h5 class="bg-warning">This user is not authorized for [insert] with examination_id='.$examination_id.'</h5>';
+		return;
+	}
+
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'update'))
+	{
+		echo '<h5 class="bg-warning">This user is not authorized for [update] with examination_id='.$examination_id.'</h5>';
+		return;
+	}
+	
 	//recording_time=now(),recorded_by=\''.$_POST['user'].'\'
 				
 	$sql='insert into result (sample_id,examination_id,result,recording_time,recorded_by)
@@ -8481,6 +8536,27 @@ function viewww_sample_compact($link,$sample_id)
 }
 
 ///////////////////////ex all////////////
+
+function xxx_get_basic_specific()
+{
+	$YY=strftime("%y");
+echo '<div id=basic class="tab-pane active">';
+echo '<div class="basic_form">';
+	echo '	<label class="my_label text-danger" for="mrd">Patient Id</label>
+			<input 
+				size=13 
+				id=mrd 
+				name=\'__ex__'.$GLOBALS['mrd'].'\' 
+				class="form-control text-danger" 
+				required="required" 
+				type=text 
+				placeholder="patient id" >
+			<p class="help"><span class=text-danger>unique for patient</p>';
+echo '</div>';
+echo '</div>';
+}
+
+
 function xxx_get_examination_data($link,$sql)
 {
 	echo '<button class="btn btn-success " data-status=off type=button id=ex_all_expand onclick="expand_all(this)"><h4>&darr;&darr;&darr;</h4></button>';
@@ -8854,6 +8930,7 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 		}
 	}
 
+
 	foreach($_FILES as $k=>$v)
 	{
 		$tok=explode('__',$k);
@@ -8865,21 +8942,51 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 		}
 	}
 
+
+	//with result only if update authorization
+	$with_result_temp=$with_result;
+	$with_result=array();
+	foreach($with_result_temp as $ex)
+	{
+		if(is_authorized($link,$_SESSION['login'],$ex,'update')===true)
+		{
+			$with_result[]=$ex;
+		}
+	}	
+	
 	//echo '<pre>following examinations are filled with results:<br>';print_r($with_result);echo '</pre>';
 	
 ////Requested + filled examinations
 	$requested=array_merge($requested,$with_result);
 	$requested=array_filter(array_unique($requested));
+
+	$requested_temp=$requested;
+	$requested=array();
+	//print_r($requested);
+	//print_r($requested_temp);
+
+	//add only if authorized to insert (with result already removed as above if not authorized
+	foreach($requested_temp as $ex)
+	{
+		if(is_authorized($link,$_SESSION['login'],$ex,'insert')===true)
+		{
+			$requested[]=$ex;
+		}
+	}
+
+	print_r($requested);
+
+
 	//echo '<pre>following examinations are requested+filled with results:<br>';print_r($requested);echo '</pre>';
 
 ////determine sample-type required for each and also distinct types////////////////////////////////////
 	$sample_requirement_array=array();
 	foreach($requested as $ex)
 	{
-		$psql='select examination_id,sample_requirement from examination where examination_id=\''.$ex.'\'';
-		$result=run_query($link,$GLOBALS['database'],$psql);
-		$ar=get_single_row($result);
-		$sample_requirement_array[$ar['sample_requirement']][]=$ar['examination_id'];
+			$psql='select examination_id,sample_requirement from examination where examination_id=\''.$ex.'\'';
+			$result=run_query($link,$GLOBALS['database'],$psql);
+			$ar=get_single_row($result);
+			$sample_requirement_array[$ar['sample_requirement']][]=$ar['examination_id'];
 	}
 
 	//echo '<pre>following are sample_requirements [$sample_requirement_array] for requested examinations:<br>';print_r($sample_requirement_array);echo '</pre>';
@@ -8982,6 +9089,7 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 		if(substr($k,0,6)=='__ex__')
 		{
 			$ex_id=substr($k,6);
+			if(!in_array($ex_id,$requested)){continue;}	//if not authorized to insert
 			$examination_details=get_one_examination_details($link,$ex_id);
 			$edit_specification=json_decode($examination_details['edit_specification'],true);
 			$type=isset($edit_specification['type'])?$edit_specification['type']:'';
@@ -9039,7 +9147,7 @@ function show_id_range_options($link,$extra='',$default='')
 	mk_select_from_sql($link,$sql,'id_range','id_range','id_range',$disabled='',$default,$blank='no',$extra);
 }
 
-
+/*
 function xxx_show_all_buttons_for_sample($link,$sample_id)
 {
 	$released_by=get_one_ex_result($link,$sample_id,$GLOBALS['released_by']);
@@ -9070,8 +9178,8 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		xxx_sample_id_prev_button($sample_id);
 		xxx_sample_id_view_button($sample_id);
 		xxx_sample_id_next_button($sample_id);
-		xxx_sample_id_release_button($sample_id);	
-		xxx_sample_id_interim_release_button($sample_id);	
+		//xxx_sample_id_release_button($sample_id);	
+		//xxx_sample_id_interim_release_button($sample_id);	
 		xxx_sample_id_edit_button($sample_id);
 		xxx_sample_id_delete_button($sample_id);
 		//xxx_sample_id_copy_button($sample_id);
@@ -9084,8 +9192,8 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		xxx_sample_id_prev_button($sample_id);
 		xxx_sample_id_view_button($sample_id);
 		xxx_sample_id_next_button($sample_id);
-		xxx_sample_id_release_button($sample_id);	
-		xxx_sample_id_interim_release_button($sample_id);					
+		//xxx_sample_id_release_button($sample_id);	
+		//xxx_sample_id_interim_release_button($sample_id);					
 		
 		sample_id_print_button($sample_id);			
 		sample_id_email_button($sample_id);
@@ -9121,6 +9229,55 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 	}
 	echo '</div>';
 }
+*/
+
+function xxx_show_all_buttons_for_sample($link,$sample_id)
+{
+	echo '<div class="btn-group" role="group">';
+		get_lables_button($link,$sample_id,'sample_id');
+		xxx_sample_id_prev_button($sample_id);
+		xxx_sample_id_view_button($sample_id);
+		xxx_sample_id_next_button($sample_id);
+		
+		$res=get_config_value($link,'restrictive_examination_for_edit_delete');
+		$res_result=get_one_ex_result($link,$sample_id,$res);
+
+		if(strlen($res_result<=0))
+		{
+			xxx_sample_id_edit_button($sample_id);
+			xxx_sample_id_delete_button($sample_id);
+		}
+		else
+		{
+			xxx_sample_id_unrelease_button($sample_id);	
+		}
+		echo '<div class="btn-group " role="group">';
+		
+		
+		$ret=false;
+		$pre=get_config_value($link,'prerequisite_examination_for_print');
+		$pre_array=explode(',',$pre);
+		foreach($pre_array as $pex)
+		{
+			$pp=get_one_ex_result($link,$sample_id,$pex);
+			if(strlen($pp)>0)
+			{
+				$ret=true;
+				break;
+			}
+		}
+		if($ret===true)
+		{
+			xxx_sample_id_print_button($link,$sample_id);	
+		}		
+			//sample_id_email_button($sample_id);
+			//sample_id_telegram_button($sample_id);
+			//sample_id_sms_button($sample_id,$link);
+			//sample_id_xmpp_button($sample_id);
+		echo '</div>';
+	echo '</div>';
+}
+
 
 function xxx_sample_id_view_button($sample_id,$target='',$label='View')
 {
@@ -9181,6 +9338,7 @@ function xxx_sample_id_delete_button($sample_id)
 
 function xxx_sample_id_release_button($sample_id)
 {
+	
 	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_release_sample.php class=print_hide>
 	<button class="btn btn-outline-secondary btn-sm" name=sample_id value=\''.$sample_id.'\' >Release</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
@@ -9188,6 +9346,14 @@ function xxx_sample_id_release_button($sample_id)
 	</form></div>';
 }
 
+function xxx_sample_id_print_button($link,$sample_id)
+{
+	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_print_single.php target=_blank class=print_hide>
+	<button class="btn btn-outline-success btn-sm" name=sample_id value=\''.$sample_id.'\' >Print</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=print>
+	</form></div>';
+}
 
 function xxx_sample_id_interim_release_button($sample_id)
 {
@@ -9433,7 +9599,7 @@ $sql='select distinct priority from `sample_status` order by priority';
 $result=run_query($link,$GLOBALS['database'],$sql);
 
 
-echo '<div class="bg-light border border-info">';
+echo '<div class="bg-light border border-info print_hide">';
 echo '<form method=post id="status_change_form" class="d-inline">';
 	while($ar=get_single_row($result))
 	{
@@ -9506,5 +9672,35 @@ function get_config_value($link,$config_item)
 	return $ar['value'];
 }
 
+function is_authorized($link,$user,$examination_id,$action)
+{
+	/*example matrix
+	 * user 0=doctors, 1=dataentryoperator 2=technician 3=resident 4=faculty
+	 * examination: insert, update, delete,show , authorization level
+	 * 
+	 * 
+	 * */
+
+	$user_info=get_user_info($link,$user);
+	$ex_info=get_one_examination_details($link,$examination_id);
+	//echo '<pre>';
+	//echo 'is_authorized() parameters<br>';
+	//print_r($user_info);
+	//print_r($ex_info);
+	//echo 'action='.$action.'<br>';	
+
+	if($user_info[$action.'_authorization_level']>=$ex_info[$action.'_minimum_authorization_level'])
+	{
+	//	echo '###authorized###';
+	//	echo '</pre>';
+		return true;
+	}
+	else
+	{
+	//	echo '###NOT authorized###';
+	//	echo '</pre>';
+		return false;
+	}
+}
 
 ?>

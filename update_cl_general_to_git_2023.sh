@@ -12,6 +12,7 @@ mysqldump  -d $d > cl_general_blank_2023.sql
 
 tnames='
 record_tables
+config
 table_field_specification
 menu_new
 copy_bin_text

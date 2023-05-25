@@ -13,18 +13,19 @@ $auth=explode(',',$user['authorization']);
 	main_menu($link);
 	echo '</div>';
 
-if(in_array('unlock',$auth))
+
+
+if($_POST['action']=='set_sample_status')
 {
-	//delete_examination($link,$_POST['sample_id'],$GLOBALS['released_by']);
-	update_one_examination_with_result($link,$_POST['sample_id'],$GLOBALS['released_by'],'');
-	update_one_examination_with_result($link,$_POST['sample_id'],$GLOBALS['release_date'],'');
-	update_one_examination_with_result($link,$_POST['sample_id'],$GLOBALS['release_time'],'');
+	insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
 }
-else
+else if($_POST['action']=='unrelease_sample')
 {
-	echo '<h3>You are not authorized to un-release report</h3>';
+	$res=get_config_value($link,'restrictive_examination_for_edit_delete');
+	delete_examination($link,$_POST['sample_id'],$res);
 }
-showww_sid_button_release_status($link,$_POST['sample_id'],'');
+
+xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 
 xxx_view_sample($link,$_POST['sample_id']);
 //////////////user code ends////////////////

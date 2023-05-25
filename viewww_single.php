@@ -68,7 +68,7 @@ else
 tail();
 
 
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
 
 //////////////Functions///////////////////////
 

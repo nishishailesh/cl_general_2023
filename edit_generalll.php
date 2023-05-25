@@ -13,6 +13,7 @@ $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 //echo '<pre>';print_r($_POST);echo '</pre>';
 
+echo '<div id=response></div>';
 echo '<div class="two_column_two_by_one">';
 
 echo '<div>';
@@ -27,7 +28,7 @@ if($_POST['action']=='set_sample_status')
 	xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 
 	echo '</div>';	
-	xxx_edit_sample($link,$_POST['sample_id']);
+	//xxx_edit_sample($link,$_POST['sample_id']);
 
 }
 
@@ -37,7 +38,7 @@ if($_POST['action']=='edit_general')
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 
 		echo '</div>';	
-		xxx_edit_sample($link,$_POST['sample_id']);
+		//xxx_edit_sample($link,$_POST['sample_id']);
 }
 
 if($_POST['action']=='upload')
@@ -45,14 +46,16 @@ if($_POST['action']=='upload')
 	save_result_blob($link,$_POST['sample_id']);
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
-		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '</div>';	
+		//xxx_edit_sample($link,$_POST['sample_id']);
 }
 if($_POST['action']=='delete')
 {
 	delete_examination($link,$_POST['sample_id'],$_POST['examination_id']);
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
-		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '</div>';	
+	//xxx_edit_sample($link,$_POST['sample_id']);
 }
 if($_POST['action']=='insert')
 {
@@ -62,14 +65,15 @@ if($_POST['action']=='insert')
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 		echo '</div>';
-	xxx_edit_sample($link,$_POST['sample_id']);
+	//xxx_edit_sample($link,$_POST['sample_id']);
 }
 if($_POST['action']=='calculate')
 {
 	calculate_and_update($link,$_POST['sample_id']);
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
-		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '</div>';	
+		//xxx_edit_sample($link,$_POST['sample_id']);
 }
 
 if($_POST['action']=='sync_ALL')
@@ -77,7 +81,8 @@ if($_POST['action']=='sync_ALL')
 	sync_all($link,$_POST['sample_id']);
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
-		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '</div>';	
+		//xxx_edit_sample($link,$_POST['sample_id']);
 }
 
 if($_POST['action']=='sync_single')
@@ -92,7 +97,8 @@ if($_POST['action']=='sync_single')
 	}
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
-		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '</div>';	
+		//xxx_edit_sample($link,$_POST['sample_id']);
 }
 
 if($_POST['action']=='verify')
@@ -100,7 +106,8 @@ if($_POST['action']=='verify')
 	verify_sample($link,$_POST['sample_id']);
 		echo '<div class="d-inline-block"">';
 		showww_sid_button_release_status($link,$_POST['sample_id'],'');
-		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '</div>';	
+		//xxx_edit_sample($link,$_POST['sample_id']);
 }
 
 if($_POST['action']=='verification_done')
@@ -120,7 +127,8 @@ if($_POST['action']=='verification_done')
 	//}
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
-		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '</div>';	
+		//xxx_edit_sample($link,$_POST['sample_id']);
 }
 
 if($_POST['action']=='save_primary_result')
@@ -134,29 +142,41 @@ if($_POST['action']=='save_primary_result')
     	insert_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['result'],$_POST['uniq']);
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
-		echo '</div>';	xxx_edit_sample($link,$_POST['sample_id']);
+		echo '</div>';	
+		//xxx_edit_sample($link,$_POST['sample_id']);
     
 }
+	
+	$res=get_config_value($link,'restrictive_examination_for_edit_delete');
+	$res_result=get_one_ex_result($link,$_POST['sample_id'],$res);
+	if(strlen($res_result>0))
+	{	
+		xxx_view_sample($link,$_POST['sample_id']);
+		echo '</div>';
+		echo '<div></div>';
+	}
+	else
+	{
+		xxx_edit_sample($link,$_POST['sample_id']);
+		echo '</div>';
 
-
-echo '</div>';
-
-echo '<div>';
-	$request_sql="select * from examination order by request_route,name";
-	echo '<h3 class="bg-warning">Add new examinations</h3>';
-	xxx_get_data_specific_for_edit($link,$request_sql,$_POST['sample_id']);
-	echo '<div>
-			<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
-			echo '	<div id="status-window" 
-						class="border border-success">status:
-					</div>
-			<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Select Examinations</span>';
-			echo '	<div id="status-window" class="border border-success">
-						<input type=text id=my_search_text  onchange="my_search_test()">
-						<button type=button id=my_search onclick="my_search_test()">search</button>
-						<div id=my_search_result></div>
-					</div>						
-	</div>';
+		echo '<div>';
+			$request_sql="select * from examination order by request_route,name";
+			echo '<h3 class="bg-warning">Add new examinations</h3>';
+			xxx_get_data_specific_for_edit($link,$request_sql,$_POST['sample_id']);
+			echo '<div>
+					<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
+					echo '	<div id="status-window" 
+								class="border border-success">status:
+							</div>
+					<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Select Examinations</span>';
+					echo '	<div id="status-window" class="border border-success">
+								<input type=text id=my_search_text  onchange="my_search_test()">
+								<button type=button id=my_search onclick="my_search_test()">search</button>
+								<div id=my_search_result></div>
+							</div>						
+			</div>';
+	}
 						
 echo '</div>';
 
@@ -308,12 +328,26 @@ function xxx_save_insert_specific_for_edit($link,$selected_examination_list,$sam
 	$requested=array_filter(explode(',',$selected_examination_list));
 	//echo '<pre>following examinations are requested:<br>';print_r($requested);echo '</pre>';
 
+	$requested_temp=$requested;
+	$requested=array();
+	//add only if authorized to insert (with result already removed as above if not authorized
+	foreach($requested_temp as $ex)
+	{
+		if(is_authorized($link,$_SESSION['login'],$ex,'insert')===true)
+		{
+			$requested[]=$ex;
+		}
+	}
+	
+	print_r($requested);
+		
 	foreach($requested as $ex)
 	{
 		$examination_details=get_one_examination_details($link,$ex);
 		$edit_specification=json_decode($examination_details['edit_specification'],true);
 		$type=isset($edit_specification['type'])?$edit_specification['type']:'';
 		
+		echo $examination_details['sample_requirement'].'---'.get_one_ex_result($link,$sample_id,$GLOBALS['sample_requirement']).'<br>';
 		if(
 			$examination_details['sample_requirement']==get_one_ex_result($link,$sample_id,$GLOBALS['sample_requirement'])
 			||
@@ -324,14 +358,11 @@ function xxx_save_insert_specific_for_edit($link,$selected_examination_list,$sam
 			{
 				if(in_array($type,['id_multi_sample','id_single_sample']))
 				{
-					//echo 'hu';
 					update_id_type_examination_for_sample_array($link,array($sample_id),$ex,'');
 					insert_one_examination_without_result($link,$sample_id,$ex,$error='no');
-					//echo 'hbu';
 				}
 				else
 				{
-					//echo 'ggg';
 					insert_one_examination_without_result($link,$sample_id,$ex,$error='no');
 				}
 			}
@@ -343,10 +374,7 @@ function xxx_save_insert_specific_for_edit($link,$selected_examination_list,$sam
 		else
 		{
 			echo '<span class="text-danger">examination_id='.$ex.' require '.$examination_details['sample_requirement'].'</span><br>';
-		}
-		
-		
-			
+		}	
 	}
 }
 //////////////Functions///////////////////////

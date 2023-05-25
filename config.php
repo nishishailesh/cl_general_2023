@@ -176,6 +176,8 @@ $GLOBALS['unaccredited_string']='(Not in NABL Scope)';
 
 $GLOBALS['request_id_examination_id']=1045;
 
+///required for printing in 2023 update
+$GLOBALS['prerequisite_examination_for_print']=[10008,10010];
 
 //example configutation file for passwords  
 //see above: $GLOBALS['main_user_location']='/var/gmcs_config/staff.conf';

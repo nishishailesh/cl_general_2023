@@ -283,6 +283,7 @@ $(document).ready
 												examination_id: $(this).attr('data-exid'),
 												sample_id: $(this).attr('data-sid'),
 												result: $(this).val(),
+												session_name: $(this).attr('data-session_name'),
 												user: $(this).attr('data-user')
 											 },
 											function(data,status)
@@ -307,6 +308,7 @@ $(document).ready
 												result: $(this).val(),
 												type: $(this).attr('data-type'),
 												uniq: $(this).attr('data-uniq'),
+												session_name: $(this).attr('data-session_name'),
 												user: $(this).attr('data-user')
 											 },
 											function(data,status)
@@ -339,6 +341,7 @@ $(document).ready
 												examination_id: $(this).attr('data-exid'),
 												sample_id: $(this).attr('data-sid'),
 												result: $(this).val(),
+												session_name: $(this).attr('data-session_name'),
 												user: $(this).attr('data-user')
 											 },
 											function(data,status)
@@ -359,6 +362,7 @@ $(document).ready
 												examination_id: $(this).attr('data-exid'),
 												sample_id: $(this).attr('data-sid'),
 												result: $(this).val(),
+												session_name: $(this).attr('data-session_name'),
 												user: $(this).attr('data-user')
 											 },
 											function(data,status)
