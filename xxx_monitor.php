@@ -30,43 +30,9 @@ if(!isset($_SESSION['password']) && !isset($_POST['password']))
 }
 
 
-
-$ex_list=array(
-				array("examination_id"=>$GLOBALS['sample_requirement']),
-				array("examination_id"=>$GLOBALS['patient_name']),
-				array("examination_id"=>$GLOBALS['mrd']),
-				array("examination_id"=>$GLOBALS['OPD/Ward']),
-				array("examination_id"=>10001),
-				array("examination_id"=>10002),
-				array("examination_id"=>10003),
-				array("examination_id"=>10004),
-				array("examination_id"=>10005)
-				);
-$repeat=count($ex_list);
-
-echo '
-<style>
-
-.two_column 
-{
-  display: grid;
-  grid-template-columns: auto auto;
-}
-
-.ten_column 
-{
-  display: grid;
-  grid-template-columns: 0.2fr 0.2fr repeat('.$repeat.' , 0.2fr);
-  grid-template-rows: repeat(auto, 1fr);
-  justify-items: start;
-  
-}
-</style>
-';
-
 if($_POST['unique_id']!='sample_id')
 {
-	$max_unique_id=xxx_find_max_unique_id($link,$_POST['unique_id']);
+	$max_unique_id=xxx_find_max_unique_id($link,$_POST['unique_id'])+$_POST['show_offset'];
 
 	$examination_details=get_one_examination_details($link,$_POST['unique_id']);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
@@ -74,16 +40,20 @@ if($_POST['unique_id']!='sample_id')
 
 
 	//show samples as selected
-	$sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-200).'\' and \''.$max_unique_id.'\' order by id';
+	//$sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-198).'\' and \''.$max_unique_id.'\' ';
+	$sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-199).'\' and \''.$max_unique_id.'\' ';
 	//echo $sql.'<br>';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 
-	$extra_post='<input type=hidden name=examination_id value=\''.$_POST['unique_id'].'\'>';
+	$extra_post='	<input type=hidden name=unique_id value=\''.$_POST['unique_id'].'\'>
+					<input type=hidden name=id_range value=\''.$_POST['id_range'].'\'>
+					<input type=hidden name=show_offset value=\''.$_POST['show_offset'].'\'>';
 }
 else if($_POST['unique_id']=='sample_id')
 {
-	$id_range_array=explode('-',$_SESSION['id_range']);
-	$max_unique_id=find_max_sample_id($link,$id_range_array[0],$id_range_array[1]);
+	
+	$id_range_array=explode('-',$_POST['id_range']);
+	$max_unique_id=find_max_sample_id($link,$id_range_array[0],$id_range_array[1])+$_POST['show_offset'];
 
 	//$examination_details=get_one_examination_details($link,$_POST['unique_id']);
 	//$edit_specification=json_decode($examination_details['edit_specification'],true);
@@ -91,92 +61,165 @@ else if($_POST['unique_id']=='sample_id')
 
 
 	//show samples as selected
-	$sql='select sample_id from sample_link where sample_id between \''.($max_unique_id-200).'\' and \''.$max_unique_id.'\' order by sample_id';
+	//$sql='select sample_id from sample_link where sample_id between \''.($max_unique_id-198).'\' and \''.$max_unique_id.'\' order by sample_id';
+	$sql='select sample_id from sample_link where sample_id between \''.($max_unique_id-199).'\' and \''.$max_unique_id.'\' order by sample_id';
 	//echo $sql.'<br>';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 
-	$extra_post='<input type=hidden name=examination_id value=sample_id>';
+	$extra_post='	<input type=hidden name=unique_id value=sample_id>
+					<input type=hidden name=id_range value=\''.$_POST['id_range'].'\'>
+					<input type=hidden name=show_offset value=\''.$_POST['show_offset'].'\'>';
 }
 
-echo '<div class="ten_column">';
+echo '<div class="monitor_grid_horizontal">';		
 
 while($ar=get_single_row($result))
 {
-	//echo '<div>';
-	showww_sid_button_release_status_horizontal($link,$ar['sample_id'],$extra_post,$_POST['unique_id'],$ex_list);					
-	//echo '</div>';
+			showww_sid_button_release_status_horizontal($link,$ar['sample_id'],$extra_post,$_POST['unique_id'],$checkbox='yes');
 }
+
 echo '</div>';
+
 //echo '<pre>monitor:post';print_r($_POST);echo '</pre>';
 //echo '<pre>monitor:session';print_r($_SESSION);echo '</pre>';
 
 
 
-function showww_sid_button_release_status_horizontal($link,$sid,$extra_post='',$uid=0,$ex_list=array())
+function showww_sid_button_release_status_horizontal($link,$sid,$extra_post='',$uid=0,$checkbox='no')
 {
 	if(!sample_exist($link,$sid))
 	{
-			echo '<div  class="d-inline-block w-100 border">';
-			echo $sid;
-			echo '</div>';
-			
-			echo	'<div  class="d-inline-block  w-100 border"></div>';
-				
-			foreach($ex_list as $ex_data)
-			{
-				echo '<div  class="d-inline-block  w-100 border"></div>';
-			}
+		echo '<div class="btn-group-vertical m-0 p-0 border border-light print_hide">'.$sid.'</div>';		
 		return;
 	}
 
-	$border_color='';
+	$status_button_info=get_config_value($link,'status_button_info');
+	$ex_for_status_button=explode(',',$status_button_info);
+	
+	$status_info_string='';
+	foreach($ex_for_status_button as $status_ex_id)
+	{
+		$ex_value=get_any_examination_result($link,$sid,$status_ex_id);
+		$status_info_string=$status_info_string.'<div>'.$ex_value.'</div>';
+	}
+	
 	if($uid>0)
 	{
 		$ex_value=get_id_type_examination_result($link,$sid,$uid);
 		$examination_details=get_one_examination_details($link,$uid);
 		$edit_specification=json_decode($examination_details['edit_specification'],true);
 		$prefix=isset($edit_specification['unique_prefix'])?$edit_specification['unique_prefix']:'';
-		//echo '<h1>XXX'.$did.'XXX</h1>';
-		//$did=str_pad($prefix.$ex_value,7,'_');
+		//$did=str_pad($prefix.$ex_value,7,'.');
 		$did=$prefix.$ex_value;
-		if($ex_value%10==0){$border_color=' border-danger ';}
 	}
 	else
 	{
-		if($sid%10==0){$border_color=' border-danger ';}
 		 $did=$sid;
 	}
 
-	echo '<div  class="d-inline-block w-100 border '.$border_color.'">';
-	xxx_sample_id_view_button($sid,$target=' target=_blank ',$label=$sid);
-	echo '</div>';
+	$final_state=xxx_get_sample_action_last($link,$sid);
+	$bgcolor=isset($final_state['color'])?$final_state['color']:'#FFFFFF';
 	
-	echo	'<div  class="d-inline-block  w-100 border  '.$border_color.'">'.$did.'</div>';
+	/*
+	//1
+				echo '		 <button type="button" 
+				style="background-color:'.$bgcolor.'" 
+				class="m-0 p-0 btn btn-success btn-sm text-dark d-inline-block" 
+				>'.$did.'</button>';
+	*/
+	//2
+				echo '<div>
+					<form method=post action=viewww_single.php class=print_hide target=_blank style="background-color:'.$bgcolor.'" >
+					<button style="width:100%;height:100%;" class="btn btn-outline-success btn-sm btn-block text-dark " name=sample_id value=\''.$sid.'\' >.'.$did.colorize_eq_str(get_equipment_str($link,$sid)).'</button>
+					<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+					<input type=hidden name=action value=view_single>';
+					echo '</form>
+				</div>';
+
+	//3
+				if($checkbox=='yes')
+				{
+					echo '<input 
+					onclick="
+									//alert(\'hi\')
+									update_list_of_id(this)
+							"
+					class="status_check_box" value='.$did.' id=status_check_box^'.$did.'  style="background-color:'.$bgcolor.';" type=checkbox>';
+				}
+				
+	//4
+				echo '<div class="d-inline-block" >';
+					echo $status_info_string;
+				echo '</div>';
+
+	//5
+				echo '<div class="d-inline-block" >';
+				xxx_manage_sample_status_change_horizontal_shortcut($link,$sid);
+				echo '</div>';
+
+
+
+
 		
-	foreach($ex_list as $ex_data)
-	{
-		echo '<div  class="d-inline-block  w-100 border">'.get_one_ex_result($link,$sid,$ex_data['examination_id']).'</div>';
-	}
 }
 
-function show_all_sample_status($link,$sid)
+
+
+function xxx_manage_sample_status_change_horizontal_shortcut($link,$sample_id)
 {
-	$sql='select examination_id from `sample_status` order by priority';
-	$result=run_query($link,$GLOBALS['database'],$sql);
+$sql='select distinct priority from `sample_status` order by priority';
+$result=run_query($link,$GLOBALS['database'],$sql);
 
-	echo '<div>';
-		while($ar=get_single_row($result))
-		{
-			echo '<div class="d-inline-block align-top m-1">';
-				$ex_value=get_one_ex_result($link,$sid,$ar['examination_id']);
-				echo '<button class="btn  w-100 btn-primary btn-rounded-right p-0 m-0 btn-sm"
-							style="	border:solid black 1px;padding:3px;  
-									border-top-right-radius: 25px; 
-									border-bottom-right-radius: 25px;">'.$ex_value.'
-						</button>';
-			echo '</div>';
-		}
-	echo '</div>';
+
+echo '<div class="bg-light border border-info print_hide">';
+echo '<form method=post id="status_change_form" class="d-inline">';
+	while($ar=get_single_row($result))
+	{
+		echo '<div class="d-inline-block align-top m-1">';
+			$sql_b='select * from `sample_status` where priority=\''.$ar['priority'].'\'';
+			$result_b=run_query($link,$GLOBALS['database'],$sql_b);
+			while($ar_b=get_single_row($result_b))
+			{	
+				$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);			
+				//if(!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id'])){continue;}
+				if($ar_b['shortcut']<1 ||
+				!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id']))
+				
+				{
+					echo '<div class="d-block">';
+					echo '<button disabled type="button" class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
+								style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
+										border-top-right-radius: 25px; 
+										border-bottom-right-radius: 25px;"
+								name=status_examination_id value='.$ar_b['examination_id'].'>'.$ar_b['name'].'<br><span class="badge badge-success">'.$val.'</span>
+							</button>';
+					echo '</div>';	
+				}
+				else
+				{
+					echo '<div class="d-block">';
+					echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
+								style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
+										border-top-right-radius: 25px; 
+										border-bottom-right-radius: 25px;"
+								name=status_examination_id value='.$ar_b['examination_id'].'>'.$ar_b['name'].'<br><span class="badge badge-success">'.$val.'</span>
+							</button>';
+					echo '</div>';					
+					
+				}
+			}
+		echo '</div>';
+	}
+
+	echo '<input type=hidden name=action value=set_sample_status>';
+	echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+	echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';
+
+echo '</form>';
+echo '</div>';
+
 }
+
+
 
 ?>

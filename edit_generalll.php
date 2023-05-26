@@ -337,6 +337,10 @@ function xxx_save_insert_specific_for_edit($link,$selected_examination_list,$sam
 		{
 			$requested[]=$ex;
 		}
+		else
+		{
+			echo '<h5 class="bg-warning">This user is not authorized for [insert] with examination_id='.$ex.'</h5>';
+		}
 	}
 	
 	print_r($requested);

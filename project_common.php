@@ -9233,12 +9233,13 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 
 function xxx_show_all_buttons_for_sample($link,$sample_id)
 {
-	echo '<div class="btn-group border border-danger">';
+	echo '<div class="btn-group" role="group">';
 		get_lables_button($link,$sample_id,'sample_id');
 		xxx_sample_id_prev_button($sample_id);
 		xxx_sample_id_view_button($sample_id);
 		xxx_sample_id_next_button($sample_id);
 		
+		//edit delete not possible if one of the examination is complated
 		$res=get_config_value($link,'restrictive_examination_for_edit_delete');
 		$res_result=get_one_ex_result($link,$sample_id,$res);
 
@@ -9249,11 +9250,12 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		}
 		else
 		{
-			//xxx_sample_id_unrelease_button($sample_id);	
+			xxx_sample_id_unrelease_button($sample_id);	
 		}
 		echo '<div class="btn-group " role="group">';
 		
 		
+		//print not possible  if none of the examination in array is filled
 		$ret=false;
 		$pre=get_config_value($link,'prerequisite_examination_for_print');
 		$pre_array=explode(',',$pre);
@@ -9269,11 +9271,12 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		if($ret===true)
 		{
 			xxx_sample_id_print_button($link,$sample_id);	
-		}		
 			//sample_id_email_button($sample_id);
 			//sample_id_telegram_button($sample_id);
 			//sample_id_sms_button($sample_id,$link);
 			//sample_id_xmpp_button($sample_id);
+		}		
+
 		echo '</div>';
 	echo '</div>';
 }
@@ -9517,28 +9520,45 @@ function xxx_get_sample_action($link,$sample_id,$extra_post='')
 						$result_b=run_query($link,$GLOBALS['database'],$sql_b);
 						while($ar_b=get_single_row($result_b))
 						{	
+							$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);	//false if not yet requested
 							//if shortcut not allowed do not put in box
-							if($ar_b['shortcut']<1){continue;}
+							if($ar_b['shortcut']<1 ||
+							!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id']))
+							{
+								echo '<div class="d-block">';
+												echo '<button disabled class="btn  text-left btn-light btn-sm d-block"
+													name=action value=set_sample_status
+														style="	border:solid black 0.3px;padding:1px;  
+																background-color:'.$ar_b['color'].'; 
+																">'.$ar_b['name'].'-'.$val.'
+												</button>';
+												echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+												echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';
+												echo '<input type=hidden name=status_examination_id value=\''.$ar_b['examination_id'].'\'>';
+												echo $extra_post;
+								echo '</div>';												
+							}
 		 
 							//check dependancy
-							if(!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id'])){continue;}
+							//if(!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id'])){continue;}
 
-							$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);	//false if not yet requested
-							
-							echo '<div class="d-block">';
-								echo '<form method=post>';
-											echo '<button class="btn  text-left btn-light btn-sm d-block"
-												name=action value=set_sample_status
-													style="	border:solid black 0.3px;padding:1px;  
-															background-color:'.$ar_b['color'].'; 
-															">'.$ar_b['name'].'-'.$val.'
-											</button>';
-											echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
-											echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';
-											echo '<input type=hidden name=status_examination_id value=\''.$ar_b['examination_id'].'\'>';
-											echo $extra_post;
-								echo '</form>';
-							echo '</div>';
+							else
+							{
+								echo '<div class="d-block">';
+									echo '<form method=post>';
+												echo '<button class="btn  text-left btn-light btn-sm d-block"
+													name=action value=set_sample_status
+														style="	border:solid black 0.3px;padding:1px;  
+																background-color:'.$ar_b['color'].'; 
+																">'.$ar_b['name'].'-'.$val.'
+												</button>';
+												echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+												echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';
+												echo '<input type=hidden name=status_examination_id value=\''.$ar_b['examination_id'].'\'>';
+												echo $extra_post;
+									echo '</form>';
+								echo '</div>';
+							}
 						}
 					echo '</div>';
 				}
@@ -9600,6 +9620,7 @@ $result=run_query($link,$GLOBALS['database'],$sql);
 
 
 echo '<div class="bg-light border border-info print_hide">';
+echo '<form method=post id="status_change_form" class="d-inline">';
 	while($ar=get_single_row($result))
 	{
 		echo '<div class="d-inline-block align-top m-1">';
@@ -9607,47 +9628,27 @@ echo '<div class="bg-light border border-info print_hide">';
 			$result_b=run_query($link,$GLOBALS['database'],$sql_b);
 			while($ar_b=get_single_row($result_b))
 			{	
-				if(!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id']))
-				{
-					continue;
-				}
-				
-				echo '<form method=post id="status_change_form" class="d-inline">';
-					$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);
-					$st_d='<div style="font-size:0.5em;color:'.$ar_b['color'].';">'.$val.'</div>';
-					echo '<div class="d-block">';
-					if(strlen($val)>0)
-					{
-						/*echo '<button class="btn btn-sm b-inline-block p-0 m-0 "
-									style="	border:solid '.$ar_b['color'].' 3px;
-									font-size:0.8em"
-									name=status_examination_id value='.$ar_b['examination_id'].'>X
-								</button>';*/
-								echo '<input type=hidden name=action value=unset_sample_status>';
-					}
-					else
-					{
-						echo '<input type=hidden name=action value=set_sample_status>';
-					}
-					
-					echo '<button class="btn btn-rounded-right btn-sm b-inline-block"
-								style="	border:solid '.$ar_b['color'].' 3px;  
-										border-top-right-radius: 25px; 
-										border-bottom-right-radius: 25px;
-										"
-								name=status_examination_id value='.$ar_b['examination_id'].'>
-								'.$ar_b['name'].'<br>'.$st_d.'
-							</button>';
-					echo '</div>';
-			
-					echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
-					echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';
+		
+			//if(!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id'])){continue;}
 
-				echo '</form>';
+			$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);
+			echo '<div class="d-block">';
+			echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
+						style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
+								border-top-right-radius: 25px; 
+								border-bottom-right-radius: 25px;"
+						name=status_examination_id value='.$ar_b['examination_id'].'>'.$ar_b['name'].'<br><span class="badge badge-success">'.$val.'</span>
+					</button>';
+			echo '</div>';
 			}
 		echo '</div>';
 	}
 
+	echo '<input type=hidden name=action value=set_sample_status>';
+	echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+	echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';
+
+echo '</form>';
 echo '</div>';
 
 }
