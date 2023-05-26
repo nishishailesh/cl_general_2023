@@ -48,6 +48,10 @@ if(isset($_POST['action']))
 	{
 		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
 	}
+	elseif($_POST['action']=='unset_sample_status')
+	{
+		delete_examination($link,$_POST['sample_id'],$_POST['status_examination_id']);
+	}
 }
 
 xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
@@ -68,7 +72,7 @@ else
 tail();
 
 
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 
 //////////////Functions///////////////////////
 
