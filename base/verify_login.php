@@ -114,11 +114,11 @@ if($verification_code==100 && !isset($GLOBALS['nojunk']))
 
                                 echo    '<div class="btn-group print_hide">
                                 <div class="dropdown m-0 p-0">
-                                        <button class="btn btn-primary pt-0 pb-0 pl-2 pr-2" type="button" data-toggle="dropdown"><h3>&#x2261</h3></button>
+                                        <button class="btn btn-primary pt-0 pb-0 pl-2 pr-2" type="button" data-toggle="dropdown">['.$name.']<h3 class="d-inline-block">&#x2261</h3></button>
                                         <div class="dropdown-menu m-0 p-0 dropdown-menu-right">
                                                 <div class="btn-group-vertical d-block" >
-                                                        <button class="btn btn-outline-primary m-0 p-0" type=submit name=action value=change_password   >Change Password        </button>
-                                                        <button class="btn btn-outline-primary m-0 p-0" type=submit name=action value=logout                    >Logout ('.$name.')     </button>
+                                                        <button class="btn btn-outline-primary m-0 p-0" type=submit name=action value=change_password   >Change Password</button>
+                                                        <button class="btn btn-outline-primary m-0 p-0" type=submit name=action value=logout            >Logout</button>
                                                 </div>
                                         </div>
                                 </div>

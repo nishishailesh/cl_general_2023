@@ -26,6 +26,7 @@ if(isset($_POST['action']))
 	}
 }
 
+$horizontal_status_lot_size=get_config_value($link,'horizontal_status_lot_size');
 
 echo '<style>
 .monitor_grid_horizontal
@@ -35,9 +36,9 @@ grid-gap: 5px;
 align-items: start;
 grid-template-areas:
 ';
-	for ($i=1;$i<=200;$i++)
+	for ($i=1;$i<=$horizontal_status_lot_size;$i++)
 	{
-		echo '"auto auto auto auto"';
+		echo '"auto auto auto auto auto"';
 	}
 echo ';}
 
@@ -53,11 +54,12 @@ echo ';}
 
 /////////////for status display/////////////
 xxx_make_unique_id_option($link);
-echo '<div id=monitor>write offset(optional, for all ids), write id_range(optional, only for sample_id) and press appropriate id button</div>';
-
 echo '<div class="m-3"><fieldset  ><legend>Change Sample Status</legend>';
 manage_bulk_status_change($link);
 echo '</fieldset></div>';
+echo '<div id=monitor>write offset(optional, for all ids), write id_range(optional, only for sample_id) and press appropriate id button</div>';
+
+
 
 //////////////user code ends////////////////
 tail();
@@ -215,8 +217,8 @@ function insert_update_one_examination_with_result_using_unique_id($link,$unique
 		//echo 'unique_id='.$unique_id.' is not a number<br>';		
 		$sql="SELECT * from examination
 					where 
-					JSON_EXTRACT(edit_specification, '$.type')='id_single_sample'  or 
-					JSON_EXTRACT(edit_specification, '$.type')='id_multi_sample'";
+					JSON_EXTRACT(edit_specification, '$.type')='id_single_sample'";
+					
 					
 		$result=run_query($link,$GLOBALS['database'],$sql);
 		while($examination_details=get_single_row($result))
@@ -276,6 +278,7 @@ function my_is_int($string)
 jQuery(document).ready(
 	function() 
 	{
+		//alert('hi');
 		callServer()
 	}
 );
@@ -325,6 +328,51 @@ function update_list_of_id(me)
 	}
 
 }
+
+
+/*
+function update_list_of_id(me)
+{
+	//update variable
+	if(list_of_id_to_update.includes(me.value))
+	{
+		index=list_of_id_to_update.indexOf(me.value)
+		//alert(" before removal:: index:"+index+" index value: "+list_of_id_to_update[index]+" list:"+list_of_id_to_update)
+		list_of_id_to_update.splice(index,1)
+		//alert(" before removal:: index:"+index+" index value: "+list_of_id_to_update[index]+" list:"+list_of_id_to_update)
+	}
+	else
+	{
+		//alert("before addition:: list:"+list_of_id_to_update)
+		list_of_id_to_update.push(me.value);
+		//alert("before addition:: list:"+list_of_id_to_update)
+	}
+	
+	//display selected
+	document.getElementById('list_of_id').value=list_of_id_to_update.join()
+	
+	
+	//uncheck all
+	x=document.getElementsByClassName("status_check_box")
+	for (i=0;i<x.length;i++){x[i].checked=false}
+	
+	//check if in list
+	for(i=0;i<list_of_id_to_update.length;i++)
+	{
+		if(document.getElementById('status_check_box^'+list_of_id_to_update[i]))
+		{
+			document.getElementById('status_check_box^'+list_of_id_to_update[i]).checked=true
+		}
+	}
+	
+	//clear textbox
+	if(document.getElementById('id_for_status_change')==me)
+	{
+		me.value=''
+	}
+
+}
+*/
 
 function callServer()
 {

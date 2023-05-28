@@ -26,8 +26,7 @@ if(isset($_POST['action']))
 	}
 }
 
-
-
+/*
 echo '<style>
 .monitor_grid
 {
@@ -42,13 +41,33 @@ grid-template-areas:
 		if($i%10==0 && ($i/10)%2==0){echo '\' ';}
 	}
 echo ';}
-
-.one_cell
-{
- display:grid;  
- grid-template-columns:auto auto;
-}
 </style>';
+*/
+
+$status_lot_size=get_config_value($link,'status_lot_size');
+$status_column_size=get_config_value($link,'status_column_size');
+
+echo '<style>
+.monitor_grid
+{
+display: grid;
+grid-gap: 5px;
+grid-template-areas:
+';
+	$count=1;
+	echo '\'';
+	$str='';
+	for ($i=1;$i<=($status_lot_size+$status_column_size*2);$i++)
+	{
+		$str=$str. ' a'.str_pad($i,3,0,STR_PAD_LEFT).' ';
+		if($count%$status_column_size==0){$str=$str.'\' \'';}
+		$count++;
+	}
+	$str=substr($str,0,-1);
+	echo $str;
+echo '}';
+
+echo '</style>';
 
 ////////for status change display//////////////
 

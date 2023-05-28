@@ -8,7 +8,7 @@ echo '		  <link rel="stylesheet" href="project_common.css">
 		  <script src="project_common.js"></script>';
 		  
 head($GLOBALS['application_name']);
-login();
+login('xxx_start_button.php');
 /*
 echo '<form method=post action=get_database_id_no_login.php class="text-center jumbotron">
 		<button class="btn btn-info">Get PDF Report without Login (for Clinical Residents/Staff)</button>

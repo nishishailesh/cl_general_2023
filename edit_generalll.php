@@ -167,10 +167,10 @@ if($_POST['action']=='save_primary_result')
 			echo '<div>
 					<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
 					echo '	<div id="status-window" 
-								class="border border-success">status:
+								class="border border-success">
 							</div>
-					<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Select Examinations</span>';
-					echo '	<div id="status-window" class="border border-success">
+					<span class="badge badge-primary"  data-toggle="collapse" data-target="#select-window">Select Examinations</span>';
+					echo '	<div id="select-window" class="border border-success">
 								<input type=text id=my_search_text  onchange="my_search_test()">
 								<button type=button id=my_search onclick="my_search_test()">search</button>
 								<div id=my_search_result></div>

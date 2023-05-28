@@ -9,7 +9,7 @@ $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 if(!$link){exit(0);}
 //echo '<pre>';print_r($_POST);echo '</pre>';
 
-echo 'search_text='.$_POST['search_text'];
+echo 'search_text='.$_POST['search_text'].'<br>';
 
 $sql='select * from examination where lower(name) like lower("%'.$_POST['search_text'].'%")';
 $result=run_query($link,$GLOBALS['database'],$sql);

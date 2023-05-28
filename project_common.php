@@ -235,6 +235,15 @@ function main_menu($link)
 			</div>
 		</div>
 		<div class="dropdown m-0 p-0">
+			<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Worklist-N</button>
+			<div class="dropdown-menu m-0 p-0 ">
+				<div class="btn-group-vertical d-block">
+					<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_unique_id.php type=submit name=action value="get_worklist">by Unique ID</button>
+					<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_examination_id.php type=submit name=action value="get_worklist">by Examination ID</button>'; 
+				echo '</div>
+			</div>
+		</div>
+		<div class="dropdown m-0 p-0">
 			<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Manage Status</button>
 			<div class="dropdown-menu m-0 p-0 ">
 				<div class="btn-group-vertical d-block">
@@ -2237,18 +2246,21 @@ function edit_blob_field($link,$examination_id,$sample_id)
 								$sample_id.'-'.$examination_details['examination_id'].'-'.$ar_blob['fname'],
 								round(strlen($ar_blob['result'])/1024,0));
 	}
-	echo_upload_two_pk($sample_id,$examination_id);	
-	echo '<input type=hidden
-					id="'.$element_id.'" 
-					name="'.$examination_id.'" 
-					data-exid="'.$examination_id.'" 
-					data-sid="'.$sample_id.'" 
-					data-type="blob" 
-					data-user="'.$_SESSION['login'].'" 
-					class="form-control autosave-blob p-0 m-0 no-gutters" 
-					>';
-	get_primary_result_blob($link,$sample_id,$examination_id);
-						
+	
+	if(is_authorized($link,$_SESSION['login'],$examination_id,'update'))
+	{
+		echo_upload_two_pk($sample_id,$examination_id);	
+		echo '<input type=hidden
+						id="'.$element_id.'" 
+						name="'.$examination_id.'" 
+						data-exid="'.$examination_id.'" 
+						data-sid="'.$sample_id.'" 
+						data-type="blob" 
+						data-user="'.$_SESSION['login'].'" 
+						class="form-control autosave-blob p-0 m-0 no-gutters" 
+						>';
+		get_primary_result_blob($link,$sample_id,$examination_id);
+	}					
 	//echo
 	echo '</div>';
 	if(isset($ar_blob['fname']))
@@ -4585,7 +4597,8 @@ function insert_one_examination_with_result($link,$sample_id,$examination_id,$re
 	{
 		echo '<h5 class="bg-warning">This user is not authorized for [insert] with examination_id='.$examination_id.'</h5>';
 		return false;
-	}	//recording_time=now(),recorded_by=\''.$_POST['user'].'\'
+	}	
+	//recording_time=now(),recorded_by=\''.$_POST['user'].'\'
 	
 	$sql='insert into result (sample_id,examination_id,result,recording_time,recorded_by)
 			values ("'.$sample_id.'","'.$examination_id.'","'.my_safe_string($link,$result).'",now(),"'.$_SESSION['login'].'")';
@@ -4686,7 +4699,12 @@ function update_id_type_examination_for_sample_array($link,$sample_id_array,$exa
 
 function update_one_examination_with_result($link,$sample_id,$examination_id,$result)
 {
-
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'update'))
+	{
+		echo '<h5 class="bg-warning">This user is not authorized for [update] with examination_id='.$examination_id.'</h5>';
+		return false;
+	}	
+	
 	$sql='update result
 			set 
 				result=\''.my_safe_string($link,$result).'\',
@@ -4718,6 +4736,12 @@ function update_one_examination_with_result($link,$sample_id,$examination_id,$re
 function insert_one_examination_blob_without_result($link,$sample_id,$examination_id,$error='yes')
 {
 	//Target for INSERT_CONTROL
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'insert'))
+	{
+		echo '<h5 class="bg-warning">This user is not authorized for [insert] with examination_id='.$examination_id.'</h5>';
+		return false;
+	}	
+	
 	$sql='insert into result_blob (sample_id,examination_id)
 			values ("'.$sample_id.'","'.$examination_id.'")';
 	if(!run_query($link,$GLOBALS['database'],$sql,$error))
@@ -6593,6 +6617,32 @@ $GLOBALS['released_by']=1014;
 $GLOBALS['interim_released_by']=1019;
  * */
  
+function get_equipment_str_old($link,$sample_id)
+{
+	$r=get_result_of_sample_in_array($link,$sample_id);
+	
+	$eq_ar=array();
+	//print_r($r);
+	foreach($r as $k=>$v)
+	{
+		$examination_details=get_one_examination_details($link,$k);
+		$edit_specification=json_decode($examination_details['edit_specification'],true);
+		$eq=isset($edit_specification['equipment'])?$edit_specification['equipment']:'';
+		$eq_ar[]=$eq;
+	}
+	$eq_ar_u=array_unique($eq_ar);
+	sort($eq_ar_u);
+	
+	$eq_str=str_pad(
+					implode(	"",
+								$eq_ar_u
+							)
+					,3);
+	//echo 'xx'.$eq_str;
+	return $eq_str;
+}
+
+ 
 function get_equipment_str($link,$sample_id)
 {
 	$r=get_result_of_sample_in_array($link,$sample_id);
@@ -6665,7 +6715,7 @@ function show_sid_button_release_status($link,$sid,$extra_post='')
 		sample_id_view_button(
 			$sid,
 			'target=_blank style="background-color:'.$GLOBALS['sample_status'][$final_state][2].'" ',
-			colorize_eq_str(get_equipment_str($link,$sid))
+			colorize_eq_str($link,get_equipment_str($link,$sid))
 			);
 	echo '</div>';
 }
@@ -6695,15 +6745,17 @@ function get_sample_action($link,$sample_id,$extra_post='')
 }
 
 
-function colorize_eq_str($str_real)
+function colorize_eq_str($link,$str_real)
 {
 	$colorised_str='';
 	$str=str_split($str_real);
+	$local_eq_color_code=json_decode(get_config_value($link,'eq_color_code'),True);
+	
 	foreach ($str as $chr)
 	{
-		if(array_key_exists($chr,$GLOBALS['eq_color_code']))
+		if(array_key_exists($chr,$local_eq_color_code))
 		{
-			$colorised_str=$colorised_str.'<span  style=" padding:2px; background-color:'.$GLOBALS['eq_color_code'][$chr].'" >'.$chr.'</span>';
+			$colorised_str=$colorised_str.'<span  style=" padding:2px; background-color:'.$local_eq_color_code[$chr].'" >'.$chr.'</span>';
 		}
 		else
 		{			
@@ -7550,7 +7602,7 @@ function showww_sid_button_release_status($link,$sid,$extra_post='',$uid=0,$chec
 
 				echo '<div class="d-block w-100">
 					<form method=post action=viewww_single.php class=print_hide target=_blank style="background-color:'.$bgcolor.'" >
-					<button style="width:100%;height:100%;" class="btn btn-outline-success btn-sm btn-block text-dark " name=sample_id value=\''.$sid.'\' >.'.colorize_eq_str(get_equipment_str($link,$sid)).'</button>
+					<button style="width:100%;height:100%;" class="btn btn-outline-success btn-sm btn-block text-dark " name=sample_id value=\''.$sid.'\' >.'.colorize_eq_str($link,get_equipment_str($link,$sid)).'</button>
 					<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 					<input type=hidden name=action value=view_single>';
 					echo '</form>
@@ -8188,7 +8240,13 @@ function update_one_examination_with_result_blob($link,$sid,$ex_id,$v)
 */
 
 		//echo '================='.$sid;
-		
+
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'update'))
+	{
+		echo '<h5 class="bg-warning">This user is not authorized for [update] with examination_id='.$examination_id.'</h5>';
+		return false;
+	}	
+			
 		$fvalue='__ex__'.$ex_id;
 		$blob=file_to_str($link,$_FILES[$fvalue]);
 		if(strlen($blob)!=0)
@@ -8952,6 +9010,10 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 		{
 			$with_result[]=$ex;
 		}
+		else
+		{
+			echo '<h5 class="bg-warning">This user is not authorized for [update] with examination_id='.$ex.'</h5>';	
+		}
 	}	
 	
 	//echo '<pre>following examinations are filled with results:<br>';print_r($with_result);echo '</pre>';
@@ -8972,9 +9034,12 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 		{
 			$requested[]=$ex;
 		}
-	}
+		else
+		{
+			echo '<h5 class="bg-warning">This user is not authorized for [insert] with examination_id='.$ex.'</h5>';	
+		}	}
 
-	print_r($requested);
+	//print_r($requested);
 
 
 	//echo '<pre>following examinations are requested+filled with results:<br>';print_r($requested);echo '</pre>';
@@ -9521,7 +9586,7 @@ function xxx_get_sample_action($link,$sample_id,$extra_post='')
 						while($ar_b=get_single_row($result_b))
 						{	
 							$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);	//false if not yet requested
-							//if shortcut not allowed do not put in box
+							//if shortcut not allowed / dependancy not satisfied disable
 							if($ar_b['shortcut']<1 ||
 							!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id']))
 							{

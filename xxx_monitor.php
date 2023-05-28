@@ -7,7 +7,7 @@ require_once 'project_common.php';
 require_once $GLOBALS['main_user_location'];
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
-$lot_size=100;
+$horizontal_status_lot_size=get_config_value($link,'horizontal_status_lot_size');
 
 if(isset($_POST['login']))
 {
@@ -41,7 +41,7 @@ if($_POST['unique_id']!='sample_id')
 
 	//show samples as selected
 	//$sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-198).'\' and \''.$max_unique_id.'\' ';
-	$sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-199).'\' and \''.$max_unique_id.'\' ';
+	$sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-$horizontal_status_lot_size+1).'\' and \''.$max_unique_id.'\' ';
 	//echo $sql.'<br>';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 
@@ -62,7 +62,7 @@ else if($_POST['unique_id']=='sample_id')
 
 	//show samples as selected
 	//$sql='select sample_id from sample_link where sample_id between \''.($max_unique_id-198).'\' and \''.$max_unique_id.'\' order by sample_id';
-	$sql='select sample_id from sample_link where sample_id between \''.($max_unique_id-199).'\' and \''.$max_unique_id.'\' order by sample_id';
+	$sql='select sample_id from sample_link where sample_id between \''.($max_unique_id-$horizontal_status_lot_size+1).'\' and \''.$max_unique_id.'\' order by sample_id';
 	//echo $sql.'<br>';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 
@@ -111,6 +111,7 @@ function showww_sid_button_release_status_horizontal($link,$sid,$extra_post='',$
 		$prefix=isset($edit_specification['unique_prefix'])?$edit_specification['unique_prefix']:'';
 		//$did=str_pad($prefix.$ex_value,7,'.');
 		$did=$prefix.$ex_value;
+		$did=$prefix.$ex_value;
 	}
 	else
 	{
@@ -120,24 +121,31 @@ function showww_sid_button_release_status_horizontal($link,$sid,$extra_post='',$
 	$final_state=xxx_get_sample_action_last($link,$sid);
 	$bgcolor=isset($final_state['color'])?$final_state['color']:'#FFFFFF';
 	
-	/*
+	
 	//1
-				echo '		 <button type="button" 
-				style="background-color:'.$bgcolor.'" 
-				class="m-0 p-0 btn btn-success btn-sm text-dark d-inline-block" 
-				>'.$did.'</button>';
-	*/
-	//2
 				echo '<div>
 					<form method=post action=viewww_single.php class=print_hide target=_blank style="background-color:'.$bgcolor.'" >
-					<button style="width:100%;height:100%;" class="btn btn-outline-success btn-sm btn-block text-dark " name=sample_id value=\''.$sid.'\' >.'.$did.colorize_eq_str(get_equipment_str($link,$sid)).'</button>
+					<button style="width:100%;height:100%;" class="btn btn-outline-success btn-sm btn-block text-dark " name=sample_id value=\''.$sid.'\' >'
+					.$did.
+					'</button>
+					<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+					<input type=hidden name=action value=view_single>';
+					echo '</form>
+			</div>';
+	
+	//2
+				echo '<div>
+					<form method=post action=viewww_single.php class=print_hide target=_blank  >
+					<button style="width:100%;height:100%;" class="btn btn-outline-success btn-sm btn-block text-dark " name=sample_id value=\''.$sid.'\' >.'
+					.colorize_eq_str($link,get_equipment_str($link,$sid))
+					.'</button>
 					<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 					<input type=hidden name=action value=view_single>';
 					echo '</form>
 				</div>';
 
 	//3
-				if($checkbox=='yes')
+				/*if($checkbox=='yes')
 				{
 					echo '<input 
 					onclick="
@@ -145,19 +153,28 @@ function showww_sid_button_release_status_horizontal($link,$sid,$extra_post='',$
 									update_list_of_id(this)
 							"
 					class="status_check_box" value='.$did.' id=status_check_box^'.$did.'  style="background-color:'.$bgcolor.';" type=checkbox>';
+				}*/
+
+
+				if($checkbox=='yes')
+				{
+					echo '<input 
+					onclick="
+									//alert(\'hi\')
+									update_list_of_id(this)
+							"
+					class="status_check_box" value='.$sid.' id=status_check_box^'.$sid.'  style="background-color:'.$bgcolor.';" type=checkbox>';
 				}
-				
+								
 	//4
 				echo '<div class="d-inline-block" >';
-					echo $status_info_string;
+				xxx_manage_sample_status_change_horizontal_shortcut($link,$sid,$extra_post);
 				echo '</div>';
 
 	//5
 				echo '<div class="d-inline-block" >';
-				xxx_manage_sample_status_change_horizontal_shortcut($link,$sid);
+					echo $status_info_string;
 				echo '</div>';
-
-
 
 
 		
@@ -165,7 +182,7 @@ function showww_sid_button_release_status_horizontal($link,$sid,$extra_post='',$
 
 
 
-function xxx_manage_sample_status_change_horizontal_shortcut($link,$sample_id)
+function xxx_manage_sample_status_change_horizontal_shortcut($link,$sample_id,$extra_post)
 {
 $sql='select distinct priority from `sample_status` order by priority';
 $result=run_query($link,$GLOBALS['database'],$sql);
@@ -181,7 +198,8 @@ echo '<form method=post id="status_change_form" class="d-inline">';
 			while($ar_b=get_single_row($result_b))
 			{	
 				$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);			
-				//if(!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id'])){continue;}
+				
+				//if shortcut not allowed / dependancy not satisfied disable
 				if($ar_b['shortcut']<1 ||
 				!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id']))
 				
@@ -211,6 +229,7 @@ echo '<form method=post id="status_change_form" class="d-inline">';
 		echo '</div>';
 	}
 
+	echo $extra_post;
 	echo '<input type=hidden name=action value=set_sample_status>';
 	echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
 	echo '<input type=hidden name=sample_id value=\''.$sample_id.'\'>';

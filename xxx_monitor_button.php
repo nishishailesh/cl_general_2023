@@ -7,7 +7,8 @@ require_once 'project_common.php';
 require_once $GLOBALS['main_user_location'];
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
-$lot_size=100;
+$lot_size=get_config_value($link,'status_lot_size');
+$column_size=get_config_value($link,'status_column_size');
 
 if(isset($_POST['login']))
 {
@@ -32,8 +33,10 @@ if(!isset($_SESSION['password']) && !isset($_POST['password']))
 
 if($_POST['unique_id']!='sample_id')
 {
-	$max_unique_id=xxx_find_max_unique_id($link,$_POST['unique_id'])+$_POST['show_offset'];
-
+	$max_unique_id=xxx_find_max_unique_id($link,$_POST['unique_id'])+$_POST['show_offset'];		//mySQL between claus includes both sides
+	//if 239
+	//
+	
 	$examination_details=get_one_examination_details($link,$_POST['unique_id']);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	$table=isset($edit_specification['table'])?$edit_specification['table']:'';
@@ -41,7 +44,7 @@ if($_POST['unique_id']!='sample_id')
 
 	//show samples as selected
 	//$sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-198).'\' and \''.$max_unique_id.'\' ';
-	$sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-199).'\' and \''.$max_unique_id.'\' ';
+	$sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-$lot_size+1).'\' and \''.$max_unique_id.'\' ';
 	//echo $sql.'<br>';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 
@@ -55,14 +58,7 @@ else if($_POST['unique_id']=='sample_id')
 	$id_range_array=explode('-',$_POST['id_range']);
 	$max_unique_id=find_max_sample_id($link,$id_range_array[0],$id_range_array[1])+$_POST['show_offset'];
 
-	//$examination_details=get_one_examination_details($link,$_POST['unique_id']);
-	//$edit_specification=json_decode($examination_details['edit_specification'],true);
-	//$table=isset($edit_specification['table'])?$edit_specification['table']:'';
-
-
-	//show samples as selected
-	//$sql='select sample_id from sample_link where sample_id between \''.($max_unique_id-198).'\' and \''.$max_unique_id.'\' order by sample_id';
-	$sql='select sample_id from sample_link where sample_id between \''.($max_unique_id-199).'\' and \''.$max_unique_id.'\' order by sample_id';
+	$sql='select sample_id from sample_link where sample_id between \''.($max_unique_id-$lot_size+1).'\' and \''.$max_unique_id.'\' order by sample_id';
 	//echo $sql.'<br>';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 
@@ -74,6 +70,42 @@ else if($_POST['unique_id']=='sample_id')
 
 
 echo '<div class="monitor_grid">';
+
+$location_offset=1;
+while($ar=get_single_row($result))
+{	
+	if(($_POST['unique_id']!='sample_id'))
+	{
+		$uid=get_id_type_examination_result($link,$ar['sample_id'],$_POST['unique_id']);	
+	}
+	else
+	{
+		$uid=$ar['sample_id'];
+	}
+	
+	if($uid%$column_size!=0)															
+	{
+		$div_location1=($location_offset*$column_size)+($uid%$column_size);		
+	}							
+	else if($uid%$column_size==0)															
+	{
+		$location_offset=$location_offset+1;
+		$div_location1=($location_offset*$column_size)+($uid%$column_size);		
+	}		
+
+	$div_location=str_pad($div_location1,3,'0',STR_PAD_LEFT);
+	
+	
+	echo '<div style="grid-area: a'.$div_location.'; justify-self: center; width:100%;">';
+		echo '<div>';		
+			showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$_POST['unique_id'],$checkbox='yes');
+			//echo $div_location;
+		echo '</div>';
+	echo '</div>';
+}
+
+/*
+
 
 if($max_unique_id<200){$div_location=$max_unique_id+1;}
 else
@@ -124,6 +156,8 @@ while($ar=get_single_row($result))
 		echo '</div>';
 	echo '</div>';
 }
+*/
+
 echo '</div>';
 //echo '<pre>monitor:post';print_r($_POST);echo '</pre>';
 //echo '<pre>monitor:session';print_r($_SESSION);echo '</pre>';
