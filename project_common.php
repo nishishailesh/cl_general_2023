@@ -1883,7 +1883,7 @@ function sync_all($link,$sample_id)
 		
 }
 
-function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',$frill=True)
+function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',$frill=True,$extra_array=array())
 {
 	//print_r($result_array);
 	$result=$result_array['result'];
@@ -2271,7 +2271,7 @@ function edit_blob_field($link,$examination_id,$sample_id)
 }
 
 
-function edit_field_any($link,$ex_id,$sample_id)
+function edit_field_any($link,$ex_id,$sample_id,$readonly='',$frill=True,$extra_array=array())
 {
 	//echo $compact;
 	$examination_details=get_one_examination_details($link,$ex_id);
@@ -2294,16 +2294,17 @@ function edit_field_any($link,$ex_id,$sample_id)
 			{
 				$ex_result=get_one_ex_result_row($link,$sample_id,$ex_id);
 			}
-			edit_field($link,$ex_id,$ex_result,$sample_id);
+			edit_field($link,$ex_id,$ex_result,$sample_id,$readonly,$frill,$extra_array);
 		}
 }
+
+//function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',$frill=True)
+
 
 function edit_single_field($link,$examination_id,$result,$sample_id,$readonly='',$frill=True)
 {
 	edit_field($link,$examination_id,array($result),$sample_id,$readonly,$frill);
 }
-
-
 
 /*
 function decide_alert($result,$interval)

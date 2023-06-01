@@ -343,7 +343,7 @@ function xxx_save_insert_specific_for_edit($link,$selected_examination_list,$sam
 		}
 	}
 	
-	print_r($requested);
+	//print_r($requested);
 		
 	foreach($requested as $ex)
 	{
@@ -351,7 +351,7 @@ function xxx_save_insert_specific_for_edit($link,$selected_examination_list,$sam
 		$edit_specification=json_decode($examination_details['edit_specification'],true);
 		$type=isset($edit_specification['type'])?$edit_specification['type']:'';
 		
-		echo $examination_details['sample_requirement'].'---'.get_one_ex_result($link,$sample_id,$GLOBALS['sample_requirement']).'<br>';
+		echo $examination_details['sample_requirement'].' &ne; '.get_one_ex_result($link,$sample_id,$GLOBALS['sample_requirement']).'<br>';
 		if(
 			$examination_details['sample_requirement']==get_one_ex_result($link,$sample_id,$GLOBALS['sample_requirement'])
 			||
@@ -391,7 +391,10 @@ function my_search_test()
 {
 	search_text=document.getElementById("my_search_text").value;
 	//alert("search="+search_text)
-
+	if(search_text==="")
+	{
+		return false;
+	}
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) 

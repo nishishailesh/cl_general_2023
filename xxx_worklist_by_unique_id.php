@@ -18,28 +18,26 @@ echo '<h3 class="bg-warning">select examinations for worklist</h3>';
 echo '<div  class="two_column_two_by_one">';
 			echo '
 			<div>
-					<span class="badge badge-primary"  data-toggle="collapse" data-target="#select-window">Select Examinations</span>';		
-					echo '	
+					<span class="badge badge-primary"  data-toggle="collapse" data-target="#select-window">Select Examinations</span>';
+					echo '
 					<div id="select-window" class="border border-success">
 								<input type=text id=my_search_text  onchange="my_search_test()">
-								<button type=button id=my_search onclick="my_search_test()">Find</button>
+								<button type=button class="btn btn-info btn-sm" id=my_search onclick="my_search_test()">Search Examination</button>
 								<div id=my_search_result ></div>
 								<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>
 								<div id="status-window" class="border border-success"></div>
 			</div>';
-			
 			echo '
 			</div>';
 					echo '<form method=post action=xxx_display_worklist_by_unique_id_result.php>';
 						echo '
 							<div>offset (number of last results to skip)</div><input type=number name=offset value=0>
-							<div>limit (number of last results to include)</div><input type=number name=limit value=0>
-							<button name=action value=search>Make Worklist</button>					
+							<div>limit (number of last results to include)</div><input type=number name=limit value=100>
+							<button class="btn btn-danger btn-sm" name=action value=search>Make Worklist</button>
 							<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
-							xxx_get_data_specific_for_search($link,$request_sql);											
+							xxx_get_data_specific_for_search($link,$request_sql);
 					echo '</form>
 			</div>';
-			
 echo '</div>';
 
 
@@ -57,7 +55,10 @@ function xxx_get_data_specific_for_search($link,$sql)
 function my_search_test()
 {
 	search_text=document.getElementById("my_search_text").value;
-	//alert("search="+search_text)
+	if(search_text==="")
+	{
+		return false;
+	}
 
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function(){

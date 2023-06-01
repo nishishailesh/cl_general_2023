@@ -20,7 +20,6 @@ echo '</div><div class="d-inline-block">';
 get_dbid_small();
 echo '</div>';
 
-
 if($_POST['action']=='Save_TAT_remark')
 {
         insert_update_one_examination_with_result(

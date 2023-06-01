@@ -120,7 +120,10 @@ function my_search_test()
 {
 	search_text=document.getElementById("my_search_text").value;
 	//alert("search="+search_text)
-
+	if(search_text==="")
+	{
+		return false;
+	}
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function(){
 		if (this.readyState == 4 && this.status == 200) 
