@@ -238,9 +238,8 @@ function main_menu($link)
 			<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Worklist-N</button>
 			<div class="dropdown-menu m-0 p-0 ">
 				<div class="btn-group-vertical d-block">
-					<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_unique_id.php type=submit name=action value="get_worklist">by Unique ID</button>
-					<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_examination_id.php type=submit name=action value="get_worklist">by Examination ID</button>'; 
-				echo '</div>
+					<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_unique_id.php type=submit name=action value="get_worklist">by Examination</button>
+				</div>
 			</div>
 		</div>
 		<div class="dropdown m-0 p-0">
@@ -2574,7 +2573,15 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
 		$cinterval_h=isset($edit_specification['cinterval_h'])?$edit_specification['cinterval_h']:'';
 		$ainterval_h=isset($edit_specification['ainterval_h'])?$edit_specification['ainterval_h']:'';
 		$img=isset($edit_specification['img'])?$edit_specification['img']:'';
-		
+		if($examination_details['append_user']==1)
+		{
+			$user_info=get_user_info($link,$_SESSION['login']);
+			$append_info=$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
+		}
+		else
+		{
+			$append_info='';
+		}
 		if($img=='dw')
 		{
 			echo '<div class="basic_form " id="ex_'.$ex_id.'">';
@@ -2617,12 +2624,16 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
 				
 				echo '<div class="border"><pre class="m-1 p-0 border-0" style="white-space: pre-wrap;">'.
 					htmlspecialchars($ex_result.' '.
-					decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).'</pre></div>';
+					decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).
+					$append_info.
+					'</pre></div>';
+					
 				echo '<div class="help border "><pre style="border-color:white" style="white-space: pre-wrap;">'.$help.'</pre></div>';
 			echo '</div>';
 		}
 		
 }				
+
 
 function get_lables_button($link,$sample_id,$examination_id)
 {
@@ -9696,7 +9707,18 @@ echo '<form method=post id="status_change_form" class="d-inline">';
 			{	
 		
 			//if(!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id'])){continue;}
-
+/*
+			$examination_details=get_one_examination_details($link,$ar_b['examination_id']);
+			if($examination_details['append_user']==1)
+			{
+				$user_info=get_user_info($link,$_SESSION['login']);
+				$append_info=$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
+			}
+			else
+			{
+				$append_info='';
+			}
+*/			
 			$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);
 			echo '<div class="d-block">';
 			echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"

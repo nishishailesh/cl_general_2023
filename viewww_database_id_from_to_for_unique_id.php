@@ -75,9 +75,24 @@ function get_one_field_for_search($link,$examination_id)
 {
 	$ex_data=get_one_examination_details($link,$examination_id);
 	$edit_specification=json_decode($ex_data['edit_specification'],true);
-	$accr_status=isset($edit_specification['accr_status'])?$edit_specification['accr_status']:'';
+	$type=isset($edit_specification['type'])?$edit_specification['type']:'text';
 
-
+	if($type=='select')
+	{
+		$option=isset($edit_specification['option'])?explode(',',$edit_specification['option']):array();
+		$option_html='';
+		
+		foreach($option as $v)
+		{
+				$option_html=$option_html.'<option>'.$v.'</option>';
+		}
+		$option_html='<select onchange="document.getElementById(\'__ex__'.$examination_id.'\').value=this[this.selectedIndex].text">'.$option_html.'</select>';
+	}
+	else
+	{
+		$option_html='';
+	}
+	
 	//echo 'x';print_r($ex_data);echo 'x';
 	if(!is_array($ex_data)){return;}
 	$ex_name=$ex_data['name'];
@@ -89,9 +104,9 @@ function get_one_field_for_search($link,$examination_id)
 			echo '</div>';
 			echo '<div class="d-inline-block">';
 				//get_one_field_for_insert_no_readonly($link,$examination_id);
-				echo '		<input type=text size=13 id=from name=\'__ex__'.$examination_id.'\' class="form-control text-danger"\>';
-
+				echo '		<input type=text size=13 id=\'__ex__'.$examination_id.'\'  name=\'__ex__'.$examination_id.'\' class="form-control text-danger"\>';
 			echo '</div>';
+			echo '<div>'.$option_html.'</div>';
 		echo '</div>';
 }
 
