@@ -18,7 +18,7 @@ echo '<div class="two_column_two_by_one">';
 
 echo '<div>';
 
-
+//done
 if($_POST['action']=='set_sample_status')
 {
 	insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
@@ -32,6 +32,7 @@ if($_POST['action']=='set_sample_status')
 
 }
 
+//done
 if($_POST['action']=='edit_general')
 {
 		echo '<div class="d-inline-block"">';
@@ -41,6 +42,7 @@ if($_POST['action']=='edit_general')
 		//xxx_edit_sample($link,$_POST['sample_id']);
 }
 
+//done
 if($_POST['action']=='upload')
 {
 	save_result_blob($link,$_POST['sample_id']);
@@ -49,6 +51,8 @@ if($_POST['action']=='upload')
 		echo '</div>';	
 		//xxx_edit_sample($link,$_POST['sample_id']);
 }
+
+//done
 if($_POST['action']=='delete')
 {
 	delete_examination($link,$_POST['sample_id'],$_POST['examination_id']);
@@ -57,6 +61,8 @@ if($_POST['action']=='delete')
 		echo '</div>';	
 	//xxx_edit_sample($link,$_POST['sample_id']);
 }
+
+//done
 if($_POST['action']=='insert')
 {
 	//echo 'new examination insertion required';
@@ -67,9 +73,10 @@ if($_POST['action']=='insert')
 		echo '</div>';
 	//xxx_edit_sample($link,$_POST['sample_id']);
 }
+
 if($_POST['action']=='calculate')
 {
-	calculate_and_update($link,$_POST['sample_id']);
+		calculate_and_update($link,$_POST['sample_id']);
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 		echo '</div>';	
@@ -78,13 +85,14 @@ if($_POST['action']=='calculate')
 
 if($_POST['action']=='sync_ALL')
 {
-	sync_all($link,$_POST['sample_id']);
+		sync_all($link,$_POST['sample_id']);
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 		echo '</div>';	
 		//xxx_edit_sample($link,$_POST['sample_id']);
 }
 
+//done
 if($_POST['action']=='sync_single')
 {
 	if(!isset($_POST['is_blob']))
@@ -110,27 +118,7 @@ if($_POST['action']=='verify')
 		//xxx_edit_sample($link,$_POST['sample_id']);
 }
 
-if($_POST['action']=='verification_done')
-{
-	$ret=verify_sample($link,$_POST['sample_id']);
- 	//echo '<h1>xx'.$ret.'xx</h1>';
-	// in confg.php $GLOBALS['is_verification_success_important']='yes';
-
-	//if($ret==-1 && $GLOBALS['is_verification_success_important']=='yes')
-	//if($ret==-1)
-	//{
-	//	echo '<h1 class="bg-danger">Sample Not verified successfully. Verification Incomplate. Correct requirement</h1>';
-	//}
-	//else
-	//{
-		update_sample_status($link,$_POST['sample_id'],'verification_done');
-	//}
-		echo '<div class="d-inline-block"">';
-		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
-		echo '</div>';	
-		//xxx_edit_sample($link,$_POST['sample_id']);
-}
-
+//done
 if($_POST['action']=='save_primary_result')
 {
     //[session_name] => sn_1241728485
@@ -143,8 +131,7 @@ if($_POST['action']=='save_primary_result')
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 		echo '</div>';	
-		//xxx_edit_sample($link,$_POST['sample_id']);
-    
+		//xxx_edit_sample($link,$_POST['sample_id']);    
 }
 	
 	$res=get_config_value($link,'restrictive_examination_for_edit_delete');

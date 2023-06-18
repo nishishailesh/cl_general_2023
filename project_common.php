@@ -844,9 +844,9 @@ function view_field_blob($link,$kblob,$sample_id,$display_class='horizontal3')
 
                 if($img=='png')
                 {
-                        echo '<div><b>';
-                        echo $examination_blob_details['name'];
-                        echo ':</b></div>';
+                        //echo '<div><b>';
+                        //echo $examination_blob_details['name'];
+                        //echo ':</b></div>';
                         echo '<div>';
                         //no effect of last three parameters, not implemented
                         display_png($ar_blob['result'],$ar_blob['fname'],$w,$h);      
@@ -1942,7 +1942,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 				echo '<div class="d-inline  no-gutters">';
 				if($readonly!='readonly')
 				{
-						if($frill){get_primary_result($link,$sample_id,$examination_id);}
+					if($frill){get_primary_result($link,$sample_id,$examination_id);}
 				}
 				echo '</div>';
 			echo '</div>';
@@ -9323,6 +9323,7 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		if(strlen($res_result<=0))
 		{
 			xxx_sample_id_edit_button($sample_id);
+			xxx_sample_id_sync_all_button($sample_id);
 			xxx_sample_id_delete_button($sample_id);
 		}
 		else
@@ -9331,8 +9332,7 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		}
 		echo '<div class="btn-group " role="group">';
 		
-		
-		//print not possible  if none of the examination in array is filled
+		//print not possible if none of the examination in array is filled
 		$ret=false;
 		$pre=get_config_value($link,'prerequisite_examination_for_print');
 		$pre_array=explode(',',$pre);
@@ -9453,7 +9453,14 @@ function xxx_sample_id_unrelease_button($sample_id)
 	</form></div>';
 }
 
-
+function xxx_sample_id_sync_all_button($sample_id,$target='')
+{
+	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=edit_generalll.php class=print_hide>
+	<button class="btn btn-sm btn-warning" name=sample_id value=\''.$sample_id.'\' >Sync ALL</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=sync_ALL>
+	</form></div>';
+}
 
 function xxx_sample_id_copy_button($sample_id)
 {
@@ -9463,7 +9470,6 @@ function xxx_sample_id_copy_button($sample_id)
         <input type=hidden name=action value=copy_sample_id>
         </form></div>';
 }
-
 
 function xxx_any_id_barcode_button($sample_id,$label_id,$label)
 {

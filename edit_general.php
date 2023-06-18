@@ -125,8 +125,8 @@ function calculate_and_update($link,$sample_id)
 		if(!$edit_specification){$edit_specification=array();}
 		
 		$decimal=isset($edit_specification['decimal'])?$edit_specification['decimal']:0;
-		$calculate=isset($edit_specification['calculate'])?$edit_specification['calculate']:'';	
-		$ex_list=isset($edit_specification['ex_list'])?$edit_specification['ex_list']:'';	
+		$calculate=isset($edit_specification['calculate'])?$edit_specification['calculate']:'';
+		$ex_list=isset($edit_specification['ex_list'])?$edit_specification['ex_list']:'';
 
 		if(strlen($calculate)>0)
 		{		
