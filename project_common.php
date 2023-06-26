@@ -94,7 +94,7 @@ function main_menu($link)
 	}
 
 	echo '
-	<form method=post class="form-group m-0 p-0">
+	<form method=post class="form-group m-0 p-0 print_hide">
 	<input type=hidden name=session_name value=\''.session_name().'\'>
 	<div class="btn-group">
 		<div class="dropdown m-0 p-0">
@@ -2565,6 +2565,12 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
 		$display_format=$examination_details['display_format'];
 		$edit_specification=json_decode($examination_details['edit_specification'],true);
 		$help=isset($edit_specification['help'])?$edit_specification['help']:'';
+		
+		$hide=isset($edit_specification['hide'])?$edit_specification['hide']:'';	
+		if($hide=='yes'){  $print_hide=" print_hide ";}else{$print_hide='';}
+		//echo $print_hide;
+		
+		
 		$type=isset($edit_specification['type'])?$edit_specification['type']:'';
 		$interval_l=isset($edit_specification['interval_l'])?$edit_specification['interval_l']:'';
 		$cinterval_l=isset($edit_specification['cinterval_l'])?$edit_specification['cinterval_l']:'';
@@ -2606,30 +2612,32 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
 		else
 		{
 			if(strlen($display_format)==0){$display_format='horizontal3';}
-			echo '<div class="'.$display_format.'" id="ex_'.$ex_id.'">';
-				//echo '	<div class="my_label text-wrap lead w-auto border ">'.$examination_details['name'].':';
-				//echo '	<div class="my_label text-wrap lead w-auto border ">'.$examination_details['name'].':';
-				if(in_array($type,['id_multi_sample','id_single_sample']))
-				{
-					echo '	<div class="my_label text-wrap lead w-auto border ">'.$examination_details['name'];
-					get_lables_button($link,$sample_id,$ex_id);
-					xxx_set_unique_id_prev_next_button($link,$sample_id,$ex_id);
-				}
-				else
-				{
-					echo '	<div class="my_label text-wrap lead w-auto border ">'.$examination_details['name'].':';
-				}
+			
+			
+				echo '<div class="  '.$display_format.' " id="ex_'.$ex_id.'">';
+					if(in_array($type,['id_multi_sample','id_single_sample']))
+					{
+						echo '	<div class="my_label text-wrap lead w-auto border '.$print_hide.' ">'.$examination_details['name'];
+							get_lables_button($link,$sample_id,$ex_id);
+							xxx_set_unique_id_prev_next_button($link,$sample_id,$ex_id);
+						echo '</div>';
+					}
+					else
+					{
+						echo '	<div class="my_label text-wrap lead w-auto border '.$print_hide.'">'.$examination_details['name'].':';					
+						echo '</div>';
+
+					}
+						
 					
+					echo '<div class="border"><pre class="m-1 p-0 border-0 '.$print_hide.'" style="white-space: pre-wrap;">'.
+						htmlspecialchars($ex_result.' '.
+						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).
+						$append_info.
+						'</pre></div>';
+						
+					echo '<div class="help border '.$print_hide.'"><pre style="border-color:white" style="white-space: pre-wrap;">'.$help.'</pre></div>';
 				echo '</div>';
-				
-				echo '<div class="border"><pre class="m-1 p-0 border-0" style="white-space: pre-wrap;">'.
-					htmlspecialchars($ex_result.' '.
-					decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).
-					$append_info.
-					'</pre></div>';
-					
-				echo '<div class="help border "><pre style="border-color:white" style="white-space: pre-wrap;">'.$help.'</pre></div>';
-			echo '</div>';
 		}
 		
 }				
@@ -4605,6 +4613,14 @@ function insert_one_examination_without_result($link,$sample_id,$examination_id,
 
 function insert_one_examination_with_result($link,$sample_id,$examination_id,$result)
 {
+	$res=get_config_value($link,'restrictive_examination_for_edit_delete');
+	$res_result=get_one_ex_result($link,$sample_id,$res);
+	if(strlen($res_result>0))
+	{
+		echo '<h5 class="bg-warning">Edit/delete operation not possible</h5>';
+		return;
+	}
+			
 	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'insert'))
 	{
 		echo '<h5 class="bg-warning">This user is not authorized for [insert] with examination_id='.$examination_id.'</h5>';
@@ -4626,6 +4642,14 @@ function insert_one_examination_with_result($link,$sample_id,$examination_id,$re
 
 function insert_update_one_examination_with_result($link,$sample_id,$examination_id,$result)
 {
+	$res=get_config_value($link,'restrictive_examination_for_edit_delete');
+	$res_result=get_one_ex_result($link,$sample_id,$res);
+	if(strlen($res_result>0))
+	{
+		echo '<h5 class="bg-warning">Edit/delete operation not possible</h5>';
+		return;
+	}
+			
 	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'insert'))
 	{
 		echo '<h5 class="bg-warning">This user is not authorized for [insert] with examination_id='.$examination_id.'</h5>';
@@ -8866,7 +8890,7 @@ echo '<div>';
 									<span class="badge badge-info"><h5>'.$sample_id.'</h5></span>
 				</div>';
 			
-			xxx_show_all_buttons_for_sample($link,$sample_id);
+			xxx_show_all_buttons_for_sample($link,$sample_id,$mode="edit");
 			echo '</div>
 			<div class="help print_hide">';
 				//echo '<button class="btn btn-success " type=button id=ex_all_expand onclick="expand_all()">Expand All</button>';
@@ -9308,7 +9332,7 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 }
 */
 
-function xxx_show_all_buttons_for_sample($link,$sample_id)
+function xxx_show_all_buttons_for_sample($link,$sample_id,$mode='view')
 {
 	echo '<div class="btn-group" role="group">';
 		get_lables_button($link,$sample_id,'sample_id');
@@ -9323,8 +9347,12 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 		if(strlen($res_result<=0))
 		{
 			xxx_sample_id_edit_button($sample_id);
-			xxx_sample_id_sync_all_button($sample_id);
-			xxx_sample_id_delete_button($sample_id);
+			if($mode=='edit')
+			{
+				xxx_sample_id_sync_all_button($sample_id);
+				xxx_sample_id_calculate_button($sample_id);
+				xxx_sample_id_delete_button($sample_id);
+			}
 		}
 		else
 		{
@@ -9483,6 +9511,17 @@ function xxx_any_id_barcode_button($sample_id,$label_id,$label)
 	<input type=hidden name=label_id value=\''.$label_id.'\'>
 	</form></div>';
 }
+
+
+function xxx_sample_id_calculate_button($sample_id)
+{
+	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=edit_generalll.php class=print_hide>
+	<button class="btn btn-outline-primary btn-sm" name=sample_id value=\''.$sample_id.'\' >Calculate/Verify</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=calculate>
+	</form></div>';
+}
+
 
 function xxx_make_view_menu_old_with_programming_dependancy($link)
 {
