@@ -109,10 +109,10 @@ if($verification_code==100 && !isset($GLOBALS['nojunk']))
 	$user=get_user_info($link,$_SESSION['login']);
 	$name=isset($user['name'])?$user['name']:'';
 	
-	echo '<form id=root_menu method=post class="form-group" style="float:right;">
+	echo '<form id=root_menu method=post class="form-group print_hide" style="float:right;">
                         <input type=hidden name=session_name value=\''.session_name().'\'>';
 
-                                echo    '<div class="btn-group print_hide">
+                         echo    '<div class="btn-group print_hide">
                                 <div class="dropdown m-0 p-0">
                                         <button class="btn btn-primary pt-0 pb-0 pl-2 pr-2" type="button" data-toggle="dropdown">['.$name.']<h3 class="d-inline-block">&#x2261</h3></button>
                                         <div class="dropdown-menu m-0 p-0 dropdown-menu-right">

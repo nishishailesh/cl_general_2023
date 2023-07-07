@@ -8677,15 +8677,18 @@ function xxx_make_examination_tree($link,$sql,$route_field)
 			foreach($paths as $one_path)
 			{
 				$path=explode("/",$one_path);
+				
+				
 				//echo '<pre>';print_r($path);echo '</pre>';
 				$temp=&$examination_tree;
 				foreach($path as $v)
 				{
-						$rp_sql='select * from route_priority where route=\''.$one_path.'\' and node=\''.$v.'\'';
+					
+						$rp_sql='select * from route_priority where (route=\''.$one_path.'\' or route=\'\') and node=\''.$v.'\'';
 						$rp_result=run_query($link,$GLOBALS['database'],$rp_sql);
 						$rp_ar=get_single_row($rp_result);
 						//echo '<pre>';print_r($rp_ar);echo '</pre>';
-						$rpvalue=isset($rp_ar[$route_field.'_'.'priority'])?$rp_ar[$route_field.'_'.'priority']:'';
+							$rpvalue=isset($rp_ar[$route_field.'_'.'priority'])?$rp_ar[$route_field.'_'.'priority']:'';
 						//echo $rpvalue;
 					$temp=&$temp[$rpvalue.'^'.$v];
 				}

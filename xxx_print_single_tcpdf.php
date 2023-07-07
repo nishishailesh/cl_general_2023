@@ -1,36 +1,35 @@
 <?php
-//$GLOBALS['nojunk']='';
+$GLOBALS['nojunk']='';
 require_once 'project_common.php';
 require_once 'base/verify_login.php';
+
 	////////User code below/////////////////////
-echo '		  <link rel="stylesheet" href="project_common.css">
-		  <script src="project_common.js"></script>';	
+require_once('tcpdf/tcpdf.php');
+require_once('tcpdf/tcpdf_barcodes_2d.php');
+
+//echo '		  <link rel="stylesheet" href="project_common.css">
+//		  <script src="project_common.js"></script>';	
+		  
+		  
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
-if(!sample_exist($link,$_POST['sample_id'])){ echo '<h5>Sample Id '.$_POST['sample_id'].' does not exist</h5>';exit();}
 
-echo '<table>
-			<thead>
-				<tr><td><h3>New Civil Hospital Surat Laboratory Service</h3></td></tr>
-				<tr><td><h3 class="text-success">Biochemistry Laboratory, Beside Blood Bank, 2nd Floor, Above BOB ATM</h3></td></tr>
-			</thead>
-			<tbody>';
-				echo '<tr><td>';
-					xxx_view_sample_print($link,$_POST['sample_id']);
-				echo '</td></tr>
-			</tbody>
-			<tfoot>
-				<tr><td><h3>New Civil Hospital Surat Laboratory Service</h3></td></tr>
-				<tr><td><h3 class="text-success">Biochemistry Laboratory, Beside Blood Bank, 2nd Floor, Above BOB ATM</h3></td></tr>
-			</thead>
-			<tfoot>
-</table>';
+$pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+$pdf->AddPage();
 
-//////////////user code ends////////////////
-tail();
+ob_start();
+//print_r($_POST);
+xxx_print_sample($link,$_POST['sample_id']);
+$myStr = ob_get_contents();
+ob_end_clean();
+//echo $myStr;
+//exit(0);
+
+$pdf->writeHTML($myStr, true, false, true, false, '');
+$pdf->Output('report.pdf', 'I');
 
 
-function xxx_view_sample_print($link,$sample_id,$compact='no')
+function xxx_print_sample($link,$sample_id,$compact='no')
 {
 
 	if(!sample_exist($link,$sample_id)){ echo '<h5>Sample Id '.$sample_id.' does not exist</h5>';return;}
@@ -65,64 +64,49 @@ function xxx_view_sample_print($link,$sample_id,$compact='no')
 		
 	//return;
 	
-echo '<div>';
-		echo '<div class="basic_form">
-				<div class=my_label >
-					<span class="badge badge-primary ">Sample ID</span>
-					<span class="badge badge-info"><h5>'.$sample_id.'</h5></span>
-				</div>';
-			
-			//xxx_show_all_buttons_for_sample($link,$sample_id);
-		echo '</div>';
+echo '<table border="1">
+			<tr>
+					<td class="badge badge-primary ">Sample ID</td>
+					<td class="badge badge-info"><h5>'.$sample_id.'</h5></td>
+			</tr>
+	</table>';
 
+
+echo '<table border="0.3" >';
 		xxx_tree_to_panel_for_print($link,$ex_tree,$id_prefix='',$collapse=' collapse ',$sample_id,$compact);
+echo 	'</table>';
 
-echo '</div>';
 }
-
 
 
 function xxx_tree_to_panel_for_print($link,$tree,$id_prefix='',$collapse=' collapse ',$sample_id,$compact='no')
 {
-
-	$collapse=' show ';
-
-	//echo '<pre>';print_r($tree);echo '</pre>';
-
-
 	foreach($tree as $k=>$v)
 	{
-		$id=$id_prefix.'_'.str_replace(' ','_',str_replace('/','_',    explode('^',$k)[1]    ));
-		
 		if(is_array($v))
 		{
-			//echo '<pre>';print_r($v);echo '</pre>';
 			ksort($v);
-			//asort($v);
-			//echo '<pre>';print_r($v);echo '</pre>';
-				
 				echo '
-						<div class=d-block>
-							<button
-								type=button
-								tabindex="0"
-								class="text-info  border border-primary rounded" ';
-								echo 'id=\''.$id.'\' 
-								data-target=#'.$id.'_target
-								>'
-								.explode('^',$k)[1].'
-							</button>
-						</div>';
-				echo '<ul style="list-style-type: none" >';
-						echo '<li id='.$id.'_target class="'.$collapse.' ex_menu" style="padding-left:30px">';
-						xxx_tree_to_panel_for_print($link,$v,$id,' show ',$sample_id,$compact);
-						echo '</li>';
-				echo'</ul>';
+						<tr>
+							<td><b>
+								'.explode('^',$k)[1].'
+							</b></td>
+						</tr>';
+				echo 	'<tr>
+							<td>';
+								echo '<table border="0.3">';
+								xxx_tree_to_panel_for_print($link,$v,'',' show ',$sample_id,$compact);
+								echo '</table>';
+					echo	'</td>
+						</tr>';
 		}
 		else
 		{
+			echo '<tr><td>';
+			echo '<table border="0.3" >';
 			print_field_any($link,$v,$sample_id,$compact);
-			//display_one_examination($link,$v,$id);
+			echo '</table>';
+			echo '</td></tr>';
 		}
 	}
 }
@@ -130,12 +114,6 @@ function xxx_tree_to_panel_for_print($link,$tree,$id_prefix='',$collapse=' colla
 
 function print_field_any($link,$ex_id,$sample_id,$compact='no')
 {
-	//if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$ex_id,'select'))
-	//{
-	//	echo '<h5 class="bg-warning">This user is not authorized for [select] with examination_id='.$ex_id.'</h5>';
-	//	return false;
-	//}	
-	//echo $compact;
 	$examination_details=get_one_examination_details($link,$ex_id);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	$type=isset($edit_specification['type'])?$edit_specification['type']:'';
@@ -157,25 +135,11 @@ function print_field_any($link,$ex_id,$sample_id,$compact='no')
 			{
 				$ex_result=get_one_ex_result($link,$sample_id,$ex_id);
 			}
-			
-			if(is_hidden_in_print($link,$ex_id)!=true)
-			{
-				print_field($link,$ex_id,$ex_result,$sample_id);
-			}
+			print_field($link,$ex_id,$ex_result,$sample_id);
 		}
-	
 }
 
 
-function is_hidden_in_print($link,$ex_id)
-{
-		$examination_details=get_one_examination_details($link,$ex_id);
-		$display_format=$examination_details['display_format'];
-		$edit_specification=json_decode($examination_details['edit_specification'],true);
-		$hide=isset($edit_specification['hide'])?$edit_specification['hide']:'';
-		if($hide=='yes'){return true;}
-		else{return false;}	
-}
 
 
 
@@ -208,58 +172,91 @@ function print_field($link,$ex_id,$ex_result,$sample_id='')
 		{
 			$append_info='';
 		}
-		if($img=='dw')
-		{
-			echo '<div class="basic_form " id="ex_'.$ex_id.'">';
-			echo '	<div class="my_label border border-dark text-wrap">'.$examination_details['name'].'</div>
-				<div class="border border-dark"><pre class="m-0 p-0 border-0">';
-			display_dw($ex_result);
-			echo '</pre></div>';							
-			echo '<div class="help border border-dark"><pre style="border-color:white">'.$help.'</pre></div>';
-			echo '</div>';			
-		}
-		elseif($type=='subsection')
-		{
-			echo '<div class="basic_form " id="ex_'.$ex_id.'">';
-				echo '	<div class="my_label text-wrap"></div>
-				<div class="border">
-				<h3 class="text-center">'.$examination_details['name'].'</h3>
-				</div>
-				<div class="help"></div>';
-			echo '</div>';
-		}
 
-		else
-		{
-			if(strlen($display_format)==0){$display_format='horizontal3';}
-			
-			
-				echo '<div class="  '.$print_hide.' '.$display_format.' " id="ex_'.$ex_id.'">';
-					if(in_array($type,['id_multi_sample','id_single_sample']))
-					{
-						echo '	<div class="my_label text-wrap lead w-auto border '.$print_hide.' ">'.$examination_details['name'];
-							//get_lables_button($link,$sample_id,$ex_id);
-							//xxx_set_unique_id_prev_next_button($link,$sample_id,$ex_id);
-						echo '</div>';
-					}
-					else
-					{
-						echo '	<div class="my_label text-wrap lead w-auto border '.$print_hide.'">'.$examination_details['name'].':';					
-						echo '</div>';
+		if(strlen($display_format)==0){$display_format='horizontal3';}
 
-					}
-						
-					
-					echo '<div class="border"><pre class="m-1 p-0 border-0 '.$print_hide.'" style="white-space: pre-wrap;">'.
-						htmlspecialchars($ex_result.' '.
-						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).
-						$append_info.
-						'</pre></div>';
-						
-					echo '<div class="help border '.$print_hide.'"><pre style="border-color:white" style="white-space: pre-wrap;">'.$help.'</pre></div>';
-				echo '</div>';
-		}
+if($display_format=='horizontal3')
+{
+		echo '<tr>';
 		
+			echo '<td>'.$examination_details['name'].'</td>';
+			
+			echo '<td>'.
+				htmlspecialchars($ex_result.' '.
+								decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h).
+								$append_info).
+				'
+			</td>';
+		
+			//echo '<td>'.htmlspecialchars($help).'</td>';
+			//echo '<td>'.htmlentities($help).'</td>';
+			echo '<td>'.$help.'</td>';
+		
+		echo '</tr>';
+}		
+		
+elseif($display_format=='horizontal2')
+{		
+		echo '<tr>';
+		
+			echo '<td>'.$examination_details['name'].'</td>';
+			
+			echo '<td>'.
+				htmlspecialchars($ex_result.' '.
+								decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h).
+								$append_info).
+				'
+			</td>';
+			echo '</tr><tr>';
+		
+			//echo '<td colspan="2">'.htmlspecialchars($help).'</td>';
+			echo '<td colspan="2">'.$help.'</td>';
+		    
+		echo '</tr>';
+}		
+		
+		
+elseif($display_format=='horizontal1')
+{		
+			echo '<tr>';
+		
+			echo '<td>'.$examination_details['name'].'</td>';
+			
+			echo '</tr><tr>';
+
+			echo '<td>'.
+				htmlspecialchars($ex_result.' '.
+								decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h).
+								$append_info).
+				'
+			</td>';
+			echo '</tr><tr>';
+		
+			//echo '<td style="font-size:0.6em"><pre>'.$help.'</pre></td>';
+			echo '<td>'.$help.'</td>';
+		
+		echo '</tr>';
+		
+}		
+
+elseif($display_format=='compact_report')
+{		
+			echo '<tr>';
+		
+			echo '<td>'.$examination_details['name'].'</td>';
+			
+			echo '<td>'.
+				htmlspecialchars($ex_result.' '.
+								decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h).
+								$append_info).
+				'
+			</td>';
+		
+			//echo '<td>'.htmlspecialchars($help).'</td>';
+		
+		echo '</tr>';
+		
+}				
 }				
 
 
@@ -308,7 +305,4 @@ function print_field_blob($link,$kblob,$sample_id,$display_class='horizontal3')
 }
 
 
-
 ?>
-
-
