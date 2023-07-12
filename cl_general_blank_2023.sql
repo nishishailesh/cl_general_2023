@@ -207,7 +207,10 @@ DROP TABLE IF EXISTS `config`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `config` (
   `name` varchar(100) NOT NULL,
-  `value` varchar(500) NOT NULL
+  `value` varchar(500) DEFAULT NULL,
+  `value_blob` mediumblob DEFAULT NULL,
+  `help` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -834,6 +837,25 @@ CREATE TABLE `report` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `report_header_footer`
+--
+
+DROP TABLE IF EXISTS `report_header_footer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `report_header_footer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `hf` varchar(1) NOT NULL,
+  `examination_id` int(11) NOT NULL,
+  `start_column` int(11) NOT NULL,
+  `start_row` int(11) NOT NULL,
+  `name_column` int(11) NOT NULL,
+  `result_column` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `request_id`
 --
 
@@ -1074,4 +1096,4 @@ CREATE TABLE `ward_id` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-07 11:10:34
+-- Dump completed on 2023-07-12 10:02:48

@@ -50,6 +50,7 @@ if(isset($_POST['action']))
 	}
 }
 
+
 xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 
 if($_SESSION['display_style']=='full')
@@ -62,6 +63,22 @@ else
 	xxx_view_sample_compact($link,$_POST['sample_id']);
 }
 
+
+if(isset($_POST['action']))
+{
+	//wkhtmltopdf "127.0.0.1/cl_general/xxx_wprint_single.php?login=1&password=123" -
+	$command="wkhtmltopdf '127.0.0.1/cl_general/xxx_wprint_single.php?login=1&password=123' -";
+	
+	if($_POST['action']=='wprint')
+	{
+		header("Content-Type: application/octet-stream");
+		header("Content-Disposition: attachment; filename='report.pdf'");
+		//header("Content-Length: 11111");
+		passthru($command,$err);
+		exit();
+	}
+	
+}
 //echo '<pre>';print_r($tat);echo '</pre>';
 
 //////////////user code ends////////////////

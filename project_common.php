@@ -1518,6 +1518,18 @@ function get_result_of_sample_in_array($link,$sample_id)
 	return $result_array;
 }
 
+function get_result_blob_of_sample_in_array($link,$sample_id)
+{
+	$sql='select * from result_blob where sample_id=\''.$sample_id.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$result_array=array();
+	while($ar=get_single_row($result))
+	{
+		$result_array[$ar['examination_id']]=$ar['fname'];	//no blob as result
+	}
+	//print_r($result_array);
+	return $result_array;
+}
 function get_result_of_sample_in_array_with_ex_name($link,$sample_id)
 {
 	$sql='select name,result from examination,result where sample_id=\''.$sample_id.'\' 
@@ -1560,18 +1572,6 @@ function get_primary_result_rows_of_sample_in_array($link,$sample_id)
 }
 
 
-function get_result_blob_of_sample_in_array($link,$sample_id)
-{
-	$sql='select * from result_blob where sample_id=\''.$sample_id.'\'';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	$result_array=array();
-	while($ar=get_single_row($result))
-	{
-		$result_array[$ar['examination_id']]=$ar['fname'];	//no blob as result
-	}
-	//print_r($result_array);
-	return $result_array;
-}
 
 function edit_basic($link,$result_array)//not used
 {
@@ -5115,6 +5115,11 @@ function display_png($ex_result,$label='',$width=100,$height=100)
 	echo '<img src="data:image/png;base64,'.$encoded_image.'" width="'.$width.'" height="'.$height.'" />';
 }
 
+function make_png($ex_result,$label='',$width=100,$height=100)
+{	
+	$encoded_image=base64_encode($ex_result);	
+	return '<img src="data:image/png;base64,'.$encoded_image.'" width="'.$width.'" height="'.$height.'" />';
+}
 
 function display_png_p($ex_result,$label='',$width=100,$height=100)
 {	
@@ -5125,8 +5130,22 @@ function display_png_p($ex_result,$label='',$width=100,$height=100)
 	//$img = '<img src="@' . preg_replace('#^data:image/[^;]+;base64,#', '', $final) . ' " width="'.$width.'" height="'.$height.'"/> ';
 	
 	//$img = '<img src="@'.$encoded_image.'" width="'.$width.'" height="'.$height.'"/> ';
-	$img = '<img src="@'.$encoded_image.'" width="'.$width.'" /> ';
+	$img = '<img src="@'.$encoded_image.'" width="'.$width.'" height="'.$height.'" /> ';
 	echo $img;
+}
+
+
+function make_png_p($ex_result,$label='',$width=100,$height=100)
+{	
+	$encoded_image=base64_encode($ex_result);	
+	//Ha Ha!!! lots of time wasted for silly things.Thanks to internet
+	//$final='data:image/png;base64,@'.$encoded_image;
+	//$img = '<img src="@' . preg_replace('#^data:image/[^;]+;base64,#', '', $final) . ' " width="'.$width.'" height="'.$height.'"/> ';
+	//$img = '<img src="@' . preg_replace('#^data:image/[^;]+;base64,#', '', $final) . ' " width="'.$width.'" height="'.$height.'"/> ';
+	
+	//$img = '<img src="@'.$encoded_image.'" width="'.$width.'" height="'.$height.'"/> ';
+	$img = '<img src="@'.$encoded_image.'" width="'.$width.'" height="'.$height.'" /> ';
+	return $img;
 }
 
 function view_sample_p($link,$sample_id,$profile_wise_ex_list)
@@ -8277,7 +8296,7 @@ function update_one_examination_with_result_blob($link,$sid,$ex_id,$v)
 
 		//echo '================='.$sid;
 
-	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'update'))
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$ex_id,'update'))
 	{
 		echo '<h5 class="bg-warning">This user is not authorized for [update] with examination_id='.$examination_id.'</h5>';
 		return false;
@@ -8323,6 +8342,51 @@ function update_one_examination_with_result_blob($link,$sid,$ex_id,$v)
 		}
 }
 
+function update_one_examination_with_result_blobvalue($link,$sid,$ex_id,$blobvalue,$blobfilename)
+{
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$ex_id,'update'))
+	{
+		echo '<h5 class="bg-warning">This user is not authorized for [update] with examination_id='.$examination_id.'</h5>';
+		return false;
+	}	
+			
+		if(strlen($blobvalue)!=0)
+		{
+		$sql='update result_blob 
+				set 
+					fname=\''.$blobfilename.'\'	,
+					result=\''.$blobvalue.'\'	
+				where 
+					sample_id=\''.$sid.'\' 
+					and
+					examination_id=\''.$ex_id.'\'';
+		
+		//for echo only			
+		/*$dsql='update result_blob 
+				set 
+					fname=\''.$v['name'].'\'	,
+					result=blob	
+				where 
+					sample_id=\''.$sid.'\' 
+					and
+					examination_id=\''.$ex_id.'\'';*/
+					
+			//echo $dsql; //$sql it will be very big;
+			
+			if(!$result=run_query($link,$GLOBALS['database'],$sql))
+			{
+				echo '<br>Data not updated';
+			}
+			else
+			{
+				echo '<p>'.rows_affected($link).' results updated</p>';				
+			}	
+		}
+		else
+		{
+			echo '<p>0 size file. data not updated</p>';				
+		}
+}
 
 function make_examination_tree_for_sample_not_used($link,$sample_id,$sql)
 {
@@ -9379,6 +9443,7 @@ function xxx_show_all_buttons_for_sample($link,$sample_id,$mode='view')
 		if($ret===true)
 		{
 			xxx_sample_id_print_button($link,$sample_id);	
+			xxx_sample_id_wprint_button($link,$sample_id);
 			//sample_id_email_button($sample_id);
 			//sample_id_telegram_button($sample_id);
 			//sample_id_sms_button($sample_id,$link);
@@ -9465,6 +9530,16 @@ function xxx_sample_id_print_button($link,$sample_id)
 	<input type=hidden name=action value=print>
 	</form></div>';
 }
+
+function xxx_sample_id_wprint_button($link,$sample_id)
+{
+	echo '<div class="d-inline-block"  style="width:100%;"><form method=post  action=download_wpdf.php target=_blank class=print_hide>
+	<button class="btn btn-outline-success btn-sm" name=sample_id value=\''.$sample_id.'\' >WPrint</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=wprint>
+	</form></div>';
+}
+
 
 function xxx_sample_id_interim_release_button($sample_id)
 {
@@ -9822,9 +9897,20 @@ function get_user_info($link,$user)
 function get_config_value($link,$config_item)
 {
 	$sql='select * from config where name=\''.$config_item.'\'';
+	//echo $sql;
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);	
 	return $ar['value'];
+}
+
+
+
+function get_config_value_blob($link,$config_item)
+{
+	$sql='select * from config where name=\''.$config_item.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);	
+	return $ar['value_blob'];
 }
 
 function is_authorized($link,$user,$examination_id,$action)

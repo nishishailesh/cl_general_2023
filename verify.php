@@ -13,10 +13,27 @@ function verify_sample($link,$sample_id)
 
 		if(function_exists('f_'.$eid))
 		{
+			echo 'running f_'.$eid.'()';
 			$fun_name='f_'.$eid;
 			$fun_name($link,$sample_id,$eid);
 		} 
 	}
+	
+	//verify blob
+	$ex_result_blob_array=get_result_blob_of_sample_in_array($link,$sample_id);	
+	foreach ($ex_result_blob_array as $eid=>$eval)
+	{
+		//$temp_ret=any_examination_id($link,$sample_id,$eid,$eval);
+		//if($ret==-1){$ret=-1;}else{$ret=$temp_ret;}
+
+		if(function_exists('f_'.$eid))
+		{
+			echo 'running f_'.$eid.'()';
+			$fun_name='f_'.$eid;
+			$fun_name($link,$sample_id,$eid);
+		} 
+	}
+
 	return $ret;
 }
 
@@ -196,6 +213,15 @@ function f_5015($link,$sample_id,$ex_id)
 		}	
 		return true;
 	}
+}
+
+//10011 Acc symbol
+function f_10011($link,$sample_id,$ex_id)
+{
+	echo '......Verification of examination_id=10011 (Acc symbol).....<br>';
+	$acc=get_config_value_blob($link,'nabl_symbol');
+	update_one_examination_with_result_blobvalue($link,$sample_id,$ex_id,my_safe_string($link,$acc),'10011.blob');
+	return true;
 }
 
 ?>

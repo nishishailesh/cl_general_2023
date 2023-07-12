@@ -24,7 +24,6 @@ labels
 lis_to_vitros_sample_type
 menu_new
 menu_view
-opd_id
 profile
 prototype
 prototype_data
@@ -41,7 +40,7 @@ super_profile
 table_field_specification
 user
 view_info_data
-ward_id
+
 '
 
 #####if root password
