@@ -3979,6 +3979,24 @@ function get_one_field_for_insert($link,$examination_id)
 
 	else  
 	{
+		if(strlen($examination_details['default'])>0)
+		{
+			//echo substr($examination_details['default'],0,7);
+			if(strtolower(substr($examination_details['default'],0,7))=='select ' )	//run only select query
+			{
+				$result_default=run_query($link,$GLOBALS['database'],$examination_details['default']);
+				$ar_default=get_single_row($result_default);
+				$default_value=$ar_default['default_value'];
+			}
+			else
+			{
+				$default_value='';
+			}
+		}
+		else
+		{
+			$default_value='';
+		}
 		//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
 			////
@@ -4000,7 +4018,7 @@ function get_one_field_for_insert($link,$examination_id)
 
 						echo 'pattern="'.$pattern.'"
 						class="form-control autosave p-0 m-0 no-gutters '.$zoom.' "
-						type=\''.$type.'\' ></textarea>';
+						type=\''.$type.'\' >'.$default_value.'</textarea>';
 					echo '</div>';
 					echo '<div class="d-inline  no-gutters">';
 						//get_primary_result($link,$sample_id,$examination_id);
@@ -7132,7 +7150,8 @@ function make_link($link,$sample_id)
 	//print_r($_SERVER);
 	//echo '</pre>';
 	//echo $_SERVER['HTTP_HOST'].'/cl_general/get_linked_report.php?token='.$ar['link'];
-	echo $GLOBALS['qr_link_prefix'].'get_linked_report.php?token='.$ar['link'];
+	$prefix=get_config_value($link,'qr_link_prefix');
+	echo $prefix.'get_linked_report.php?token='.$ar['link'];
 }
 
 function make_link_return($link,$sample_id)
@@ -7146,7 +7165,8 @@ function make_link_return($link,$sample_id)
 	//echo '</pre>';
 	//echo $_SERVER['HTTP_HOST'].'/cl_general/get_linked_report.php?token='.$ar['link'];
 	//return 'http://gmcsurat.edu.in:12346/cl_general/get_linked_report.php?token='.$ar['link'];
-	return $GLOBALS['qr_link_prefix'].'get_linked_report.php?token='.$ar['link'];
+	$prefix=get_config_value($link,'qr_link_prefix');
+	return $prefix.'get_linked_report.php?token='.$ar['link'];
 
 }
 

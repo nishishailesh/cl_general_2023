@@ -113,6 +113,30 @@ function get_header($link,$sample_id)
 		$ex=explode('|',$node->nodeValue);
 		if($node->nodeValue=='sample_id'){}
 		else if($node->nodeValue=='sample_id_value'){$node->nodeValue=$sample_id;}
+		else if($node->nodeValue=='report_qr_code')
+		{
+			$node->nodeValue='';
+			$qr_link=make_link_return($link,$sample_id);
+			$barcodeobj = new TCPDF2DBarcode($qr_link, 'QRCODE,H');
+			$png=$barcodeobj->getBarcodePngData(3, 3, array(0,0,0));
+			
+			//$img = '<img src="@'.$encoded_image.'" width=30 /> ';
+
+			$encoded_image=base64_encode($png);
+			$i=$dom->createElement('img');
+			
+			$domAttribute = $dom->createAttribute('src');
+			$domAttribute->value = '@'.$encoded_image;
+			$i->appendChild($domAttribute);
+			
+			$domAttribute = $dom->createAttribute('width');
+			$domAttribute->value = get_config_value($link,'qr_code_width');					
+			$i->appendChild($domAttribute);
+
+			$node->appendChild($i);
+		}
+		
+		
 		else if(is_numeric($ex[0]))
 		{
 			$header_ex[]=$ex[0];
@@ -191,7 +215,7 @@ function xxx_print_sample($link,$sample_id)
 	if(!sample_exist($link,$sample_id)){ echo '<h5>Sample Id '.$sample_id.' does not exist</h5>';return;}
 
 	//echo '<pre>';	print_r($result_plus_blob_requested);echo '</pre>';
-	$sql=" (select examination.examination_id,display_route,name,display_route_priority from examination,result 
+	$sql=" (select examination.examination_id,print_route,name,print_route_priority from examination,result 
 			where 
 				examination.examination_id=result.examination_id 
 				and
@@ -199,7 +223,7 @@ function xxx_print_sample($link,$sample_id)
 
 				union
 
-		(select examination.examination_id,display_route,name,display_route_priority from examination,result_blob 
+		(select examination.examination_id,print_route,name,print_route_priority from examination,result_blob 
 			where 
 				examination.examination_id=result_blob.examination_id 
 				and
@@ -207,12 +231,12 @@ function xxx_print_sample($link,$sample_id)
 				
 				
 			order by 
-				display_route,examination_id
+				print_route,examination_id
 								
 				";
 
 	//echo '<br>'.$sql.'<br>';
-	$ex_tree=xxx_make_examination_tree($link,$sql,'display_route');
+	$ex_tree=xxx_make_examination_tree($link,$sql,'print_route');
 
 	//echo '<pre>';print_r($ex_tree);echo '</pre>';
 	ksort($ex_tree);
@@ -244,12 +268,12 @@ function xxx_tree_to_panel_for_print($link,$tree,$id_prefix='',$collapse=' colla
 			ksort($v);
 				echo '
 						<tr>
-							<td><b>
+							<td colspan="2" ><b>
 								'.explode('^',$k)[1].'
 							</b></td>
 						</tr>';
-				echo 	'<tr>
-							<td>';
+				echo 	'<tr><td width="10%" ></td>
+							<td  width="90%" >';
 								echo '<table border="0.3">';
 								xxx_tree_to_panel_for_print($link,$v,'',' show ',$sample_id);
 								echo '</table>';
@@ -259,7 +283,7 @@ function xxx_tree_to_panel_for_print($link,$tree,$id_prefix='',$collapse=' colla
 		else
 		{
 			if(in_array($v,$header_ex)){continue;}
-			echo '<tr><td>';
+			echo '<tr><td colspan="2">';
 			echo '<table border="0" cellpadding="2" nobr="true">';
 			print_field_any($link,$v,$sample_id);
 			echo '</table>';

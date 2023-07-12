@@ -381,18 +381,21 @@ CREATE TABLE `examination` (
   `examination_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `sample_requirement` varchar(100) NOT NULL DEFAULT 'NULL',
-  `edit_specification` varchar(5000) NOT NULL,
+  `edit_specification` varchar(5000) DEFAULT NULL,
   `description` varchar(300) DEFAULT NULL,
   `request_route` varchar(300) DEFAULT NULL,
   `display_route` varchar(300) DEFAULT NULL,
+  `print_route` varchar(300) DEFAULT NULL,
+  `display_format` varchar(300) DEFAULT NULL,
   `request_route_priority` varchar(10) DEFAULT NULL,
   `display_route_priority` varchar(10) DEFAULT NULL,
-  `display_format` varchar(50) DEFAULT NULL,
+  `print_route_priority` varchar(10) DEFAULT NULL,
   `insert_minimum_authorization_level` int(11) DEFAULT NULL,
   `update_minimum_authorization_level` int(11) DEFAULT NULL,
   `select_minimum_authorization_level` int(11) DEFAULT NULL,
   `delete_minimum_authorization_level` int(11) DEFAULT NULL,
   `append_user` int(11) DEFAULT NULL,
+  `default` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`examination_id`),
   KEY `sample_requirement` (`sample_requirement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100024 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -585,7 +588,7 @@ CREATE TABLE `opd_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=299 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=300 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -925,6 +928,7 @@ CREATE TABLE `route_priority` (
   `node` varchar(100) NOT NULL,
   `request_route_priority` varchar(10) NOT NULL,
   `display_route_priority` varchar(10) NOT NULL,
+  `print_route_priority` varchar(10) NOT NULL,
   PRIMARY KEY (`route`,`node`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1096,4 +1100,4 @@ CREATE TABLE `ward_id` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-12 10:02:48
+-- Dump completed on 2023-07-13  1:10:18
