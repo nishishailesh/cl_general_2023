@@ -13,7 +13,7 @@ main_menu($link);
 
 
 $tok=explode("|",$_POST['action']);
-//print_r($tok);
+print_r($tok);
 
 if($tok[0]=='newww_general')
 {
@@ -21,9 +21,12 @@ if($tok[0]=='newww_general')
 		echo '<div>';
 			if(strlen($tok[2])>0)
 			{
-				$rlike=str_replace(',','|',$tok[2]);
+				$tok=explode("|",$_POST['action']);
+
+				$rlike=str_replace(',','|',$tok[1]);
+				//echo $rlike;
 				$sql="select * from examination where request_route rlike '".$rlike."' order by request_route,name";
-				//echo $sql;
+				echo $sql;
 			}
 			else
 			{
@@ -31,7 +34,7 @@ if($tok[0]=='newww_general')
 			}
 			//echo $sql;
 			
-			get_data_specific($link,$sql,$tok[1]);
+			get_data_specific($link,$sql,$tok[1],$tok[3]);
 		echo '</div>';
 		
 		echo '<div>
@@ -79,10 +82,18 @@ if(isset($_POST['action']))
 }
 
 
-//x_get_examination_data($link,$sql='select examination_id ,name as description from examination order by description ','examination_id',$multi='no',$size=8);
 
-function get_data_specific($link,$sql,$ex_list)
+function get_data_specific($link,$sql,$ex_list,$default_value_str)
 {
+	$ex_defaults=explode(",",$default_value_str);
+	$ex_default_array=array();
+	foreach($ex_defaults as $ex_default)
+	{
+		$temp=explode('^',$ex_default);
+		$ex_default_array[$temp[0]]=$temp[1];
+	}
+
+	print_r($ex_default_array);
 	
 	echo '<form method=post class="bg-light jumbotron" enctype="multipart/form-data">';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
@@ -96,12 +107,13 @@ function get_data_specific($link,$sql,$ex_list)
 			//print_r($ex_array);xr
 			foreach($ex_array as $ex_id)
 			{
-				get_one_field_for_insert($link,$ex_id);
+				if(array_key_exists($ex_id,$ex_default_array)){$default_value=$ex_default_array[$ex_id];}else{$default_value='';}
+				//echo '<h1>'.$default_value.'</h1>';
+				get_one_field_for_insert($link,$ex_id,$default_value);
 			}
 		echo '</div>';
 		echo '<div>';
 	
-			//echo '<button class="btn btn-sm btn-outline-success " type=button id=my_lft onclick="select_super_profile(this,\'selected_examination_list\') " data-status="off" data-ex_list="1002,1031,1032,1034,5001">My LFT</button>';
 			xxx_get_examination_data($link,$sql,'id',$multi='no',$size=10);
 		echo '</div>';
 	echo '</div>';
@@ -110,7 +122,7 @@ function get_data_specific($link,$sql,$ex_list)
 	echo '</form>';
 }
 
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 //////////////user code ends////////////////
 tail();
 ?>

@@ -840,6 +840,7 @@ function view_field_blob($link,$kblob,$sample_id,$display_class='horizontal3')
                 $img=isset($edit_specification['img'])?$edit_specification['img']:'';
                 $w=isset($edit_specification['width'])?$edit_specification['width']:'200';
                 $h=isset($edit_specification['height'])?$edit_specification['height']:'200';
+                $help=isset($edit_specification['help'])?$edit_specification['help']:'';
 
 
                 if($img=='png')
@@ -856,8 +857,9 @@ function view_field_blob($link,$kblob,$sample_id,$display_class='horizontal3')
 
 
 				echo '</div>';
-				echo '<div  class="help border"  >Current File:'.$ar_blob['fname'].'</div>
-		</div>';
+				echo '<div  class="help border"  >Current File:'.$ar_blob['fname'].'</div>';
+				echo '<div  class="help border"  >'.$help.'</div>';
+		echo '</div>';
 }
 
 
@@ -2179,6 +2181,51 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
 		echo '</div>';
 	} 
+
+
+
+//////////////////////
+
+	elseif($type=='examination_field_specification')
+	{
+		$attributes_str=
+					' '.$readonly.' '.'
+					id="'.$element_id.'"
+					name="'.$examination_id.'" 
+					data-exid="'.$examination_id.'" 
+					data-sid="'.$sample_id.'" 
+					data-user="'.$_SESSION['login'].'" 
+					data-session_name="'.$_POST['session_name'].'", 
+					pattern="'.$pattern.'" 
+					class="form-control autosave p-0 m-0 no-gutters '.$zoom.' " 
+					style="resize: both;"
+					minlength=\''.$minlength.'\'';
+					
+		
+		
+				echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+					echo $examination_details['name'];
+			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly, $attributes_str=$attributes_str);
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				echo '</div>';
+			echo '</div>';
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
+		echo '</div>';
+		
+		
+		
+	}
+
+
+
+///////////////////////
 
 
 	else 		//type=textarea 
@@ -3683,16 +3730,152 @@ function save_insert_specific_with_parameters($link,$list_of_selected_examinatio
 	return $sample_id_array	;
 }
 
+function get_field_spec($link,$examination_id)
+{
+	$sql='select * from examination_field_specification  where examination_id=\''.$examination_id.'\' ';
+	//echo $sql;
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	return $ar=get_single_row($result);	//return only first row, if mutiple, only forst one is returned
+}
 
-function get_one_field_for_insert($link,$examination_id)
+//
+function read_field($link,$examination_id,$value,$search='no',$readonly='',$attributes_str='')
+{
+	//echo '<h1>read_field()</h1>';
+
+	$examination_field_specification=get_field_spec($link,$examination_id);
+	//print_r($examination_field_specification);
+	if($examination_field_specification)
+	{
+		if($examination_field_specification['ftype']=='table')
+		{
+			if($readonly!='readonly')
+			{
+				mk_select_from_sql($link,'select distinct `'.$examination_field_specification['field'].'` from `'.$examination_field_specification['table'].'`',
+									$examination_field_specification['field'],'__ex__'.$examination_field_specification['examination_id'],
+									'__ex__'.$examination_field_specification['examination_id'],'',$value,$blank='yes',$attributes_str=$attributes_str);
+			}
+			else
+			{
+				echo '<input class="w-100" type=text  '.$readonly.' name=\''.'__ex__'.$examination_field_specification['examination_id'].'\' value=\''.htmlentities($value,ENT_QUOTES).'\'>';
+			}
+		}
+		else if($examination_field_specification['ftype']=='dtable')
+		{
+			//if($readonly!='readonly')
+			//{
+			$sql='select 
+				distinct `'.$fspec['field'].'` , 
+				concat_ws("|",'.$fspec['field_description'].') as description
+			from `'.$fspec['table'].'`
+			order by '.$fspec['field_description'];
+			//echo $sql;
+			mk_select_from_sql_with_description(	$link,
+													$sql,
+													$fspec['field'],
+													'__ex__'.$examination_field_specification['examination_id'],
+													'__ex__'.$examination_field_specification['examination_id'],
+													$value,
+													$blank='yes',
+													$readonly,
+													$attributes_str=$attributes_str);
+				echo '<input placeholder="enter search string" type=text id=\'input_for_'.'__ex__'.$examination_field_specification['examination_id'].'\' onchange="find_from_dd(this , \''.$fspec['examination_id'].'\');">';
+
+				
+				?>
+
+
+				<script>
+//document.getElementById("alloted_to")[6].text.search(document.getElementById("input_for_alloted_to").value)
+					function  find_from_dd(me,idd)
+					{
+						var option;
+						target=document.getElementById(idd);
+						//alert(me.value);
+						var selectLength = document.getElementById(idd).length;
+						for(i=0; i<selectLength;i++)
+						{
+							if (target[i].text.toLowerCase().search(me.value.toLowerCase())!=-1) 
+							{
+								//alert(target[i].text);
+								//target.selectedIndex=i;
+								//return;
+								option = document.createElement("option");
+								option.text = target[i].text
+								option.value = target[i].value
+								target.prepend(option); 
+								i++;
+							}
+							else
+							{
+
+							}
+						}
+						target.selectedIndex=0;
+						//alert("No record found having >>>>"+me.value+"<<<<");
+					}
+				</script>
+
+
+<?php
+
+
+				
+
+		}
+		elseif($examination_field_specification['ftype']=='date')
+		{
+			if($search=='yes')
+			{
+				echo '<input type=text '.$readonly.' name=\''.'__ex__'.$examination_id.'\'  value=\''.$value.'\' '.$attributes_str.' >';
+			}
+			else
+			{
+				echo '<input type=date id=\''.$field.'\' name=\''.'__ex__'.$examination_id.'\' value=\''.$value.'\' '.$attributes_str.' >';
+				$default=strftime("%Y-%m-%d");
+				show_source_button($field,$default);
+			}
+		}
+		elseif($examination_field_specification['ftype']=='time')
+		{
+			if($search=='yes')
+			{
+				echo '<input type=text  name=\''.'__ex__'.$examination_id.'\' value=\''.$value.'\'  '.$attributes_str.' >';
+			}
+			else
+			{
+				echo '<input type=time id=\''.$field.'\'  '.$readonly.' name=\''.'__ex__'.$examination_id.'\' value=\''.$value.'\'  '.$attributes_str.' >';
+				$default=strftime("%H:%M");
+				show_source_button($field,$default);
+			}
+		}				
+		elseif($examination_field_specification['ftype']=='textarea')
+		{
+			echo '<pre><textarea class="w-100"  '.$readonly.' name=\''.'__ex__'.$examination_id.'\' '.$attributes_str.'  >'.$value.'</textarea></pre>';
+		}	
+		else
+		{
+			echo 'not implemented';
+		}
+	}
+	else
+	{
+		echo '<input class="w-100" type=text  '.$readonly.' name=\''.'__ex__'.$examination_id.'\'  value=\''.htmlentities($value,ENT_QUOTES).'\'  '.$attributes_str.' >';
+	}
+}
+
+
+
+
+function get_one_field_for_insert($link,$examination_id,$default_value='')
 {
 	$examination_details=get_one_examination_details($link,$examination_id);
 	if($examination_details===null || count($examination_details)<1){return;}
-	//echo 'yyy';
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	if(!$edit_specification){$edit_specification=array();}
 
-		$result='';
+		$result=$default_value;
+		//echo '<h1>'.$result.'</h1>';
 
 	$type=isset($edit_specification['type'])?$edit_specification['type']:'text';//echo '<h4>'.$type.'</h4>';
 	$readonly=isset($edit_specification['readonly'])?$edit_specification['readonly']:'';
@@ -3976,27 +4159,54 @@ function get_one_field_for_insert($link,$examination_id)
 		echo '</div>';
 	} 
 
+//////////////////////
 
+	elseif($type=='examination_field_specification')
+	{
+				echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+					echo $examination_details['name'];
+			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly);
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				echo '</div>';
+			echo '</div>';
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
+		echo '</div>';
+		
+		
+		
+	}
+
+
+
+///////////////////////
 	else  
 	{
-		if(strlen($examination_details['default'])>0)
+		if(strlen($examination_details['default_value'])>0)
 		{
 			//echo substr($examination_details['default'],0,7);
-			if(strtolower(substr($examination_details['default'],0,7))=='select ' )	//run only select query
+			if(strtolower(substr($examination_details['default_value'],0,7))=='select ' )	//run only select query
 			{
-				$result_default=run_query($link,$GLOBALS['database'],$examination_details['default']);
+				$result_default=run_query($link,$GLOBALS['database'],$examination_details['default_value']);
 				$ar_default=get_single_row($result_default);
 				$default_value=$ar_default['default_value'];
 			}
-			else
-			{
-				$default_value='';
-			}
+			//else
+			//{
+				//$default_value='';
+			//}
 		}
-		else
-		{
-			$default_value='';
-		}
+
+		//else
+		//{
+			//$default_value='';
+		//}
 		//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
 			////
@@ -4028,6 +4238,17 @@ function get_one_field_for_insert($link,$examination_id)
 			echo '<p class="help">'.nl2br(htmlspecialchars($help)).'</p>';
 		echo '</div>';
 	}
+
+
+
+////////////
+
+
+
+
+
+////////////
+
 
 
 }
@@ -7136,9 +7357,10 @@ function create_newww_special($link)
 					formaction=newww_general.php 
 					type=submit 
 					name=action
-					value=newww_general|'.$ar['ex_list'].'|'.$ar['route'].'>'.$ar['caption'].'</button>';
+					value="newww_general|'.$ar['ex_list'].'|'.$ar['route'].'|'.$ar['default_value'].'">'.$ar['caption'].'</button>';
 	}
 }
+
 
 function make_link($link,$sample_id)
 {

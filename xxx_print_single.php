@@ -63,7 +63,7 @@ $header_ex=$header_data[1];
 ////////////////////////////////
 ////////SET FOOTER//////////////
 ////////////////////////////////
-$footer='<h3>Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages().'</h3>';
+$footer='<table><tr><td>Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages().'</td><td colspan="2">Note:'.get_config_value($link,"footer_notice").'</td></tr></table>';
 $pdf->footer=$footer;
 
 ////////////////////////////////
@@ -136,6 +136,28 @@ function get_header($link,$sample_id)
 			$node->appendChild($i);
 		}
 		
+		else if($node->nodeValue=='acc_symbol')
+		{		
+			$node->nodeValue='';
+			$qr_link=make_link_return($link,$sample_id);
+			$barcodeobj = new TCPDF2DBarcode($qr_link, 'QRCODE,H');
+			$png=$barcodeobj->getBarcodePngData(3, 3, array(0,0,0));
+			
+			//$img = '<img src="@'.$encoded_image.'" width=30 /> ';
+
+			$encoded_image=base64_encode($png);
+			$i=$dom->createElement('img');
+			
+			$domAttribute = $dom->createAttribute('src');
+			$domAttribute->value = '@'.$encoded_image;
+			$i->appendChild($domAttribute);
+			
+			$domAttribute = $dom->createAttribute('width');
+			$domAttribute->value = get_config_value($link,'qr_code_width');					
+			$i->appendChild($domAttribute);
+
+			$node->appendChild($i);
+		}
 		
 		else if(is_numeric($ex[0]))
 		{
@@ -153,16 +175,29 @@ function get_header($link,$sample_id)
 				
 				if($type!='blob')
 				{
+					if($examination_details['append_user']==1)
+					{
+						$user_info=get_user_info($link,$_SESSION['login']);
+						$append_info=$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
+					}
+					else
+					{
+						$append_info='';
+					}
+							
+		
 					$sql='select examination_id,result from result where sample_id=\''.$sample_id.'\' and examination_id=\''.$ex[0].'\'';
 					$result=run_query($link,$GLOBALS['database'],$sql);
-					if(get_row_count($result)!=1){continue;}
+					if(get_row_count($result)!=1){$node->nodeValue='';continue;}
 					$ar=get_single_row($result);
-					$node->nodeValue=$ar['result'];
+					$node->nodeValue=$ar['result'].' '.$append_info;
 				}
 				else
 				{
 					$node->nodeValue='';
 
+					$img=isset($edit_specification['img'])?$edit_specification['img']:'';
+					if($img!="png"){continue;}
 					$w=isset($edit_specification['width'])?$edit_specification['width']:'200';
 					$h=isset($edit_specification['height'])?$edit_specification['height']:'200';	
 					$sql='select examination_id,result from result_blob where sample_id=\''.$sample_id.'\' and examination_id=\''.$ex[0].'\'';
@@ -171,7 +206,7 @@ function get_header($link,$sample_id)
 					$ar=get_single_row($result);
 					//echo $ar['result'];
 					
-					if(get_row_count($result)!=1){continue;}
+					if(get_row_count($result)!=1){$node->nodeValue='';continue;}
 					//ob_start();
 					//display_png_p($ar['result'],'not important',$w,$h);
 					//$png = ob_get_contents();
@@ -244,13 +279,14 @@ function xxx_print_sample($link,$sample_id)
 		
 	//return;
 	
+/*
 echo '<table border="1" cellpadding="2">
 			<tr>
 					<td class="badge badge-primary ">Sample ID</td>
 					<td class="badge badge-info"><h5>'.$sample_id.'</h5></td>
 			</tr>
 	</table>';
-
+*/
 
 echo '<table border="0.3">';
 		xxx_tree_to_panel_for_print($link,$ex_tree,$id_prefix='',$collapse=' collapse ',$sample_id);
@@ -297,6 +333,9 @@ function print_field_any($link,$ex_id,$sample_id)
 {
 	$examination_details=get_one_examination_details($link,$ex_id);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	$hide=isset($edit_specification['hide'])?$edit_specification['hide']:'';	
+	if($hide=='yes'){  return; }
+
 	$type=isset($edit_specification['type'])?$edit_specification['type']:'';
 	$ex_compact=isset($edit_specification['compact'])?$edit_specification['compact']:'';
 	$display_format=$examination_details['display_format'];

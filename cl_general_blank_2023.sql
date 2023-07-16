@@ -16,6 +16,19 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `Laboratory`
+--
+
+DROP TABLE IF EXISTS `Laboratory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Laboratory` (
+  `Laboratory` varchar(200) NOT NULL,
+  PRIMARY KEY (`Laboratory`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Name`
 --
 
@@ -207,7 +220,7 @@ DROP TABLE IF EXISTS `config`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `config` (
   `name` varchar(100) NOT NULL,
-  `value` varchar(500) DEFAULT NULL,
+  `value` varchar(2000) DEFAULT NULL,
   `value_blob` mediumblob DEFAULT NULL,
   `help` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`name`)
@@ -227,6 +240,22 @@ CREATE TABLE `copy_bin_text` (
   `text` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `copy_config`
+--
+
+DROP TABLE IF EXISTS `copy_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `copy_config` (
+  `name` varchar(100) NOT NULL,
+  `value` varchar(5000) DEFAULT NULL,
+  `value_blob` mediumblob DEFAULT NULL,
+  `help` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -395,10 +424,28 @@ CREATE TABLE `examination` (
   `select_minimum_authorization_level` int(11) DEFAULT NULL,
   `delete_minimum_authorization_level` int(11) DEFAULT NULL,
   `append_user` int(11) DEFAULT NULL,
-  `default` varchar(100) DEFAULT NULL,
+  `default_value` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`examination_id`),
   KEY `sample_requirement` (`sample_requirement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100024 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `examination_field_specification`
+--
+
+DROP TABLE IF EXISTS `examination_field_specification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `examination_field_specification` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `examination_id` int(11) DEFAULT NULL,
+  `ftype` varchar(50) DEFAULT NULL,
+  `table` varchar(50) DEFAULT NULL,
+  `field` varchar(50) DEFAULT NULL,
+  `field_description` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -519,6 +566,7 @@ CREATE TABLE `menu_new` (
   `caption` varchar(100) NOT NULL,
   `ex_list` varchar(100) NOT NULL,
   `route` varchar(200) NOT NULL,
+  `default_value` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -588,7 +636,7 @@ CREATE TABLE `opd_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=300 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=311 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1100,4 +1148,4 @@ CREATE TABLE `ward_id` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-13  1:10:18
+-- Dump completed on 2023-07-17  0:24:48
