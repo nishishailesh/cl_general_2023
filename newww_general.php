@@ -13,7 +13,7 @@ main_menu($link);
 
 
 $tok=explode("|",$_POST['action']);
-print_r($tok);
+//print_r($tok);
 
 if($tok[0]=='newww_general')
 {
@@ -85,15 +85,16 @@ if(isset($_POST['action']))
 
 function get_data_specific($link,$sql,$ex_list,$default_value_str)
 {
-	$ex_defaults=explode(",",$default_value_str);
+	$ex_defaults=array_filter(explode(",",$default_value_str));
 	$ex_default_array=array();
 	foreach($ex_defaults as $ex_default)
 	{
 		$temp=explode('^',$ex_default);
+		//print_r($temp);
 		$ex_default_array[$temp[0]]=$temp[1];
 	}
 
-	print_r($ex_default_array);
+	//print_r($ex_default_array);
 	
 	echo '<form method=post class="bg-light jumbotron" enctype="multipart/form-data">';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
@@ -122,7 +123,7 @@ function get_data_specific($link,$sql,$ex_list,$default_value_str)
 	echo '</form>';
 }
 
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
 //////////////user code ends////////////////
 tail();
 ?>

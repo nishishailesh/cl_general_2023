@@ -10141,6 +10141,7 @@ function get_config_value($link,$config_item)
 	$sql='select * from config where name=\''.$config_item.'\'';
 	//echo $sql;
 	$result=run_query($link,$GLOBALS['database'],$sql);
+	if(get_row_count($result)<=0){return false;}
 	$ar=get_single_row($result);	
 	return $ar['value'];
 }
