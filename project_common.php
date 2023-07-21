@@ -4634,11 +4634,12 @@ function get_any_examination_result($link,$sample_id,$examination_id)
 {
 	//echo 'pppppppppppp'.$examination_id.'<br>';
 	$examination_details=get_one_examination_details($link,$examination_id);
+	if(!$examination_details){return false;}
 	//echo '>>>>>>>>>>examination_id='.$examination_id;
 	//print_r($examination_details);
 
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
-	//////print_r($edit_specification);
+	//print_r($edit_specification);
 	$type=isset($edit_specification['type'])?$edit_specification['type']:'';
 	//echo $type;
 	if(in_array($type,['id_multi_sample','id_single_sample']))
@@ -6999,7 +7000,10 @@ function get_equipment_str_old($link,$sample_id)
 	return $eq_str;
 }
 
- 
+//mysql json selection example
+//select sample_id,result.examination_id,name,json_extract(edit_specification,'$.equipment') from result,examination where sample_id='1000436' and examination.examination_id=result.examination_id
+//select group_concat(distinct equipment SEPARATOR '') x from result,examination where sample_id='1000436' and examination.examination_id=result.examination_id;
+//above is single qury giving same result
 function get_equipment_str($link,$sample_id)
 {
 	$r=get_result_of_sample_in_array($link,$sample_id);

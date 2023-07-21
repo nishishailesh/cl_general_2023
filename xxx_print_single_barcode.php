@@ -60,7 +60,8 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 		//label data
 		$label_details=get_label_details($link,$label_id);
 		$data=json_decode($label_details['data'],true);
-
+		$border=$label_details['border'];
+		
 		//examination data
 		//echo $label_details['examination_id'].'<br>';
 		
@@ -123,9 +124,54 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 				}
 								
 			}
+			if($item[0]=='other_data')
+			{
+				$sql_data=str_replace("{sample_id}",'\''.$sample_id.'\'',$label_details['other_data']);
+				$result_data=run_query($link,$GLOBALS['database'],$sql_data);
+				$ar_data=get_single_row($result_data);
+				$other_data=$ar_data['other_data'];
+				
+				if($item[1]=='h')
+				{
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($other_data, $label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						//$pdf->SetFont('helveticaB', '', 5);
+						$pdf->SetFont('helveticaB', '', 11);
+						$pdf->SetXY($item[3],$item[4]);
+						$pdf->Cell($item[5],$item[6],' '.$other_data,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+					}
+				}
+				
+				else if($item[1]=='v')
+				{
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($other_data, $label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						
+						$pdf->SetFont('helvetica', '', 7);
+
+						$pdf->StartTransform();
+						$pdf->SetXY($item[3],$item[4]);
+						//$pdf->Rotate(90, 0 , 0);
+						$pdf->Rotate(90);
+						$pdf->Cell($item[5],$item[6],' '.$other_data,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+						
+						$pdf->StopTransform();
+					}
+				}
+								
+			}
 			else
 			{
 				$ex_result=get_any_examination_result($link,$sample_id,$item[0]);
+				//if(!$ex_result){continue;}
 				if($item[0]==$label_details['examination_id']){$ex_result=$prefix.$ex_result;}
 
 				if($item[1]=='h')

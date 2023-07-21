@@ -456,6 +456,7 @@ CREATE TABLE `examination` (
   `delete_minimum_authorization_level` int(11) DEFAULT NULL,
   `append_user` int(11) DEFAULT NULL,
   `default_value` varchar(100) DEFAULT NULL,
+  `equipment` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`examination_id`),
   KEY `sample_requirement` (`sample_requirement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100024 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -550,6 +551,8 @@ CREATE TABLE `labels` (
   `caption` varchar(10) DEFAULT NULL,
   `barcode_format` varchar(50) DEFAULT NULL,
   `data` varchar(5000) NOT NULL,
+  `other_data` varchar(5000) NOT NULL,
+  `border` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1179,4 +1182,4 @@ CREATE TABLE `ward_id` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-21  0:44:50
+-- Dump completed on 2023-07-22  1:53:42
