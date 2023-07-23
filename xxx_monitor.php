@@ -37,6 +37,7 @@ if($_POST['unique_id']!='sample_id')
 	$examination_details=get_one_examination_details($link,$_POST['unique_id']);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	$table=isset($edit_specification['table'])?$edit_specification['table']:'';
+	$unique_examination_id=$_POST['unique_id'];
 
 
 	//show samples as selected
@@ -54,6 +55,7 @@ else if($_POST['unique_id']=='sample_id')
 	
 	$id_range_array=explode('-',$_POST['id_range']);
 	$max_unique_id=find_max_sample_id($link,$id_range_array[0],$id_range_array[1])+$_POST['show_offset'];
+	$unique_examination_id=0;
 
 	//$examination_details=get_one_examination_details($link,$_POST['unique_id']);
 	//$edit_specification=json_decode($examination_details['edit_specification'],true);
@@ -75,7 +77,7 @@ echo '<div class="monitor_grid_horizontal">';
 
 while($ar=get_single_row($result))
 {
-			showww_sid_button_release_status_horizontal($link,$ar['sample_id'],$extra_post,$_POST['unique_id'],$checkbox='yes');
+			showww_sid_button_release_status_horizontal($link,$ar['sample_id'],$extra_post,$unique_examination_id,$checkbox='yes');
 }
 
 echo '</div>';

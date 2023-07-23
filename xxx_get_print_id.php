@@ -22,50 +22,41 @@ tail();
 ///////////////////Functions////////////////
 function print_selected_id($link)
 {
+	echo '<div>';
+	echo '<input type=text class="d-block align-top p-1 m-1 " placeholder="scan barcode here" id=id_for_status_change onchange="update_list_of_id(this)">';
+	echo '<form method=post id="status_change_form" class="d-inline" action=xxx_print_multiple.php target=_blank>';
+		echo '<textarea 
+						readonly 
+						class="d-block w-100" 
+						onfocus="document.getElementById(\'id_for_status_change\').focus()" 
+						name=list_of_id name=list_of_id id=list_of_id  
+						aria-multiline="true">
+				</textarea>';
 
-echo '<div>';
-echo '<input type=text class="d-block align-top p-1 m-1 " placeholder="scan barcode here" id=id_for_status_change onchange="update_list_of_id(this)">';
-echo '<form method=post id="status_change_form" class="d-inline" action=xxx_print_multiple.php target=_blank>';
-	echo '<textarea 
-					readonly 
-					class="d-block w-100" 
-					onfocus="document.getElementById(\'id_for_status_change\').focus()" 
-					name=list_of_id name=list_of_id id=list_of_id  
-					aria-multiline="true">
-			</textarea>';
-
-	echo '<input class="btn btn-sm btn-info" type=submit name=action value=print_sample_id>';
-	echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
-echo '</form>';
-echo '</div>';
-
+		echo '<input class="btn btn-sm btn-info" type=submit name=action value=print_sample_id>';
+		echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+	echo '</form>';
+	echo '</div>';
 }
 
-function my_is_int($string)
+function print_selected_range_of_id($link)
 {
-	if(strlen($string)==0){return false;}
-	
-	$digits=str_split($string);
-	$list_of_digit=array('0','1','2','3','4','5','6','7','8','9');
-	//print_r($list_of_digit);
-	//print_r($digits);
-	//echo '<br>';
-	foreach($digits as $d)
-	{
-			if(in_array($d,$list_of_digit)===True)
-			{
-				//echo $d.':digit found<br>';
-			}
-			else
-			{
-				//echo $d.': NON digit found<br>';
-				return false;
-			}
-	}
-	
-	return true;
-}
+	echo '<div>';
+	echo '<input type=text class="d-block align-top p-1 m-1 " placeholder="scan barcode here" id=id_for_status_change onchange="update_list_of_id(this)">';
+	echo '<form method=post id="status_change_form" class="d-inline" action=xxx_print_multiple.php target=_blank>';
+		echo '<textarea 
+						readonly 
+						class="d-block w-100" 
+						onfocus="document.getElementById(\'id_for_status_change\').focus()" 
+						name=list_of_id name=list_of_id id=list_of_id  
+						aria-multiline="true">
+				</textarea>';
 
+		echo '<input class="btn btn-sm btn-info" type=submit name=action value=print_sample_id>';
+		echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+	echo '</form>';
+	echo '</div>';
+}
 
 ?>
 

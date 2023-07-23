@@ -26,27 +26,12 @@ if(isset($_POST['action']))
 	}
 }
 
+//$status_lot_size=isset($_POST['status_lot_size'])?$_POST['status_lot_size']:get_config_value($link,'status_lot_size');
+//$status_column_size=isset($_POST['status_column_size'])?$_POST['status_column_size']:get_config_value($link,'status_column_size');
+	
+//$status_lot_size=get_config_value($link,'status_lot_size');
+//$status_column_size=get_config_value($link,'status_column_size');
 /*
-echo '<style>
-.monitor_grid
-{
-display: grid;
-grid-gap: 5px;
-grid-template-areas:
-';
-	for ($i=1;$i<=200;$i++)
-	{
-		if($i%10==1 && ($i/10)%2==0){echo '\'';}	
-		echo 'a'.str_pad($i,3,0,STR_PAD_LEFT).' ';
-		if($i%10==0 && ($i/10)%2==0){echo '\' ';}
-	}
-echo ';}
-</style>';
-*/
-
-$status_lot_size=get_config_value($link,'status_lot_size');
-$status_column_size=get_config_value($link,'status_column_size');
-
 echo '<style>
 .monitor_grid
 {
@@ -68,14 +53,16 @@ grid-template-areas:
 echo '}';
 
 echo '</style>';
-
+*/
 ////////for status change display//////////////
 
 
 
 /////////////for status display/////////////
 xxx_make_unique_id_option($link);
-echo '<div id=monitor>write offset(optional, for all ids), write id_range(optional, only for sample_id) and press appropriate id button</div>';
+
+
+echo '<div id=monitor>press appropriate id button</div>';
 
 echo '<div class="m-3"><fieldset  ><legend>Change Sample Status</legend>';
 manage_bulk_status_change($link);
@@ -142,9 +129,13 @@ echo '</div>';
 
 function xxx_make_unique_id_option($link)
 {
+	echo ' if offset<0, older samples will be seen . reminder of lot size/column size must be 0<br>';
 	$show_offset=isset($_POST['show_offset'])?$_POST['show_offset']:0;
+	$status_lot_size=isset($_POST['status_lot_size'])?$_POST['status_lot_size']:get_config_value($link,'status_lot_size');
+	$status_column_size=isset($_POST['status_column_size'])?$_POST['status_column_size']:get_config_value($link,'status_column_size');
 	$id_range=isset($_POST['id_range'])?$_POST['id_range']:'';
 
+	echo_style($status_lot_size,$status_column_size);
 
 	//id_multi_sample is not suitable box box placement, due to multiple items making sequence impossible
 	/*$sql="SELECT * from examination
@@ -164,7 +155,9 @@ function xxx_make_unique_id_option($link)
 		echo '<form method=post>';
 		
 			echo '<div class="border border-success m-1 p-0 d-inline-block">
-					<label class="m-0 -p-0 " for=show_offset>offset:</label> <input type=number class="m-0 p-0" id=show_offset name=show_offset step=200 value=\''.$show_offset.'\'>
+					<label class="m-0 -p-0 " for=show_offset>offset:</label> <input size=5 type=number class="m-0 p-0" id=show_offset name=show_offset  value=\''.$show_offset.'\'>
+					<label class="m-0 -p-0 " for=show_offset>lot size:</label> <input  size=5 type=number class="m-0 p-0" id=show_offset name=status_lot_size  value=\''.$status_lot_size.'\'>
+					<label class="m-0 -p-0 " for=show_offset>column size:</label> <input  size=5 type=number class="m-0 p-0" id=show_offset name=status_column_size  value=\''.$status_column_size.'\'>
 			</div>';
 			echo '<div class="border border-success m-1 p-0 d-inline-block">
 				<label class="m-0 -p-0 ">id_range for sample_id:</label>';
@@ -265,33 +258,69 @@ function insert_update_one_examination_with_result_using_unique_id($link,$unique
 	}
 }
 
-
-function my_is_int($string)
+function echo_style_good($status_lot_size,$status_column_size)
 {
-	if(strlen($string)==0){return false;}
-	
-	$digits=str_split($string);
-	$list_of_digit=array('0','1','2','3','4','5','6','7','8','9');
-	//print_r($list_of_digit);
-	//print_r($digits);
-	//echo '<br>';
-	foreach($digits as $d)
+	echo '<style>
+	.monitor_grid
 	{
-			if(in_array($d,$list_of_digit)===True)
+	display: grid;
+	grid-gap: 5px;
+	grid-template-areas:
+	';
+		$count=1;
+		echo '\'';
+		$str='';
+		for ($i=1;$i<=($status_lot_size+$status_column_size*2);$i++)
+		{
+			//$comma=0;
+			$str=$str. ' a'.str_pad($i,3,0,STR_PAD_LEFT).' ';
+			if($count%$status_column_size==0)
 			{
-				//echo $d.':digit found<br>';
+				$str=$str.'\' \''; 
+				//$comma=1;
 			}
-			else
-			{
-				//echo $d.': NON digit found<br>';
-				return false;
-			}
-	}
+			$count++;
+		}
+		//if($comma==0){$str=$str.'\' \'';}
+		$str=substr($str,0,-1);
+		echo $str;
+	echo '}';
+
+	echo '</style>';
 	
-	return true;
 }
 
+function echo_style($status_lot_size,$status_column_size)
+{
+	echo '<style>
+	.monitor_grid
+	{
+	display: grid;
+	grid-gap: 5px;
+	grid-template-areas:
+	';
+		$count=1;
+		echo '\'';
+		$str='';
+		for ($i=1;$i<=($status_lot_size+$status_column_size*2);$i++)
+		{
+			//$comma=0;
+			$str=$str. ' a'.str_pad($i,3,0,STR_PAD_LEFT).' ';
+			if($count%$status_column_size==0)
+			{
+				$str=$str.'\' \''; 
+				//$comma=1;
+			}
+			$count++;
+		}
+		//if($comma==0){$str=$str.'\' \'';}
+		$str=substr($str,0,-1);
+		echo $str;
+	echo '}';
 
+	echo '</style>';
+	
+}
 ?>
 
 <script>
@@ -362,7 +391,16 @@ function callServer()
 			document.getElementById('monitor').innerHTML = xhttp.responseText;
 		}
 	};
-	post='unique_id=<?php echo isset($_POST["unique_id"])?$_POST["unique_id"]:"sample_id";?>&session_name=<?php echo $_POST["session_name"];?>&login=<?php echo $_SESSION["login"];?>&password=<?php echo $_SESSION["password"];?>&show_offset=<?php echo isset($_POST["show_offset"])?$_POST["show_offset"]:0 ?>&id_range=<?php echo isset($_POST["id_range"])?$_POST["id_range"]:''?>';
+	post1='unique_id=<?php echo isset($_POST["unique_id"])?$_POST["unique_id"]:"sample_id";?>'
+	post2='session_name=<?php echo $_POST["session_name"];?>'
+	post3='login=<?php echo $_SESSION["login"];?>'
+	post4='password=<?php echo $_SESSION["password"];?>'
+	post5='show_offset=<?php echo isset($_POST["show_offset"])?$_POST["show_offset"]:0; ?>'
+	post6='id_range=<?php echo isset($_POST["id_range"])?$_POST["id_range"]:'';?>'
+	post7='status_lot_size=<?php echo isset($_POST["status_lot_size"])?$_POST["status_lot_size"]:get_config_value($link,"status_lot_size"); ?>'
+	post8='status_column_size=<?php echo isset($_POST["status_column_size"])?$_POST["status_column_size"]:get_config_value($link,"status_column_size"); ?>'
+
+	post=post1+'&'+post2+'&'+post3+'&'+post4+'&'+post5+'&'+post6+'&'+post7+'&'+post8
 	xhttp.open('POST', 'xxx_monitor_button.php', true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(post);	

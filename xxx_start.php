@@ -245,31 +245,6 @@ function insert_update_one_examination_with_result_using_unique_id($link,$unique
 }
 
 
-function my_is_int($string)
-{
-	if(strlen($string)==0){return false;}
-	
-	$digits=str_split($string);
-	$list_of_digit=array('0','1','2','3','4','5','6','7','8','9');
-	//print_r($list_of_digit);
-	//print_r($digits);
-	//echo '<br>';
-	foreach($digits as $d)
-	{
-			if(in_array($d,$list_of_digit)===True)
-			{
-				//echo $d.':digit found<br>';
-			}
-			else
-			{
-				//echo $d.': NON digit found<br>';
-				return false;
-			}
-	}
-	
-	return true;
-}
-
 
 ?>
 

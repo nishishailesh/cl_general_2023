@@ -179,43 +179,5 @@ tail();
 
 //////////////Functions///////////////////////
 
-function check_for_conditions($link,$sid,$conditions)
-{
-	foreach($conditions as $ex_id => $value)
-	{
-		if($ex_id!='sample_id')
-		{
-			$result=get_any_examination_result($link,$sid,$ex_id);
-		}
-		else
-		{
-			$result=$sid;
-		}
-		if(is_array($value))
-		{
-			//echo $sid.'>>>'.$ex_id.'---->'.$result.'<br>';
-			if($result>=$value[0] && $result<=$value[1])
-			{
-				//next
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			if(stripos($result,$value)!==False)
-			{
-				//next
-			}
-			else
-			{
-				return False;
-			}
-		}
-	}
-	
-	return true;
-}
+
 ?>

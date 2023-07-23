@@ -2266,7 +2266,8 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 		
 				echo '<div class="basic_form  m-0 p-0 no-gutters">';
 			////
-					echo $examination_details['name'];
+				set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
+				//echo $examination_details['name'];
 			////
 			echo '<div class="m-0 p-0 no-gutters">';
 				////
@@ -7958,7 +7959,7 @@ function showww_sid_button_release_status($link,$sid,$extra_post='',$uid=0,$chec
 														//alert(\'hi\')
 														update_list_of_id(this)
 												"
-										class="status_check_box" value='.$did.' id=status_check_box^'.$did.'  style="background-color:'.$bgcolor.';" type=checkbox>';
+										class="status_check_box" value=\''.$did.'\' id=status_check_box^'.$did.'  style="background-color:'.$bgcolor.';" type=checkbox>';
 									}
 				echo '</div>';
 
@@ -9716,7 +9717,7 @@ function xxx_show_all_buttons_for_sample($link,$sample_id,$mode='view')
 		xxx_sample_id_view_button($sample_id);
 		xxx_sample_id_next_button($sample_id);
 		
-		//edit delete not possible if one of the examination is complated
+		//edit delete not possible if examination is complated. This is single examination
 		$res=get_config_value($link,'restrictive_examination_for_edit_delete');
 		$res_result=get_one_ex_result($link,$sample_id,$res);
 
@@ -10302,39 +10303,48 @@ function show_sample_id_for_unique_id($link,$unique_id,$unique_id_value)
 }
 
 
-function get_sample_id_for_unique_id($link,$unique_id,$unique_id_value)
+function get_sample_id_for_any_sid_single_id($link,$id)
 {
-	$examination_details=get_one_examination_details($link,$unique_id);
-	//print_r($examination_details);
-	$edit_specification=json_decode($examination_details['edit_specification'],true);
-	$table=isset($edit_specification['table'])?$edit_specification['table']:'';
-	if(strlen($table)==0){return false;}
-
-	$sqls='select * from `'.$table.'` where id=\''.$unique_id_value.'\'';
-	//echo '<h3>'.$sqls.'</h3>';
-	$results=run_query($link,$GLOBALS['database'],$sqls);
-	$sample_id_array=array();
-	if(get_row_count($results)<=0)
+	if(ctype_digit($id)){return $id;}
+	/*$sql='select 
+				examination_id,
+				json_extract(edit_specification,\'$.unique_prefix\') as unique_prefix,
+				json_extract(edit_specification,\'$.table\') as id_table 
+			from examination 
+			where 
+				json_extract(edit_specification,\'$.type\')="id_single_sample" or 
+				json_extract(edit_specification,\'$.type\')="id_multi_sample"';
+	*/
+	$sql='select 
+				examination_id,
+				json_extract(edit_specification,\'$.unique_prefix\') as unique_prefix,
+				json_extract(edit_specification,\'$.table\') as id_table 
+			from examination 
+			where 
+				json_extract(edit_specification,\'$.type\')="id_single_sample"';
+				
+	//echo $sql.'<br>';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	if(get_row_count($result)<=0){return false;}
+	while($ar=get_single_row($result))
 	{
-		echo 'no next/previous id '.$unique_id_value.' exist';
-		return;
+		
+		//echo '<h1>id='.$id.'</h1>';
+		//echo '<h1>'.$ar['unique_prefix'].'</h1>';
+		//echo '<h1>final prefix='.trim($ar['unique_prefix'],'"').'</h1>';
+		$prefix=trim($ar['unique_prefix'],'"');
+		if($prefix==substr($id,0,strlen($prefix)))
+		{
+			$sql_get='select sample_id from `'.trim($ar['id_table'],'"').'` where id=\''.substr($id,strlen($prefix)).'\'';
+			//echo $sql_get;
+			$result_get=run_query($link,$GLOBALS['database'],$sql_get);
+			if(get_row_count($result_get)<=0){return false;}
+			$ar_get=get_single_row($result_get);
+			//echo $ar_get['sample_id'];
+			return $ar_get['sample_id'];
+		}
 	}
-	else
-	{
-				echo '<h5 class="bg-warning print_hide" >Following '.get_row_count($results).' is/are  samples with the required condition</h5>';
-
-	}
-	while($ar=get_single_row($results))
-	{
-		xxx_manage_sample_status_change_horizontal($link,$ar['sample_id']);
-		echo '<div class="btn-group" role="group">';
-		showww_sid_button_release_status($link,$ar['sample_id']);
-		//xxx_view_sample($link,$ar['sample_id']);
-		echo '</div>';
-		$sample_id_array[]=$ar['sample_id'];
-	}
-	return $sample_id_array;
-
+	return false;
 }
 
 // end of Sample ID to unique ID conversion and visa versa//
@@ -10380,30 +10390,7 @@ function get_header($link,$sample_id)
 
 			$node->appendChild($i);
 		}
-		
-		else if($node->nodeValue=='acc_symbol')
-		{		
-			$node->nodeValue='';
-			$qr_link=make_link_return($link,$sample_id);
-			$barcodeobj = new TCPDF2DBarcode($qr_link, 'QRCODE,H');
-			$png=$barcodeobj->getBarcodePngData(3, 3, array(0,0,0));
-			
-			//$img = '<img src="@'.$encoded_image.'" width=30 /> ';
 
-			$encoded_image=base64_encode($png);
-			$i=$dom->createElement('img');
-			
-			$domAttribute = $dom->createAttribute('src');
-			$domAttribute->value = '@'.$encoded_image;
-			$i->appendChild($domAttribute);
-			
-			$domAttribute = $dom->createAttribute('width');
-			$domAttribute->value = get_config_value($link,'qr_code_width');					
-			$i->appendChild($domAttribute);
-
-			$node->appendChild($i);
-		}
-		
 		else if(is_numeric($ex[0]))
 		{
 			$header_ex[]=$ex[0];
@@ -10451,12 +10438,8 @@ function get_header($link,$sample_id)
 					$ar=get_single_row($result);
 					//echo $ar['result'];
 					
-					if(get_row_count($result)!=1){$node->nodeValue='';continue;}
-					//ob_start();
-					//display_png_p($ar['result'],'not important',$w,$h);
-					//$png = ob_get_contents();
-					//ob_end_clean();
-					//echo $png;
+					if(get_row_count($result)!=1){continue;}		//if no such examination
+					if(strlen($ar['result'])==0){continue;}			//if no blob uploaded. formatting wrong if not broken here
 					$encoded_image=base64_encode($ar['result']);
 					$i=$dom->createElement('img');
 					
@@ -10473,10 +10456,6 @@ function get_header($link,$sample_id)
  					$i->appendChild($domAttribute);
 
 					$node->appendChild($i);
-
- 					  					
-					//$img = '<img src="@'.$encoded_image.'" width="'.$w.'" height="'.$h.'" /> ';
-					//$node->nodeValue=$img
 				}
 			}
 		}
@@ -11002,4 +10981,229 @@ $header=$header.'</table>';
 return $header;
 }
 //end  of print functions
+
+
+
+function print_allowed($link,$sample_id)
+{
+	$ret=false;
+	$pre=get_config_value($link,'prerequisite_examination_for_print');
+	$pre_array=explode(',',$pre);
+	foreach($pre_array as $pex)
+	{
+		$pp=get_one_ex_result($link,$sample_id,$pex);
+		//echo'<h1>'.$pp.'</h1>';
+		if(strlen($pp)>0)
+		{
+			$ret=true;
+			break;
+		}
+	}
+	return $ret;
+}
+
+
+
+class X_REPORT_PDF extends TCPDF {
+	
+	public $bottom;
+	public $header;
+	public $footer;
+	public $curX;
+	public $curY;
+	
+	public function set_all_margins($left,$top,$right,$bottom)
+	{
+		// set margins
+		$this->SetMargins($left, $top, $right , true);
+		$this->bottom=$bottom;
+		
+		$this->SetAutoPageBreak(TRUE, $this->bottom);
+
+		$this->SetHeaderMargin(10);	//top border of page  and header start 
+		$this->SetFooterMargin(5); // no effect?
+	}
+	
+	
+	public function Header() 
+	{
+		$this->SetFont('helvetica', '', 10);
+		$this->writeHTML($this->header, true, false, true, false, '');
+	}
+	
+	public function Footer() 
+	{
+		$this->SetY(-($this->bottom)+2);		//match with $pdf->SetAutoPageBreak(TRUE, 40);
+		$this->SetFont('helvetica', '', 10);
+		$this->writeHTML($this->footer, true, false, true, false, '');
+	}
+}
+
+
+function xxx_prepare_for_report_printing()
+{
+	return $pdf = new X_REPORT_PDF('P', 'mm', 'A4', true, 'UTF-8', false);
+}
+
+function xxx_fill_report($link,$id,$pdf)
+{
+		
+	////////SET HEADER//////////////
+	//header footer overflow not solved
+	$header_data=get_header($link,$id);
+	//print_r($header_data[1]);
+	
+	$pdf->header=$header_data[0];
+	$header_ex=$header_data[1];
+
+	////////SET FOOTER//////////////
+	$pdf->startPageGroup();
+	$footer='<table><tr><td>Page '.$pdf->getPageNumGroupAlias().'/'.$pdf->getPageGroupAlias().'</td><td colspan="2">Note:'.get_config_value($link,"footer_notice").'</td></tr></table>';
+	//$footer='<table><tr><td>Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages().'</td><td colspan="2">Note:'.get_config_value($link,"footer_notice").'</td></tr></table>';
+	$pdf->footer=$footer;
+
+	////////SET MARGIN//////////////
+
+	$left=get_config_value($link,'report_left_margin');
+	$right=get_config_value($link,'report_right_margin');
+	$top=get_config_value($link,'report_top_margin');
+	$bottom=get_config_value($link,'report_bottom_margin');
+
+	$pdf->set_all_margins($left=$left,$top=$top,$right=$right,$bottom=$bottom);
+
+
+	////////ADD PAGE////////////////
+	$pdf->AddPage();
+	//echo $pdf->curY;
+
+	ob_start();
+	//print_r($_POST);
+	xxx_print_sample($link,$id,$header_ex);
+	$myStr = ob_get_contents();
+	ob_end_clean();
+	//echo $myStr;
+	//exit(0);
+
+	$pdf->SetFont('helvetica', '', 10);
+	$pdf->writeHTML($myStr, true, false, true, false, '');
+}
+
+function generate_pdf_for_report($pdf)
+{
+		$pdf->Output('report.pdf', 'I');
+}
+
+
+
+
+function get_sample_id_array_for_any_id($link,$id)
+{
+	if(ctype_digit($id)){return $id;}		//it is sample_id
+	$sql='select 
+				examination_id,
+				json_extract(edit_specification,\'$.unique_prefix\') as unique_prefix,
+				json_extract(edit_specification,\'$.table\') as id_table 
+			from examination 
+			where 
+				json_extract(edit_specification,\'$.type\')="id_single_sample" or 
+				json_extract(edit_specification,\'$.type\')="id_multi_sample"';
+	
+	/*$sql='select 
+				examination_id,
+				json_extract(edit_specification,\'$.unique_prefix\') as unique_prefix,
+				json_extract(edit_specification,\'$.table\') as id_table 
+			from examination 
+			where 
+				json_extract(edit_specification,\'$.type\')="id_single_sample"';*/
+				
+	//echo $sql.'<br>';
+	
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	if(get_row_count($result)<=0){return false;}
+	
+	$ret=array();
+	while($ar=get_single_row($result))
+	{
+		$prefix=trim($ar['unique_prefix'],'"');
+		if($prefix==substr($id,0,strlen($prefix)))
+		{
+			$sql_get='select sample_id from `'.trim($ar['id_table'],'"').'` where id=\''.substr($id,strlen($prefix)).'\'';
+			//echo $sql_get;
+			$result_get=run_query($link,$GLOBALS['database'],$sql_get);
+			if(get_row_count($result_get)<=0){return false;}
+			while($ar_get=get_single_row($result_get))
+			{
+				$ret[]=$ar_get['sample_id'];
+			}
+		}
+	}
+	return $ret;
+}
+
+//use ctype_int() builtin
+function my_is_int($string)
+{
+	if(strlen($string)==0){return false;}
+	
+	$digits=str_split($string);
+	$list_of_digit=array('0','1','2','3','4','5','6','7','8','9');
+	//print_r($list_of_digit);
+	//print_r($digits);
+	//echo '<br>';
+	foreach($digits as $d)
+	{
+			if(in_array($d,$list_of_digit)===True)
+			{
+				//echo $d.':digit found<br>';
+			}
+			else
+			{
+				//echo $d.': NON digit found<br>';
+				return false;
+			}
+	}
+	
+	return true;
+}
+
+///used in search and print
+function check_for_conditions($link,$sid,$conditions)
+{
+	foreach($conditions as $ex_id => $value)
+	{
+		if($ex_id!='sample_id')
+		{
+			$result=get_any_examination_result($link,$sid,$ex_id);
+		}
+		else
+		{
+			$result=$sid;
+		}
+		if(is_array($value))
+		{
+			//echo $sid.'>>>'.$ex_id.'---->'.$result.'<br>';
+			if($result>=$value[0] && $result<=$value[1])
+			{
+				//next
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if(stripos($result,$value)!==False)
+			{
+				//next
+			}
+			else
+			{
+				return False;
+			}
+		}
+	}
+	
+	return true;
+}
 ?>

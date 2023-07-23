@@ -10,90 +10,62 @@ require_once('tcpdf/tcpdf_barcodes_2d.php');
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //echo '<pre>';print_r($_POST);echo '</pre>';
 
+$pdf=xxx_prepare_for_report_printing();
 
-class XPDF extends TCPDF {
-	
-	public $bottom;
-	public $header;
-	public $footer;
-	public $curX;
-	public $curY;
-	
-	public function set_all_margins($left,$top,$right,$bottom)
-	{
-		// set margins
-		$this->SetMargins($left, $top, $right , true);
-		$this->bottom=$bottom;
-		
-		$this->SetAutoPageBreak(TRUE, $this->bottom);
+$final_print='yes';
 
-		$this->SetHeaderMargin(10);	//top border of page  and header start 
-		$this->SetFooterMargin(5); // no effect?
-	}
-	
-	
-	public function Header() 
-	{
-		$this->SetFont('helvetica', '', 10);
-		$this->writeHTML($this->header, true, false, true, false, '');
-	}
-	
-	public function Footer() 
-	{
-		$this->SetY(-($this->bottom)+2);		//match with $pdf->SetAutoPageBreak(TRUE, 40);
-		$this->SetFont('helvetica', '', 10);
-		$this->writeHTML($this->footer, true, false, true, false, '');
-	}
-}
-
-
-$pdf = new XPDF('P', 'mm', 'A4', true, 'UTF-8', false);
-
-
-foreach ($ar_of_id=explode(',',$_POST['list_of_id']) as $id)
+foreach ($ar_of_id=explode(',',$_POST['list_of_id']) as $any_id)
 {
-	////////SET HEADER//////////////
-	//header footer overflow not solved
-	$header_data=get_header($link,$id);
-	//print_r($header_data[1]);
 	
-	$pdf->header=$header_data[0];
-	$header_ex=$header_data[1];
+	//$id=get_sample_id_for_any_sid_single_id($link,$any_id);
+	$id_array=get_sample_id_array_for_any_id($link,$any_id);
+	foreach($id_array as $id)
+	{
+		if(!$id)
+		{ 
+			echo '<div>';
+				echo '<div style="display:inline-block">';
+				echo 'sample_id for '.$any_id;
+				echo '</div>';
+				
+				echo '<div style="display:inline-block">';
+				echo '&nbsp; is not found';
+				echo '</div>';
+			echo '</div>';
+			$final_print='no';
+			continue;
+		}
+		
+		if(!print_allowed($link,$id))
+		{
+			echo '<div>';
+				echo '<div style="display:inline-block">';
+				xxx_sample_id_view_button($id,$target=' target=_blank ',$label=$id);
+				echo '</div>';
+				
+				echo '<div style="display:inline-block">';
+				echo '&nbsp;is not eligible for print';
+				echo '</div>';
+			echo '</div>';
+			$final_print='no';
+			continue;
+		}
+		else
+		{
+			//echo '<h1>print allowed</h1>';
+		}
 
-	////////SET FOOTER//////////////
-	$pdf->startPageGroup();
-	$footer='<table><tr><td>Page '.$pdf->getPageNumGroupAlias().'/'.$pdf->getPageGroupAlias().'</td><td colspan="2">Note:'.get_config_value($link,"footer_notice").'</td></tr></table>';
-	//$footer='<table><tr><td>Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages().'</td><td colspan="2">Note:'.get_config_value($link,"footer_notice").'</td></tr></table>';
-	$pdf->footer=$footer;
-
-	////////SET MARGIN//////////////
-
-	$left=get_config_value($link,'report_left_margin');
-	$right=get_config_value($link,'report_right_margin');
-	$top=get_config_value($link,'report_top_margin');
-	$bottom=get_config_value($link,'report_bottom_margin');
-
-	$pdf->set_all_margins($left=$left,$top=$top,$right=$right,$bottom=$bottom);
-
-
-	////////ADD PAGE////////////////
-	$pdf->AddPage();
-	//echo $pdf->curY;
-
-	ob_start();
-	//print_r($_POST);
-	xxx_print_sample($link,$id,$header_ex);
-	$myStr = ob_get_contents();
-	ob_end_clean();
-	//echo $myStr;
-	//exit(0);
-
-	$pdf->SetFont('helvetica', '', 10);
-	$pdf->writeHTML($myStr, true, false, true, false, '');
+		xxx_fill_report($link,$id,$pdf);
+	}
 }
-
 //exit(0);
-$pdf->Output('report.pdf', 'I');
-
+if($final_print=='yes')
+{
+	generate_pdf_for_report($pdf);
+}
+else
+{
+	echo '<h3>make necessary changes in samples above or remove them from print list</h3>';
+}
 
 ?>

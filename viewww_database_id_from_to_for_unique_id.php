@@ -64,7 +64,8 @@ function get_dbid($link,$examination_id,$search_list_of_examination_id,$range_se
 		}
 	}
 	
-	echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_summary>View (Summary)</button>';
+	echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_summary>View</button>';
+	echo '<button type=submit formaction=xxx_print_sequence.php formtarget=_blank class="btn btn-primary form-control m-1" name=action value=view_dbid_summary>Print</button>';
 	//echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_detail>View (Detail)</button>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	echo '</form>';
@@ -88,18 +89,46 @@ function get_one_field_for_search($link,$examination_id)
 		}
 		$option_html='<select onchange="document.getElementById(\'__ex__'.$examination_id.'\').value=this[this.selectedIndex].text">'.$option_html.'</select>';
 	}
+	
+	else if($type=='examination_field_specification')
+	{
+		$examination_field_specification=get_field_spec($link,$examination_id);
+		//print_r($examination_field_specification);
+		if($examination_field_specification)
+		{
+			if($examination_field_specification['ftype']=='table')
+			{
+				$attributes_str=' onchange="document.getElementById(\'__ex__'.$examination_id.'\').value=this[this.selectedIndex].text" ';
+				
+				ob_start();
+				mk_select_from_sql($link,
+									'select distinct `'.$examination_field_specification['field'].'` from `'.$examination_field_specification['table'].'`',
+									$examination_field_specification['field'],
+									'___ex__'.$examination_field_specification['examination_id'],
+									'___ex__'.$examination_field_specification['examination_id'],
+									$disabled='',$value='',$blank='yes',$attributes_str=$attributes_str);
+				$option_html = ob_get_contents();
+				ob_end_clean();
+			}
+		}
+	}
 	else
 	{
 		$option_html='';
 	}
 	
+
+
+
+
 	//echo 'x';print_r($ex_data);echo 'x';
 	if(!is_array($ex_data)){return;}
 	$ex_name=$ex_data['name'];
 
 		echo '<div class="basic_form">';
 			echo '<div class="d-inline p-2">';
-			echo '<button type=button formtarget=_blank class="btn btn-sm btn-info d-inline-block w-75" onclick="my_view_table(\''.$ex_name.'\')">'.$ex_name.'</button>';
+			//echo '<button type=button formtarget=_blank class="btn btn-sm btn-info d-inline-block w-75" onclick="my_view_table(\''.$ex_name.'\')">'.$ex_name.'</button>';
+			echo '<button type=button formtarget=_blank class="btn btn-sm btn-info d-inline-block w-75" >'.$ex_name.'</button>';
 				echo '<input class="float-right d-inline-block w-25" name=\'chk^'.$examination_id.'\' type=checkbox>';
 			echo '</div>';
 			echo '<div class="d-inline-block">';
@@ -110,6 +139,7 @@ function get_one_field_for_search($link,$examination_id)
 		echo '</div>';
 }
 
+//used in search and print
 function get_one_field_for_range_search($link,$examination_id)
 {
 	$ex_data=get_one_examination_details($link,$examination_id);
@@ -530,6 +560,7 @@ legend {
 
 
 <script>
+/*
 function my_view_table()
 {
 	//alert("search="+search_text)
@@ -551,5 +582,5 @@ function my_view_table()
 	xhttp.open('POST', 'xxx_search_examination.php', true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(post);	
-}
+}*/
 </script>
