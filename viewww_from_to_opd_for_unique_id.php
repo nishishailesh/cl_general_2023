@@ -157,7 +157,7 @@ echo '<div class=monitor_grid>';
 				}
 					$div_id=str_pad($count,3,'0',STR_PAD_LEFT);
 					echo '<div class="d-inline-block" style="grid-area: a'.$div_id.';">';
-					showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$_POST['examination_id']);
+					showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,0);	//0 for sample_id
 					echo '</div>';
 			}
 

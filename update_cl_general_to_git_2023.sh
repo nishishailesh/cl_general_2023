@@ -39,6 +39,7 @@ sample_status
 schedule
 super_profile
 table_field_specification
+examination_field_specification
 user
 view_info_data
 

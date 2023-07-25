@@ -560,7 +560,7 @@ INSERT INTO `examination` VALUES
 (1003,'Request_id','None','{\"type\":\"text\",\"help\":\"Describe\"}','None','','Chemistry','','compact_report','','','',1,1,1,1,NULL,'',NULL),
 (1004,'Department','None','{\"type\":\"select\",\"option\":\",ART,Dentistry,IHBT,EmergencyMedicine,ENT,Medicine,OG,Opthalmology,Orthopaedics,Kidney Hospital,Paediatrics,PlasticSurgery,Psychiatry,Skin,Surgery,TBChest,Samaras,Unspecified\"}','None','','Header','','compact_report','','','',1,1,1,1,NULL,'',NULL),
 (1005,'Unit','None','{\"type\":\"select\",\"option\":\",-,1,2,3,4,5,6,7,8,A,B\"}','None','','Header','','compact_report','','','',1,1,1,1,NULL,'',NULL),
-(1006,'Location','None','{\"type\":\"select\",\"option\":\",C2(684),Radio_camp,old building 1st floor,old building 2nd floor,old building 3rd floor,old building ground floor,IHBT,C3(685),PICU,Casualty(446),E0(506),E1(507),E2(508),E3(509),E4(510),EMW(485),EOT(591),F0(511),F1(512),F2(513),F3(514),F3N(503),F4(515),FOW,G0(516),G0MICU(500),G1(517),G2(518),G3(519),G4(520),GOT(551),H0(497),H1(522),H2(523),H3(524),H4(525),HemodialysisUNIT(741),Isolation Ward,J0(521),J1(531),J2(527),J3(529),J4(530),LeptoWard(506),MICU(500-2),MOT(567),MOW(310),NEWORTHO(311),NOT(551),NOW(311),O2(539),OB(546),OBICU,OLDORTHO(310),OPD,PrisonerWard(310),RI(548),RII(564),RIII(580),SICU(478),SpecialWard(570-71),SwineFluWard(529),StemGround,StemF1,StemF2,StemF3,StemF4,StemF5,StemF6,StemF7,StemF8,StemF9,StemF10,StemHosp,KidneyOPD,StemOPD,TBICU,TRAUMA1(476),TRAUMA2(485),TraumaCenter(472-87),KidneyF5ICU,KidneyF5,kidneyF6,StemTriageSemiCritical,StemTriageICU,Stem Triage,Kidney 6th ICU- B,Kidney 6th ICU-A,Kidney F7,NICU,SAMRAS,Unspecified\"}','None','','Header','','compact_report','','','',1,1,1,1,NULL,'',NULL),
+(1006,'Location','None','{\"type\":\"select\",\"option\":\",C2(684),Niramaya_Camp,old building 1st floor,old building 2nd floor,old building 3rd floor,old building ground floor,IHBT,Hemophilia ,C3(685),PICU,Casualty(446),E0(506),E1(507),E2(508),E3(509),E4(510),EMW(485),EOT(591),F0(511),F1(512),F2(513),F3(514),F3N(503),F4(515),FOW,G0(516),G0MICU(500),G1(517),G2(518),G3(519),G4(520),GOT(551),H0(497),H1(522),H2(523),H3(524),H4(525),HemodialysisUNIT(741),Isolation Ward,J0(521),J1(531),J2(527),J3(529),J4(530),LeptoWard(506),MICU(500-2),MOT(567),MOW(310),NEWORTHO(311),NOT(551),NOW(311),O2(539),OB(546),OBICU(546),OLDORTHO(310),OPD,PrisonerWard(310),RI(548),RII(564),RIII(580),SICU-1(478),SICU-2(478),SpecialWard(570-71),SwineFluWard(529),StemGround,StemF1,StemF2,StemF3,StemF4,StemF5,StemF6,StemF7,StemF8,StemF9,StemF10,StemHosp,KidneyOPD,StemOPD,TBICU,TRAUMA1(476),TRAUMA2(485),TraumaCenter(472-87),4A Kidney,4B Kidney,4C Kidney,4D Kidney,5A Kidney,5B Kidney,5C Kidney,5D Kidney,StemTriageSemiCritical,StemTriageICU,Stem Triage,Kidney 6th ICU- B,Kidney 6th ICU-A,,NICU(692),RICU,SAMRAS,6A Kidney,6B Kidney,6C Kidney,6D Kidney,7A Kidney,7B Kidney,7C Kidney,7D Kidney,Unspecified\"}','None','','Header','','compact_report','','','',1,1,1,1,NULL,'',NULL),
 (1007,'Age(Y)','None','{\"type\":\"number\",\"help\":\"Full Years\"}','','','Patient Details','','compact_report','','','compact_report',1,1,1,1,NULL,'',NULL),
 (1008,'Sex','None','{\"type\":\"select\",\"option\":\",M,F,O\"}','','','Patient Details','','compact_report','','','compact_report',1,1,1,1,NULL,'',NULL),
 (1009,'Sample_Collection_Time','None','{\"type\":\"datetime-local\", \"pattern\":\"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}\" }','','','Chemistry','','','','','compact_report',1,1,1,1,NULL,'',NULL),
@@ -1278,12 +1278,12 @@ CREATE TABLE `menu_new` (
 LOCK TABLES `menu_new` WRITE;
 /*!40000 ALTER TABLE `menu_new` DISABLE KEYS */;
 INSERT INTO `menu_new` VALUES
-(1,'OPD','1001,1002,1008,1004,1005,1006,1007,1041,1023,1045,1046,10003,10011,10012','','10012^NCHS Biochemistry Section'),
-(2,'Ward','1001,1002,1045,1047,1004,1005,1006,10003,1023,10011,10012','','10012^NCHS Biochemistry Section'),
-(3,'ABG','1001,1002,1008,1004,1005,1006,1007,5143,5144,5145,5148,5159,5150,5158,5195,10011,10012','','10012^NCHS Biochemistry Section'),
-(4,'NIRAMAYA ','1001,1002,1003,1007,1008,1025,1014,1009,5018,5031,5015,5001,10011,10012','','10012^NCHS Biochemistry Section'),
-(11,'MRD','1001','','10012^NCHS Biochemistry Section'),
-(12,'Basic','','','10012^NCHS Biochemistry Section');
+(100,'Ward Request','1001,1002,1004,1005,1006,10003,1023,10011,10012,1045,1047','','10012^NCHS Biochemistry Section'),
+(200,'OPD Request','1001,1002,1004,1005,1006,10003,1023,10011,10012,1045,1046','','10012^NCHS Biochemistry Section,1006^OPD'),
+(300,'ABG Request','1001,1002,1004,1005,1006,5143,5144,5145,5148,5159,5150,5158,5195,10011,10012','','10012^NCHS Biochemistry Section'),
+(400,'NIRAMAYA Request','1001,1002,1004,1006,10003,5018,5031,5015,5001,,10011,10012','','10012^NCHS Biochemistry Section,1004^Medicine,1006^Niramaya_Camp'),
+(500,'New (MRD)','1001','',''),
+(600,'New (Basic)','','','');
 /*!40000 ALTER TABLE `menu_new` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1311,12 +1311,8 @@ CREATE TABLE `menu_view` (
 LOCK TABLES `menu_view` WRITE;
 /*!40000 ALTER TABLE `menu_view` DISABLE KEYS */;
 INSERT INTO `menu_view` VALUES
-(1,'Request','1045','1002,1004,1005,1006,1017','1045'),
-(2,'OPD','1046','1000,1001,1002,1004,1005,1006,10012','1046'),
-(3,'Ward','1047','1002,1004,1005,1006,1017','10003,1047'),
-(4,'Sample ID','sample_id','1002,1004,1005,1006,1017','sample_id'),
-(5,'Ward-location','1047','1006,1017','1046'),
-(6,'QC1','1048','1001','1048');
+(1,'sample_id','sample_id','1001,1002,1006,10003','sample_id'),
+(2,'OPD','1046','1001,1002,1006,10003','1046');
 /*!40000 ALTER TABLE `menu_view` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1928,7 +1924,10 @@ INSERT INTO `request_id` VALUES
 (3020363,1000434),
 (3020363,1000435),
 (3020364,1000436),
-(3020364,1000437);
+(3020364,1000437),
+(3020365,1000440),
+(3020366,1000441),
+(3020367,1000442);
 /*!40000 ALTER TABLE `request_id` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2370,6 +2369,35 @@ INSERT INTO `table_field_specification` VALUES
 UNLOCK TABLES;
 
 --
+-- Table structure for table `examination_field_specification`
+--
+
+DROP TABLE IF EXISTS `examination_field_specification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `examination_field_specification` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `examination_id` int(11) DEFAULT NULL,
+  `ftype` varchar(50) DEFAULT NULL,
+  `table` varchar(50) DEFAULT NULL,
+  `field` varchar(50) DEFAULT NULL,
+  `field_description` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `examination_field_specification`
+--
+
+LOCK TABLES `examination_field_specification` WRITE;
+/*!40000 ALTER TABLE `examination_field_specification` DISABLE KEYS */;
+INSERT INTO `examination_field_specification` VALUES
+(51,10012,'table','Laboratory','Laboratory',NULL);
+/*!40000 ALTER TABLE `examination_field_specification` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -2467,4 +2495,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-24  1:45:45
+-- Dump completed on 2023-07-26  0:17:45

@@ -112,6 +112,18 @@ function get_one_field_for_search($link,$examination_id)
 			}
 		}
 	}
+	else if($type=='datetime-local')
+	{
+		//ob_start();
+		$default=strftime("%Y-%m-%dT%H:%M");
+		//show_source_button('__ex__'.$examination_id,$default);
+		//$option_html = ob_get_contents();
+		//ob_end_clean();
+
+		$option_html='<input type=datetime-local  value=\''.$default.'\'
+						onchange="document.getElementById(\'__ex__'.$examination_id.'\').value=this.value">';
+	}
+
 	else
 	{
 		$option_html='';

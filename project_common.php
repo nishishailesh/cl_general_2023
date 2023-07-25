@@ -3938,7 +3938,7 @@ function get_one_field_for_insert($link,$examination_id,$default_value='')
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	if(!$edit_specification){$edit_specification=array();}
 
-		$result=$default_value;
+	$result=$default_value;
 		//echo '<h1>'.$result.'</h1>';
 
 	$type=isset($edit_specification['type'])?$edit_specification['type']:'text';//echo '<h4>'.$type.'</h4>';
@@ -3982,7 +3982,13 @@ function get_one_field_for_insert($link,$examination_id,$default_value='')
 		
 		foreach($option as $v)
 		{
+			if($v==$default_value)
+			{
+				$option_html=$option_html.'<option selected>'.$v.'</option>';
+			}
+			{
 				$option_html=$option_html.'<option>'.$v.'</option>';
+			}
 		}
 		
 				//////
@@ -4079,7 +4085,7 @@ function get_one_field_for_insert($link,$examination_id,$default_value='')
 	elseif($type=='datetime-local')
 	{
 		//////
-		$default=strftime("%Y-%m-%d %H:%M");
+		$default=strftime("%Y-%m-%dT%H:%M");
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
 			////
 				echo '<div  class="my_lable">';
@@ -7885,6 +7891,7 @@ function x_save_insert_specific($link)
 
 function showww_sid_button_release_status($link,$sid,$extra_post='',$uid=0,$checkbox='no')
 {
+	//echo '<h1>'.$uid.'</h1>';
 	if(!sample_exist($link,$sid))
 	{
 		echo '<div class="btn-group-vertical m-0 p-0 border border-light print_hide">';
