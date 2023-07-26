@@ -457,6 +457,8 @@ CREATE TABLE `examination` (
   `append_user` int(11) DEFAULT NULL,
   `default_value` varchar(100) DEFAULT NULL,
   `equipment` varchar(10) DEFAULT NULL,
+  `display_help` text DEFAULT NULL,
+  `print_help` text DEFAULT NULL,
   PRIMARY KEY (`examination_id`),
   KEY `sample_requirement` (`sample_requirement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100024 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
@@ -656,6 +658,21 @@ CREATE TABLE `nc_source` (
   `source` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `niramaya_id`
+--
+
+DROP TABLE IF EXISTS `niramaya_id`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `niramaya_id` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `sample_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sample_id` (`sample_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1170,7 +1187,7 @@ CREATE TABLE `ward_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1058 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1059 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -1182,4 +1199,4 @@ CREATE TABLE `ward_id` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-26  0:17:45
+-- Dump completed on 2023-07-27  0:38:21

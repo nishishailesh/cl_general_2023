@@ -2745,7 +2745,8 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
 						$append_info.
 						'</pre></div>';
 						
-					echo '<div class="help border '.$print_hide.'"><pre style="border-color:white" style="white-space: pre-wrap;">'.$help.'</pre></div>';
+					//echo '<div class="help border '.$print_hide.'"><pre style="border-color:white" style="white-space: pre-wrap;">'.$help.'</pre></div>';
+					echo '<div class="help border '.$print_hide.'"><pre style="border-color:white" style="white-space: pre-wrap;">'.$examination_details['display_help'].'</pre></div>';
 				echo '</div>';
 		}
 		
@@ -7011,6 +7012,11 @@ function get_equipment_str_old($link,$sample_id)
 //select sample_id,result.examination_id,name,json_extract(edit_specification,'$.equipment') from result,examination where sample_id='1000436' and examination.examination_id=result.examination_id
 //select group_concat(distinct equipment SEPARATOR '') x from result,examination where sample_id='1000436' and examination.examination_id=result.examination_id;
 //above is single qury giving same result
+/*
+update examination 
+ set help=trim( both '"' from json_extract(edit_specification,'$.help') ) 
+where json_valid(edit_specification)=True
+*/
 function get_equipment_str($link,$sample_id)
 {
 	$r=get_result_of_sample_in_array($link,$sample_id);
@@ -10637,7 +10643,8 @@ function print_field($link,$ex_id,$ex_result,$sample_id='')
 			
 				//echo '<td>'.htmlspecialchars($help).'</td>';
 				//echo '<td>'.htmlentities($help).'</td>';
-				echo '<td style="padding:2px;"> '.$help.'</td>';
+				//echo '<td style="padding:2px;"> '.$help.'</td>';
+				echo '<td style="padding:2px;"> '.$examination_details['print_help'].'</td>';
 			
 			echo '</tr>';
 	}		
@@ -10659,7 +10666,8 @@ function print_field($link,$ex_id,$ex_result,$sample_id='')
 				<tr>';
 			
 				//echo '<td colspan="2">'.htmlspecialchars($help).'</td>';
-				echo '<td colspan="3">'.$help.'</td>';
+				//echo '<td colspan="3">'.$help.'</td>';
+				echo '<td colspan="3">'.$examination_details['print_help'].'</td>';
 				
 			echo '</tr>';
 	}		
@@ -10683,7 +10691,8 @@ function print_field($link,$ex_id,$ex_result,$sample_id='')
 				echo '</tr>
 				<tr>';
 			
-					echo '<td  colspan="3"><i>Notes:</i> '.$help.'</td>';
+					//echo '<td  colspan="3"><i>Notes:</i> '.$help.'</td>';
+					echo '<td  colspan="3"><i>Notes:</i> '.$examination_details['print_help'].'</td>';
 			
 			echo '</tr>';
 			
