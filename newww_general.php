@@ -7,9 +7,10 @@ require_once 'base/verify_login.php';
 echo '		  <link rel="stylesheet" href="project_common.css">
 		  <script src="project_common.js"></script>';
 		  	
-$link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
+//$link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
 main_menu($link);
+//echo '<pre>';print_r($_POST);echo '</pre>';
 
 
 $tok=explode("|",$_POST['action']);
@@ -21,12 +22,10 @@ if($tok[0]=='newww_general')
 		echo '<div>';
 			if(strlen($tok[2])>0)
 			{
-				$tok=explode("|",$_POST['action']);
-
-				$rlike=str_replace(',','|',$tok[1]);
+				$rlike=$tok[2];
 				//echo $rlike;
 				$sql="select * from examination where request_route rlike '".$rlike."' order by request_route,name";
-				echo $sql;
+				//echo $sql;
 			}
 			else
 			{
