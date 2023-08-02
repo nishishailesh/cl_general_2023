@@ -8711,6 +8711,37 @@ function update_one_examination_with_result_blobvalue($link,$sid,$ex_id,$blobval
 		}
 }
 
+
+
+function update_one_examination_with_result_blobvalue_set_to_null($link,$sid,$ex_id)
+{
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$ex_id,'update'))
+	{
+		echo '<h5 class="bg-warning">This user is not authorized for [update] with examination_id='.$examination_id.'</h5>';
+		return false;
+	}	
+			
+
+		$sql='update result_blob 
+				set 
+					fname=null,
+					result=null	
+				where 
+					sample_id=\''.$sid.'\' 
+					and
+					examination_id=\''.$ex_id.'\'';
+		
+			if(!$result=run_query($link,$GLOBALS['database'],$sql))
+			{
+				echo '<br>Data not updated';
+			}
+			else
+			{
+				echo '<p>'.rows_affected($link).' results updated</p>';				
+			}	
+}
+
+
 function make_examination_tree_for_sample_not_used($link,$sample_id,$sql)
 {
 	$ex_list=get_result_of_sample_in_array($link,$sample_id);
@@ -9051,6 +9082,7 @@ function xxx_get_examination_data($link,$sql)
 	//tree_to_table($link,$tree,'',' show ');
 }
 
+
 function xxx_make_examination_tree($link,$sql,$route_field)
 {
 	$examination_tree=[];
@@ -9070,8 +9102,9 @@ function xxx_make_examination_tree($link,$sql,$route_field)
 				$temp=&$examination_tree;
 				foreach($path as $v)
 				{
-					
-						$rp_sql='select * from route_priority where (route=\''.$one_path.'\' or route=\'\') and node=\''.$v.'\'';
+						//$rp_sql='select * from route_priority where (route=\''.$one_path.'\' or route=\'\') and node=\''.$v.'\'';
+						$rp_sql='select * from route_priority where route=left(\''.$one_path.'\',length(route)) and route<>"" and node=\''.$v.'\'';
+						//echo $rp_sql;
 						$rp_result=run_query($link,$GLOBALS['database'],$rp_sql);
 						$rp_ar=get_single_row($rp_result);
 						//echo '<pre>';print_r($rp_ar);echo '</pre>';
@@ -11114,7 +11147,7 @@ function generate_pdf_for_report($pdf)
 
 function get_sample_id_array_for_any_id($link,$id)
 {
-	if(ctype_digit($id)){return $id;}		//it is sample_id
+	if(ctype_digit($id)){return array($id);}		//it is sample_id
 	$sql='select 
 				examination_id,
 				json_extract(edit_specification,\'$.unique_prefix\') as unique_prefix,
@@ -11153,6 +11186,7 @@ function get_sample_id_array_for_any_id($link,$id)
 			}
 		}
 	}
+	//print_r($ret);
 	return $ret;
 }
 
@@ -11221,5 +11255,30 @@ function check_for_conditions($link,$sid,$conditions)
 	}
 	
 	return true;
+}
+
+
+function xxx_should_display_accreditation_symbol($link,$sample_id)
+{
+	$ar=get_result_of_sample_in_array($link,$sample_id);
+	foreach ($ar as $examination_id=>$examination_result)
+	{
+		$examination_details=get_one_examination_details($link,$examination_id);
+		$ret=false;
+		if($examination_details['accr_status']=='no')
+		{
+			$ret=false;
+		}
+		elseif($examination_details['accr_status']=='yes')
+		{
+			$ret=true;
+			return $ret;
+		}
+		else
+		{
+			$ret=$ret;	//do nothing, 
+		}
+	}
+	return $ret;			//if all are 'no'
 }
 ?>

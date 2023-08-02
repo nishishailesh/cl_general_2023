@@ -37,6 +37,7 @@ route_priority
 sample_id_strategy
 sample_status
 schedule
+sql
 super_profile
 table_field_specification
 examination_field_specification
