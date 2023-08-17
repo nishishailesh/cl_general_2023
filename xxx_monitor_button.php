@@ -17,6 +17,7 @@ $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
 $lot_size=isset($_POST['status_lot_size'])?$_POST['status_lot_size']:get_config_value($link,'status_lot_size');
 $column_size=isset($_POST['status_column_size'])?$_POST['status_column_size']:get_config_value($link,'status_column_size');
+$filter_examination_id=isset($_POST['filter_examination_id'])?$_POST['filter_examination_id']:0;
 //echo '<h1>'.$lot_size.'<br>';
 //echo $column_size.'</h1><br>';
 
@@ -41,6 +42,7 @@ if(!isset($_SESSION['password']) && !isset($_POST['password']))
 	exit(0);
 }
 
+
 if($_POST['unique_id']!='sample_id')
 {
 	$max_unique_id=xxx_find_max_unique_id($link,$_POST['unique_id'])+$_POST['show_offset'];		//mySQL between claus includes both sides
@@ -60,7 +62,10 @@ if($_POST['unique_id']!='sample_id')
 
 	$extra_post='	<input type=hidden name=unique_id value=\''.$_POST['unique_id'].'\'>
 					<input type=hidden name=id_range value=\''.$_POST['id_range'].'\'>
-					<input type=hidden name=show_offset value=\''.$_POST['show_offset'].'\'>';
+					<input type=hidden name=show_offset value=\''.$_POST['show_offset'].'\'>
+					<input type=hidden name=status_lot_size value=\''.$lot_size.'\'>
+					<input type=hidden name=status_column_size value=\''.$column_size.'\'>
+					<input type=hidden name=filter_examination_id value=\''.$filter_examination_id.'\'>';
 }
 else if($_POST['unique_id']=='sample_id')
 {
@@ -74,7 +79,10 @@ else if($_POST['unique_id']=='sample_id')
 
 	$extra_post='	<input type=hidden name=unique_id value=sample_id>
 					<input type=hidden name=id_range value=\''.$_POST['id_range'].'\'>
-					<input type=hidden name=show_offset value=\''.$_POST['show_offset'].'\'>';
+					<input type=hidden name=show_offset value=\''.$_POST['show_offset'].'\'>
+					<input type=hidden name=status_lot_size value=\''.$lot_size.'\'>
+					<input type=hidden name=status_column_size value=\''.$column_size.'\'>
+					<input type=hidden name=filter_examination_id value=\''.$filter_examination_id.'\'>';
 }
 
 
@@ -108,7 +116,31 @@ while($ar=get_single_row($result))
 	
 	echo '<div style="grid-area: a'.$div_location.'; justify-self: center; width:100%;">';
 		echo '<div>';
+		
+		//print_r($last);
+		if($_POST['filter_examination_id']==0)
+		{
 			showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$unique_examination_id,$checkbox='yes');
+		}
+		else 
+		{
+			$last=xxx_get_sample_action_last($link,$ar['sample_id']);
+			if($last!==NULL and $last!==FALSE)
+			{
+				if($last['examination_id']==$_POST['filter_examination_id'])
+				{
+					showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$unique_examination_id,$checkbox='yes');
+				}
+				else
+				{
+					echo '        ';
+				}
+			}
+			else
+			{
+				echo '        ';
+			}
+		}
 			//echo $div_location;
 		echo '</div>';
 	echo '</div>';

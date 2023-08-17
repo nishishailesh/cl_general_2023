@@ -72,6 +72,8 @@ function get_dbid($link,$examination_id,$search_list_of_examination_id,$range_se
 
 }
 
+
+/*
 function get_one_field_for_search($link,$examination_id)
 {
 	$ex_data=get_one_examination_details($link,$examination_id);
@@ -555,7 +557,7 @@ function get_one_field_for_insert_no_readonly($link,$examination_id)
 
 }
 
-
+*/
 ?>
 <style>
 fieldset {

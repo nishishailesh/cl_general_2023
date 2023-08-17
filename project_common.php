@@ -1,7 +1,10 @@
 <?php
 //require_once 'Evaluator.php';
+//require_once('/usr/share/php/tcpdf/tcpdf.php');
+//require_once('/usr/share/php/tcpdf/tcpdf_barcodes_2d.php');
 require_once('tcpdf/tcpdf.php');
 require_once('tcpdf/tcpdf_barcodes_2d.php');
+
 
 function requestonly_check($link)
 {
@@ -96,7 +99,169 @@ function main_menu($link)
 	echo '
 	<form method=post class="form-group m-0 p-0 print_hide">
 	<input type=hidden name=session_name value=\''.session_name().'\'>
-	<div class="btn-group">
+	
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu_strip" ><span class="navbar-toggler-icon"></span></button>
+
+		<div class="collapse navbar-collapse" id="menu_strip">  
+				<div class="dropdown m-0 p-0">
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">QC</button>
+						<div class="dropdown-menu m-0 p-0">
+							<div class="btn-group-vertical  d-block">
+								<button class="btn btn-outline-primary m-0 p-0" formaction=get_data_for_lj_chart.php type=submit name=action value=get_data>LJ Chart</button>					
+								<button class="btn btn-outline-primary m-0 p-0" formaction=get_data_for_delta_check.php type=submit name=action value=get_data>Delta Check</button>					
+								<button class="btn btn-outline-primary m-0 p-0" formaction=moving_average.php type=submit name=action value=cup_barcode_range>MovAvg</button>
+							</div>
+						</div>
+				</div>
+
+				<div class="dropdown m-0 p-0">
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Misc</button>
+						<div class="dropdown-menu m-0 p-0">
+							<div class="btn-group-vertical  d-block">
+								<button class="btn btn-outline-primary m-0 p-0" formaction=single_table_edit.php type=submit name=action value=get_record_list>Tables</button>
+								<button class="btn btn-outline-primary m-0 p-0" formaction=reminders.php type=submit name=action value=reminders>Reminders('.get_incomplete_reminder_count($link).')</button>
+														
+								<button class="btn btn-outline-primary m-0 p-0" formaction=manage_label.php type=submit name=action value=manage_label>Labels</button>
+								<button class="btn btn-outline-primary m-0 p-0" formaction=manage_reagent.php type=submit name=action value=manage_reagent>Reagent</button>
+								
+								<button class="btn btn-outline-primary m-0 p-0" formaction=TAT.php type=submit name=action value=get_TAT_search_condition>TAT</button>
+								<button class="btn btn-outline-primary m-0 p-0" formaction=sms.php type=submit name=action value=sms>SMS</button>
+								<button class="btn btn-outline-primary m-0 p-0" formaction=statistics_and_info.php type=submit name=action value=statistics>Statistics and Info</button>
+								<button class="btn btn-outline-primary m-0 p-0" formaction=dashboard.php type=submit name=action value=dashboard>Dashboard</button>
+								<button class="btn btn-outline-primary m-0 p-0" formaction=get_id_range_for_cup_barcode.php type=submit name=action value=cup_barcode_range>Cup Barcode</button>
+								<button class="btn btn-outline-primary m-0 p-0" formaction=request.php type=submit name=action value=request>Request</button>
+							</div>
+						</div>
+				</div>
+
+				<div class="dropdown m-0 p-0">
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Biochemistry</button>
+						<div class="dropdown-menu m-0 p-0">
+							<div class="btn-group-vertical  d-block">
+								<button class="btn btn-outline-primary m-0 p-0" formaction=import_erba_xl_640_results.php type=submit name=action value=get_file>Import XL-640 Result</button>					
+								<button class="btn btn-outline-primary m-0 p-0" formaction=import_erba_xl_1000_results.php type=submit name=action value=get_file>Import XL-1000 Result</button>											
+
+							</div>
+						</div>
+				</div>
+
+							
+				<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit name=action value=home><img src=img/home.jpeg height=20></button>
+				<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit formtarget=_blank name=action value=home> (+) </button>
+				
+				<div class="dropdown m-0 p-0">
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New-N</button>
+					<div class="dropdown-menu m-0 p-0 ">
+						<div class="btn-group-vertical d-block">
+							<!--<button class="btn btn-outline-primary m-0 p-0 " formaction=newww_general.php type=submit name=action value="newww_general||">New</button>-->';
+							create_newww_special($link);
+						echo '</div>
+					</div>
+				</div>
+				<div class="dropdown m-0 p-0">
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">View-N</button>
+					<div class="dropdown-menu m-0 p-0 ">
+						<div class="btn-group-vertical d-block">
+							<!--<button class="btn btn-outline-primary m-0 p-0 " formaction=viewww_database_id_from_to.php type=submit name=action value="get_dbids||">by Sample ID(s)</button>-->'; 
+							xxx_make_view_menu($link);
+						echo '</div>
+					</div>
+				</div>
+				<div class="dropdown m-0 p-0">
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Worklist-N</button>
+					<div class="dropdown-menu m-0 p-0 ">
+						<div class="btn-group-vertical d-block">
+							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_unique_id.php type=submit name=action value="get_worklist">by Examination</button>
+						</div>
+					</div>
+				</div>
+				<div class="dropdown m-0 p-0">
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Print-N</button>
+					<div class="dropdown-menu m-0 p-0 ">
+						<div class="btn-group-vertical d-block">
+							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_get_print_id.php type=submit name=action value="get_print_id">Scan and Print</button>
+						</div>
+					</div>
+				</div>
+				
+				<div class="dropdown m-0 p-0">
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">QC-N</button>
+					<div class="dropdown-menu m-0 p-0 ">
+						<div class="btn-group-vertical d-block">
+							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_manage_qc.php type=submit name=action value="get_print_id">Manage QC</button>
+						</div>
+					</div>
+				</div>
+				
+				<div class="dropdown m-0 p-0">
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Manage Status</button>
+					<div class="dropdown-menu m-0 p-0 ">
+						<div class="btn-group-vertical d-block">
+							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_start.php type=submit name=action value="view">Status-1</button>
+							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_start_button.php type=submit name=action value="view">Status-2</button>'; 
+						echo '</div>
+					</div>
+				</div>
+				
+		</div>
+	</nav>
+	</form>';		
+}
+
+
+
+//backup before playing with responsive nav
+function main_menu_old($link)
+{
+	//$link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
+	$user=get_user_info($link,$_SESSION['login']);
+	$auth=explode(',',$user['authorization']);
+	if(in_array('requestonly',$auth))
+	{
+		echo '
+		<form method=post class="form-group m-0 p-0">
+		<input type=hidden name=session_name value=\''.session_name().'\'>
+
+		<div class="btn-group">
+			<div class="dropdown m-0 p-0">
+				<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New</button>
+				<div class="dropdown-menu m-0 p-0 ">
+					<div class="btn-group-vertical d-block">
+						<button class="btn btn-outline-primary m-0 p-0 " formaction=new_requestonly.php type=submit name=action value=direct>New Request(Doctor)</button>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="dropdown m-0 p-0">
+				<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">View</button>
+					<div class="dropdown-menu m-0 p-0">
+						<div class="btn-group-vertical  d-block">
+							<button class="btn btn-outline-primary m-0 p-0" formaction=view_database_id.php type=submit name=action value=get_dbid>View Sample ID</button>
+							<button class="btn btn-outline-primary m-0 p-0" formaction=search_si.php type=submit name=action value=get_search_condition>Search-SI</button>			
+						</div>
+					</div>
+			</div>
+
+			<div class="dropdown m-0 p-0">
+				<button class="btn btn-outline-primary m-0 p-0" formaction=location_report.php type=submit name=action value=get_location_list>LocationWise Report</button>			
+			</div>
+			
+			<button class="btn btn-outline-primary m-0 p-0" formaction=start.php type=submit name=action value=home><img src=img/home.jpeg height=20></button>
+			<button class="btn btn-outline-primary m-0 p-0" formaction=start.php type=submit formtarget=_blank name=action value=home>+</button>
+
+		</div>
+
+		</form>';		
+		return;
+	}
+
+	echo '
+	<form method=post class="form-group m-0 p-0 print_hide">
+	<input type=hidden name=session_name value=\''.session_name().'\'>
+	
+	<div class="btn-toolbar">
 		<div class="dropdown m-0 p-0">
 			<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New</button>
 			<div class="dropdown-menu m-0 p-0 ">
@@ -251,6 +416,14 @@ function main_menu($link)
 			</div>
 		</div>
 		<div class="dropdown m-0 p-0">
+			<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">QC-N</button>
+			<div class="dropdown-menu m-0 p-0 ">
+				<div class="btn-group-vertical d-block">
+					<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_manage_qc.php type=submit name=action value="get_print_id">Manage QC</button>
+				</div>
+			</div>
+		</div>
+		<div class="dropdown m-0 p-0">
 			<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Manage Status</button>
 			<div class="dropdown-menu m-0 p-0 ">
 				<div class="btn-group-vertical d-block">
@@ -260,9 +433,9 @@ function main_menu($link)
 			</div>
 		</div>			
 	</div>
-
 	</form>';		
 }
+
 
 function mk_select_from_array($name, $select_array,$disabled='',$default='',$extra='')
 {	
@@ -2726,7 +2899,7 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
 				echo '<div class="  '.$display_format.' " id="ex_'.$ex_id.'">';
 					if(in_array($type,['id_multi_sample','id_single_sample']))
 					{
-						echo '	<div role=group class="my_label text-wrap btn-group lead w-auto border '.$print_hide.' ">'.$examination_details['name'];
+						echo '	<div role=group class="my_label text-wrap btn-toolbar lead w-auto border '.$print_hide.' ">'.$examination_details['name'];
 							get_lables_button($link,$sample_id,$ex_id);
 							xxx_set_unique_id_prev_next_button($link,$sample_id,$ex_id);
 						echo '</div>';
@@ -2767,7 +2940,7 @@ function get_lables_button($link,$sample_id,$examination_id)
 		$examination_details=get_one_examination_details($link,$examination_id);
 		$ex_name=$examination_details['name'];
 	}
-		echo '<div class="btn-group" role="group">';
+		echo '<div class="btn-toolbar">';
 
 		while($ar=get_single_row($result))
 		{
@@ -9757,63 +9930,63 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 
 function xxx_show_all_buttons_for_sample($link,$sample_id,$mode='view')
 {
-	echo '<div class="btn-group" role="group">';
-		get_lables_button($link,$sample_id,'sample_id');
-		xxx_sample_id_prev_button($sample_id);
-		xxx_sample_id_view_button($sample_id);
-		xxx_sample_id_next_button($sample_id);
-		
-		//edit delete not possible if examination is complated. This is single examination
-		$res=get_config_value($link,'restrictive_examination_for_edit_delete');
-		$res_result=get_one_ex_result($link,$sample_id,$res);
+	echo '<div class="btn-toolbar" role="group">';
+			get_lables_button($link,$sample_id,'sample_id');
+			xxx_sample_id_prev_button($sample_id);
+			xxx_sample_id_view_button($sample_id);
+			xxx_sample_id_next_button($sample_id);
+			
+			//edit delete not possible if examination is complated. This is single examination
+			$res=get_config_value($link,'restrictive_examination_for_edit_delete');
+			$res_result=get_one_ex_result($link,$sample_id,$res);
 
-		if(strlen($res_result<=0))
-		{
-			xxx_sample_id_edit_button($sample_id);
-			if($mode=='edit')
+			if(strlen($res_result<=0))
 			{
-				xxx_sample_id_sync_all_button($sample_id);
-				xxx_sample_id_calculate_button($sample_id);
-				xxx_sample_id_delete_button($sample_id);
+				xxx_sample_id_edit_button($sample_id);
+				if($mode=='edit')
+				{
+					xxx_sample_id_sync_all_button($sample_id);
+					xxx_sample_id_calculate_button($sample_id);
+					xxx_sample_id_delete_button($sample_id);
+				}
 			}
-		}
-		else
-		{
-			xxx_sample_id_unrelease_button($sample_id);	
-		}
-		echo '<div class="btn-group " role="group">';
+			else
+			{
+				xxx_sample_id_unrelease_button($sample_id);	
+			}
 		
-		//print not possible if none of the examination in array is filled
-		$ret=false;
-		$pre=get_config_value($link,'prerequisite_examination_for_print');
-		$pre_array=explode(',',$pre);
-		foreach($pre_array as $pex)
-		{
-			$pp=get_one_ex_result($link,$sample_id,$pex);
-			if(strlen($pp)>0)
-			{
-				$ret=true;
-				break;
-			}
-		}
-		if($ret===true)
-		{
-			xxx_sample_id_print_button($link,$sample_id);	
-			xxx_sample_id_wprint_button($link,$sample_id);
-			//sample_id_email_button($sample_id);
-			//sample_id_telegram_button($sample_id);
-			//sample_id_sms_button($sample_id,$link);
-			//sample_id_xmpp_button($sample_id);
-		}		
-
-		echo '</div>';
+			//echo '<div class="btn-toolbar " role="group">';
+			
+					//print not possible if none of the examination in array is filled
+					$ret=false;
+					$pre=get_config_value($link,'prerequisite_examination_for_print');
+					$pre_array=explode(',',$pre);
+					foreach($pre_array as $pex)
+					{
+						$pp=get_one_ex_result($link,$sample_id,$pex);
+						if(strlen($pp)>0)
+						{
+							$ret=true;
+							break;
+						}
+					}
+					if($ret===true)
+					{
+						xxx_sample_id_print_button($link,$sample_id);	
+						xxx_sample_id_wprint_button($link,$sample_id);
+						//sample_id_email_button($sample_id);
+						//sample_id_telegram_button($sample_id);
+						//sample_id_sms_button($sample_id,$link);
+						//sample_id_xmpp_button($sample_id);
+					}		
+			//echo '</div>';
 	echo '</div>';
 }
 
 
 function xxx_sample_id_view_button($sample_id,$target='',$label='View')
 {
-	echo '<div class="d-inline-block" style="width:100%;"><form method=post action=viewww_single.php class=print_hide '.$target.'>
+	echo '<div class="d-inline-block" ><form method=post action=viewww_single.php class=print_hide '.$target.'>
 	<button class="btn btn-outline-success btn-sm text-dark " name=sample_id value=\''.$sample_id.'\' >'.$label.'</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=view_single>';
@@ -9822,7 +9995,7 @@ function xxx_sample_id_view_button($sample_id,$target='',$label='View')
 
 function xxx_sample_id_edit_button($sample_id,$target='',$label='Edit')
 {
-	echo '<div class="d-inline-block"  style="width:100%;"><form method=post '.$target.' action=edit_generalll.php class=print_hide>
+	echo '<div class="d-inline-block" ><form method=post '.$target.' action=edit_generalll.php class=print_hide>
 	<button class="btn btn-outline-primary btn-sm" name=sample_id value=\''.$sample_id.'\' >'.$label.'</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=edit_general>
@@ -9831,7 +10004,7 @@ function xxx_sample_id_edit_button($sample_id,$target='',$label='Edit')
 
 function xxx_sample_id_prev_button($sample_id)
 {
-	echo '<div class="d-inline-block"  style="width:100%;" ><form method=post action=viewww_single.php class=print_hide>
+	echo '<div class="d-inline-block"  ><form method=post action=viewww_single.php class=print_hide>
 	<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=sample_id value=\''.($sample_id-1).'\' >Previous</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=view_single>
@@ -9841,7 +10014,7 @@ function xxx_sample_id_prev_button($sample_id)
 
 function xxx_sample_id_next_button($sample_id)
 {
-	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=viewww_single.php  class=print_hide>
+	echo '<div class="d-inline-block" ><form method=post action=viewww_single.php  class=print_hide>
 	<button class="btn btn-outline-danger btn-sm m-0 p-0" name=sample_id value=\''.($sample_id+1).'\' >Next</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=view_single>
@@ -9850,7 +10023,7 @@ function xxx_sample_id_next_button($sample_id)
 
 function xxx_sample_id_analysis_started_button($sample_id)
 {
-        echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=viewww_single.php  class=print_hide>
+        echo '<div class="d-inline-block" ><form method=post action=viewww_single.php  class=print_hide>
         <button class="btn btn-outline-danger btn-sm m-0 p-0" name=sample_id value=\''.$sample_id.'\' >Analysis Started</button>
         <input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
         <input type=hidden name=action value=analysis_started>
@@ -9860,7 +10033,7 @@ function xxx_sample_id_analysis_started_button($sample_id)
 
 function xxx_sample_id_delete_button($sample_id)
 {
-	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_delete_sample.php class=print_hide>
+	echo '<div class="d-inline-block" ><form method=post action=xxx_delete_sample.php class=print_hide>
 	<button onclick="return confirm(\'delete really?\')" class="btn btn-outline-dark btn-sm" name=sample_id value=\''.$sample_id.'\' >Delete</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=delete_sample>
@@ -9880,7 +10053,7 @@ function xxx_sample_id_release_button($sample_id)
 
 function xxx_sample_id_print_button($link,$sample_id)
 {
-	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_print_single.php target=_blank class=print_hide>
+	echo '<div class="d-inline-block"  ><form method=post action=xxx_print_single.php target=_blank class=print_hide>
 	<button class="btn btn-outline-success btn-sm" name=sample_id value=\''.$sample_id.'\' >Print</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=print>
@@ -9889,7 +10062,7 @@ function xxx_sample_id_print_button($link,$sample_id)
 
 function xxx_sample_id_wprint_button($link,$sample_id)
 {
-	echo '<div class="d-inline-block"  style="width:100%;"><form method=post  action=download_wpdf.php target=_blank class=print_hide>
+	echo '<div class="d-inline-block"  ><form method=post  action=download_wpdf.php target=_blank class=print_hide>
 	<button class="btn btn-outline-success btn-sm" name=sample_id value=\''.$sample_id.'\' >WPrint</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=wprint>
@@ -9899,7 +10072,7 @@ function xxx_sample_id_wprint_button($link,$sample_id)
 
 function xxx_sample_id_interim_release_button($sample_id)
 {
-	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_interim_release_sample.php class=print_hide>
+	echo '<div class="d-inline-block"  ><form method=post action=xxx_interim_release_sample.php class=print_hide>
 	<button class="btn btn-outline-secondary btn-sm" name=sample_id value=\''.$sample_id.'\' >Interim Release</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=interim_release_sample>
@@ -9908,7 +10081,7 @@ function xxx_sample_id_interim_release_button($sample_id)
 
 function xxx_sample_id_unrelease_button($sample_id)
 {
-	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_unrelease_sample.php class=print_hide>
+	echo '<div class="d-inline-block" ><form method=post action=xxx_unrelease_sample.php class=print_hide>
 	<button class="btn btn-outline-secondary btn-sm" name=sample_id value=\''.$sample_id.'\' >Un-Release</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=unrelease_sample>
@@ -9917,7 +10090,7 @@ function xxx_sample_id_unrelease_button($sample_id)
 
 function xxx_sample_id_sync_all_button($sample_id,$target='')
 {
-	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=edit_generalll.php class=print_hide>
+	echo '<div class="d-inline-block"  ><form method=post action=edit_generalll.php class=print_hide>
 	<button class="btn btn-sm btn-warning" name=sample_id value=\''.$sample_id.'\' >Sync ALL</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=sync_ALL>
@@ -9926,7 +10099,7 @@ function xxx_sample_id_sync_all_button($sample_id,$target='')
 
 function xxx_sample_id_copy_button($sample_id)
 {
-        echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=xxx_copy_sample_id.php class=print_hide>
+        echo '<div class="d-inline-block"  ><form method=post action=xxx_copy_sample_id.php class=print_hide>
         <button class="btn btn-outline-success btn-sm" name=sample_id value=\''.$sample_id.'\' >copy</button>
         <input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
         <input type=hidden name=action value=copy_sample_id>
@@ -9935,7 +10108,7 @@ function xxx_sample_id_copy_button($sample_id)
 
 function xxx_any_id_barcode_button($sample_id,$label_id,$label)
 {
-	echo '<div class="d-inline-block"  style="width:100%;">
+	echo '<div class="d-inline-block" >
 	<form method=post target=_blank action=xxx_print_single_barcode.php class=print_hide>
 	<div class="btn-group" role="group">
 	<button class="btn btn-outline-primary btn-sm" name=action value=one_barcode >'.$label.'</button>
@@ -9949,7 +10122,7 @@ function xxx_any_id_barcode_button($sample_id,$label_id,$label)
 
 function xxx_sample_id_calculate_button($sample_id)
 {
-	echo '<div class="d-inline-block"  style="width:100%;"><form method=post action=edit_generalll.php class=print_hide>
+	echo '<div class="d-inline-block"  ><form method=post action=edit_generalll.php class=print_hide>
 	<button class="btn btn-outline-primary btn-sm" name=sample_id value=\''.$sample_id.'\' >Calculate/Verify</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=calculate>
@@ -10029,9 +10202,9 @@ function xxx_set_unique_id_prev_next_button($link,$sample_id,$examination_id)
 	$next=$current+1;
 	$prev=max($current-1,1);
 
-	echo '<div class="btn-group " role="group">';
+	echo '<div class="btn-toolbar " role="group">';
 	
-	echo '<div class="d-inline-block"  style="width:100%;" >
+	echo '<div class="d-inline-block" >
 			<form method=post action=viewww_single_unique.php class=print_hide>
 			<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=action value=prev>Prev</button>
 			<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
@@ -10040,7 +10213,7 @@ function xxx_set_unique_id_prev_next_button($link,$sample_id,$examination_id)
 			</form>
 	</div>';
 	
-	echo '<div class="d-inline-block"  style="width:100%;" >
+	echo '<div class="d-inline-block"  >
 			<form method=post action=viewww_single_unique.php class=print_hide>
 			<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=action value=next>Next</button>
 			<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
@@ -10189,7 +10362,7 @@ echo '<form method=post id="status_change_form" class="d-inline">';
 			while($ar_b=get_single_row($result_b))
 			{	
 		
-			//if(!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id'])){continue;}
+			if(!is_status_dependancy_satisfied($link,$sample_id,$ar_b['examination_id'])){continue;}
 /*
 			$examination_details=get_one_examination_details($link,$ar_b['examination_id']);
 			if($examination_details['append_user']==1)
@@ -10244,7 +10417,7 @@ function xxx_get_sample_action_last($link,$sample_id)
 	$result=run_query($link,$GLOBALS['database'],$sql);
 
 	$ar=get_single_row($result); //just take first
-	return $ar;		
+	return $ar;
 }
 
 function get_user_info($link,$user)
@@ -11100,7 +11273,7 @@ function xxx_fill_report($link,$id,$pdf)
 	////////SET HEADER//////////////
 	//header footer overflow not solved
 	$header_data=get_header($link,$id);
-	//print_r($header_data[1]);
+	//print_r($header_data);
 	
 	$pdf->header=$header_data[0];
 	$header_ex=$header_data[1];
@@ -11281,4 +11454,531 @@ function xxx_should_display_accreditation_symbol($link,$sample_id)
 	}
 	return $ret;			//if all are 'no'
 }
+
+
+
+function get_one_field_for_search($link,$examination_id)
+{
+	$ex_data=get_one_examination_details($link,$examination_id);
+	$edit_specification=json_decode($ex_data['edit_specification'],true);
+	$type=isset($edit_specification['type'])?$edit_specification['type']:'text';
+
+	if($type=='select')
+	{
+		$option=isset($edit_specification['option'])?explode(',',$edit_specification['option']):array();
+		$option_html='';
+		
+		foreach($option as $v)
+		{
+				$option_html=$option_html.'<option>'.$v.'</option>';
+		}
+		$option_html='<select onchange="document.getElementById(\'__ex__'.$examination_id.'\').value=this[this.selectedIndex].text">'.$option_html.'</select>';
+	}
+	
+	else if($type=='examination_field_specification')
+	{
+		$examination_field_specification=get_field_spec($link,$examination_id);
+		//print_r($examination_field_specification);
+		if($examination_field_specification)
+		{
+			if($examination_field_specification['ftype']=='table')
+			{
+				$attributes_str=' onchange="document.getElementById(\'__ex__'.$examination_id.'\').value=this[this.selectedIndex].text" ';
+				
+				ob_start();
+				mk_select_from_sql($link,
+									'select distinct `'.$examination_field_specification['field'].'` from `'.$examination_field_specification['table'].'`',
+									$examination_field_specification['field'],
+									'___ex___'.$examination_field_specification['examination_id'],
+									'___ex___'.$examination_field_specification['examination_id'],
+									$disabled='',$value='',$blank='yes',$attributes_str=$attributes_str);
+				$option_html = ob_get_contents();
+				ob_end_clean();
+			}
+			if($examination_field_specification['ftype']=='dtable')
+			{
+				$attributes_str=' onchange="document.getElementById(\'__ex__'.$examination_id.'\').value=this[this.selectedIndex].text" ';
+				
+				ob_start();
+				mk_select_from_sql($link,
+									'select distinct `'.$examination_field_specification['field'].'` from `'.$examination_field_specification['table'].'`',
+									$examination_field_specification['field'],
+									'___ex___'.$examination_field_specification['examination_id'],
+									'___ex___'.$examination_field_specification['examination_id'],
+									$disabled='',$value='',$blank='yes',$attributes_str=$attributes_str);
+				$option_html = ob_get_contents();
+				ob_end_clean();
+			}		}
+	}
+	else if($type=='datetime-local')
+	{
+		//ob_start();
+		$default=strftime("%Y-%m-%dT%H:%M");
+		//show_source_button('__ex__'.$examination_id,$default);
+		//$option_html = ob_get_contents();
+		//ob_end_clean();
+
+		$option_html='<input type=datetime-local  value=\''.$default.'\'
+						onchange="document.getElementById(\'__ex__'.$examination_id.'\').value=this.value"
+						onclick="document.getElementById(\'__ex__'.$examination_id.'\').value=this.value"
+						
+						>';
+	}
+
+	else
+	{
+		$option_html='';
+	}
+	
+
+
+
+
+	//echo 'x';print_r($ex_data);echo 'x';
+	if(!is_array($ex_data)){return;}
+	$ex_name=$ex_data['name'];
+
+		echo '<div class="basic_form">';
+			echo '<div class="d-inline p-2">';
+			//echo '<button type=button formtarget=_blank class="btn btn-sm btn-info d-inline-block w-75" onclick="my_view_table(\''.$ex_name.'\')">'.$ex_name.'</button>';
+			echo '<button type=button formtarget=_blank class="btn btn-sm btn-info d-inline-block w-75" >'.$ex_name.'</button>';
+				echo '<input class="float-right d-inline-block w-25" name=\'chk^'.$examination_id.'\' type=checkbox>';
+			echo '</div>';
+			echo '<div class="d-inline-block">';
+				//get_one_field_for_insert_no_readonly($link,$examination_id);
+				echo '		<input type=text size=13 id=\'__ex__'.$examination_id.'\'  name=\'__ex__'.$examination_id.'\' class="form-control text-danger"\>';
+			echo '</div>';
+			echo '<div>'.$option_html.'</div>';
+		echo '</div>';
+}
+
+//used in search and print
+function get_one_field_for_range_search($link,$examination_id)
+{
+	$ex_data=get_one_examination_details($link,$examination_id);
+	//echo 'x';print_r($ex_data);echo 'x';
+	if(!is_array($ex_data)){return;}
+	$ex_name=$ex_data['name'];
+
+	$edit_specification=json_decode($ex_data['edit_specification'],true);
+	$type=isset($edit_specification['type'])?$edit_specification['type']:'text';
+
+	if($type=='datetime-local')
+	{
+		$default=strftime("%Y-%m-%dT%H:%M");
+		$option_html_from='<input type=datetime-local  value=\''.$default.'\'
+						onchange="document.getElementById(\'__from__'.$examination_id.'\').value=this.value"
+						onclick="document.getElementById(\'__from__'.$examination_id.'\').value=this.value"
+						
+						>';
+		$option_html_to='<input type=datetime-local  value=\''.$default.'\'
+						onchange="document.getElementById(\'__to__'.$examination_id.'\').value=this.value"
+						onclick="document.getElementById(\'__to__'.$examination_id.'\').value=this.value"
+						>';
+	}
+	else
+	{
+		$option_html_from='';
+		$option_html_to='';
+	}
+	
+	echo '<fieldset ><legend>'.$ex_name.'</legend>';
+
+	echo '<div class="basic_form">';	
+		echo '<div class="d-inline p-2">';
+			echo '	<label class="my_label text-danger" for="from">From '.$ex_name.'</label>';
+			echo '<input class="float-right" name=\'chk^'.$examination_id.'\' type=checkbox>';
+		echo '</div>';
+		
+		echo '<div class="d-inline p-2">';
+		echo '		<input type=text size=13 id=\'__from__'.$examination_id.'\'  	name=\'__from__'.$examination_id.'\' 	class="form-control text-danger"\>'.$option_html_from;
+			echo '<input type=hidden 					name=\'__ex__'.$examination_id.'\' 		value=\'\'>';
+
+		echo '</div>';		
+	echo '</div>';		
+		
+	echo '<div class="basic_form">';	
+		echo '<div class="d-inline p-2">';
+			echo '	<label class="my_label text-danger" for="to">To '.$ex_name.'</label>';
+		echo '</div>';
+		
+		echo '<div class="d-inline p-2">';
+		echo '		<input type=text size=13 id=\'__to__'.$examination_id.'\'   	name=\'__to__'.$examination_id.'\' 		class="form-control text-danger"\>'.$option_html_to;
+		echo '</div>';		
+	echo '</div>';
+	echo '</fieldset>';		
+	
+	
+	
+
+					
+}
+
+
+function get_sample_id_for_range_search($link)
+{
+	$ex_name='sample_id';
+
+
+	echo '<fieldset ><legend>'.$ex_name.'</legend>';
+
+		echo '<div class="basic_form">';
+		echo '<p class="my_label text-danger" >Select sample ID range</p>';	
+		show_id_range_options($link);
+		echo '</div>';
+		
+	echo '<div class="basic_form">';	
+			echo '<div class="d-inline p-2">';
+				echo '	<label class="my_label text-danger" for="from">From '.$ex_name.'</label>';
+				echo '<input class="float-right" name=\'chk^sample_id\' type=checkbox>';
+			echo '</div>';
+		
+			echo '<div class="d-inline p-2">';
+				echo '		<input type=text size=13 id=from  	name=\'__from__sample_id\'	class="form-control text-danger"\>';
+				echo '<input type=hidden 					name=\'__ex__sample_id\'		value=\'\'>';
+		echo '</div>';		
+	echo '</div>';		
+		
+	echo '<div class="basic_form">';	
+		echo '<div class="d-inline p-2">';
+			echo '	<label class="my_label text-danger" for="to">To '.$ex_name.'</label>';
+		echo '</div>';
+		
+		echo '<div class="d-inline p-2">';
+		echo '		<input type=text size=13 id=from  	name=\'__to__sample_id\' 		class="form-control text-danger"\>';
+		echo '</div>';		
+	echo '</div>';
+	echo '</fieldset>';						
+}
+
+
+
+function get_one_field_for_insert_no_readonly($link,$examination_id)
+{
+	$examination_details=get_one_examination_details($link,$examination_id);
+	if($examination_details===null || count($examination_details)<1){return;}
+	//echo 'yyy';
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	if(!$edit_specification){$edit_specification=array();}
+
+		$result='';
+
+	$type=isset($edit_specification['type'])?$edit_specification['type']:'text';//echo '<h4>'.$type.'</h4>';
+	//$readonly=isset($edit_specification['readonly'])?$edit_specification['readonly']:'';
+	$readonly='';
+	$help=isset($edit_specification['help'])?$edit_specification['help']:'';
+	$pattern=isset($edit_specification['pattern'])?$edit_specification['pattern']:'';
+	$required=isset($edit_specification['required'])?$edit_specification['required']:'';
+	$placeholder=isset($edit_specification['placeholder'])?$edit_specification['placeholder']:'';
+	$minlength=isset($edit_specification['minlength'])?$edit_specification['minlength']:'';
+	$zoom=isset($edit_specification['zoom'])?$edit_specification['zoom']:'';
+	
+	$element_id='r_id_'.$examination_id;
+
+
+	if($type=='yesno')
+	{
+				//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+					echo '
+							<select 
+							
+							id="'.$element_id.'" 
+								name="__ex__'.$examination_id.'" 
+								class="form-control btn btn-info mb-1"
+								type=button
+								value=no
+								><option>no</option><option>yes</option></select>';
+			echo '</div>';
+			echo '<p class="help">'.nl2br(htmlspecialchars($help)).'</p>';	
+		echo '</div>';
+	}
+	else if($type=='select')
+	{
+		$option=isset($edit_specification['option'])?explode(',',$edit_specification['option']):array();
+		$option_html='';
+		
+		foreach($option as $v)
+		{
+				$option_html=$option_html.'<option>'.$v.'</option>';
+		}
+		
+				//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block  no-gutters">';	
+				
+			echo '
+					<select  
+					id="'.$element_id.'" 
+						name="__ex__'.$examination_id.'" 
+						data-exid="'.$examination_id.'" 
+						
+						
+						class="form-control">'.$option_html.'</select>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//get_primary_result($link,$sample_id,$examination_id);
+				echo '</div>';
+			echo '</div>';
+			echo '<p class="help">'.$help.'</p>';	
+		echo '</div>';
+	}
+	elseif($type=='number')
+	{//echo '<h4>'.$type.'</h4>';
+		$step=isset($edit_specification['step'])?$edit_specification['step']:1;
+		
+				//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block  no-gutters">';	
+				
+			echo '
+					<input 
+						
+					id="'.$element_id.'" 
+						name="__ex__'.$examination_id.'" 
+						data-exid="'.$examination_id.'" 
+						
+						
+						class="form-control" 
+						type=number 
+						step=\''.$step.'\' 
+						>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//get_primary_result($link,$sample_id,$examination_id);
+				echo '</div>';
+			echo '</div>';
+			echo '<p class="help">'.$help.'</p>';	
+		echo '</div>';
+	}
+	elseif($type=='date' || $type=='time')
+	{
+		if($type=='date'){$default=strftime("%Y-%m-%d");}
+		elseif($type=='time'){$default=strftime("%H:%M");}
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block  no-gutters">';			
+			echo '
+						<input 
+						
+					id="'.$element_id.'" 
+						name="__ex__'.$examination_id.'" 
+						data-exid="'.$examination_id.'" 
+						
+						class="form-control" 
+						type=\''.$type.'\' 
+						>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					show_source_button($element_id,$default);
+				echo '</div>';
+			echo '</div>';
+			echo '<p class="help">'.$help.'</p>';	
+		echo '</div>';
+	}
+	elseif($type=='datetime-local')
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block  no-gutters">';
+			echo '
+						<input 
+						
+					id="'.$element_id.'" 
+						name="__ex__'.$examination_id.'" 
+						data-exid="'.$examination_id.'" 
+						
+					pattern="'.$pattern.'" 
+						class="form-control" 
+						type=\''.$type.'\' 
+						>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//get_primary_result($link,$sample_id,$examination_id);
+				echo '</div>';
+			echo '</div>';
+			echo '<p class="help">'.$help.'</p>';	
+		echo '</div>';
+	}
+	elseif($type=='blob')
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+				
+						echo '<input 
+									id="'.$element_id.'" 
+									name="__ex__'.$examination_id.'" 
+									data-exid="'.$examination_id.'" 
+									type=file 
+								>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//get_primary_result($link,$sample_id,$examination_id);
+				echo '</div>';
+			echo '</div>';
+			echo '<p class="help">'.$help.'</p>';	
+		echo '</div>';
+	} 
+
+	 else  if($type=='subsection')
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+			echo '<h3 class="bg-warning">'.$examination_details['name'].'</h3>';
+			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				echo '</div>';
+			echo '</div>';
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
+		echo '</div>';
+	} 
+
+	elseif($type=='realtext')	//type=text
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+					echo $examination_details['name'];
+			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+				echo '<input 
+					'.$readonly.'
+					id="'.$element_id.'" 
+					name="__ex__'.$examination_id.'" 
+					data-exid="'.$examination_id.'" 
+					data-user="'.$_SESSION['login'].'" 
+					class="form-control autosave p-0 m-0 no-gutters " 
+					style="resize: both;"
+					';
+
+					if(strlen($required)>0)	{echo 'required=\''.$required.'\'';}
+					
+					echo 'type=text value=\''.
+					htmlspecialchars($result,ENT_QUOTES).'\'>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				echo '</div>';
+			echo '</div>';
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
+		echo '</div>';
+	} 
+
+
+	elseif(in_array($type,['id_multi_sample','id_single_sample']))	//type=text
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+					echo $examination_details['name'];
+			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+				echo '<input 
+					'.$readonly.'
+					id="'.$element_id.'" 
+					name="__ex__'.$examination_id.'" 
+					data-exid="'.$examination_id.'" 
+					data-user="'.$_SESSION['login'].'" 
+					class="form-control autosave p-0 m-0 no-gutters " 
+					style="resize: both;"
+					';
+
+					if(strlen($required)>0)	{echo 'required=\''.$required.'\'';}
+					
+					echo 'type=text value=\''.
+					htmlspecialchars($result,ENT_QUOTES).'\'>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					//if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				echo '</div>';
+			echo '</div>';
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
+		echo '</div>';
+	} 
+
+
+	else  
+	{
+		//////
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				echo '<div  class="my_lable">';
+					echo $examination_details['name'];
+				echo '</div>';
+			////
+				echo '<div class="m-0 p-0 no-gutters">';
+					////
+					echo '<div class="d-inline-block no-gutters">';
+					echo '<textarea rows=1
+					'.$readonly.'
+
+						id="'.$element_id.'"
+						name="__ex__'.$examination_id.'"
+						data-exid="'.$examination_id.'"';
+						
+						if(strlen($required)>0) {echo 'required=\''.$required.'\'';}
+
+						echo 'pattern="'.$pattern.'"
+						class="form-control autosave p-0 m-0 no-gutters '.$zoom.' "
+						type=\''.$type.'\' ></textarea>';
+					echo '</div>';
+					echo '<div class="d-inline  no-gutters">';
+						//get_primary_result($link,$sample_id,$examination_id);
+					echo '</div>';
+				echo '</div>';
+			////
+			echo '<p class="help">'.nl2br(htmlspecialchars($help)).'</p>';
+		echo '</div>';
+	}
+
+}
+
+
 ?>

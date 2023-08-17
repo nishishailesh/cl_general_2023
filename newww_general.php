@@ -95,7 +95,7 @@ function get_data_specific($link,$sql,$ex_list,$default_value_str)
 
 	//print_r($ex_default_array);
 	
-	echo '<form method=post class="bg-light jumbotron" enctype="multipart/form-data">';
+	echo '<form method=post class="bg-light m-2" enctype="multipart/form-data">';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	echo '<button type=submit class="btn btn-primary form-control" name=action value=insert>Save</button>';
 	

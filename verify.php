@@ -230,5 +230,4 @@ function f_10011($link,$sample_id,$ex_id)
 		update_one_examination_with_result_blobvalue_set_to_null($link,$sample_id,$ex_id);
 	}
 }
-
 ?>

@@ -1,6 +1,10 @@
 <?php
 require_once 'project_common.php';
 require_once 'base/verify_login.php';
+
+echo '		  <link rel="stylesheet" href="project_common.css">
+		  <script src="project_common.js"></script>';	
+		  
 	////////User code below/////////////////////
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //echo '<div>';
@@ -26,34 +30,6 @@ if(isset($_POST['action']))
 	}
 }
 
-//$status_lot_size=isset($_POST['status_lot_size'])?$_POST['status_lot_size']:get_config_value($link,'status_lot_size');
-//$status_column_size=isset($_POST['status_column_size'])?$_POST['status_column_size']:get_config_value($link,'status_column_size');
-	
-//$status_lot_size=get_config_value($link,'status_lot_size');
-//$status_column_size=get_config_value($link,'status_column_size');
-/*
-echo '<style>
-.monitor_grid
-{
-display: grid;
-grid-gap: 5px;
-grid-template-areas:
-';
-	$count=1;
-	echo '\'';
-	$str='';
-	for ($i=1;$i<=($status_lot_size+$status_column_size*2);$i++)
-	{
-		$str=$str. ' a'.str_pad($i,3,0,STR_PAD_LEFT).' ';
-		if($count%$status_column_size==0){$str=$str.'\' \'';}
-		$count++;
-	}
-	$str=substr($str,0,-1);
-	echo $str;
-echo '}';
-
-echo '</style>';
-*/
 ////////for status change display//////////////
 
 
@@ -64,10 +40,18 @@ xxx_make_unique_id_option($link);
 
 echo '<div id=monitor>press appropriate id button</div>';
 
-echo '<div class="m-3"><fieldset  ><legend>Change Sample Status</legend>';
-manage_bulk_status_change($link);
-echo '</fieldset></div>';
+echo '<div class="m-3">
+	<fieldset  ><legend>Change Sample Status</legend>';
+		manage_bulk_status_change($link);
+	echo '</fieldset>';
+echo '</div>';
 
+
+echo '<div class="m-3">
+	<fieldset  ><legend>Filter by Sample Status</legend>';
+		filter_by_status($link);
+	echo '</fieldset>';
+echo '</div>';
 //////////////user code ends////////////////
 tail();
 //echo '<pre>start:post';print_r($_POST);echo '</pre>';
@@ -83,7 +67,10 @@ $result=run_query($link,$GLOBALS['database'],$sql);
 	$show_offset=isset($_POST['show_offset'])?$_POST['show_offset']:0;
 	$unique_id=isset($_POST['unique_id'])?$_POST['unique_id']:'sample_id';
 	$id_range=isset($_POST['id_range'])?$_POST['id_range']:'';
-
+	$lot_size=isset($_POST['status_lot_size'])?$_POST['status_lot_size']:get_config_value($link,'status_lot_size');
+	$column_size=isset($_POST['status_column_size'])?$_POST['status_column_size']:get_config_value($link,'status_column_size');
+	$filter_examination_id=isset($_POST['filter_examination_id'])?$_POST['filter_examination_id']:0;
+	
 echo '<div>';
 echo '<input type=text class="d-block align-top p-1 m-1 " placeholder="scan barcode here" id=id_for_status_change onchange="update_list_of_id(this)">';
 echo '<form method=post id="status_change_form" class="d-inline">';
@@ -121,6 +108,62 @@ echo '<form method=post id="status_change_form" class="d-inline">';
 	echo '<input type=hidden name=show_offset value=\''.$show_offset.'\'>';
 	echo '<input type=hidden name=unique_id value=\''.$unique_id.'\'>';
 	echo '<input type=hidden name=id_range value=\''.$id_range.'\'>';
+	echo '<input type=hidden name=status_lot_size value=\''.$lot_size.'\'>';
+	echo '<input type=hidden name=status_column_size value=\''.$column_size.'\'>';
+	echo '<input type=hidden name=filter_examination_id value=\''.$filter_examination_id.'\'>';
+					
+					
+ 
+echo '</form>';
+echo '</div>';
+
+}
+
+
+function filter_by_status($link)
+{
+$sql='select distinct priority from `sample_status` order by priority';
+$result=run_query($link,$GLOBALS['database'],$sql);
+
+
+	$show_offset=isset($_POST['show_offset'])?$_POST['show_offset']:0;
+	$unique_id=isset($_POST['unique_id'])?$_POST['unique_id']:'sample_id';
+	$id_range=isset($_POST['id_range'])?$_POST['id_range']:'';
+	$lot_size=isset($_POST['status_lot_size'])?$_POST['status_lot_size']:get_config_value($link,'status_lot_size');
+	$column_size=isset($_POST['status_column_size'])?$_POST['status_column_size']:get_config_value($link,'status_column_size');
+	
+echo '<div>';
+echo '<form method=post id="status_change_form" class="d-inline">';
+
+	while($ar=get_single_row($result))
+	{
+		echo '<div class="d-inline-block align-top m-1">';
+			$sql_b='select * from `sample_status` where priority=\''.$ar['priority'].'\'';
+			$result_b=run_query($link,$GLOBALS['database'],$sql_b);
+			while($ar_b=get_single_row($result_b))
+			{	
+			//if($ar_b['shortcut']<1){continue;} //not required in filtering status. We need all status
+			echo '<div class="d-block">';
+			echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
+						style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
+								border-top-right-radius: 25px; 
+								border-bottom-right-radius: 25px;"
+						name=filter_examination_id value='.$ar_b['examination_id'].'>'.$ar_b['name'].'
+					</button>';
+			echo '</div>';
+			}
+		echo '</div>';
+	}
+
+	echo '<input type=hidden name=action value=filter_by_status>';
+	echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+	echo '<input type=hidden name=show_offset value=\''.$show_offset.'\'>';
+	echo '<input type=hidden name=unique_id value=\''.$unique_id.'\'>';
+	echo '<input type=hidden name=id_range value=\''.$id_range.'\'>';
+	echo '<input type=hidden name=status_lot_size value=\''.$lot_size.'\'>';
+	echo '<input type=hidden name=status_column_size value=\''.$column_size.'\'>';
+					
+					
  
 echo '</form>';
 echo '</div>';
@@ -399,8 +442,9 @@ function callServer()
 	post6='id_range=<?php echo isset($_POST["id_range"])?$_POST["id_range"]:'';?>'
 	post7='status_lot_size=<?php echo isset($_POST["status_lot_size"])?$_POST["status_lot_size"]:get_config_value($link,"status_lot_size"); ?>'
 	post8='status_column_size=<?php echo isset($_POST["status_column_size"])?$_POST["status_column_size"]:get_config_value($link,"status_column_size"); ?>'
+	post9='filter_examination_id=<?php echo isset($_POST["filter_examination_id"])?$_POST["filter_examination_id"]:0; ?>'
 
-	post=post1+'&'+post2+'&'+post3+'&'+post4+'&'+post5+'&'+post6+'&'+post7+'&'+post8
+	post=post1+'&'+post2+'&'+post3+'&'+post4+'&'+post5+'&'+post6+'&'+post7+'&'+post8+'&'+post9
 	xhttp.open('POST', 'xxx_monitor_button.php', true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(post);	
@@ -415,13 +459,3 @@ function callServer()
 }
 
 </script>
-<style>
-fieldset {
-  border:1px solid;
-}
-
-legend {
-  width:auto;
-  margin-left: 10%;
-}
-</style>
