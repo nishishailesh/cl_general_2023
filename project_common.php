@@ -506,6 +506,70 @@ function mk_array_from_sql_kv($link,$sql,$field_name_k,$field_name_v,$blank='no'
 	return $ret;
 }
 
+function mk_select_from_sql_with_description($link,$sql,$field_name,$select_name,$select_id,$disabled='',$default='',$blank='no',$readonly='')
+{
+	//echo '<h1>++'.$readonly.'</h1>';
+	$ar=mk_array_from_sql_with_description($link,$sql,$field_name);
+	if($blank=='yes')
+	{
+		array_unshift($ar,array("",""));
+	}
+	//print_r( $ar);
+	mk_select_from_array_with_description($select_name,$ar,$disabled,$default,$readonly);
+}
+
+function mk_array_from_sql_with_description($link,$sql,$field_name)
+{
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ret=array();
+	while($ar=get_single_row($result))
+	{
+		$ret[]=array($ar[$field_name],$ar['description']);
+	}
+	return $ret;
+}
+
+function mk_select_from_array_with_description($name, $select_array,$disabled='',$default='',$readonly='')
+{	
+	//echo '<h1>--'.$readonly.'--</h1>';
+	if($readonly=='readonly')
+	{
+		foreach($select_array as $key=>$value)
+		{
+			if($value[0]==$default)
+			{
+				echo '<input type=hidden '.$readonly.' name=\''.$name.'\' id=\''.$name.'\'  value=\''.$default.'\'>';
+				echo $value[1].'('.$value[0].')';
+			}
+			else
+			{
+
+			}
+		}
+	
+
+		return TRUE;
+	}
+	
+	echo '<select  '.$disabled.'  id=\''.$name.'\' name=\''.$name.'\'>';
+
+	foreach($select_array as $key=>$value)
+	{
+		//print_r($value);
+		if($value[0]==$default)
+		{
+			echo '<option  selected value=\''.$value[0].'\' > '.$value[1].'('.$value[0].')'.' </option>';
+		}
+		else
+		{
+			echo '<option value=\''.$value[0].'\' > '.$value[1].'('.$value[0].')'.' </option>';
+		}
+	}
+	echo '</select>';	
+	return TRUE;
+}
+
+
 function mk_select_from_sql($link,$sql,$field_name,$select_name,$select_id,$disabled='',$default='',$blank='no',$extra='')
 {
 	//echo '<h1>'.$blank.'</h1>';
@@ -3989,7 +4053,8 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 		{
 			if($readonly!='readonly')
 			{
-				mk_select_from_sql($link,'select distinct `'.$examination_field_specification['field'].'` from `'.$examination_field_specification['table'].'`',
+				$tsql='select distinct `'.$examination_field_specification['field'].'` from `'.$examination_field_specification['table'].'`';
+				mk_select_from_sql($link,$tsql,
 									$examination_field_specification['field'],'__ex__'.$examination_field_specification['examination_id'],
 									'__ex__'.$examination_field_specification['examination_id'],'',$value,$blank='yes',$attributes_str=$attributes_str);
 			}
@@ -4000,36 +4065,38 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 		}
 		else if($examination_field_specification['ftype']=='dtable')
 		{
-			//if($readonly!='readonly')
-			//{
-			$sql='select 
-				distinct `'.$fspec['field'].'` , 
-				concat_ws("|",'.$fspec['field_description'].') as description
-			from `'.$fspec['table'].'`
-			order by '.$fspec['field_description'];
-			//echo $sql;
+			$dtsql='select 
+				distinct `'.$examination_field_specification['field'].'` , 
+				concat_ws("|",'.$examination_field_specification['field_description'].') as description
+			from `'.$examination_field_specification['table'].'`
+			 '.$examination_field_specification['where'].' 
+			order by '.$examination_field_specification['field_description'];
+			//echo $dtsql;
 			mk_select_from_sql_with_description(	$link,
-													$sql,
-													$fspec['field'],
+													$dtsql,
+													$examination_field_specification['field'],
 													'__ex__'.$examination_field_specification['examination_id'],
 													'__ex__'.$examination_field_specification['examination_id'],
 													$value,
 													$blank='yes',
 													$readonly,
 													$attributes_str=$attributes_str);
-				echo '<input placeholder="enter search string" type=text id=\'input_for_'.'__ex__'.$examination_field_specification['examination_id'].'\' onchange="find_from_dd(this , \''.$fspec['examination_id'].'\');">';
+				echo '<input 
+						placeholder="enter search string" 
+						type=text 
+						id=\'input_for_'.'__ex__'.$examination_field_specification['examination_id'].'\' 
+						onchange="find_from_dd(this , \'__ex__'.$examination_field_specification['examination_id'].'\');"
+						>';
 
 				
 				?>
-
-
 				<script>
-//document.getElementById("alloted_to")[6].text.search(document.getElementById("input_for_alloted_to").value)
 					function  find_from_dd(me,idd)
 					{
 						var option;
 						target=document.getElementById(idd);
 						//alert(me.value);
+						//alert(idd);
 						var selectLength = document.getElementById(idd).length;
 						for(i=0; i<selectLength;i++)
 						{
@@ -4053,13 +4120,7 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 						//alert("No record found having >>>>"+me.value+"<<<<");
 					}
 				</script>
-
-
 <?php
-
-
-				
-
 		}
 		elseif($examination_field_specification['ftype']=='date')
 		{
@@ -11635,7 +11696,7 @@ function get_sample_id_for_range_search($link)
 		
 			echo '<div class="d-inline p-2">';
 				echo '		<input type=text size=13 id=from  	name=\'__from__sample_id\'	class="form-control text-danger"\>';
-				echo '<input type=hidden 					name=\'__ex__sample_id\'		value=\'\'>';
+				echo '<input type=hidden 	name=\'__ex__sample_id\'		value=\'\'>';
 		echo '</div>';		
 	echo '</div>';		
 		

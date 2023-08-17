@@ -729,7 +729,6 @@ CREATE TABLE `examination` (
   `display_help` text DEFAULT NULL COMMENT 'help on screen',
   `print_help` text DEFAULT NULL COMMENT 'help in report',
   `accr_status` varchar(10) DEFAULT NULL COMMENT 'if ''yes'', it report will display symbol',
-  `qc_data` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`examination_id`),
   KEY `sample_requirement` (`sample_requirement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=105032 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
@@ -749,6 +748,7 @@ CREATE TABLE `examination_field_specification` (
   `table` varchar(50) DEFAULT NULL,
   `field` varchar(50) DEFAULT NULL,
   `field_description` varchar(50) DEFAULT NULL,
+  `where` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1040,6 +1040,7 @@ CREATE TABLE `primary_result` (
   `sample_id` bigint(20) NOT NULL,
   `examination_id` int(11) NOT NULL,
   `result` varchar(5000) NOT NULL,
+  `extra` varchar(5000) NOT NULL,
   `uniq` varchar(100) NOT NULL,
   PRIMARY KEY (`sample_id`,`examination_id`,`uniq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1163,6 +1164,7 @@ DROP TABLE IF EXISTS `qc_lot`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `qc_lot` (
   `qc_lot` varchar(100) NOT NULL,
+  `in_use` tinyint(4) DEFAULT NULL,
   `remark` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`qc_lot`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -1363,7 +1365,7 @@ CREATE TABLE `result` (
   `sample_id` bigint(20) NOT NULL,
   `examination_id` int(11) NOT NULL,
   `result` varchar(5000) DEFAULT NULL,
-  `extra` varchar(500) DEFAULT NULL,
+  `extra` varchar(5000) DEFAULT NULL,
   `recording_time` datetime DEFAULT NULL,
   `recorded_by` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`sample_id`,`examination_id`),
@@ -1691,4 +1693,4 @@ CREATE TABLE `ward_id` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-17  9:32:53
+-- Dump completed on 2023-08-18  0:52:09

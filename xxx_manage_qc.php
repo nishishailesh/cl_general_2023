@@ -35,47 +35,137 @@ $qc_sql="select * from examination  where sample_requirement!='None' order by re
 		echo '</div>';
 	echo '</div>';
 
+
+if($_POST['action']=='find_qc_data')
+{
+	prepare_qc_data_from_search_condition($link,$_POST);
+}
 //////////////user code ends////////////////
 tail();
 
-echo '<pre>';print_r($_POST);echo '</pre>';
-
-//$sql_sid="select 
-//				pr.result, r.sample_id from result where examination_id=1048 limit 100";
-
-$sql_sid='			
-select r.sample_id,
-       r.examination_id test_id ,e.name test_name ,r.result test_result_not_imp,       
-       pr.examination_id primary_test_id, pr.result primary_test_result,
-       qc_id.sample_id qc_id_sample_id,qc_id.id qc_id_id,
-       ur.examination_id unique_ex_id ,ur.result unique_result_not_imp
-
-from result r, result ur, examination e, primary_result pr, qc_id
-
-where
-     r.sample_id=pr.sample_id and
-     ur.sample_id=r.sample_id and
-     qc_id.sample_id=r.sample_id and
-
-     r.examination_id=pr.examination_id and
-     e.examination_id=r.examination_id and
-
-     ur.examination_id=1048
-';
-
-view_sql_result_as_table($link,$sql_sid,$show_hide='yes');
-
-/*
-$result=run_query($link,$GLOBALS['database'],$sql_sid);
-while($ar=get_single_row($result))
-{
-	//$data=get_primary_result_of_sample_in_array($link,$ar['sample_id']);
-	$data=get_primary_result_rows_of_sample_in_array($link,$ar['sample_id']);
-	echo '<pre>';print_r($data);echo '</pre>';
-}
-*/
+//echo '<pre>';print_r($_POST);echo '</pre>';
 
 //////////////Functions///////////////////////
+
+/*
+Array
+(   [examination_id] => 1048
+    [__ex__3001] => 
+    [___ex___3001] => 
+    [__ex__9000] => 
+    [__from__1048] => 
+    [__ex__1048] => 
+    [__to__1048] => 
+    [__from__10006] => 
+    [__ex__10006] => 
+    [__to__10006] => 
+    [id_range] => 1000000-1999999
+    [__from__sample_id] => 
+    [__ex__sample_id] => 
+    [__to__sample_id] => 
+    [action] => find_qc_data
+    [selected_examination_list] => 
+    [session_name] => sn_1468638343 )
+Array(
+    [examination_id] => 1048
+    
+    [chk^3001] => on
+    [__ex__3001] => QC/0/BlankW
+    [___ex___3001] => QC/0/BlankW
+    
+    [chk^9000] => on
+    [__ex__9000] => XL_640
+    
+    [chk^1048] => on
+    [__from__1048] => 223
+    [__ex__1048] => 
+    [__to__1048] => 2333
+    
+    [chk^10006] => on
+    [__from__10006] => 2023-08-17T22:18
+    [__ex__10006] => 
+    [__to__10006] => 2023-08-17T22:18
+    
+    [id_range] => 1000000-1999999
+    
+    [chk^sample_id] => on
+    [__from__sample_id] => 122
+    [__ex__sample_id] => 
+    [__to__sample_id] => 333
+    
+    [action] => find_qc_data
+    [selected_examination_list] => 5009,5010
+    [session_name] => sn_1468638343)
+*/
+
+function prepare_qc_data_from_search_condition($link,$post)
+{
+	//echo '<pre>';print_r($post);echo '</pre>';
+	
+	$ex_list_csv=$post['selected_examination_list'];
+	//echo 'reporting requested for..'.$ex_list_csv.'<br>';
+
+	
+	$sql='';
+	foreach($post as $post_key => $post_val)
+	{
+		if(substr($post_key,0,4)=='chk^')
+		{
+			//echo '----------------<br>a search condition detected...<br>';
+			$search_examination_id=substr($post_key,4);
+			//echo 'examination_id for search is..'.$search_examination_id.'<br>';
+			if(isset($post['__from__'.$search_examination_id]))
+			{
+				//echo 'It is a range search ..<br>';
+				$from=$post['__from__'.$search_examination_id];
+				$to=$post['__to__'.$search_examination_id];
+				//echo 'required range is from '.$from.' to '.$to.'..<br>';
+				
+				$sql=$sql . '(select sample_id from result where examination_id=\''.$search_examination_id.'\' and result between \''.$from.'\' and between \''.$to.'\' ) intersect ';
+			}
+			else
+			{
+				$required_value=$post['__ex__'.$search_examination_id];
+				//echo 'It is a point range search ..<br>';
+				//echo 'required value is '.$required_value.'.. <br>';
+				$sql=$sql . '(select sample_id from result where examination_id=\''.$search_examination_id.'\' and lower(result) like \'%'.strtolower($required_value).'%\'  ) intersect ';
+			}
+		}
+	}
+	
+	if(strlen($sql)>0)
+	{
+		$sql=substr($sql,0,-10);
+		//echo $sql.'<br>';
+
+		if(strlen($ex_list_csv)>0)
+		{
+			$root_sql='select * from primary_result where examination_id in ('.$ex_list_csv.') and sample_id in ('.$sql.')';
+		}
+		else
+		{
+			$root_sql='select * from primary_result where sample_id in ('.$sql.')';		
+		}
+
+	}
+	else
+	{
+		if(strlen($ex_list_csv)>0)
+		{
+			$root_sql='select * from primary_result where examination_id in ('.$ex_list_csv.') order by sample_id desc limit 200';
+		}
+		else
+		{
+			$root_sql='select * from primary_result  order by sample_id desc limit 200';
+		}
+	}
+	
+
+	echo $root_sql.'<br>';
+	view_sql_result_as_table($link,$root_sql,$show_hide='yes');
+}
+
+
 
 function xxx_get_examination_data_for_qc($link,$sql)
 {
@@ -130,48 +220,13 @@ function get_qc_search_conditions($link,$examination_id,$search_list_of_examinat
 		}
 	}
 	
-	echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_summary>View</button>';
+	echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=find_qc_data>Search</button>';
 	echo '<input type=text readonly class="w-100" name=selected_examination_list type=text id=selected_examination_list>';
 
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	echo '</form>';
 
 }
-
-
-
-/*
-
-Array
-(
-    [examination_id] => 1048
-    [chk^3001] => on
-    [__ex__3001] => QC/0/BlankW
-    [___ex___3001] => QC/0/BlankW
-    [chk^9000] => on
-    [__ex__9000] => XL_1000
-    [chk^1048] => on
-    [__from__1048] => 12
-    [__ex__1048] => 
-    [__to__1048] => 12
-    [chk^10006] => on
-    [__from__10006] => 2023-08-08T02:05
-    [__ex__10006] => 
-    [__to__10006] => 2023-08-09T02:05
-    [id_range] => 1000000-1999999
-    [chk^sample_id] => on
-    [__from__sample_id] => 34
-    [__ex__sample_id] => 
-    [__to__sample_id] => 34
-    [action] => view_dbid_summary
-    [selected_examination_list] => 5029,5001
-    [session_name] => sn_1428411176
-)
-
-
-*/
-
-
 ?>
 
 <script>
