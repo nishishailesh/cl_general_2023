@@ -98,7 +98,14 @@ function run_query($link,$db,$sql,$display_error='yes')
 	}
 	else
 	{
-		$result=mysqli_query($link,$sql);
+		try 
+		{
+				$result=mysqli_query($link,$sql);
+		}
+		catch (mysqli_sql_exception $e) 
+		{
+			$result=false;
+		}
 	}
 	
 	if(!$result)

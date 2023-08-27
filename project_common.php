@@ -531,7 +531,7 @@ function mk_array_from_sql_with_description($link,$sql,$field_name)
 
 function mk_select_from_array_with_description($name, $select_array,$disabled='',$default='',$readonly='')
 {	
-	//echo '<h1>--'.$readonly.'--</h1>';
+	//echo '<h1>--'.$default.'--</h1>';
 	if($readonly=='readonly')
 	{
 		foreach($select_array as $key=>$value)
@@ -4071,12 +4071,16 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 			from `'.$examination_field_specification['table'].'`
 			 '.$examination_field_specification['where'].' 
 			order by '.$examination_field_specification['field_description'];
-			//echo $dtsql;
+			echo $value;
+
+			//function mk_select_from_sql_with_description($link,$sql,$field_name,$select_name,$select_id,$disabled='',$default='',$blank='no',$readonly='')
+
 			mk_select_from_sql_with_description(	$link,
 													$dtsql,
 													$examination_field_specification['field'],
 													'__ex__'.$examination_field_specification['examination_id'],
 													'__ex__'.$examination_field_specification['examination_id'],
+													'',
 													$value,
 													$blank='yes',
 													$readonly,
@@ -5151,7 +5155,7 @@ function insert_one_examination_without_result($link,$sample_id,$examination_id,
 	if(!run_query($link,$GLOBALS['database'],$sql,$error))
 	{
 		//echo $sql.'(without)<br>';
-		echo '<p class="text-danger">Data Exist? Data not inserted</p>'; 
+		echo '<p class="text-danger">['.$sample_id.'-'.$examination_id.'] Data Exist? Data not inserted</p>'; 
 		return false;
 	}	else{return true;}
 }

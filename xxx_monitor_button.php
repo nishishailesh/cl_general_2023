@@ -120,6 +120,7 @@ while($ar=get_single_row($result))
 		//print_r($last);
 		if($_POST['filter_examination_id']==0)
 		{
+			echo $div_location;
 			showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$unique_examination_id,$checkbox='yes');
 		}
 		else 
@@ -129,16 +130,17 @@ while($ar=get_single_row($result))
 			{
 				if($last['examination_id']==$_POST['filter_examination_id'])
 				{
+					echo $div_location;
 					showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$unique_examination_id,$checkbox='yes');
 				}
 				else
 				{
-					echo '        ';
+					echo '         ';
 				}
 			}
 			else
 			{
-				echo '        ';
+				echo '           ';
 			}
 		}
 			//echo $div_location;

@@ -818,3 +818,13 @@ function select_super_profile(me,list_id)
 	update_sss()
 }
 
+function createContext(color,id) {
+    var canvas = document.createElement('canvas');
+    id.appendChild(canvas);
+    canvas.width = 100;
+    canvas.height = 40;
+    ctx=canvas.getContext("2d");
+    ctx.rect(0, 0, 100, 40);
+	ctx.fillStyle = color;
+	ctx.fill();
+}

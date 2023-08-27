@@ -991,7 +991,7 @@ CREATE TABLE `opd_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=298 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=301 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1040,9 +1040,10 @@ CREATE TABLE `primary_result` (
   `sample_id` bigint(20) NOT NULL,
   `examination_id` int(11) NOT NULL,
   `result` varchar(5000) NOT NULL,
-  `extra` varchar(5000) NOT NULL,
+  `extra` varchar(5000) DEFAULT NULL,
   `uniq` varchar(100) NOT NULL,
-  PRIMARY KEY (`sample_id`,`examination_id`,`uniq`)
+  `equipment` varchar(100) NOT NULL,
+  PRIMARY KEY (`sample_id`,`examination_id`,`uniq`,`equipment`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1152,7 +1153,7 @@ CREATE TABLE `qc_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=254 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1683,6 +1684,30 @@ CREATE TABLE `ward_id` (
   UNIQUE KEY `sample_id` (`sample_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1099 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `xxx_lab_reference_value`
+--
+
+DROP TABLE IF EXISTS `xxx_lab_reference_value`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `xxx_lab_reference_value` (
+  `lab_reference_value_id` int(11) NOT NULL AUTO_INCREMENT,
+  `qc_lot` varchar(100) NOT NULL,
+  `examination_id` int(11) NOT NULL,
+  `equipment` varchar(100) NOT NULL,
+  `start_datetime` datetime DEFAULT NULL,
+  `end_datetime` datetime DEFAULT NULL,
+  `mean` decimal(10,4) NOT NULL,
+  `sd` decimal(10,4) NOT NULL,
+  `remark` varchar(100) DEFAULT NULL,
+  `manufacturer_data` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`lab_reference_value_id`),
+  KEY `qc_lot` (`qc_lot`),
+  CONSTRAINT `xxx_lab_reference_value_ibfk_1` FOREIGN KEY (`qc_lot`) REFERENCES `qc_lot` (`qc_lot`)
+) ENGINE=InnoDB AUTO_INCREMENT=10302 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1693,4 +1718,4 @@ CREATE TABLE `ward_id` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-18  0:52:09
+-- Dump completed on 2023-08-27 23:29:04
