@@ -57,8 +57,12 @@ xxx_make_unique_id_option($link);
 echo '<div class="m-3"><fieldset  ><legend>Change Sample Status</legend>';
 manage_bulk_status_change($link);
 echo '</fieldset></div>';
+echo '<div class="m-3">
+	<fieldset  ><legend>Filter by Sample Status</legend>';
+		filter_by_status($link);
+	echo '</fieldset>';
+echo '</div>';
 echo '<div id=monitor>write offset(optional, for all ids), write id_range(optional, only for sample_id) and press appropriate id button</div>';
-
 
 
 //////////////user code ends////////////////
@@ -67,6 +71,7 @@ tail();
 //echo '<pre>start:session';print_r($_SESSION);echo '</pre>';
 
 ///////////////////Functions////////////////
+
 function manage_bulk_status_change($link)
 {
 $sql='select distinct priority from `sample_status` order by priority';
@@ -362,7 +367,24 @@ function callServer()
 			document.getElementById('monitor').innerHTML = xhttp.responseText;
 		}
 	};
-	post='unique_id=<?php echo isset($_POST["unique_id"])?$_POST["unique_id"]:"sample_id";?>&session_name=<?php echo $_POST["session_name"];?>&login=<?php echo $_SESSION["login"];?>&password=<?php echo $_SESSION["password"];?>&show_offset=<?php echo isset($_POST["show_offset"])?$_POST["show_offset"]:0 ?>&id_range=<?php echo isset($_POST["id_range"])?$_POST["id_range"]:''?>';
+	//post='unique_id=<?php echo isset($_POST["unique_id"])?$_POST["unique_id"]:"sample_id";?>&session_name=<?php echo $_POST["session_name"];?>&login=<?php echo $_SESSION["login"];?>&password=<?php echo $_SESSION["password"];?>&show_offset=<?php echo isset($_POST["show_offset"])?$_POST["show_offset"]:0 ?>&id_range=<?php echo isset($_POST["id_range"])?$_POST["id_range"]:''?>';
+
+
+	post1='unique_id=<?php echo isset($_POST["unique_id"])?$_POST["unique_id"]:"sample_id";?>'
+	post2='session_name=<?php echo $_POST["session_name"];?>'
+	post3='login=<?php echo $_SESSION["login"];?>'
+	post4='password=<?php echo $_SESSION["password"];?>'
+	post5='show_offset=<?php echo isset($_POST["show_offset"])?$_POST["show_offset"]:0; ?>'
+	post6='id_range=<?php echo isset($_POST["id_range"])?$_POST["id_range"]:'';?>'
+	post7='filter_examination_id=<?php echo isset($_POST["filter_examination_id"])?$_POST["filter_examination_id"]:0; ?>'
+
+	post=post1+'&'+post2+'&'+post3+'&'+post4+'&'+post5+'&'+post6+'&'+post7
+
+
+
+
+
+
 	xhttp.open('POST', 'xxx_monitor.php', true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send(post);	

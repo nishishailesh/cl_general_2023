@@ -37,7 +37,6 @@ function verify_sample($link,$sample_id)
 	return $ret;
 }
 
-
 function any_examination_id($link,$sample_id,$eid,$eval)
 {
 	$examination_details=get_one_examination_details($link,$eid);
@@ -230,4 +229,6 @@ function f_10011($link,$sample_id,$ex_id)
 		update_one_examination_with_result_blobvalue_set_to_null($link,$sample_id,$ex_id);
 	}
 }
+
+
 ?>

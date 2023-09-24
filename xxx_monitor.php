@@ -8,6 +8,7 @@ require_once $GLOBALS['main_user_location'];
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
 $horizontal_status_lot_size=get_config_value($link,'horizontal_status_lot_size');
+$filter_examination_id=isset($_POST['filter_examination_id'])?$_POST['filter_examination_id']:0;
 
 if(isset($_POST['login']))
 {
@@ -39,7 +40,6 @@ if($_POST['unique_id']!='sample_id')
 	$table=isset($edit_specification['table'])?$edit_specification['table']:'';
 	$unique_examination_id=$_POST['unique_id'];
 
-
 	//show samples as selected
 	//$sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-198).'\' and \''.$max_unique_id.'\' ';
 	$sql='select sample_id from `'.$table.'` where id between \''.($max_unique_id-$horizontal_status_lot_size+1).'\' and \''.$max_unique_id.'\' ';
@@ -48,36 +48,55 @@ if($_POST['unique_id']!='sample_id')
 
 	$extra_post='	<input type=hidden name=unique_id value=\''.$_POST['unique_id'].'\'>
 					<input type=hidden name=id_range value=\''.$_POST['id_range'].'\'>
-					<input type=hidden name=show_offset value=\''.$_POST['show_offset'].'\'>';
+					<input type=hidden name=show_offset value=\''.$_POST['show_offset'].'\'>
+					<input type=hidden name=filter_examination_id value=\''.$filter_examination_id.'\'>';
 }
 else if($_POST['unique_id']=='sample_id')
 {
-	
 	$id_range_array=explode('-',$_POST['id_range']);
 	$max_unique_id=find_max_sample_id($link,$id_range_array[0],$id_range_array[1])+$_POST['show_offset'];
 	$unique_examination_id=0;
 
-	//$examination_details=get_one_examination_details($link,$_POST['unique_id']);
-	//$edit_specification=json_decode($examination_details['edit_specification'],true);
-	//$table=isset($edit_specification['table'])?$edit_specification['table']:'';
-
-
-	//show samples as selected
-	//$sql='select sample_id from sample_link where sample_id between \''.($max_unique_id-198).'\' and \''.$max_unique_id.'\' order by sample_id';
 	$sql='select sample_id from sample_link where sample_id between \''.($max_unique_id-$horizontal_status_lot_size+1).'\' and \''.$max_unique_id.'\' order by sample_id';
 	//echo $sql.'<br>';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 
 	$extra_post='	<input type=hidden name=unique_id value=sample_id>
 					<input type=hidden name=id_range value=\''.$_POST['id_range'].'\'>
-					<input type=hidden name=show_offset value=\''.$_POST['show_offset'].'\'>';
+					<input type=hidden name=show_offset value=\''.$_POST['show_offset'].'\'>
+					<input type=hidden name=filter_examination_id value=\''.$filter_examination_id.'\'>';
 }
 
 echo '<div class="monitor_grid_horizontal">';		
 
 while($ar=get_single_row($result))
 {
+		if($filter_examination_id==0)
+		{			
 			showww_sid_button_release_status_horizontal($link,$ar['sample_id'],$extra_post,$unique_examination_id,$checkbox='yes');
+			//echo 'hi';
+		}
+		
+		else 
+		{
+			$last=xxx_get_sample_action_last($link,$ar['sample_id']);
+			//print_r(last);
+			if($last!==NULL and $last!==FALSE)
+			{
+				if($last['examination_id']==$_POST['filter_examination_id'])
+				{
+					showww_sid_button_release_status_horizontal($link,$ar['sample_id'],$extra_post,$unique_examination_id,$checkbox='yes');
+				}
+				else
+				{
+					echo '         ';
+				}
+			}
+			else
+			{
+				echo '           ';
+			}
+		}
 }
 
 echo '</div>';

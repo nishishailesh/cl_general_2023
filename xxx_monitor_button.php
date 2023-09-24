@@ -46,8 +46,6 @@ if(!isset($_SESSION['password']) && !isset($_POST['password']))
 if($_POST['unique_id']!='sample_id')
 {
 	$max_unique_id=xxx_find_max_unique_id($link,$_POST['unique_id'])+$_POST['show_offset'];		//mySQL between claus includes both sides
-	//if 239
-	//
 	
 	$examination_details=get_one_examination_details($link,$_POST['unique_id']);
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
@@ -118,9 +116,9 @@ while($ar=get_single_row($result))
 		echo '<div>';
 		
 		//print_r($last);
-		if($_POST['filter_examination_id']==0)
+		if($filter_examination_id==0)
 		{
-			echo $div_location;
+			//echo $div_location;
 			showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$unique_examination_id,$checkbox='yes');
 		}
 		else 

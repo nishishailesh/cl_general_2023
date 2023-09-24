@@ -10,6 +10,8 @@ $_SESSION['login']=$_POST['user'];
 //echo '<br>Sending POST from server<br><pre>';
 //print_r($_SESSION);
 //print_r($_FILES);
+
+echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
 //echo '<br>With proper POSTing of data by to-script and proper output by from-script AJAX is complate';
 //javascript to encode url and PHP to decode POST value is must
 
@@ -19,7 +21,14 @@ $released_by=get_one_ex_result($link,$_POST['sample_id'],$GLOBALS['released_by']
 
 if(strlen($released_by)==0)
 {
-	save_result($link);
+	if($_POST['primary']=='yes')
+	{
+		save_result_primary($link);
+	}
+	else
+	{
+		save_result($link);
+	}
 }
 else
 {
@@ -59,6 +68,8 @@ function save_result($link)
 				and
 				examination_id=\''.$_POST['examination_id'].'\'';
 	//echo $sql;
+	
+	
 	if(!$result=run_query($link,$GLOBALS['database'],$sql))
 	{
 		echo '<p>Data not updated</p>';
@@ -75,4 +86,51 @@ function save_result($link)
 		}
 	}
 }
+
+
+function save_result_primary($link)
+{
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$_POST['examination_id'],'update'))
+	{
+		return false;
+	}
+
+	//Array
+	//(
+		//[examination_id] => 9000
+		//[primary] => yes
+		//[sample_id] => 9022600
+		//[result] => VITROS3600
+		//[session_name] => sn_1084079582
+		//[user] => 1
+	//)	
+	$sql='update primary_result
+			set 
+				result=\''.my_safe_string($link,$_POST['result']).'\'
+			where 
+				sample_id=\''.$_POST['sample_id'].'\' 
+				and
+				examination_id=\''.$_POST['examination_id'].'\'
+				and
+				uniq=\''.$_POST['uniq'].'\'';
+	//echo $sql;
+	
+	
+	if(!$result=run_query($link,$GLOBALS['database'],$sql))
+	{
+		echo '<p>Data not updated</p>';
+	}
+	else
+	{
+		if(rows_affected($link)>0)
+		{
+			echo '<p>'.$_POST['sample_id'].'|'.$_POST['examination_id'].'|'.$_POST['result'].'|'.$_POST['uniq'].'|Saved in result/primary result</p>';				
+		}
+		else
+		{
+			echo '<p>nothing to update (no row / same data)</p>';
+		}
+	}
+}
+
 ?>

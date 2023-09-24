@@ -10,7 +10,7 @@ import astm_var
 
 ###Settings###
 
-database='cl_general'
+database='clg'
 
 ##############
 class my_sql(object):

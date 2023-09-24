@@ -441,7 +441,7 @@ function multiedit($link,$tname,$pk_ar,$header='no')
 	echo'</form>';
 }
 
-function get_field_spec($link,$tname,$fname)
+function get_table_field_spec($link,$tname,$fname)
 {
 	$sql='select * from table_field_specification  where tname=\''.$tname.'\' and fname=\''.$fname.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);

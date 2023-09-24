@@ -10,7 +10,7 @@ $user=get_user_info($link,$_SESSION['login']);
 $auth=explode(',',$user['authorization']);
 
 
-echo '<div class="m-3"><fieldset  ><legend>Provide IDs to print</legend>';
+echo '<div class="m-3"><fieldset  ><legend>Scan/Write single ID in box and Add to list. When Ready, Print</legend>';
 print_selected_id($link);
 echo '</fieldset></div>';
 
@@ -33,7 +33,8 @@ function print_selected_id($link)
 						aria-multiline="true">
 				</textarea>';
 
-		echo '<input class="btn btn-sm btn-info" type=submit name=action value=print_sample_id>';
+		echo '<input class="btn  btn-info p-2 m-2" type=button name=action value="Add to List">';
+		echo '<input class="btn  btn-info p-2 m-2" type=submit name=action value="Print">';
 		echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
 	echo '</form>';
 	echo '</div>';

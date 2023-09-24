@@ -120,56 +120,6 @@ echo '</div>';
 }
 
 
-function filter_by_status($link)
-{
-$sql='select distinct priority from `sample_status` order by priority';
-$result=run_query($link,$GLOBALS['database'],$sql);
-
-
-	$show_offset=isset($_POST['show_offset'])?$_POST['show_offset']:0;
-	$unique_id=isset($_POST['unique_id'])?$_POST['unique_id']:'sample_id';
-	$id_range=isset($_POST['id_range'])?$_POST['id_range']:'';
-	$lot_size=isset($_POST['status_lot_size'])?$_POST['status_lot_size']:get_config_value($link,'status_lot_size');
-	$column_size=isset($_POST['status_column_size'])?$_POST['status_column_size']:get_config_value($link,'status_column_size');
-	
-echo '<div>';
-echo '<form method=post id="status_change_form" class="d-inline">';
-
-	while($ar=get_single_row($result))
-	{
-		echo '<div class="d-inline-block align-top m-1">';
-			$sql_b='select * from `sample_status` where priority=\''.$ar['priority'].'\'';
-			$result_b=run_query($link,$GLOBALS['database'],$sql_b);
-			while($ar_b=get_single_row($result_b))
-			{	
-			//if($ar_b['shortcut']<1){continue;} //not required in filtering status. We need all status
-			echo '<div class="d-block">';
-			echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
-						style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
-								border-top-right-radius: 25px; 
-								border-bottom-right-radius: 25px;"
-						name=filter_examination_id value='.$ar_b['examination_id'].'>'.$ar_b['name'].'
-					</button>';
-			echo '</div>';
-			}
-		echo '</div>';
-	}
-
-	echo '<input type=hidden name=action value=filter_by_status>';
-	echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
-	echo '<input type=hidden name=show_offset value=\''.$show_offset.'\'>';
-	echo '<input type=hidden name=unique_id value=\''.$unique_id.'\'>';
-	echo '<input type=hidden name=id_range value=\''.$id_range.'\'>';
-	echo '<input type=hidden name=status_lot_size value=\''.$lot_size.'\'>';
-	echo '<input type=hidden name=status_column_size value=\''.$column_size.'\'>';
-					
-					
- 
-echo '</form>';
-echo '</div>';
-
-}
-
 function xxx_make_unique_id_option($link)
 {
 	echo ' if offset<0, older samples will be seen . reminder of lot size/column size must be 0<br>';

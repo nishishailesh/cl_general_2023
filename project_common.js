@@ -281,6 +281,8 @@ $(document).ready
 											"save_record.php",
 											{
 												examination_id: $(this).attr('data-exid'),
+												primary: $(this).attr('data-primary'),
+												uniq: $(this).attr('data-uniq'),
 												sample_id: $(this).attr('data-sid'),
 												result: $(this).val(),
 												session_name: $(this).attr('data-session_name'),
@@ -304,6 +306,8 @@ $(document).ready
 											"save_record_blob.php",
 											{
 												examination_id: $(this).attr('data-exid'),
+												primary: $(this).attr('data-primary'),
+												uniq: $(this).attr('data-uniq'),
 												sample_id: $(this).attr('data-sid'),
 												result: $(this).val(),
 												type: $(this).attr('data-type'),
@@ -339,6 +343,8 @@ $(document).ready
 											"save_record.php",
 											{
 												examination_id: $(this).attr('data-exid'),
+												primary: $(this).attr('data-primary'),
+												uniq: $(this).attr('data-uniq'),
 												sample_id: $(this).attr('data-sid'),
 												result: $(this).val(),
 												session_name: $(this).attr('data-session_name'),
@@ -360,6 +366,8 @@ $(document).ready
 											"save_record.php",
 											{
 												examination_id: $(this).attr('data-exid'),
+												primary: $(this).attr('data-primary'),
+												uniq: $(this).attr('data-uniq'),
 												sample_id: $(this).attr('data-sid'),
 												result: $(this).val(),
 												session_name: $(this).attr('data-session_name'),

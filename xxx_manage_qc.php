@@ -11,30 +11,36 @@ echo '		  <link rel="stylesheet" href="project_common.css">
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 $qc_sql="select * from examination  where sample_requirement!='None' order by request_route,name";
-	echo '<div class="two_column_one_by_two">';
-		echo '<div>';
-			xxx_get_examination_data_for_qc($link,$qc_sql);
+
+echo '<button class="btn btn-primary" type="button" 
+		data-toggle="collapse" data-target="#get_data" aria-expanded="false" >Show Hide Search Window</button>';
+echo '<div id="get_data" class="show p-3 bg-light border border-dark">';
+	echo '<div class="two_column_one_by_two show" >';
+				echo '<div>';
+		
+						xxx_get_examination_data_for_qc($link,$qc_sql);
 
 
-			echo '<div>
-					<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
-					echo '	<div id="status-window" 
-								class="border border-success">
-							</div>
-					<span class="badge badge-primary"  data-toggle="collapse" data-target="#select-window">Select Examinations</span>';
-					echo '	<div id="select-window" class="border border-success">
-								<input type=text id=my_search_text  onchange="my_search_test()">
-								<button type=button id=my_search onclick="my_search_test()">search</button>
-								<div id=my_search_result></div>
-							</div>						
-			</div>';
-			
-		echo '</div>';
-		echo '<div>';
-			get_qc_search_conditions($link,1048,array('3001','9000'),array('1048','10006','sample_id'));
-		echo '</div>';
+						echo '<div>
+								<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
+								echo '	<div id="status-window" 
+											class="border border-success">
+										</div>
+								<span class="badge badge-primary"  data-toggle="collapse" data-target="#select-window">Select Examinations</span>';
+								echo '	<div id="select-window" class="border border-success">
+											<input type=text id=my_search_text  onchange="my_search_test()">
+											<button type=button id=my_search onclick="my_search_test()">search</button>
+											<div id=my_search_result></div>
+										</div>						
+						</div>';
+					
+				echo '</div>';
+		
+				echo '<div>';
+						get_qc_search_conditions($link,1048,array('3001','9000'),array('1048','10006','sample_id'));
+				echo '</div>';
 	echo '</div>';
-
+echo '</div>';
 
 if($_POST['action']=='find_qc_data')
 {
@@ -46,7 +52,8 @@ if($_POST['action']=='find_qc_data')
 	$sorted_array=array();
 	foreach($data as $qc)
 	{
-		$sorted_array[$qc['examination_id'].'_'.$qc['equipment'].'_'.$qc['qc_lot']][]=[  'examintaion_name' =>$qc['examination_name'], 'sample_analysis'=>$qc['sample_analysis'], 'uniq'=>$qc['uniq'],'sdi'=>$qc['sdi'] ];
+		//$sorted_array[$qc['examination_id'].'_'.$qc['equipment'].'_'.$qc['qc_lot']][]=[  'examintaion_name' =>$qc['examination_name'], 'sample_analysis'=>$qc['sample_analysis'], 'uniq'=>$qc['uniq'],'sdi'=>$qc['sdi'] ];
+		$sorted_array[$qc['examination_id'].'_'.$qc['qc_lot']][]=$qc;
 	}
 	//echo '<pre>';print_r($sorted_array);echo '</pre>';
 	$sorted=json_encode($sorted_array);		//used by chart.js
@@ -204,13 +211,15 @@ function prepare_qc_data_from_search_condition($link,$post)
 	{
 		if(strlen($ex_list_csv)>0)
 		{
-			$root_sql='select * from primary_result where examination_id in ('.$ex_list_csv.') order by sample_id desc limit 200';
+			$root_sql='select * from primary_result where examination_id in ('.$ex_list_csv.') ';
 		}
 		else
 		{
-			$root_sql='select * from primary_result  order by sample_id desc limit 200';
+			$root_sql='select * from primary_result  ';
 		}
 	}
+	
+	$root_sql=$root_sql.' order by sample_id,examination_id,uniq desc limit 400';
 	
 	echo $root_sql.'<br>';
 	//view_sql_result_as_table($link,$root_sql,$show_hide='yes');
@@ -219,6 +228,8 @@ function prepare_qc_data_from_search_condition($link,$post)
 	
 	//	<canvas height="4" width="160" style="background-color:black;"></canvas>
 
+	$addtional_examination_array=array(10006,1048,3001,9000);
+	
 	echo '<table class="table table-striped table-sm m-3">';
 	echo '<tr>
 	<td>Action</td>
@@ -270,26 +281,28 @@ function prepare_qc_data_from_search_condition($link,$post)
 				</script>	
 	
 	</td>
+	<td>SDI</td>
 	<td>Sample ID</td>
 	<td>Examination ID</td>
 	<td>Examination Name</td>
-	<td>Analysis time</td>
-	<td>QC ID</td>
+	<td>uniq</td>
 	<td>Observed</td>
+	<td>Extra</td>
+	<td>QC Lot</td>
 	<td>Mean</td>
 	<td>SD</td>
-	<td>SDI</td>
-	<td>Equipment</td>
-	<td>QC Lot</td>
-	<td>Mfg</td>
-	<td>Remark</td>
-	<td>Extra</td>
-	<td>Unique</td>
-	</tr>';
+	<td>Lot Remark</td>
+	<td>Mfg</td>';
+	foreach($addtional_examination_array as $ex_id)
+	{
+		$ex_data=get_one_examination_details($link,$ex_id);
+		echo '<td>'.$ex_data['name'].'</td>';
+	}
+	echo '</tr>';
 	
 	while($ar=get_single_row($result))
 	{
-		$q=display_one_qc($link,$ar,array(10006,1048));
+		$q=display_one_qc($link,$ar,$addtional_examination_array);
 		$data[]=$q;
 	}
 	echo '</table>';
@@ -410,14 +423,36 @@ function display_one_qc($link,$primary_result_array,$addtional_examination_array
 {
 	$q=array();
 	$ex_details=get_one_examination_details($link,$primary_result_array['examination_id']);
+	
 	$ref_val_array=xxx_get_lab_reference_value($link,$primary_result_array['sample_id'],$primary_result_array['examination_id']);
-
+	if($ref_val_array==False){$ref_val_array=array();}
+	$mean=isset($ref_val_array['mean'])?$ref_val_array['mean']:'';
+	$sd=isset($ref_val_array['sd'])?$ref_val_array['sd']:'';
+	if(is_numeric($primary_result_array['result']) && is_numeric($mean) && is_numeric($sd))
+	{
+		$sdi=round(($primary_result_array['result']-$ref_val_array['mean'])/$ref_val_array['sd'],2);
+	}
+	else
+	{
+		$sdi='?';
+	}
+			
 	//print_r($primary_result_array);echo '<br>';
+	$q['sdi']=$sdi;
 	$q['sample_id']=$primary_result_array['sample_id'];
 	$q['examination_id']=$primary_result_array['examination_id'];
 	$q['examination_name']=$ex_details['name'];
-
+	//$q['equipment']=$primary_result_array['equipment'];
+	$q['uniq']=$primary_result_array['uniq'];
+	$q['result']=$primary_result_array['result'];
+	$q['extra']=$primary_result_array['extra'];
 	
+	$q['qc_lot']=isset($ref_val_array['qc_lot'])?$ref_val_array['qc_lot']:'';
+	$q['mean']=isset($ref_val_array['mean'])?$ref_val_array['mean']:'';
+	$q['sd']=isset($ref_val_array['sd'])?$ref_val_array['sd']:'';
+	$q['remark']=isset($ref_val_array['remark'])?$ref_val_array['remark']:'';
+	$q['manufacturer_data']=isset($ref_val_array['manufacturer_data'])?$ref_val_array['manufacturer_data']:'';
+
 	//print_r($ex_details);echo '<br>';
 	foreach($addtional_examination_array as $ex_id)
 	{
@@ -428,42 +463,13 @@ function display_one_qc($link,$primary_result_array,$addtional_examination_array
 			$q[$add_ex_details['name']]=$add_ex_data;
 	}
 
-
-	
-	//print_r($ref_val_array);echo '#####<br>';
-	$q['result']=$primary_result_array['result'];
-	
-	if($ref_val_array!==false)
-	{
-		$q['mean']=$ref_val_array['mean'];
-		$q['sd']=$ref_val_array['sd'];
-		if(is_numeric($q['result'])){$sdi=round(($q['result']-$q['mean'])/$q['sd'],2);}else{$sdi='?';}
-		$q['sdi']=$sdi;
-		$q['equipment']=$ref_val_array['equipment'];
-		$q['qc_lot']=$ref_val_array['qc_lot'];
-		$q['manufacturer_data']=$ref_val_array['manufacturer_data'];
-		$q['remark']=$ref_val_array['remark'];
-	}
-	else
-	{
-		$q['mean']='';
-		$q['sd']='';		
-		$q['sdi']='';
-		$q['equipment']='';
-		$q['qc_lot']='';
-		$q['manufacturer_data']='';
-		$q['remark']='';
-	}
-
-	$q['extra']=$primary_result_array['extra'];
-	$q['uniq']=$primary_result_array['uniq'];
-		
-	//echo '<pre>';
-	//print_r($q);echo '<br>';
-	//echo '</pre>';
 	echo '<tr>';
 	echo '<td>';
-	xxx_sample_id_edit_button($q['sample_id'],' target=_blank ');
+	echo '<table><tr><td>';
+		xxx_sample_id_edit_button($q['sample_id'],' target=_blank ','E');
+		echo '</td><td>';
+		xxx_edit_primary_result_extra_button($q['sample_id'],$q['examination_id'],$q['uniq'],$q['extra'],' target=_blank ',$label='+');
+	echo '</td></tr></table>';
 	echo '</td>';
 
 	format_one_lj_point($q);
@@ -574,6 +580,22 @@ function get_qc_search_conditions($link,$examination_id,$search_list_of_examinat
 	echo '</form>';
 
 }
+
+
+
+
+function xxx_edit_primary_result_extra_button($sample_id,$examination_id,$uniq,$extra,$target=' target=_blank ',$label='extra')
+{
+	echo '<div class="d-inline-block" ><form method=post '.$target.' action=xxx_edit_primary_result_extra.php class=print_hide>
+	<button class="btn btn-outline-primary btn-sm" onclick="return confirm(\'Current Extra Remark is : '.$extra.' \n presss ok to edit.\');" name=sample_id value=\''.$sample_id.'\' >'.$label.'</button>
+	<input type=hidden name=examination_id value=\''.$examination_id.'\' >
+	<input type=hidden name=uniq value=\''.$uniq.'\' >
+	<input  type=hidden name=extra value=\''.$extra.'\' >
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=edit_qc_extra>
+	</form></div>';
+}
+
 ?>
 
 <style>
@@ -686,13 +708,21 @@ cht2=new Chart(
 					options: 	{
 									scales:
 									{
-										xAxes:{
+										x:
+										{
 											type: 'linear',
 											ticks: {
 														callback: function(value, index, values) 
 																			{
 																				valuee=value.toString()
-																				return valuee.substring(0,4)+"-"+valuee.substring(4,6)+"-"+valuee.substring(6,8)
+																				if(valuee.substring(6,8)>31)
+																				{
+																					return ''
+																				}
+																				else
+																				{
+																					return valuee.substring(0,4)+"-"+valuee.substring(4,6)+"-"+valuee.substring(6,8)
+																				}
 																				//return valuee.substring(0,4)+"-"+valuee.substring(4,6)+"-"+valuee.substring(6,8)+" "+valuee.substring(8,10)+":"+valuee.substring(10,12)+":"+valuee.substring(12,14)
 																				//return ('"'+(value.toFixed())+'"').replace(",","");
 																				//return value.substring(0,10);
@@ -702,8 +732,22 @@ cht2=new Chart(
 													minRotation: 90,
 													stepSize:1000000
 													},
+										},
+
+
+										y:
+										{
+										type: 'linear',
+										ticks: {
+													callback: function(value, index, values) 
+																		{
+																			valuee=value.toString()+' SD'
+																			return valuee
+																		},
 												},
-										y:{min:-4, max:4},
+												min:-4,
+												max:4
+										},																							
 									},
 									responsive: true,
 									plugins:
@@ -714,10 +758,13 @@ cht2=new Chart(
 											callbacks:
 											{
 												title: function(){return '';},
-												label: function(context,data){return context.parsed.x + " SD: " +context.parsed.y+data;}
-											}
-											
-										}
+												label: function(context){return JSON.stringify(context.parsed)+', examination='+context.raw['examination_name']+',sample_id='+context.raw['sample_id']+',qc_id='+context.raw['qc_id']+',result='+context.raw['result']+',mean='+context.raw['mean']+',sd='+context.raw['sd'];}
+												//label: function(context){return JSON.stringify(context.raw,null,"\t");}
+												//label: function(context){ return JSON.stringify(context.raw).replace(",","\t"); }
+												//label: function(context){ return JSON.stringify(context.raw) ;}
+												//label: function(context){ return JSON.stringify(JSON.parse(JSON.stringify(context.raw)),null,"\t");}
+											},
+										},
 										
 									}
 								}

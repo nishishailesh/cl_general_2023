@@ -1,6 +1,4 @@
 <?php
-
-
 function login($action='start.php')
 {
 echo '
@@ -152,4 +150,13 @@ function rows_affected($link)
 {
 	return mysqli_affected_rows($link);
 }
+
+
+function get_user_info($link,$user)
+{
+	$sql='select * from `'.$GLOBALS['user_table'].'` where `'.$GLOBALS['user_id'].'`=\''.$user.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	return get_single_row($result);
+}
+
 ?>

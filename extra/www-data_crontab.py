@@ -9,7 +9,8 @@ sys.path.append('/var/gmcs_config')
 import astm_var
 
 ####Settings for update_reminders.py script
-update_reminders_path="/usr/share/nchs/cl_general/extra/update_reminders.py "
+#update_reminders_path="/usr/share/nchs/clg/extra/update_reminders.py "
+update_reminders_path="/usr/share/smp/cl_general/extra/update_reminders.py "
 
 '''
 following is example line in /etc/crontab
@@ -51,7 +52,7 @@ class my_sql(object):
 
 def refresh_crontab():
   m=my_sql()
-  link=m.get_link('127.0.0.1',astm_var.my_user,astm_var.my_pass,'cl_general')
+  link=m.get_link('127.0.0.1',astm_var.my_user,astm_var.my_pass,'clg')
   prepared_sql='select * from dementia'
   data_tpl=tuple()
   cur=m.run_query(link,prepared_sql,data_tpl)

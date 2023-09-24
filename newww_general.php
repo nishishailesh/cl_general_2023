@@ -12,6 +12,7 @@ echo '		  <link rel="stylesheet" href="project_common.css">
 main_menu($link);
 //echo '<pre>';print_r($_POST);echo '</pre>';
 
+//echo '<div id=response></div>'; not required
 
 $tok=explode("|",$_POST['action']);
 //print_r($tok);

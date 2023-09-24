@@ -127,7 +127,8 @@ if($_POST['action']=='save_primary_result')
     //[__ex__9001] => 1.2
     //[action] => save_primary_result
     
-    	insert_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['result'],$_POST['uniq']);
+    	//insert_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['result'],$_POST['uniq'],$_POST['equipment']);
+    	insert_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['__ex__'.$_POST['examination_id']],$_POST['uniq']);
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 		echo '</div>';	
@@ -280,7 +281,7 @@ function insert_primary_result($link,$sample_id,$examination_id,$ex_result,$uniq
 	{
 		if(rows_affected($link)>0)
 		{
-			echo '<p>'.$_POST['sample_id'].'|'.$_POST['examination_id'].'|'.$_POST['result'].'|Saved in primary_result</p>';				
+			echo '<p>'.$_POST['sample_id'].'|'.$_POST['examination_id'].'|'.$_POST['__ex__'.$_POST['examination_id']].'|Saved in primary_result</p>';				
 		}
 		else
 		{
