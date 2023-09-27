@@ -11,7 +11,7 @@ $_SESSION['login']=$_POST['user'];
 //print_r($_SESSION);
 //print_r($_FILES);
 
-echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
+//echo '<pre>save_record.php';print_r($_POST);print_r($_FILES);echo '</pre>';
 //echo '<br>With proper POSTing of data by to-script and proper output by from-script AJAX is complate';
 //javascript to encode url and PHP to decode POST value is must
 

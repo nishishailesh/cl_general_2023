@@ -538,7 +538,6 @@ function mk_select_from_array_with_description($name, $select_array,$disabled=''
 	}
 	
 	echo '<select  '.$disabled.'  id=\''.$name.'\' name=\''.$name.'\' '.$attributes_str.' >';
-
 	foreach($select_array as $key=>$value)
 	{
 		//print_r($value);
@@ -558,7 +557,7 @@ function mk_select_from_array_with_description($name, $select_array,$disabled=''
 
 function mk_select_from_sql($link,$sql,$field_name,$select_name,$select_id,$disabled='',$default='',$blank='no',$extra='')
 {
-	//echo '<h1>'.$blank.'</h1>';
+	//echo '<h1>'.$extra.'</h1>';
 	$ar=mk_array_from_sql($link,$sql,$field_name);
 	if($blank=='yes')
 	{
@@ -1910,7 +1909,67 @@ function delete_examination($link,$sample_id,$examination_id)
 		
 }
 
-function get_primary_result($link,$sample_id,$examination_id)
+function get_primary_result($link,$sample_id,$examination_id,$attributes_str='')
+{
+	$sql='select * from primary_result where sample_id=\''.$sample_id.'\' and examination_id=\''.$examination_id.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$result_array=array();
+	
+	$values='';
+	while($ar=get_single_row($result))
+	{
+		//$values=$values.$ar['result'].',';
+		$element_id='pr_id_'.$sample_id.'_'.$examination_id;
+		
+		if(strlen($ar['extra'])>0){$eclass='btn-primary';}else{$eclass='btn-outline-primary';}
+				
+		echo '<form class="d-inline-block" method=post>
+					<input type=hidden
+							name=result 
+							value=\''.$ar['result'].'\' >
+
+					<input type=hidden name=sample_id value=\''.$sample_id.'\' >
+					<input type=hidden name=examination_id value=\''.$examination_id.'\'> 
+					<input type=hidden name=uniq value=\''.$ar['uniq'].'\'> 
+					<div class="btn-group border border-success m-1">
+					<button type=submit 
+							class="btn btn-sm btn-outline-important  no-gutters align-top"
+							name=action
+title="uniq='.$ar['uniq'].'
+Extra='.$ar['extra'].'
+Click to sync"
+							value=sync_single>'.$ar['result'].'</button>
+					<button type=submit 
+							class="btn btn-sm  no-gutters align-top '.$eclass.' "
+							name=action 
+							formaction=xxx_edit_primary.php
+							formtarget=_blank
+title="uniq='.$ar['uniq'].'
+Extra='.$ar['extra'].' 
+Click to edit"
+							value=edit_single>E</button>
+					</div>		
+					<input type=hidden name=session_name value=\''.session_name().'\'>
+			</form>';
+	}
+	
+	//get primary result
+	
+			echo '<form method=post class="d-inline-block" target=_blank action=xxx_insert_primary.php>
+					<input type=hidden name=session_name value=\''.session_name().'\'>
+					<input type=hidden name=sample_id value=\''.$sample_id.'\' >
+					<input type=hidden name=examination_id value=\''.$examination_id.'\'> 
+					<button id=\'button_'.$sample_id.$examination_id.'\'
+							name=action value=insert class="btn btn-sm d-inline   no-gutters align-top"
+							>+</button>
+			</form>';
+			
+
+}
+
+
+
+function get_primary_result_modal($link,$sample_id,$examination_id,$attributes_str='')
 {
 	$sql='select * from primary_result where sample_id=\''.$sample_id.'\' and examination_id=\''.$examination_id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
@@ -1929,7 +1988,10 @@ function get_primary_result($link,$sample_id,$examination_id)
 					data-sid=\''.$sample_id.'\' 
 					data-exid=\''.$examination_id.'\' 
 					value=\''.$ar['result'].'\' >'.$ar['result'].'</button>';
-		*/			
+		*/	
+		
+		if(strlen($ar['extra'])>0){$eclass='btn-primary';}else{$eclass='btn-outline-primary';}
+				
 		echo '<form class="d-inline" method=post>
 					<input type=hidden
 							name=result 
@@ -1945,7 +2007,7 @@ function get_primary_result($link,$sample_id,$examination_id)
 							title="'.$ar['extra'].' "
 							value=sync_single>'.$ar['result'].'</button>
 					<button type=submit 
-							class="btn btn-sm btn-outline-important  no-gutters align-top"
+							class="btn btn-sm  no-gutters align-top '.$eclass.' "
 							name=action 
 							formaction=xxx_edit_primary.php
 							formtarget=_blank
@@ -4474,9 +4536,15 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 			if($readonly!='readonly')
 			{
 				$tsql='select distinct `'.$examination_field_specification['field'].'` from `'.$examination_field_specification['table'].'`';
-				mk_select_from_sql($link,$tsql,
-									$examination_field_specification['field'],'__ex__'.$examination_field_specification['examination_id'],
-									'__ex__'.$examination_field_specification['examination_id'],'',$value,$blank='yes',$attributes_str=$attributes_str);
+				mk_select_from_sql(
+									$link,
+									$tsql,
+									$examination_field_specification['field'],
+									'__ex__'.$examination_field_specification['examination_id'],
+									'__ex__'.$examination_field_specification['examination_id'],
+									'',$value,$blank='yes',
+									$attributes_str=$attributes_str
+								);
 			}
 			else
 			{
@@ -5212,6 +5280,43 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 			echo '<p class="help">'.$help.'</p>';	
 		echo '</div>';
 	} 			
+
+
+	elseif($type=='examination_field_specification')
+	{
+		$attributes_str=
+					' '.$readonly.' '.'
+					id="'.$element_id.'"
+					name="'.$examination_id.'" 
+					data-exid="'.$examination_id.'" 
+					data-sid="'.$sample_id.'" 
+					data-user="'.$_SESSION['login'].'" 
+					data-session_name="'.$_POST['session_name'].'"
+					pattern="'.$pattern.'" 
+					style="resize: both;"';
+		
+				echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+				set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill='');
+				//echo $examination_details['name'];
+			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+					//echo $result;
+					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly, $attributes_str=$attributes_str);
+				echo '</div>';
+
+			echo '</div>';
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
+		echo '</div>';
+		
+		
+		
+	}
+
+
+
 	else  
 	{
 		//////
@@ -5242,6 +5347,11 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 			echo '<p class="help">'.nl2br(htmlspecialchars($help)).'</p>';
 		echo '</div>';
 	}
+
+echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			echo '<div>Extra</div><input type=text name=extra  ><div class="help">any Extra Remark</div>';
+			echo '<div>unique</div><input type=text name=uniq value=\''.strftime("%Y%m%d%H%M%S").'\'><div  class="help">unique value to differenciate this result from other results</div>';
+echo '</div>';
 }
 
 
@@ -12639,4 +12749,94 @@ function echo_one_status_interval($dt,$interval)
 
 
 //////////////xxx_TAT end//////////////////////////
+
+
+
+function insert_primary_result($link,$sample_id,$examination_id,$ex_result,$uniq,$extra='')
+{
+	
+	$sql='insert into primary_result
+				(sample_id,examination_id,result,uniq,extra)
+				values
+			   (\''.$sample_id.'\' ,
+				\''.$examination_id.'\', 
+				\''.my_safe_string($link,$ex_result).'\',
+				\''.$uniq.'\',
+				\''.$extra.'\'
+				)';
+				
+	//echo $sql;
+	if(!$result=run_query($link,$GLOBALS['database'],$sql))
+	{
+		echo '<p>Data not updated</p>';
+		return false;
+	}
+	else
+	{
+		if(rows_affected($link)>0)
+		{
+			//echo '<p>'.$_POST['sample_id'].'|'.$_POST['examination_id'].'|'.$_POST['__ex__'.$_POST['examination_id']].'|Saved in primary_result</p>';				
+			echo '<p>'.$sample_id.'|'.$examination_id.'|'.$ex_result.'|Saved in primary_result</p>';				
+		}
+		else
+		{
+			echo '<p>nothing to update (no row / same data)</p>';
+		}	
+		return True;			
+	}
+}
+
+
+function edit_one_primary_result($link,$sample_id,$examination_id,$uniq)
+{
+	echo '<h2 class="text-info">Primary Result: Close window after update. Refresh parent page</h2>';
+
+	$pr=xxx_select_one_primary_result($link,$sample_id,$examination_id,$uniq);
+
+	//print_r($pr);
+	echo '<form method=post>';
+		echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
+		edit_field_any($link,$pr['examination_id'],$pr['sample_id'],$readonly='',$frill=False,$extra_array=array(),$primary='yes',$uniq=$pr['uniq']);
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			echo '<div>Extra</div><input type=text name=extra value=\''.$pr['extra'].'\' ><div class="help">any Extra Remark</div>';
+			echo '<div>Sample ID</div><input type=text readonly name=sample_id value=\''.$pr['sample_id'].'\' ><div  class="help"></div>';
+			echo '<input type=hidden type=text name=examination_id value=\''.$pr['examination_id'].'\' >';
+			echo '<div>unique</div><input type=text name=uniq readonly value=\''.$pr['uniq'].'\' ><div  class="help">unique value to differenciate this result from other results</div>';
+			echo '<div></div><button type=submit name=action value=edit_save>Save</button><div  class="help"></div>';
+		echo '</div>';
+	echo '</form>';
+}
+
+
+function xxx_select_one_primary_result($link,$sample_id,$examination_id,$uniq)
+{
+	$sql='select * from primary_result where 
+			sample_id=\''.$sample_id.'\' and
+			examination_id=\''.$examination_id.'\' and
+			uniq=\''.$uniq.'\'
+			';
+	//echo $sql;
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	return $ar=get_single_row($result);
+}
+
+
+function xxx_update_one_primary_result($link,$sample_id,$examination_id,$uniq)
+{
+	$sql='update primary_result 
+			set
+				extra=\''.$_POST['extra'].'\' 
+			where 
+			sample_id=\''.$sample_id.'\' and
+			examination_id=\''.$examination_id.'\' and
+			uniq=\''.$uniq.'\'
+			';
+	//echo $sql;
+	
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	//$result_array=array();
+	//return $ar=get_single_row($result);
+}
+
+
 ?>

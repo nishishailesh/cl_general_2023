@@ -261,35 +261,6 @@ function save_single_result_blob($link,$sample_id,$examination_id,$uniq)
 }
 
 
-function insert_primary_result($link,$sample_id,$examination_id,$ex_result,$uniq)
-{
-	
-	$sql='insert into primary_result
-				(sample_id,examination_id,result,uniq)
-				values
-			   (\''.$sample_id.'\' ,
-				\''.$examination_id.'\', 
-				\''.my_safe_string($link,$ex_result).'\',
-				\''.$uniq.'\')';
-				
-	//echo $sql;
-	if(!$result=run_query($link,$GLOBALS['database'],$sql))
-	{
-		echo '<p>Data not updated</p>';
-	}
-	else
-	{
-		if(rows_affected($link)>0)
-		{
-			echo '<p>'.$_POST['sample_id'].'|'.$_POST['examination_id'].'|'.$_POST['__ex__'.$_POST['examination_id']].'|Saved in primary_result</p>';				
-		}
-		else
-		{
-			echo '<p>nothing to update (no row / same data)</p>';
-		}				
-	}
-}
-
 
 
 function xxx_get_data_specific_for_edit($link,$sql,$sample_id)

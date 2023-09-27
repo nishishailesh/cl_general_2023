@@ -16,6 +16,7 @@ if(in_array('requestonly',$auth))
 }
 
 main_menu($link);
+echo '<h3> Sample Status Analysis (Turn Around Time) for Sample ID:'.$_POST['sample_id'].'</h3>';
 
 if($_POST['action']=='insert_TAT_remark')
 {

@@ -280,7 +280,14 @@ function prepare_qc_data_from_search_condition($link,$post)
 					ctx.strokeText(".", 120 , 5);
 				</script>	
 	
-	</td>
+	</td>';
+
+	foreach($addtional_examination_array as $ex_id)
+	{
+		$ex_data=get_one_examination_details($link,$ex_id);
+		echo '<td>'.$ex_data['name'].'</td>';
+	}
+	echo '
 	<td>SDI</td>
 	<td>Sample ID</td>
 	<td>Examination ID</td>
@@ -293,11 +300,7 @@ function prepare_qc_data_from_search_condition($link,$post)
 	<td>SD</td>
 	<td>Lot Remark</td>
 	<td>Mfg</td>';
-	foreach($addtional_examination_array as $ex_id)
-	{
-		$ex_data=get_one_examination_details($link,$ex_id);
-		echo '<td>'.$ex_data['name'].'</td>';
-	}
+
 	echo '</tr>';
 	
 	while($ar=get_single_row($result))
@@ -438,6 +441,15 @@ function display_one_qc($link,$primary_result_array,$addtional_examination_array
 	}
 			
 	//print_r($primary_result_array);echo '<br>';
+	foreach($addtional_examination_array as $ex_id)
+	{
+			$add_ex_details=get_one_examination_details($link,$ex_id);
+			$add_ex_data=get_any_examination_result($link,$primary_result_array['sample_id'],$ex_id);
+			//print_r($add_ex_details);echo '<br>';
+			//echo '---'.$add_ex_data.'---<br>';
+			$q[$add_ex_details['name']]=$add_ex_data;
+	}
+	
 	$q['sdi']=$sdi;
 	$q['sample_id']=$primary_result_array['sample_id'];
 	$q['examination_id']=$primary_result_array['examination_id'];
@@ -454,22 +466,13 @@ function display_one_qc($link,$primary_result_array,$addtional_examination_array
 	$q['manufacturer_data']=isset($ref_val_array['manufacturer_data'])?$ref_val_array['manufacturer_data']:'';
 
 	//print_r($ex_details);echo '<br>';
-	foreach($addtional_examination_array as $ex_id)
-	{
-			$add_ex_details=get_one_examination_details($link,$ex_id);
-			$add_ex_data=get_any_examination_result($link,$primary_result_array['sample_id'],$ex_id);
-			//print_r($add_ex_details);echo '<br>';
-			//echo '---'.$add_ex_data.'---<br>';
-			$q[$add_ex_details['name']]=$add_ex_data;
-	}
+
 
 	echo '<tr>';
+
+
 	echo '<td>';
-	echo '<table><tr><td>';
 		xxx_sample_id_edit_button($q['sample_id'],' target=_blank ','E');
-		echo '</td><td>';
-		xxx_edit_primary_result_extra_button($q['sample_id'],$q['examination_id'],$q['uniq'],$q['extra'],' target=_blank ',$label='+');
-	echo '</td></tr></table>';
 	echo '</td>';
 
 	format_one_lj_point($q);
