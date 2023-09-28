@@ -2248,7 +2248,7 @@ function sync_all($link,$sample_id)
 		
 }
 
-function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',$frill=True,$extra_array=array(),$primary='',$uniq='')
+function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',$frill=True,$extra_array=array(),$primary='',$uniq='',$autosave='')
 {
 	//print_r($result_array);
 	$result=$result_array['result'];
@@ -2295,7 +2295,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 					<button 
 						'.$readonly.'
 						id="'.$element_id.'" 
-						name="'.$examination_id.'" 
+						name=result 
 						data-exid="'.$examination_id.'" 
 						data-primary="'.$primary.'" 
 						data-uniq="'.$uniq.'" 
@@ -2349,7 +2349,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 			echo '
 					<select '.$select_readonly.' 
 					id="'.$element_id.'" 
-						name="'.$examination_id.'" 
+						name=result 
 						data-primary="'.$primary.'" 
 						data-uniq="'.$uniq.'" 
 						data-exid="'.$examination_id.'" 
@@ -2394,7 +2394,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 					<input 
 						'.$readonly.'
 					id="'.$element_id.'" 
-						name="'.$examination_id.'" 
+						name=result 
 						data-primary="'.$primary.'" 
 						data-uniq="'.$uniq.'" 
 						data-exid="'.$examination_id.'" 
@@ -2433,7 +2433,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 						<input 
 						'.$readonly.'
 					id="'.$element_id.'" 
-						name="'.$examination_id.'" 
+						name=result 
 						data-primary="'.$primary.'" 
 						data-uniq="'.$uniq.'" 
 						data-exid="'.$examination_id.'" 
@@ -2471,7 +2471,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 						<input 
 						'.$readonly.'
 					id="'.$element_id.'" 
-						name="'.$examination_id.'" 
+						name=result 
 						data-primary="'.$primary.'" 
 						data-uniq="'.$uniq.'" 
 						data-exid="'.$examination_id.'" 
@@ -2531,7 +2531,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 				echo '<input 
 					'.$readonly.'
 					id="'.$element_id.'" 
-					name="'.$examination_id.'" 
+						name=result 
 					data-primary="'.$primary.'" 
 					data-uniq="'.$uniq.'" 
 					data-exid="'.$examination_id.'" 
@@ -2566,7 +2566,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 		$attributes_str=
 					' '.$readonly.' '.'
 					id="'.$element_id.'"
-					name="'.$examination_id.'" 
+						name=result 
 					data-primary="'.$primary.'" 
 					data-uniq="'.$uniq.'" 
 					data-exid="'.$examination_id.'" 
@@ -2588,7 +2588,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 				////
 				echo '<div class="d-inline-block no-gutters">';
 					//echo $result;
-					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly, $attributes_str=$attributes_str);
+					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly, $attributes_str=$attributes_str,$autosave);
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
 					if($frill){get_primary_result($link,$sample_id,$examination_id);}
@@ -2619,7 +2619,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 				echo '<PRE><textarea rows=1 
 					'.$readonly.'
 					id="'.$element_id.'" 
-					name="'.$examination_id.'" 
+						name=result 
 					data-primary="'.$primary.'" 
 					data-uniq="'.$uniq.'" 
 					data-exid="'.$examination_id.'" 
@@ -3080,7 +3080,7 @@ function edit_blob_field($link,$examination_id,$sample_id)
 }
 
 
-function edit_field_any($link,$ex_id,$sample_id,$readonly='',$frill=True,$extra_array=array(),$primary='',$uniq='')
+function edit_field_any($link,$ex_id,$sample_id,$readonly='',$frill=True,$extra_array=array(),$primary='',$uniq='',$autosave='')
 {
 	//echo $compact;
 	$examination_details=get_one_examination_details($link,$ex_id);
@@ -3114,7 +3114,7 @@ function edit_field_any($link,$ex_id,$sample_id,$readonly='',$frill=True,$extra_
 			
 			if($ex_result!=False)
 			{
-				edit_field($link,$ex_id,$ex_result,$sample_id,$readonly,$frill,$extra_array,$primary,$uniq);
+				edit_field($link,$ex_id,$ex_result,$sample_id,$readonly,$frill,$extra_array,$primary,$uniq,$autosave);
 				return True;
 			}
 			else
@@ -4522,7 +4522,7 @@ function get_field_spec($link,$examination_id)
 }
 
 //
-function read_field($link,$examination_id,$value,$search='no',$readonly='',$attributes_str='')
+function read_field($link,$examination_id,$value,$search='no',$readonly='',$attributes_str='',$autosave='')
 {
 	//echo '<h1>read_field()</h1>';
 
@@ -4532,7 +4532,15 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 	{
 		if($examination_field_specification['ftype']=='table')
 		{
-			$attributes_str=$attributes_str. ' class="form-control autosave-select p-0 m-0 no-gutters  " ';
+			if($autosave=='no')
+			{
+				$attributes_str=$attributes_str. ' class="form-control p-0 m-0 no-gutters  " ';
+			}
+			else
+			{
+				$attributes_str=$attributes_str. ' class="form-control autosave-select p-0 m-0 no-gutters  " ';
+			}
+			
 			if($readonly!='readonly')
 			{
 				$tsql='select distinct `'.$examination_field_specification['field'].'` from `'.$examination_field_specification['table'].'`';
@@ -4553,7 +4561,14 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 		}
 		else if($examination_field_specification['ftype']=='dtable')
 		{
-			$attributes_str=$attributes_str. ' class="form-control autosave-select p-0 m-0 no-gutters  " ';
+			if($autosave=='no')
+			{
+				$attributes_str=$attributes_str. ' class="form-control p-0 m-0 no-gutters  " ';
+			}
+			else
+			{
+				$attributes_str=$attributes_str. ' class="form-control autosave-select p-0 m-0 no-gutters  " ';
+			}
 
 			$dtsql='select 
 				distinct `'.$examination_field_specification['field'].'` , 
@@ -4618,6 +4633,15 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 		}
 		elseif($examination_field_specification['ftype']=='date')
 		{
+			if($autosave=='no')
+			{
+				$attributes_str=$attributes_str. ' class="form-control p-0 m-0 no-gutters  " ';
+			}
+			else
+			{
+				$attributes_str=$attributes_str. ' class="form-control autosave-yesno p-0 m-0 no-gutters  " ';
+			}
+			
 			if($search=='yes')
 			{
 				echo '<input type=text '.$readonly.' name=\''.'__ex__'.$examination_id.'\'  value=\''.$value.'\' '.$attributes_str.' >';
@@ -4631,6 +4655,17 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 		}
 		elseif($examination_field_specification['ftype']=='time')
 		{
+
+
+			if($autosave=='no')
+			{
+				$attributes_str=$attributes_str. ' class="form-control p-0 m-0 no-gutters  " ';
+			}
+			else
+			{
+				$attributes_str=$attributes_str. ' class="form-control autosave-select p-0 m-0 no-gutters  " ';
+			}
+			
 			if($search=='yes')
 			{
 				echo '<input type=text  name=\''.'__ex__'.$examination_id.'\' value=\''.$value.'\'  '.$attributes_str.' >';
@@ -4644,6 +4679,16 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 		}				
 		elseif($examination_field_specification['ftype']=='textarea')
 		{
+
+			if($autosave=='no')
+			{
+				$attributes_str=$attributes_str. ' class="form-control p-0 m-0 no-gutters  " ';
+			}
+			else
+			{
+				$attributes_str=$attributes_str. ' class="form-control autosave-select p-0 m-0 no-gutters  " ';
+			}
+
 			echo '<pre><textarea class="w-100"  '.$readonly.' name=\''.'__ex__'.$examination_id.'\' '.$attributes_str.'  >'.$value.'</textarea></pre>';
 		}	
 		else
@@ -4653,8 +4698,16 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 	}
 	else
 	{
-		$attributes_str=$attributes_str. ' class="form-control autosave p-0 m-0 no-gutters  " ';
-		echo '<input class="w-100" type=text  '.$readonly.' name=\''.'__ex__'.$examination_id.'\'  value=\''.htmlentities($value,ENT_QUOTES).'\'  '.$attributes_str.' >';
+			if($autosave=='no')
+			{
+				$attributes_str=$attributes_str. ' class="form-control p-0 m-0 no-gutters  " ';
+			}
+			else
+			{
+				$attributes_str=$attributes_str. ' class="form-control autosave-select p-0 m-0 no-gutters  " ';
+			}
+			
+			echo '<input class="w-100" type=text  '.$readonly.' name=\''.'__ex__'.$examination_id.'\'  value=\''.htmlentities($value,ENT_QUOTES).'\'  '.$attributes_str.' >';
 	}
 }
 
@@ -4970,7 +5023,7 @@ function get_one_field_for_insert($link,$examination_id,$default_value='')
 			echo '<div class="m-0 p-0 no-gutters">';
 				////
 				echo '<div class="d-inline-block no-gutters">';
-					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly);
+					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly,$autosave='no');
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
 					//if($frill){get_primary_result($link,$sample_id,$examination_id);}
@@ -5072,6 +5125,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 							
 							id="'.$element_id.'" 
 								name=result
+								data-primrary=yes
 								data-sid="__s__'.$sample_id.'" 
 								class="form-control btn btn-info mb-1"
 								type=button
@@ -5105,6 +5159,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 					<select  
 					id="'.$element_id.'" 
 						name=result
+								data-primrary=yes
 						data-exid="'.$examination_id.'" 
 						data-sid="__s__'.$sample_id.'" 
 						
@@ -5136,6 +5191,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 						
 					id="'.$element_id.'" 
 						name=result
+								data-primrary=yes
 						data-exid="'.$examination_id.'" 
 						data-sid="__s__'.$sample_id.'" 						
 						
@@ -5169,6 +5225,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 						
 					id="'.$element_id.'" 
 						name=result
+								data-primrary=yes
 						data-exid="'.$examination_id.'" 
 						data-sid="__s__'.$sample_id.'" 
 						
@@ -5200,6 +5257,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 						
 					id="'.$element_id.'" 
 						name=result
+								data-primrary=yes
 						data-exid="'.$examination_id.'" 
 						data-sid="__s__'.$sample_id.'" 
 					pattern="'.$pattern.'" 
@@ -5230,6 +5288,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 					
 					id="'.$element_id.'" 
 					name=result
+								data-primrary=yes
 					data-exid="'.$examination_id.'" 
 					data-sid="__s__'.$sample_id.'" 					
 					pattern="'.$pattern.'" 
@@ -5267,6 +5326,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 					
 					id="'.$element_id.'" 
 					name=result
+					data-primrary=yes
 					data-exid="'.$examination_id.'" 
 					data-sid="__s__'.$sample_id.'" 					
 					pattern="'.$pattern.'" 
@@ -5287,7 +5347,8 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 		$attributes_str=
 					' '.$readonly.' '.'
 					id="'.$element_id.'"
-					name="'.$examination_id.'" 
+					name=result 
+					data-primary=yes
 					data-exid="'.$examination_id.'" 
 					data-sid="'.$sample_id.'" 
 					data-user="'.$_SESSION['login'].'" 
@@ -5304,7 +5365,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 				////
 				echo '<div class="d-inline-block no-gutters">';
 					//echo $result;
-					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly, $attributes_str=$attributes_str);
+					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly, $attributes_str=$attributes_str,$autosave='no');
 				echo '</div>';
 
 			echo '</div>';
@@ -5333,6 +5394,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 						
 						id="'.$element_id.'"
 						name=result
+								data-primrary=yes
 						data-exid="'.$examination_id.'"
 						data-sid="__s__'.$sample_id.'" 
 						pattern="'.$pattern.'"
@@ -12796,7 +12858,7 @@ function edit_one_primary_result($link,$sample_id,$examination_id,$uniq)
 	//print_r($pr);
 	echo '<form method=post>';
 		echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
-		edit_field_any($link,$pr['examination_id'],$pr['sample_id'],$readonly='',$frill=False,$extra_array=array(),$primary='yes',$uniq=$pr['uniq']);
+		edit_field_any($link,$pr['examination_id'],$pr['sample_id'],$readonly='',$frill=False,$extra_array=array(),$primary='yes',$uniq=$pr['uniq'],$autosave='no');
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
 			echo '<div>Extra</div><input type=text name=extra value=\''.$pr['extra'].'\' ><div class="help">any Extra Remark</div>';
 			echo '<div>Sample ID</div><input type=text readonly name=sample_id value=\''.$pr['sample_id'].'\' ><div  class="help"></div>';
@@ -12821,11 +12883,12 @@ function xxx_select_one_primary_result($link,$sample_id,$examination_id,$uniq)
 }
 
 
-function xxx_update_one_primary_result($link,$sample_id,$examination_id,$uniq)
+function xxx_update_one_primary_result($link,$sample_id,$examination_id,$uniq,$result,$extra)
 {
 	$sql='update primary_result 
 			set
-				extra=\''.$_POST['extra'].'\' 
+				extra=\''.$extra.'\' ,
+				result=\''.$result.'\' 
 			where 
 			sample_id=\''.$sample_id.'\' and
 			examination_id=\''.$examination_id.'\' and

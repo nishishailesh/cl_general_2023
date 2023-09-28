@@ -18,7 +18,7 @@ if(in_array('requestonly',$auth))
 main_menu($link);
 if($_POST['action']=='edit_save')
 {
-	xxx_update_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq']);
+	xxx_update_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq'],$_POST['result'],$_POST['extra']);
 	
 }
 
@@ -27,7 +27,7 @@ edit_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POS
 //////////////user code ends////////////////
 tail();
 
-//echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
+echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
 
 //////////////Functions///////////////////////
 /*

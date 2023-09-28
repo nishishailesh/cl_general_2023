@@ -11,7 +11,7 @@ $_SESSION['login']=$_POST['user'];
 //print_r($_SESSION);
 //print_r($_FILES);
 
-//echo '<pre>save_record.php';print_r($_POST);print_r($_FILES);echo '</pre>';
+//echo 'save_record.php<br><pre>save_record.php';print_r($_POST);print_r($_FILES);echo '</pre>';
 //echo '<br>With proper POSTing of data by to-script and proper output by from-script AJAX is complate';
 //javascript to encode url and PHP to decode POST value is must
 
@@ -19,9 +19,11 @@ $_SESSION['login']=$_POST['user'];
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 $released_by=get_one_ex_result($link,$_POST['sample_id'],$GLOBALS['released_by']);
 
+$primary=isset($_POST['primary'])?$_POST['primary']:'';
+
 if(strlen($released_by)==0)
 {
-	if($_POST['primary']=='yes')
+	if($primary=='yes')
 	{
 		save_result_primary($link);
 	}
@@ -124,7 +126,7 @@ function save_result_primary($link)
 	{
 		if(rows_affected($link)>0)
 		{
-			echo '<p>'.$_POST['sample_id'].'|'.$_POST['examination_id'].'|'.$_POST['result'].'|'.$_POST['uniq'].'|Saved in result/primary result</p>';				
+			echo '<p>'.$_POST['sample_id'].'|'.$_POST['examination_id'].'|'.$_POST['result'].'|'.$_POST['uniq'].'|Saved in primary result</p>';				
 		}
 		else
 		{

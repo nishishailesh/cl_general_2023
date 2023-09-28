@@ -438,7 +438,7 @@ INSERT INTO `examination` VALUES
 (1049,'niramaya_id','None','{\"type\":\"id_single_sample\",\"table\":\"niramaya_id\",\"readonly\":\"readonly\",\"unique_prefix\":\"N\",\"minimum\":\"1000\"}','inserted, never edited, one for each sample','Misc/Sample Details/IDs','Sample Details/IDs','Sample Details/IDs','','30','','compact_report',1,1,1,1,NULL,'','','','',NULL),
 (1099,'LDL Cholesterol','Plain-Blood-BI','{\"type\":\"number\",\"help\":\" mg/dL &lt;130 (Calculated)\",\"calculate\":\"(E/0.948) - (E/0.971) -  (E/8.56 + ( (E-E)/2140 ) - ( (E^2)/16100 )) - 9.44\",\"ex_list\":\" 5015,5016,5018,5015,5016,5018\",\"equipment\":\"C\"}','','Misc/HDL','Clinical chemistry/Lipid profile','Lipid Profile','550','','','',1,1,1,1,NULL,'','C','mg/dL &lt;=130 (Calculated)\r\n<a href=\"https://pubmed.ncbi.nlm.nih.gov/19009762/\" >Maureen Sampson Equation</a>','mg/dL &lt;=130 (Calculated)\r\n<a href=\"https://pubmed.ncbi.nlm.nih.gov/19009762/\" >Maureen Sampson Equation</a>','yes'),
 (3001,'Lot','None','{\"type\":\"examination_field_specification\"}','','Misc/QC/Sample Details','','','','','','',NULL,NULL,NULL,NULL,NULL,'','','','',NULL),
-(5001,'Creatinine','Plain-Blood-BI','{\"type\":\"number\",\"help\":\"mg/dL (&lt;h5&gt;Jaffe two point)&lt;/h5&gt;\\n Male: 0.9-1.3\\n Female: 0.6-1.1\\n&lt;b&gt;(Not in NABL Scope)&lt;/b&gt;\",\"step\":\"0.1\",\"interval_h\":\"1.3\",\"cinterval_h\":\"4.0\",\"ainterval_h\":\"40.0\",\"ainterval_l\":\"0.1\",\"equipment\":\"C\",\"accr_status\":\"no\",\"cost\":\"150\"}','Biochemistry/OPD/RFT,Biochemistry/OPD/Basic,Biochemistry/Basic/RFT','LREG,LRE,LRE-ALBTP-CRPLDH,LRE-CALCRP,BIG1','Clinical chemistry/RFT','Renal Function Tests','450','','','',1,1,1,1,NULL,'','C','mg/dL <h5>Jaffe two point)</h5><i>Male: 0.9-1.3 <br>Female: 0.6-1.1<h4></i>(Not in NABL Scope)</h4>','mg/dL <h5>Jaffe two point)</h5><i>Male: 0.9-1.3 <br>Female: 0.6-1.1<h4></i>(Not in NABL Scope)</h4>',''),
+(5001,'Creatinine','Plain-Blood-BI','{\"type\":\"number\",\"help\":\"mg/dL (&lt;h5&gt;Jaffe two point)&lt;/h5&gt;\\n Male: 0.9-1.3\\n Female: 0.6-1.1\\n&lt;b&gt;(Not in NABL Scope)&lt;/b&gt;\",\"step\":\"0.1\",\"interval_h\":\"1.3\",\"cinterval_h\":\"4.0\",\"ainterval_h\":\"40.0\",\"ainterval_l\":\"0.1\",\"equipment\":\"C\",\"accr_status\":\"no\",\"cost\":\"150\"}','Biochemistry/OPD/RFT,Biochemistry/OPD/Basic,Biochemistry/Basic/RFT','LREG,LRE,LRE-ALBTP-CRPLDH,LRE-CALCRP,BIG1','Clinical chemistry/RFT','Renal Function Tests','450','','','',1,1,1,1,NULL,'','C','mg/dL <h5>(Jaffe two point)</h5><i>Male: 0.9-1.3 <br>Female: 0.6-1.1<h4></i></h4>','mg/dL <h5>(Jaffe two point)</h5><i>Male: 0.9-1.3 <br>Female: 0.6-1.1<h4></i></h4>','yes'),
 (5002,'Urea','Plain-Blood-BI','{\"type\":\"number\",\"help\":\"mg/dL 13-43 (Urease  GLDH)\",\"interval_h\":\"43\",\"interval_l\":\"13\",\"cinterval_h\":\"100\",\"ainterval_h\":\"400\",\"equipment\":\"C\",\"cost\":\"200\"}','','BIG1,Misc/Osmolarity-Serum','Clinical chemistry/RFT,Clinical chemistry/ sr.osmolarity','Renal Function Tests','','','','',1,1,1,1,NULL,'','C','mg/dL 13-43 (Urease  GLDH)','mg/dL 13-43 (Urease  GLDH)',NULL),
 (5006,'Alanine Transaminase','Plain-Blood-BI','{\"type\":\"text\",\"help\":\"U/L &lt;45 (L-Alanine LDH UV Kinetic)\",\"interval_h\":\"45\",\"cinterval_h\":\"450\",\"ainterval_h\":\"4500\",\"equipment\":\"C\",\"cost\":\"100\"}','','LREG,LRE,LRE-ALBTP-CRPLDH,LRE-CALCRP,BIG1','Clinical chemistry/LFT','Liver Function Tests','440','','','',1,1,1,1,NULL,'','C','U/L &lt;45 (L-Alanine LDH UV Kinetic)','U/L &lt;45 (L-Alanine LDH UV Kinetic)',''),
 (5007,'Alkaline Phosphatase','Plain-Blood-BI','{\"type\":\"number\",\"help\":\"U/L 42-128 (pNPP with AMP buffer)\",\"interval_h\":\"128\",\"cinterval_h\":\"1000\",\"ainterval_h\":\"3000\",\"equipment\":\"C\",\"cost\":\"70\"}','','AMY-LIP-ALP','Clinical chemistry/AMY-LIP-ALP','Liver Function Tests','','','','',1,1,1,1,NULL,'','C','U/L 42-128 (pNPP with AMP buffer)','U/L 42-128 (pNPP with AMP buffer)',NULL),
@@ -1506,7 +1506,8 @@ INSERT INTO `request_id` VALUES
 (1062,1000135),
 (1063,1000136),
 (1064,1000137),
-(1065,1000141);
+(1065,1000141),
+(1066,1000143);
 /*!40000 ALTER TABLE `request_id` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1997,4 +1998,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-27 23:53:16
+-- Dump completed on 2023-09-28 23:51:21
