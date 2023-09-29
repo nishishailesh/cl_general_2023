@@ -169,6 +169,7 @@ function main_menu($link)
 						<div class="dropdown-menu m-0 p-0">
 							<div class="btn-group-vertical  d-block">
 								<button class="btn btn-outline-primary m-0 p-0" formaction=single_table_edit.php type=submit name=action value=get_record_list>Tables</button>
+								<button class="btn btn-outline-primary m-0 p-0" formtarget=_blank formaction="../cl_table/single_table_edit.php" type=submit name=action value=get_record_list>TablesX</button>
 								<button class="btn btn-outline-primary m-0 p-0" formaction=reminders.php type=submit name=action value=reminders>Reminders('.get_incomplete_reminder_count($link).')</button>
 														
 								<button class="btn btn-outline-primary m-0 p-0" formaction=manage_reagent.php type=submit name=action value=manage_reagent>Reagent</button>
@@ -4524,7 +4525,7 @@ function get_field_spec($link,$examination_id)
 //
 function read_field($link,$examination_id,$value,$search='no',$readonly='',$attributes_str='',$autosave='')
 {
-	//echo '<h1>read_field()</h1>';
+	//echo '<h1>xxx'.$autosave.'yyy</h1>';
 
 	$examination_field_specification=get_field_spec($link,$examination_id);
 	//print_r($examination_field_specification);
@@ -5023,7 +5024,7 @@ function get_one_field_for_insert($link,$examination_id,$default_value='')
 			echo '<div class="m-0 p-0 no-gutters">';
 				////
 				echo '<div class="d-inline-block no-gutters">';
-					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly,$autosave='no');
+					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly,$attribute_str='',$autosave='no');
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
 					//if($frill){get_primary_result($link,$sample_id,$examination_id);}

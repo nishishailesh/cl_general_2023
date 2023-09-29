@@ -16,17 +16,17 @@ if(in_array('requestonly',$auth))
 }
 
 main_menu($link);
-//echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
+echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
 
 if($_POST['action']=='insert_save')
 {
-		insert_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['result'],$_POST['uniq'],$_POST['extra']);
+		insert_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['__ex__'.$_POST['examination_id']],$_POST['uniq'],$_POST['extra']);
 		edit_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq']);
 }
 
 if($_POST['action']=='edit_save')
 {
-	xxx_update_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq'],$_POST['result'],$_POST['extra']);
+	xxx_update_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq'],$_POST['__ex__'.$_POST['examination_id']],$_POST['extra']);
 	edit_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq']);
 	
 }
