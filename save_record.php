@@ -39,21 +39,15 @@ else
 
 function save_result($link)
 {
-	
-	//This is actually done in edit_field() function to make unauthorized fields readonly
-	//to prevent neet to reset the edited field if ajax is forced not to save
-	/*
-	if(!$authorized_for_insert=is_authorized($link,$_POST['user'],$_POST['examination_id'],'update'))
+
+	$res=get_config_value($link,'restrictive_examination_for_edit_delete');
+	$res_result=get_one_ex_result($link,$_POST['sample_id'],$res);
+	if(strlen($res_result>0))
 	{
-		echo '<h5 class="bg-warning">This user is not authorized for [update] with examination_id='.$_POST['examination_id'].'</h5>';
+		echo '<h5 class="bg-warning">Edit/delete operation not possible for sample_id='.$_POST['sample_id'].'</h5>';
 		return;
 	}
-	else
-	{
-		//echo 'authorized#####';
-	}
-	*/
-
+	
 	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$_POST['examination_id'],'update'))
 	{
 		//echo '<h5 class="bg-warning">This user is not authorized for [select] with examination_id='.$ex_id.'</h5>';

@@ -16,7 +16,7 @@ if(in_array('requestonly',$auth))
 }
 
 main_menu($link);
-echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
+//echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
 
 if($_POST['action']=='insert_save')
 {

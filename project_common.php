@@ -5125,7 +5125,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 							<button 
 							
 							id="'.$element_id.'" 
-								name=result
+								name="__ex__'.$examination_id.'"
 								data-primrary=yes
 								data-sid="__s__'.$sample_id.'" 
 								class="form-control btn btn-info mb-1"
@@ -5159,7 +5159,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 			echo '
 					<select  
 					id="'.$element_id.'" 
-						name=result
+								name="__ex__'.$examination_id.'"
 								data-primrary=yes
 						data-exid="'.$examination_id.'" 
 						data-sid="__s__'.$sample_id.'" 
@@ -5191,7 +5191,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 					<input 
 						
 					id="'.$element_id.'" 
-						name=result
+								name="__ex__'.$examination_id.'"
 								data-primrary=yes
 						data-exid="'.$examination_id.'" 
 						data-sid="__s__'.$sample_id.'" 						
@@ -5225,7 +5225,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 						<input 
 						
 					id="'.$element_id.'" 
-						name=result
+								name="__ex__'.$examination_id.'"
 								data-primrary=yes
 						data-exid="'.$examination_id.'" 
 						data-sid="__s__'.$sample_id.'" 
@@ -5257,7 +5257,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 						<input 
 						
 					id="'.$element_id.'" 
-						name=result
+								name="__ex__'.$examination_id.'"
 								data-primrary=yes
 						data-exid="'.$examination_id.'" 
 						data-sid="__s__'.$sample_id.'" 
@@ -5288,7 +5288,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 					echo '<textarea rows=1
 					
 					id="'.$element_id.'" 
-					name=result
+								name="__ex__'.$examination_id.'"
 								data-primrary=yes
 					data-exid="'.$examination_id.'" 
 					data-sid="__s__'.$sample_id.'" 					
@@ -5326,7 +5326,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 					echo '<textarea rows=1
 					
 					id="'.$element_id.'" 
-					name=result
+								name="__ex__'.$examination_id.'"
 					data-primrary=yes
 					data-exid="'.$examination_id.'" 
 					data-sid="__s__'.$sample_id.'" 					
@@ -5348,7 +5348,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 		$attributes_str=
 					' '.$readonly.' '.'
 					id="'.$element_id.'"
-					name=result 
+								name="__ex__'.$examination_id.'"
 					data-primary=yes
 					data-exid="'.$examination_id.'" 
 					data-sid="'.$sample_id.'" 
@@ -5394,7 +5394,7 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 					echo '<textarea rows=1
 						
 						id="'.$element_id.'"
-						name=result
+								name="__ex__'.$examination_id.'"
 								data-primrary=yes
 						data-exid="'.$examination_id.'"
 						data-sid="__s__'.$sample_id.'" 

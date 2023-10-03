@@ -33,7 +33,22 @@ else
 
 function save_result($link)
 {
+
+	$res=get_config_value($link,'restrictive_examination_for_edit_delete');
+	$res_result=get_one_ex_result($link,$_POST['sample_id'],$res);
+	if(strlen($res_result>0))
+	{
+		echo '<h5 class="bg-warning">Edit/delete operation not possible for sample_id='.$_POST['sample_id'].'</h5>';
+		return;
+	}
 	
+	if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$_POST['examination_id'],'update'))
+	{
+		//echo '<h5 class="bg-warning">This user is not authorized for [select] with examination_id='.$ex_id.'</h5>';
+		return false;
+	}
+		
+		
 	$sql='update result_blob,primary_result_blob
 			set 
 				result_blob.result=primary_result_blob.result,	
