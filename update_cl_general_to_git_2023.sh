@@ -12,38 +12,23 @@ mysqldump  -d $d > cl_general_blank_2023.sql
 
 tnames='
 config
-copy_bin_text
-copy_sample
 dashboard
 dementia
-equipment
-equipment_record_type
 examination
+examination_field_specification
 host_code
 labels
 lis_to_vitros_sample_type
 Laboratory
 menu_new
 menu_view
-profile
-prototype
-prototype_data
-Quality_manual_section
-record_tables
-report
-request_id
-reagent_name
 route_priority
 sample_id_strategy
 sample_status
-schedule
 sql
-super_profile
-table_field_specification
-examination_field_specification
 user
 view_info_data
-
+xxx_lab_reference_value
 '
 
 #####if root password
