@@ -11040,7 +11040,7 @@ echo '<form method=post id="status_change_form" class="d-inline">';
 			$val=get_one_ex_result($link,$sample_id,$ar_b['examination_id']);
 			echo '<div class="d-block">';
 			echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
-						style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
+						style="	border:solid '.$ar_b['color'].' 5px;padding:3px;  
 								border-top-right-radius: 25px; 
 								border-bottom-right-radius: 25px;"
 						name=status_examination_id value='.$ar_b['examination_id'].'>'.$ar_b['name'].'<br><span class="badge badge-success">'.$val.'</span>
@@ -11387,7 +11387,7 @@ echo '<table border="1" cellpadding="2">
 	</table>';
 */
 
-echo '<table border="0.3">';
+echo '<table border="0.0">';
 		xxx_tree_to_panel_for_print($link,$ex_tree,$sample_id,$header_ex);
 echo 	'</table>';
 
@@ -12661,7 +12661,7 @@ echo '<form method=post id="status_change_form" class="d-inline">';
 			//if($ar_b['shortcut']<1){continue;} //not required in filtering status. We need all status
 			echo '<div class="d-block">';
 			echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
-						style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
+						style="	border:solid '.$ar_b['color'].' 5px;padding:3px;  
 								border-top-right-radius: 25px; 
 								border-bottom-right-radius: 25px;"
 						name=filter_examination_id value='.$ar_b['examination_id'].'>'.$ar_b['name'].'
@@ -12865,7 +12865,7 @@ function edit_one_primary_result($link,$sample_id,$examination_id,$uniq)
 			echo '<div>Sample ID</div><input type=text readonly name=sample_id value=\''.$pr['sample_id'].'\' ><div  class="help"></div>';
 			echo '<input type=hidden type=text name=examination_id value=\''.$pr['examination_id'].'\' >';
 			echo '<div>unique</div><input type=text name=uniq readonly value=\''.$pr['uniq'].'\' ><div  class="help">unique value to differenciate this result from other results</div>';
-			echo '<div></div><button type=submit name=action value=edit_save>Save</button><div  class="help"></div>';
+			echo '<div></div><button type=submit  class="btn btn-primary"  name=action value=edit_save>Save</button><div  class="help"></div>';
 		echo '</div>';
 	echo '</form>';
 }
@@ -12900,6 +12900,196 @@ function xxx_update_one_primary_result($link,$sample_id,$examination_id,$uniq,$r
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	//$result_array=array();
 	//return $ar=get_single_row($result);
+}
+
+////////////new print barcode functions///////////////
+
+
+function get_label_details($link,$label_id)
+{
+	$sql='select * from labels where id=\''.$label_id.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	return $ar=get_single_row($result);
+}
+
+function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
+{
+		$border=0;
+		$barcode_border=False;
+		
+		$style = array(
+		'position' => '',
+		'align' => 'C',
+		'stretch' => True,
+		'fitwidth' => true,
+		'cellfitalign' => '',
+		'border' => $barcode_border,
+		'hpadding' => 'auto',
+		'vpadding' => '0',
+		'fgcolor' => array(0,0,0),
+		'bgcolor' => false, //array(255,255,255),
+		'text' => false,
+		'font' => 'helvetica',
+		'fontsize' => 5,
+		'stretchtext' => true
+	);
+
+	
+		//label data
+		$label_details=get_label_details($link,$label_id);
+		$data=json_decode($label_details['data'],true);
+		$border=$label_details['border'];
+		
+		//examination data
+		//echo $label_details['examination_id'].'<br>';
+		
+		if($label_details['examination_id']=='sample_id')
+		{
+			$prefix='';
+		}
+		else
+		{
+			$examination_details=get_one_examination_details($link,$label_details['examination_id']);
+			$edit_specification=json_decode($examination_details['edit_specification'],true);
+			$prefix=isset($edit_specification['unique_prefix'])?$edit_specification['unique_prefix']:'';
+			//echo '==================='.$prefix;
+		}	
+			
+		$pdf->AddPage();
+		
+		//during setup border is good =>border=1 else border=0
+				
+		foreach($data as $item_csv)
+		{
+			$item=explode(',',$item_csv);
+			//echo '<pre>--------->>';print_r($item);
+			if($item[0]=='sample_id')
+			{
+				if($item[1]=='h')
+				{
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($sample_id, $label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						//$pdf->SetFont('helveticaB', '', 5);
+						$pdf->SetFont('helvetica', '', 7);
+						$pdf->SetXY($item[3],$item[4]);
+						$pdf->Cell($item[5],$item[6],' '.$sample_id,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+					}
+				}
+				
+				else if($item[1]=='v')
+				{
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($sample_id, $label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						
+						$pdf->SetFont('helvetica', '', 7);
+
+						$pdf->StartTransform();
+						$pdf->SetXY($item[3],$item[4]);
+						//$pdf->Rotate(90, 0 , 0);
+						$pdf->Rotate(90);
+						$pdf->Cell($item[5],$item[6],' '.$sample_id,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+						
+						$pdf->StopTransform();
+					}
+				}
+								
+			}
+			if($item[0]=='other_data')
+			{
+				$sql_data=str_replace("{sample_id}",'\''.$sample_id.'\'',$label_details['other_data']);
+				$result_data=run_query($link,$GLOBALS['database'],$sql_data);
+				$ar_data=get_single_row($result_data);
+				$other_data=$ar_data['other_data'];
+				
+				if($item[1]=='h')
+				{
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($other_data, $label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						//$pdf->SetFont('helveticaB', '', 5);
+						$pdf->SetFont('helveticaB', '', 11);
+						$pdf->SetXY($item[3],$item[4]);
+						$pdf->Cell($item[5],$item[6],' '.$other_data,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+					}
+				}
+				
+				else if($item[1]=='v')
+				{
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($other_data, $label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						
+						$pdf->SetFont('helvetica', '', 7);
+
+						$pdf->StartTransform();
+						$pdf->SetXY($item[3],$item[4]);
+						//$pdf->Rotate(90, 0 , 0);
+						$pdf->Rotate(90);
+						$pdf->Cell($item[5],$item[6],' '.$other_data,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+						
+						$pdf->StopTransform();
+					}
+				}
+								
+			}
+			else
+			{
+				$ex_result=get_any_examination_result($link,$sample_id,$item[0]);
+				//if(!$ex_result){continue;}
+				if($item[0]==$label_details['examination_id']){$ex_result=$prefix.$ex_result;}
+
+				if($item[1]=='h')
+				{
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($ex_result, 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						//$pdf->SetFont('helveticaB', '', 5);
+						$pdf->SetFont('helvetica', '', 7);
+						$pdf->SetXY($item[3],$item[4]);
+						$pdf->Cell($item[5],$item[6],' '.$ex_result,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+					}
+				}
+				
+				else if($item[1]=='v')
+				{
+					if($item[2]=='b')
+					{
+						$pdf->write1DBarcode($ex_result, 'C128', $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
+					}
+					else if($item[2]=='t')
+					{
+						
+						$pdf->SetFont('helvetica', '', 7);
+
+						$pdf->StartTransform();
+						$pdf->SetXY($item[3],$item[4]);
+						//$pdf->Rotate(90, 0 , 0);
+						$pdf->Rotate(90);
+						$pdf->Cell($item[5],$item[6],' '.$ex_result,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
+						
+						$pdf->StopTransform();
+					}
+				}
+				
+			}
+		}
 }
 
 

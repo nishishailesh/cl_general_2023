@@ -15,7 +15,6 @@ config
 dashboard
 dementia
 examination
-examination_field_specification
 host_code
 labels
 lis_to_vitros_sample_type
@@ -26,9 +25,9 @@ route_priority
 sample_id_strategy
 sample_status
 sql
+examination_field_specification
 user
 view_info_data
-xxx_lab_reference_value
 '
 
 #####if root password

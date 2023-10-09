@@ -6,13 +6,53 @@ require_once 'base/verify_login.php';
 //echo '<pre>';print_r($_POST);echo '</pre>';
 
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
-//echo '<pre>';print_r($_POST);echo '</pre>';
-//exit(0);	//echo will cause problem in pdf
+echo '<pre>';print_r($_POST);echo '</pre>';
+$received=unserialize(base64_decode($_POST['sample_id_array']));
+print_r($received);
+
+foreach($received as $k=>$v)
+{
+	//echo '<h5>'.$v.'</h5>';
+	get_unique_id_array_for_sample_id($link,$v);
+}
+
+exit(0);	//echo will cause problem in pdf
 
 $pdf=get_pdf_link_for_barcode();
 xxx_prepare_sample_barcode($link,$_POST['sample_id'],$_POST['label_id'],$pdf);
 print_pdf($pdf,'barcode.pdf');
 
+
+function get_unique_id_array_for_sample_id($link,$sample_id)
+{
+	$sql='select 
+				examination_id,
+				json_extract(edit_specification,\'$.unique_prefix\') as unique_prefix,
+				json_extract(edit_specification,\'$.table\') as id_table 
+			from examination 
+			where 
+				json_extract(edit_specification,\'$.type\')="id_single_sample" or 
+				json_extract(edit_specification,\'$.type\')="id_multi_sample"';
+	
+
+	//echo $sql.'<br>';
+	
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	if(get_row_count($result)<=0){return false;}
+	
+	$ret=array();
+	while($ar=get_single_row($result))
+	{
+		//print_r($ar);
+		$uid=get_any_examination_result($link,$sample_id,$ar['examination_id']);
+		if($uid!==False)
+		{
+			echo '<h5>'.$ar['examination_id'].'='.$uid.'</h5>';
+		}
+	}
+	//print_r($ret);
+	return $ret;
+}
 
 /*
 

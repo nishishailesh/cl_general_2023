@@ -57,6 +57,7 @@ if($tok[0]=='newww_general')
 elseif($_POST['action']=='insert')
 {
 	$all_samples=xxx_save_insert_specific($link,$_POST['selected_examination_list']);
+	xxx_print_multiple_sample_id_barcode_button('multi',$all_samples);
 	foreach ($all_samples as $sample_id)
 	{
 		echo '<div class="d-inline-block"">';
@@ -121,6 +122,21 @@ function get_data_specific($link,$sql,$ex_list,$default_value_str)
 	
 	echo '<button type=submit class="btn btn-primary form-control" name=action value=insert>Save</button>';
 	echo '</form>';
+}
+
+
+
+function xxx_print_multiple_sample_id_barcode_button($name,$sample_lable_array)
+{
+	$serialized=base64_encode(serialize($sample_lable_array));
+	echo '<div class="d-inline-block"  style="width:100%;">
+	<form method=post target=_blank action=xxx_print_multiple_barcode.php class=print_hide>
+
+	<button class="btn btn-outline-primary btn-sm" name=action value=one_barcode >'.$name.'</button>
+		
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=sample_id_array value=\''.$serialized.'\'>
+	</form></div>';
 }
 
 //echo '<pre>';print_r($_POST);echo '</pre>';

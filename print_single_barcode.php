@@ -17,7 +17,7 @@ if($_POST['action']=='two_barcode' ||$_POST['action']=='second_barcode')
 }
 print_pdf($pdf,'barcode.pdf');
 
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 //echo '<pre>';print_r($_FILES);echo '</pre>';
 
 ?>

@@ -48,11 +48,15 @@ if($_POST['action']=='insert')
 			//echo '<div>unique</div><input type=text name=uniq ><div  class="help">unique value to differenciate this result from other results</div>';
 			echo '<div>Sample ID</div><input type=text readonly name=sample_id value=\''.$_POST['sample_id'].'\' ><div  class="help"></div>';
 			echo '<input readonly type=hidden name=examination_id value=\''.$_POST['examination_id'].'\' >';
-			echo '<div></div><button type=submit name=action class="btn btn-primary" value=insert_save>Save</button><div  class="help"></div>';
+			echo '<div></div><button class="btn btn-primary" type=submit name=action class="btn btn-primary" value=insert_save>Save</button><div  class="help"></div>';
 		echo '</div>';
 	echo '</form>';
 }
 
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			echo '<div></div><button type=button class="btn btn-danger" onclick="window.close()" value=insert_save>Close Window</button><div  class="help"></div>';
+		echo '</div>';
+		
 //////////////user code ends////////////////
 tail();
 

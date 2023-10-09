@@ -93,7 +93,7 @@ echo '<form method=post id="status_change_form" class="d-inline">';
 			if($ar_b['shortcut']<1){continue;}
 			echo '<div class="d-block">';
 			echo '<button class="btn  w-100 btn-rounded-right p-1 m-1 btn-sm"
-						style="	border:solid '.$ar_b['color'].' 3px;padding:3px;  
+						style="	border:solid '.$ar_b['color'].' 5px;padding:3px;  
 								border-top-right-radius: 25px; 
 								border-bottom-right-radius: 25px;"
 						name=status_change_examination_id value='.$ar_b['examination_id'].'>'.$ar_b['name'].'

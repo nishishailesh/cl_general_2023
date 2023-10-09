@@ -23,11 +23,13 @@ if($_POST['action']=='edit_save')
 }
 
 edit_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq']);
-
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			echo '<div></div><button type=button class="btn btn-danger" onclick="window.close()" value=insert_save>Close Window</button><div  class="help"></div>';
+		echo '</div>';
 //////////////user code ends////////////////
 tail();
 
-echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
+//echo '<pre>';print_r($_POST);print_r($_FILES);echo '</pre>';
 
 //////////////Functions///////////////////////
 /*

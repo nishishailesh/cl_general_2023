@@ -479,7 +479,14 @@ function display_one_qc($link,$primary_result_array,$addtional_examination_array
 
 	foreach($q as $k=>$v)
 	{
-		echo '<td style="white-space: nowrap;">'.$v.'</td>';
+		if(in_array($k,['result','mean','sd']))
+		{
+			echo '<td style="white-space: nowrap;" class="text-danger">'.$v.'</td>';
+		}
+		else
+		{
+			echo '<td style="white-space: nowrap;">'.$v.'</td>';
+		}
 	}
 	
 
