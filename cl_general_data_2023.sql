@@ -852,7 +852,7 @@ CREATE TABLE `label_group` (
   `name` varchar(100) NOT NULL,
   `lable_list` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -864,7 +864,8 @@ LOCK TABLES `label_group` WRITE;
 INSERT INTO `label_group` VALUES
 (1,'opd1','{\"2\":\"1\",\"1\":\"1\"}'),
 (2,'opd2','{\"2\":\"2\"}'),
-(3,'opd3','{\"10\":\"2\"}');
+(3,'opd3','{\"10\":\"2\"}'),
+(4,'opd3','{\"9\":\"1\",\"10\":\"1\"}');
 /*!40000 ALTER TABLE `label_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1299,4 +1300,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-11 10:39:00
+-- Dump completed on 2023-10-12  0:24:58

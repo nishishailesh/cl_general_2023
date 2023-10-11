@@ -3586,7 +3586,7 @@ function save_result_blob($link)
 		}
 		else
 		{
-			echo '<p>0 size file. data not updated</p>';				
+			//echo '<p>0 size file. data not updated</p>';				
 		}
 }
 
@@ -9484,7 +9484,7 @@ function update_one_examination_with_result_blob($link,$sid,$ex_id,$v)
 		}
 		else
 		{
-			echo '<p>0 size file. data not updated</p>';				
+			//echo '<p>0 size file. data not updated</p>';				
 		}
 }
 
@@ -9530,7 +9530,7 @@ function update_one_examination_with_result_blobvalue($link,$sid,$ex_id,$blobval
 		}
 		else
 		{
-			echo '<p>0 size file. data not updated</p>';				
+			//echo '<p>0 size file. data not updated</p>';				
 		}
 }
 
@@ -13092,5 +13092,64 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 		}
 }
 
+///////////label group related functions////////////
+function is_examination_requested($link,$sample_id,$examination_id)
+{
+	$sql='select examination_id from result where examination_id=\''.$examination_id.'\'';
+
+	//echo $sql.'<br>';
+	
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	if(get_row_count($result)<=0){return false;}
+	return true;
+}
+
+           
+function create_multi_label_button($link,$received)
+{
+	$sql='select * from label_group';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+
+	echo '<div class="d-inline-block"  style="width:100%;">
+	<form method=post target=_blank action=xxx_print_multiple_barcode.php class=print_hide>';
+	
+	echo '<div class="btn-group">';
+	while($ar=get_single_row($result))
+	{
+		$label_list=[];
+		$label_group_name=$ar['name'];
+		//echo '<h1>'.$ar['name'].'</h1>';
+		$label_members=json_decode($ar['lable_list'],true);
+		foreach($label_members as $label_id=>$copy)
+		{
+			$label_details=get_label_details($link,$label_id);
+			//echo '<pre>';print_r($label_details);echo '</pre>';
+			foreach($received as $sample_id)
+			{
+				if(is_examination_requested($link,$sample_id,$label_details['examination_id']))
+				{
+					$ex_result=get_any_examination_result($link,$sample_id,$label_details['examination_id']);
+					//echo 'print '.$copy.' copy of label_id='.$label_id.' for sample_id='.$sample_id.' and '.$label_details['examination_id'].'='.$ex_result.'<br>';
+					$label_list[$label_id][$ex_result]=[$label_id,$sample_id,$copy];
+				}
+				elseif($label_details['examination_id']=='sample_id')
+				{
+					//echo 'print '.$copy.' copy of label_id='.$label_id.' for sample_id='.$sample_id.' sample_id='.$sample_id.'<br>';
+					$label_list[$label_id][$sample_id]=[$label_id,$sample_id,$copy];
+				}
+			}
+		}
+	//echo '<pre>';print_r($label_list);echo '</pre>';
+	
+	$serialized=base64_encode(serialize($label_list));
+
+	echo '<button class="btn btn-outline-primary btn-sm" name=label_list value=\''.$serialized.'\' >'.$label_group_name.'</button>';
+	}
+	echo '</div>';
+	
+	echo '	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	</form>
+	</div>';
+}
 
 ?>

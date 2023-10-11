@@ -57,14 +57,16 @@ if($tok[0]=='newww_general')
 elseif($_POST['action']=='insert')
 {
 	$all_samples=xxx_save_insert_specific($link,$_POST['selected_examination_list']);
-	xxx_print_multiple_sample_id_barcode_button('multi',$all_samples);
+	//xxx_print_multiple_sample_id_barcode_button('multi',$all_samples);
+	create_multi_label_button($link,$all_samples);
 	foreach ($all_samples as $sample_id)
 	{
-		echo '<div class="d-inline-block"">';
+		echo '<div class="p-2 m-5 border border-warning">';
+		echo '<div class="d-inline-block">';
 		xxx_manage_sample_status_change_horizontal($link,$sample_id);
 		echo '</div>';
-		
-			xxx_view_sample($link,$sample_id);
+		xxx_view_sample($link,$sample_id);
+		echo '</div>';
 	}
 }
 
@@ -125,7 +127,7 @@ function get_data_specific($link,$sql,$ex_list,$default_value_str)
 }
 
 
-
+/*
 function xxx_print_multiple_sample_id_barcode_button($name,$sample_lable_array)
 {
 	$serialized=base64_encode(serialize($sample_lable_array));
@@ -138,7 +140,7 @@ function xxx_print_multiple_sample_id_barcode_button($name,$sample_lable_array)
 	<input type=hidden name=sample_id_array value=\''.$serialized.'\'>
 	</form></div>';
 }
-
+*/
 //echo '<pre>';print_r($_POST);echo '</pre>';
 //////////////user code ends////////////////
 tail();
