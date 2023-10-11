@@ -841,6 +841,34 @@ INSERT INTO `labels` VALUES
 UNLOCK TABLES;
 
 --
+-- Table structure for table `label_group`
+--
+
+DROP TABLE IF EXISTS `label_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `label_group` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `lable_list` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `label_group`
+--
+
+LOCK TABLES `label_group` WRITE;
+/*!40000 ALTER TABLE `label_group` DISABLE KEYS */;
+INSERT INTO `label_group` VALUES
+(1,'opd1','{\"2\":\"1\",\"1\":\"1\"}'),
+(2,'opd2','{\"2\":\"2\"}'),
+(3,'opd3','{\"10\":\"2\"}');
+/*!40000 ALTER TABLE `label_group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `lis_to_vitros_sample_type`
 --
 
@@ -1271,4 +1299,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-10  0:07:58
+-- Dump completed on 2023-10-11 10:38:36

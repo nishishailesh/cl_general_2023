@@ -17,6 +17,7 @@ dementia
 examination
 host_code
 labels
+label_group
 lis_to_vitros_sample_type
 Laboratory
 menu_new
