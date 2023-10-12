@@ -13018,7 +13018,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 					else if($item[2]=='t')
 					{
 						//$pdf->SetFont('helveticaB', '', 5);
-						$pdf->SetFont('helveticaB', '', 11);
+						$pdf->SetFont('helvetica', '', 7);
 						$pdf->SetXY($item[3],$item[4]);
 						$pdf->Cell($item[5],$item[6],' '.$other_data,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
 					}
@@ -13130,7 +13130,10 @@ function create_multi_label_button($link,$received)
 				{
 					$ex_result=get_any_examination_result($link,$sample_id,$label_details['examination_id']);
 					//echo 'print '.$copy.' copy of label_id='.$label_id.' for sample_id='.$sample_id.' and '.$label_details['examination_id'].'='.$ex_result.'<br>';
-					$label_list[$label_id][$ex_result]=[$label_id,$sample_id,$copy];
+					if($ex_result!==False)
+					{
+						$label_list[$label_id][$ex_result]=[$label_id,$sample_id,$copy];
+					}
 				}
 				elseif($label_details['examination_id']=='sample_id')
 				{
