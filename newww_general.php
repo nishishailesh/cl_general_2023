@@ -76,7 +76,7 @@ if(isset($_POST['action']))
 {
 	if($_POST['action']=='set_sample_status')
 	{
-		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
+		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%dT%H:%M"));
 		echo '<div class="d-inline-block"">';
 		xxx_manage_sample_status_change_horizontal($link,$_POST['sample_id']);
 		echo '</div>';
