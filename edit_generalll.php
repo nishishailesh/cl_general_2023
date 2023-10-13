@@ -11,6 +11,10 @@ echo '	<link rel="stylesheet" href="project_common.css">
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
 main_menu($link);
+
+
+create_multi_label_button($link,$all_samples);
+
 //echo '<pre>';print_r($_POST);echo '</pre>';
 
 echo '<div id=response></div>';

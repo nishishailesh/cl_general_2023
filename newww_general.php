@@ -70,8 +70,6 @@ elseif($_POST['action']=='insert')
 	}
 }
 
-
-
 if(isset($_POST['action']))
 {
 	if($_POST['action']=='set_sample_status')
