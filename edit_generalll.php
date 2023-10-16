@@ -13,7 +13,7 @@ $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 
 
-create_multi_label_button($link,$all_samples);
+//create_multi_label_button($link,$all_samples);
 
 //echo '<pre>';print_r($_POST);echo '</pre>';
 

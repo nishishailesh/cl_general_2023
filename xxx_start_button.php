@@ -148,9 +148,15 @@ function xxx_make_unique_id_option($link)
 		echo '<form method=post>';
 		
 			echo '<div class="border border-success m-1 p-0 d-inline-block">
+					<button type=button class="btn btn-sm btn-info" id=plus_offset
+					onclick="document.getElementById(\'show_offset\').value=parseInt(document.getElementById(\'status_lot_size\').value)+parseInt(document.getElementById(\'show_offset\').value)"
+					>+</button>
 					<label class="m-0 -p-0 " for=show_offset>offset:</label> <input size=5 type=number class="m-0 p-0" id=show_offset name=show_offset  value=\''.$show_offset.'\'>
-					<label class="m-0 -p-0 " for=show_offset>lot size:</label> <input  size=5 type=number class="m-0 p-0" id=show_offset name=status_lot_size  value=\''.$status_lot_size.'\'>
-					<label class="m-0 -p-0 " for=show_offset>column size:</label> <input  size=5 type=number class="m-0 p-0" id=show_offset name=status_column_size  value=\''.$status_column_size.'\'>
+					<button type=button class="btn btn-sm btn-info" id=plus_offset
+					onclick="document.getElementById(\'show_offset\').value=parseInt(document.getElementById(\'show_offset\').value)-parseInt(document.getElementById(\'status_lot_size\').value)"
+					>-</button>
+					<label class="m-0 -p-0 " for=show_offset>lot size:</label> <input  size=5 type=number class="m-0 p-0" id=status_lot_size name=status_lot_size  value=\''.$status_lot_size.'\'>
+					<label class="m-0 -p-0 " for=show_offset>column size:</label> <input  size=5 type=number class="m-0 p-0" id=status_column_size name=status_column_size  value=\''.$status_column_size.'\'>
 			</div>';
 			echo '<div class="border border-success m-1 p-0 d-inline-block">
 				<label class="m-0 -p-0 ">id_range for sample_id:</label>';
@@ -172,7 +178,7 @@ function xxx_make_unique_id_option($link)
 							{
 								this.textContent=\'update-off\';callServer();
 							}" 
-							>update-on
+							>update-off
 				</button>';
 			echo '</div>';		
 					
@@ -326,7 +332,7 @@ jQuery(document).ready(
 );
 
 list_of_id_to_update=[]
-autoupdate=1
+autoupdate=-1
 timeOutVar=false
  
 function update_list_of_id(me)
@@ -400,7 +406,7 @@ function callServer()
 	xhttp.send(post);	
 	if(autoupdate==1)
 	{
-		 timeOutVar=setTimeout(callServer, 10000);
+		 timeOutVar=setTimeout(callServer, 60000);
 	}
 	else if(autoupdate==-1)
 	{

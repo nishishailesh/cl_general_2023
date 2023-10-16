@@ -426,7 +426,8 @@ function display_one_qc($link,$primary_result_array,$addtional_examination_array
 {
 	$q=array();
 	$ex_details=get_one_examination_details($link,$primary_result_array['examination_id']);
-	
+	//echo '<h3 class="text-danger">'.$primary_result_array['examination_id'].'</h3>';
+	//print_r($ex_details);
 	$ref_val_array=xxx_get_lab_reference_value($link,$primary_result_array['sample_id'],$primary_result_array['examination_id']);
 	if($ref_val_array==False){$ref_val_array=array();}
 	$mean=isset($ref_val_array['mean'])?$ref_val_array['mean']:'';

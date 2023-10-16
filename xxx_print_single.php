@@ -14,5 +14,3 @@ xxx_fill_report($link,$_POST['sample_id'],$pdf);
 generate_pdf_for_report($pdf);
 
 ?>
-
-?>

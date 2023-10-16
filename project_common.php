@@ -3408,15 +3408,23 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
 		$cinterval_h=isset($edit_specification['cinterval_h'])?$edit_specification['cinterval_h']:'';
 		$ainterval_h=isset($edit_specification['ainterval_h'])?$edit_specification['ainterval_h']:'';
 		$img=isset($edit_specification['img'])?$edit_specification['img']:'';
+		
+
+							
 		if($examination_details['append_user']==1)
 		{
-			$user_info=get_user_info($link,$_SESSION['login']);
-			$append_info=$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
+			$sql='select * from result where sample_id=\''.$sample_id.'\' and examination_id=\''.$ex_id.'\'';
+			$result=run_query($link,$GLOBALS['database'],$sql);
+			$ar=get_single_row($result);
+			$user_info=get_user_info($link,$ar['recorded_by']);
+			$append_info=' ,'.$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
 		}
 		else
 		{
 			$append_info='';
-		}
+		}		
+		
+		
 		if($img=='dw')
 		{
 			echo '<div class="basic_form " id="ex_'.$ex_id.'">';
@@ -3669,7 +3677,7 @@ echo '<div class="basic_form">';
 			<p class="help">Full 12 Digit AADHAR number</p>';
 
 	echo '	<label  class="my_label" for="unique_id">Mobile</label>
-			<input class="form-control" type=text id=mobile name=mobile placeholder=Mobile>
+			<input class="form-control5433" type=text id=mobile name=mobile placeholder=Mobile>
 			<p class="help">10 digit Mobile number</p>';
 						
 	echo '	<label  class="my_label" for="sex">Sex:</label>
@@ -4075,7 +4083,7 @@ function convert_super_profile_to_profile($link,$super_profile_csv)
 //used nowhere
 function save_insert($link)
 {
-			//find list of super_profiles requested, merge with profiles requested,then..
+			//find list of super_profi5433les requested, merge with profiles requested,then..
 			//find list of examinations requested
 			//determine sample-type required
 			//find sample_id to be given
@@ -11273,7 +11281,7 @@ function get_header($link,$sample_id)
 			{
 				$examination_details=get_one_examination_details($link,$ex[0]);
 				$node->nodeValue=$examination_details['name'];
-			}	
+			}
 			else if($ex[1]=='r')
 			{
 				$examination_details=get_one_examination_details($link,$ex[0]);
@@ -11282,22 +11290,25 @@ function get_header($link,$sample_id)
 				
 				if($type!='blob')
 				{
+
+							
+		
+					$sql='select * from result where sample_id=\''.$sample_id.'\' and examination_id=\''.$ex[0].'\'';
+					$result=run_query($link,$GLOBALS['database'],$sql);
+					if(get_row_count($result)!=1){$node->nodeValue='';continue;}
+					$ar=get_single_row($result);
+					
 					if($examination_details['append_user']==1)
 					{
-						$user_info=get_user_info($link,$_SESSION['login']);
-						$append_info=$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
+						$user_info=get_user_info($link,$ar['recorded_by']);
+						$append_info=' ,'.$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
 					}
 					else
 					{
 						$append_info='';
 					}
-							
-		
-					$sql='select examination_id,result from result where sample_id=\''.$sample_id.'\' and examination_id=\''.$ex[0].'\'';
-					$result=run_query($link,$GLOBALS['database'],$sql);
-					if(get_row_count($result)!=1){$node->nodeValue='';continue;}
-					$ar=get_single_row($result);
-					$node->nodeValue=$ar['result'].' '.$append_info;
+										
+					$node->nodeValue=$ar['result'].$append_info;
 				}
 				else
 				{

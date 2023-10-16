@@ -7,7 +7,7 @@ $GLOBALS['user_pass']='password';
 $GLOBALS['expiry_period']='+ 6 months';
 $GLOBALS['expirydate_field']='expirydate';
 $GLOBALS['application_name']='New Civil Hospital Surat Laboratory Services';
-
+$GLOBALS['start_script']='xxx_start_button.php';
 $GLOBALS['database']='clg';
 
 // in /var/gmcs_config/staff.conf $GLOBALS['email_db_server']='11.207.1.1';

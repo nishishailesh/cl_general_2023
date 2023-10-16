@@ -29,7 +29,10 @@ $local_TAT_remark_id=get_config_value($link,'TAT_remark_id');
 echo '<h3 class="text-danger">If required insert remark</h3>';
 
 $ok=edit_field_any($link,$local_TAT_remark_id,$_POST['sample_id'],'',$frill=False);
-echo '<button  class="btn btn-success" type=button name=action value=save_TAT_remark>save</button>'; //dummy button to move focus
+if($ok!==False)
+{
+	echo '<button  class="btn btn-success" type=button name=action value=save_TAT_remark>save</button>'; //dummy button to move focus
+}
 if( $ok == False)
 {
 	echo '<form method=post>';
