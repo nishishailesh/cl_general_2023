@@ -103,12 +103,13 @@ function main_menu($link)
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu_strip" ><span class="navbar-toggler-icon"></span></button>
 
-		<div class="collapse navbar-collapse" id="menu_strip">  
-							
-				<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit name=action value=home><img src=img/home.jpeg height=20></button>
-				<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit formtarget=_blank name=action value=home> (+) </button>
+		<div class="collapse navbar-collapse" id="menu_strip"> '; 
+				echo '<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit name=action value=home><img src=img/home.jpeg height=20></button>
+				<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit formtarget=_blank name=action value=home> (+) </button>';
 				
-				<div class="dropdown m-0 p-0">
+		if(is_authorized_for_all_examination($link,$_SESSION['login'],'insert',1))
+		{
+				echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
@@ -116,8 +117,12 @@ function main_menu($link)
 							create_newww_special($link);
 						echo '</div>
 					</div>
-				</div>
-				<div class="dropdown m-0 p-0">
+				</div>';
+		}
+
+		if(is_authorized_for_all_examination($link,$_SESSION['login'],'select',0))
+		{
+				echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">View-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
@@ -125,25 +130,35 @@ function main_menu($link)
 							xxx_make_view_menu($link);
 						echo '</div>
 					</div>
-				</div>
-				<div class="dropdown m-0 p-0">
+				</div>';
+		}
+
+
+		if(is_authorized_for_all_examination($link,$_SESSION['login'],'select',2))
+		{
+				echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Worklist-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_unique_id.php type=submit name=action value="get_worklist">by Examination</button>
 						</div>
 					</div>
-				</div>
-				<div class="dropdown m-0 p-0">
+				</div>';
+		
+		}		
+				
+				echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Print-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_get_print_id.php type=submit name=action value="get_print_id">Scan and Print</button>
 						</div>
 					</div>
-				</div>
+				</div>';
 				
-				<div class="dropdown m-0 p-0">
+		if(is_authorized_for_all_examination($link,$_SESSION['login'],'select',2))
+		{
+				echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Quality Control</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
@@ -187,12 +202,12 @@ function main_menu($link)
 
 							</div>
 						</div>
-				</div>
-
+				</div>';
+		}
 
 				
 				
-		</div>
+		echo '</div>
 	</nav>
 	</form>';		
 }
@@ -2184,13 +2199,18 @@ function calculate_result($link,$equation,$ex_list,$sample_id,$decimal=0)
 function sync_all($link,$sample_id)
 {
 	//echo 'Sync All';
-	
+
 	//result////////////////////////////////
 	$sql='select * from result where sample_id=\''.$sample_id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 
 	while($ar=get_single_row($result))
 	{
+		if(!is_authorized($link,$_SESSION['login'],$ar['examination_id'],'update'))
+		{
+			echo "<h5 class='bg-warning'>Not authorized to sync</h5>";
+			return; 
+		}
 		
 		$sql_primary='select * from primary_result 
 							where 	sample_id=\''.$sample_id.'\' and 
@@ -11129,6 +11149,37 @@ function is_authorized($link,$user,$examination_id,$action)
 	//echo 'action='.$action.'<br>';	
 
 	if($user_info[$action.'_authorization_level']>=$ex_info[$action.'_minimum_authorization_level'])
+	{
+	//	echo '###authorized###';
+	//	echo '</pre>';
+		return true;
+	}
+	else
+	{
+	//	echo '###NOT authorized###';
+	//	echo '</pre>';
+		return false;
+	}
+}
+
+
+function is_authorized_for_all_examination($link,$user,$action,$level)
+{
+	/*example matrix
+	 * user 0=doctors, 1=dataentryoperator 2=technician 3=resident 4=faculty
+	 * examination: insert, update, delete,show , authorization level
+	 * 
+	 * 
+	 * */
+
+	$user_info=get_user_info($link,$user);
+	//echo '<pre>';
+	//echo 'is_authorized() parameters<br>';
+	//print_r($user_info);
+	//print_r($ex_info);
+	//echo 'action='.$action.'<br>';	
+
+	if($user_info[$action.'_authorization_level']>=$level)
 	{
 	//	echo '###authorized###';
 	//	echo '</pre>';

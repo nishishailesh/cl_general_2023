@@ -185,6 +185,14 @@ function calculate_and_update($link,$sample_id)
 	
 	while($ar=get_single_row($result))
 	{
+
+		if(!is_authorized($link,$_SESSION['login'],$ar['examination_id'],'update'))
+		{
+			echo "<h5 class='bg-warning'>Not authorized to calculate</h5>";
+			return; 
+		}
+		
+
 		$examination_details=get_one_examination_details($link,$ar['examination_id']);
 		$edit_specification=json_decode($examination_details['edit_specification'],true);
 		if(!$edit_specification){$edit_specification=array();}
