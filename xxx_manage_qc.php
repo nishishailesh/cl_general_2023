@@ -20,7 +20,6 @@ echo '<div id="get_data" class="show p-3 bg-light border border-dark">';
 		
 						xxx_get_examination_data_for_qc($link,$qc_sql);
 
-
 						echo '<div>
 								<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
 								echo '	<div id="status-window" 
@@ -53,7 +52,7 @@ if($_POST['action']=='find_qc_data')
 	foreach($data as $qc)
 	{
 		//$sorted_array[$qc['examination_id'].'_'.$qc['equipment'].'_'.$qc['qc_lot']][]=[  'examintaion_name' =>$qc['examination_name'], 'sample_analysis'=>$qc['sample_analysis'], 'uniq'=>$qc['uniq'],'sdi'=>$qc['sdi'] ];
-		$sorted_array[$qc['examination_id'].'_'.$qc['qc_lot']][]=$qc;
+		$sorted_array[$qc['examination_id'].'_'.$qc['qc_lot(sample)']][]=$qc;
 	}
 	//echo '<pre>';print_r($sorted_array);echo '</pre>';
 	$sorted=json_encode($sorted_array);		//used by chart.js
@@ -219,94 +218,32 @@ function prepare_qc_data_from_search_condition($link,$post)
 		}
 	}
 	
-	$root_sql=$root_sql.' order by sample_id,examination_id,uniq desc limit 400';
+	if($_POST['sort_order']=='sample_id')
+	{
+		$root_sql=$root_sql.' order by sample_id,examination_id,uniq desc limit 400';
+	}
+	else if($_POST['sort_order']=='examination_id')
+	{
+		$root_sql=$root_sql.' order by examination_id,sample_id,uniq desc limit 400';
+	}
+	else
+	{
+		$root_sql=$root_sql.' order by examination_id,sample_id,uniq desc limit 400';		
+	}
 	
 	echo $root_sql.'<br>';
 	//view_sql_result_as_table($link,$root_sql,$show_hide='yes');
 	$result=run_query($link,$GLOBALS['database'],$root_sql);
 	$data=array();
-	
-	//	<canvas height="4" width="160" style="background-color:black;"></canvas>
-
-	$addtional_examination_array=array(10006,1048,3001,9000);
-	
+		
 	echo '<table class="table table-striped table-sm m-3">';
-	echo '<tr>
-	<td>Action</td>
-	<td style="border-right-style: dotted;padding:0px;border-left-style: dotted;padding:0px;text-align:right">
-	
-				<canvas id="lj_header_negative" 
-						height="30" 
-						width="160" 
-						></canvas>
-			<script>
-					can=document.getElementById("lj_header_negative");
-					ctx=can.getContext("2d");
-					ctx.font = "15px Arial";
 
-					ctx.strokeText("3s", 40,20);
-					ctx.strokeText("2s", 80,20);
-					ctx.strokeText("1s", 120,20);
-
-					ctx.strokeStyle = "red";
-					ctx.strokeText(".", 40 , 5);
-					ctx.strokeStyle = "orange";
-					ctx.strokeText(".", 80 , 5);
-					ctx.strokeStyle = "lightgreen";
-					ctx.strokeText(".", 120 , 5);
-				</script>
-	</td>
-	<td style="border-right-style: dotted;padding:0px;text-align:left">
-	
-	
-				<canvas id="lj_header_positive" 
-						height="30" 
-						width="160" 
-						></canvas>
-			<script>
-					can=document.getElementById("lj_header_positive");
-					ctx=can.getContext("2d");
-					ctx.font = "15px Arial";
-
-					ctx.strokeText("1s", 25,20);
-					ctx.strokeText("2s", 65,20);
-					ctx.strokeText("3s", 105,20);
-
-					ctx.strokeStyle = "lightgreen";
-					ctx.strokeText(".", 40 , 5);
-					ctx.strokeStyle = "orange";
-					ctx.strokeText(".", 80 , 5);
-					ctx.strokeStyle = "red";
-					ctx.strokeText(".", 120 , 5);
-				</script>	
-	
-	</td>';
-
-	foreach($addtional_examination_array as $ex_id)
-	{
-		$ex_data=get_one_examination_details($link,$ex_id);
-		echo '<td>'.$ex_data['name'].'</td>';
-	}
-	echo '
-	<td>SDI</td>
-	<td>Sample ID</td>
-	<td>Examination ID</td>
-	<td>Examination Name</td>
-	<td>uniq</td>
-	<td>Observed</td>
-	<td>Extra</td>
-	<td>QC Lot</td>
-	<td>Mean</td>
-	<td>SD</td>
-	<td>Lot Remark</td>
-	<td>Mfg</td>';
-
-	echo '</tr>';
-	
+	$first='yes';
 	while($ar=get_single_row($result))
 	{
-		$q=display_one_qc($link,$ar,$addtional_examination_array);
+		$q=display_one_qc($link,$ar,$first);
 		$data[]=$q;
+		$first='no';
 	}
 	echo '</table>';
 	return $data;
@@ -320,8 +257,8 @@ function format_one_lj_point($q)
 	{
 		if($q['sdi']<0)
 		{
-			$id=$q['sample_id'].$q['qc_lot'].$q['examination_id'].$q['uniq'];
-			$position=160-min((-$q['sdi']*40),160 );
+			$id=$q['sample_id'].$q['qc_lot(sample)'].$q['examination_id'].$q['uniq'];
+			$position=160-min(-$q['sdi']*40,160);
 			echo '<canvas id="'.$id.'" 
 						height="30" 
 						width="160" 
@@ -344,7 +281,7 @@ function format_one_lj_point($q)
 		}
 		else
 		{
-			$id=$q['sample_id'].$q['qc_lot'].$q['examination_id'].$q['uniq'].'blank';
+			$id=$q['sample_id'].$q['qc_lot(sample)'].$q['examination_id'].$q['uniq'].'blank';
 			echo '<canvas id="'.$id.'" 
 			height="30" 
 			width="160" 
@@ -370,7 +307,7 @@ function format_one_lj_point($q)
 	{
 		if($q['sdi']>=0)
 		{		
-			$id=$q['sample_id'].$q['qc_lot'].$q['examination_id'].$q['uniq'];
+			$id=$q['sample_id'].$q['qc_lot(sample)'].$q['examination_id'].$q['uniq'];
 			$position=min( ($q['sdi']*40),150 );
 			echo '<canvas id="'.$id.'" 
 			height="30" 
@@ -396,7 +333,7 @@ function format_one_lj_point($q)
 		
 		else
 		{
-			$id=$q['sample_id'].$q['qc_lot'].$q['examination_id'].$q['uniq'].'blank';
+			$id=$q['sample_id'].$q['qc_lot(sample)'].$q['examination_id'].$q['uniq'].'blank';
 			echo '<canvas id="'.$id.'" 
 			height="30" 
 			width="160" 
@@ -422,7 +359,7 @@ function format_one_lj_point($q)
 //					ctx.strokeText("'.$q['sdi'].'", 20, 20);
 //					ctx.fillStyle = "'.$bar_color[ min(floor($q['sdi']),3) ].'";
 
-function display_one_qc($link,$primary_result_array,$addtional_examination_array)
+function display_one_qc($link,$primary_result_array,$first)
 {
 	$q=array();
 	$ex_details=get_one_examination_details($link,$primary_result_array['examination_id']);
@@ -440,17 +377,21 @@ function display_one_qc($link,$primary_result_array,$addtional_examination_array
 	{
 		$sdi='?';
 	}
-			
-	//print_r($primary_result_array);echo '<br>';
-	foreach($addtional_examination_array as $ex_id)
-	{
-			$add_ex_details=get_one_examination_details($link,$ex_id);
-			$add_ex_data=get_any_examination_result($link,$primary_result_array['sample_id'],$ex_id);
-			//print_r($add_ex_details);echo '<br>';
-			//echo '---'.$add_ex_data.'---<br>';
-			$q[$add_ex_details['name']]=$add_ex_data;
-	}
-	
+
+
+		$qc_analysis_time_examination_id=get_config_value($link,'qc_analysis_time_examination_id');
+		$qc_analysis_time=get_any_examination_result($link,$primary_result_array['sample_id'],$qc_analysis_time_examination_id);
+
+		$qc_id_examination_id=get_config_value($link,'qc_id_examination_id');
+		$qc_id=get_any_examination_result($link,$primary_result_array['sample_id'],$qc_id_examination_id);
+
+		$qc_lot_examination_id=get_config_value($link,'qc_lot_examination_id');
+		$qc_lot=get_any_examination_result($link,$primary_result_array['sample_id'],$qc_lot_examination_id);
+
+		$qc_equipment_examination_id=get_config_value($link,'qc_equipment_examination_id');
+		$qc_equipment=get_any_examination_result($link,$primary_result_array['sample_id'],$qc_equipment_examination_id);
+
+
 	$q['sdi']=$sdi;
 	$q['sample_id']=$primary_result_array['sample_id'];
 	$q['examination_id']=$primary_result_array['examination_id'];
@@ -465,12 +406,93 @@ function display_one_qc($link,$primary_result_array,$addtional_examination_array
 	$q['sd']=isset($ref_val_array['sd'])?$ref_val_array['sd']:'';
 	$q['remark']=isset($ref_val_array['remark'])?$ref_val_array['remark']:'';
 	$q['manufacturer_data']=isset($ref_val_array['manufacturer_data'])?$ref_val_array['manufacturer_data']:'';
+	
+	$final_q=array(
+	'qc_id'=>$qc_id,
+	'examination_id'=>$q['examination_id'],
+	'examination_name'=>$q['examination_name'],
+	'qc_equipment'=>$qc_equipment,
+	'result'=>$q['result'],
+	'mean'=>$q['mean'],
+	'sd'=>$q['sd'],
+	'manufacturer_data'=>$q['manufacturer_data'],
+	'remark(result)'=>$q['extra'],
+	'sdi'=>$q['sdi'],
+	'uniq'=>$q['uniq'],
+	'qc_analysis_time'=>$qc_analysis_time,
+	'qc_lot(sample)'=>$qc_lot,
+	'qc_lot(ref)'=>$q['qc_lot'],
+	'remark(ref)'=>$q['remark'],
+	'sample_id'=>$q['sample_id']
+	);
+	
+	$q=$final_q;
 
-	//print_r($ex_details);echo '<br>';
 
+	if($first=='yes')
+	{
 
+		$lj_graphics= '<tr>
+		<td>Action</td>
+		<td style="border-right-style: dotted;padding:0px;border-left-style: dotted;padding:0px;text-align:right">
+		
+					<canvas id="lj_header_negative" 
+							height="30" 
+							width="160" 
+							></canvas>
+				<script>
+						can=document.getElementById("lj_header_negative");
+						ctx=can.getContext("2d");
+						ctx.font = "15px Arial";
+
+						ctx.strokeText("3s", 40,20);
+						ctx.strokeText("2s", 80,20);
+						ctx.strokeText("1s", 120,20);
+
+						ctx.strokeStyle = "red";
+						ctx.strokeText(".", 40 , 5);
+						ctx.strokeStyle = "orange";
+						ctx.strokeText(".", 80 , 5);
+						ctx.strokeStyle = "lightgreen";
+						ctx.strokeText(".", 120 , 5);
+					</script>
+		</td>
+		<td style="border-right-style: dotted;padding:0px;text-align:left">
+		
+		
+					<canvas id="lj_header_positive" 
+							height="30" 
+							width="160" 
+							></canvas>
+				<script>
+						can=document.getElementById("lj_header_positive");
+						ctx=can.getContext("2d");
+						ctx.font = "15px Arial";
+
+						ctx.strokeText("1s", 25,20);
+						ctx.strokeText("2s", 65,20);
+						ctx.strokeText("3s", 105,20);
+
+						ctx.strokeStyle = "lightgreen";
+						ctx.strokeText(".", 40 , 5);
+						ctx.strokeStyle = "orange";
+						ctx.strokeText(".", 80 , 5);
+						ctx.strokeStyle = "red";
+						ctx.strokeText(".", 120 , 5);
+					</script>	
+		
+		</td>';
+	
+		echo '<tr>';
+		echo '<td>'.$lj_graphics.'</td>';
+		foreach($q as $k=>$v)
+		{
+			echo '<th style="border-right-style: dotted;border-right-color: lightgray;">'.$k.'</th>';
+		}
+		echo '</tr>';
+	}
+			
 	echo '<tr>';
-
 
 	echo '<td>';
 		xxx_sample_id_edit_button($q['sample_id'],' target=_blank ','E');
@@ -482,20 +504,21 @@ function display_one_qc($link,$primary_result_array,$addtional_examination_array
 	{
 		if(in_array($k,['result','mean','sd']))
 		{
-			echo '<td style="white-space: nowrap;" class="text-danger">'.$v.'</td>';
+			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;" class="text-danger">'.$v.'</td>';
+		}
+		elseif(in_array($k,['remark(result)']))
+		{
+			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;"><button title="'.$v.'" type=button onclick="alert(\''.$v.'\')" >'.substr($v,0,3).'</button></td>';
 		}
 		else
 		{
-			echo '<td style="white-space: nowrap;">'.$v.'</td>';
+			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;">'.$v.'</td>';
 		}
 	}
-	
 
-	
 	echo '</tr>';
 	
 	return $q;
-
 }
 
 function xxx_get_lab_reference_value($link,$sample_id,$examination_id)
@@ -583,8 +606,15 @@ function get_qc_search_conditions($link,$examination_id,$search_list_of_examinat
 			get_one_field_for_range_search($link,$examination_id);
 		}
 	}
+
+	echo '<fieldset ><legend>Sort</legend>';
+	echo '<div><label for="sample_id_sort" >sample_id sort</lable><input type="radio" id="sample_id_sort" name="sort_order" value="sample_id"></div>';
+	echo '<div><label for=examination_id_sort >examination_id sort</lable><input type="radio" name="sort_order" id=examination_id_sort value="examination_id"></div>';
+	echo '</fieldset>';
 	
 	echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=find_qc_data>Search</button>';
+
+	
 	echo '<input type=text readonly class="w-100" name=selected_examination_list type=text id=selected_examination_list>';
 
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';

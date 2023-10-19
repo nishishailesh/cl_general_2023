@@ -103,13 +103,12 @@ function main_menu($link)
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu_strip" ><span class="navbar-toggler-icon"></span></button>
 
-		<div class="collapse navbar-collapse" id="menu_strip"> '; 
-				echo '<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit name=action value=home><img src=img/home.jpeg height=20></button>
-				<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit formtarget=_blank name=action value=home> (+) </button>';
+		<div class="collapse navbar-collapse" id="menu_strip">  
+							
+				<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit name=action value=home><img src=img/home.jpeg height=20></button>
+				<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit formtarget=_blank name=action value=home> (+) </button>
 				
-		if(is_authorized_for_all_examination($link,$_SESSION['login'],'insert',1))
-		{
-				echo '<div class="dropdown m-0 p-0">
+				<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
@@ -117,12 +116,8 @@ function main_menu($link)
 							create_newww_special($link);
 						echo '</div>
 					</div>
-				</div>';
-		}
-
-		if(is_authorized_for_all_examination($link,$_SESSION['login'],'select',0))
-		{
-				echo '<div class="dropdown m-0 p-0">
+				</div>
+				<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">View-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
@@ -130,35 +125,25 @@ function main_menu($link)
 							xxx_make_view_menu($link);
 						echo '</div>
 					</div>
-				</div>';
-		}
-
-
-		if(is_authorized_for_all_examination($link,$_SESSION['login'],'select',2))
-		{
-				echo '<div class="dropdown m-0 p-0">
+				</div>
+				<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Worklist-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_unique_id.php type=submit name=action value="get_worklist">by Examination</button>
 						</div>
 					</div>
-				</div>';
-		
-		}		
-				
-				echo '<div class="dropdown m-0 p-0">
+				</div>
+				<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Print-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_get_print_id.php type=submit name=action value="get_print_id">Scan and Print</button>
 						</div>
 					</div>
-				</div>';
+				</div>
 				
-		if(is_authorized_for_all_examination($link,$_SESSION['login'],'select',2))
-		{
-				echo '<div class="dropdown m-0 p-0">
+				<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Quality Control</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
@@ -202,12 +187,12 @@ function main_menu($link)
 
 							</div>
 						</div>
-				</div>';
-		}
+				</div>
+
 
 				
 				
-		echo '</div>
+		</div>
 	</nav>
 	</form>';		
 }
@@ -2199,18 +2184,13 @@ function calculate_result($link,$equation,$ex_list,$sample_id,$decimal=0)
 function sync_all($link,$sample_id)
 {
 	//echo 'Sync All';
-
+	
 	//result////////////////////////////////
 	$sql='select * from result where sample_id=\''.$sample_id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 
 	while($ar=get_single_row($result))
 	{
-		if(!is_authorized($link,$_SESSION['login'],$ar['examination_id'],'update'))
-		{
-			echo "<h5 class='bg-warning'>Not authorized to sync</h5>";
-			return; 
-		}
 		
 		$sql_primary='select * from primary_result 
 							where 	sample_id=\''.$sample_id.'\' and 
@@ -11163,37 +11143,6 @@ function is_authorized($link,$user,$examination_id,$action)
 }
 
 
-function is_authorized_for_all_examination($link,$user,$action,$level)
-{
-	/*example matrix
-	 * user 0=doctors, 1=dataentryoperator 2=technician 3=resident 4=faculty
-	 * examination: insert, update, delete,show , authorization level
-	 * 
-	 * 
-	 * */
-
-	$user_info=get_user_info($link,$user);
-	//echo '<pre>';
-	//echo 'is_authorized() parameters<br>';
-	//print_r($user_info);
-	//print_r($ex_info);
-	//echo 'action='.$action.'<br>';	
-
-	if($user_info[$action.'_authorization_level']>=$level)
-	{
-	//	echo '###authorized###';
-	//	echo '</pre>';
-		return true;
-	}
-	else
-	{
-	//	echo '###NOT authorized###';
-	//	echo '</pre>';
-		return false;
-	}
-}
-
-
 //Sample ID to unique ID conversion and visa versa//
 
 function show_sample_id_for_unique_id($link,$unique_id,$unique_id_value)
@@ -13001,6 +12950,10 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 		//label data
 		$label_details=get_label_details($link,$label_id);
 		$data=json_decode($label_details['data'],true);
+		$fontsize_data=json_decode($label_details['fontsize'],true);
+
+		$font_type_data=json_decode($label_details['fontweight'],true);
+
 		$border=$label_details['border'];
 		
 		//examination data
@@ -13022,8 +12975,11 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 		
 		//during setup border is good =>border=1 else border=0
 				
-		foreach($data as $item_csv)
+		foreach($data as $index=>$item_csv)
 		{
+			$fz=isset($fontsize_data[$index])?$fontsize_data[$index]:7;
+			$ft=isset($font_type_data[$index])?$font_type_data[$index]:'helvetica';
+			
 			$item=explode(',',$item_csv);
 			//echo '<pre>--------->>';print_r($item);
 			if($item[0]=='sample_id')
@@ -13037,7 +12993,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 					else if($item[2]=='t')
 					{
 						//$pdf->SetFont('helveticaB', '', 5);
-						$pdf->SetFont('helvetica', '', 7);
+						$pdf->SetFont($ft, '', $fz);
 						$pdf->SetXY($item[3],$item[4]);
 						$pdf->Cell($item[5],$item[6],' '.$sample_id,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
 					}
@@ -13052,7 +13008,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 					else if($item[2]=='t')
 					{
 						
-						$pdf->SetFont('helvetica', '', 7);
+						$pdf->SetFont($ft, '', $fz);
 
 						$pdf->StartTransform();
 						$pdf->SetXY($item[3],$item[4]);
@@ -13081,7 +13037,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 					else if($item[2]=='t')
 					{
 						//$pdf->SetFont('helveticaB', '', 5);
-						$pdf->SetFont('helvetica', '', 7);
+						$pdf->SetFont($ft, '', $fz);
 						$pdf->SetXY($item[3],$item[4]);
 						$pdf->Cell($item[5],$item[6],' '.$other_data,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
 					}
@@ -13096,7 +13052,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 					else if($item[2]=='t')
 					{
 						
-						$pdf->SetFont('helvetica', '', 7);
+						$pdf->SetFont($ft, '', $fz);
 
 						$pdf->StartTransform();
 						$pdf->SetXY($item[3],$item[4]);
@@ -13124,7 +13080,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 					else if($item[2]=='t')
 					{
 						//$pdf->SetFont('helveticaB', '', 5);
-						$pdf->SetFont('helvetica', '', 7);
+						$pdf->SetFont($ft, '', $fz);
 						$pdf->SetXY($item[3],$item[4]);
 						$pdf->Cell($item[5],$item[6],' '.$ex_result,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');	
 					}
@@ -13139,7 +13095,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 					else if($item[2]=='t')
 					{
 						
-						$pdf->SetFont('helvetica', '', 7);
+						$pdf->SetFont($ft, '', $fz);
 
 						$pdf->StartTransform();
 						$pdf->SetXY($item[3],$item[4]);
