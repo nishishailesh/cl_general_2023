@@ -141,7 +141,7 @@ function prepare_qc_data_from_search_condition($link,$post)
 	$ex_list_csv=$post['selected_examination_list'];
 	//echo 'reporting requested for..'.$ex_list_csv.'<br>';
 
-	/////////////make selection of sample id/////////////////////
+	
 	$sql='';
 	foreach($post as $post_key => $post_val)
 	{
@@ -191,30 +191,18 @@ function prepare_qc_data_from_search_condition($link,$post)
 		}
 	}
 	
-	$sample_id_csv='';
 	if(strlen($sql)>0)
 	{
 		$sql=substr($sql,0,-10);
-		$result=run_query($link,$GLOBALS['database'],$sql);
-		$sample_id_ar=array();
-		while($ar=get_single_row($result))
-		{
-			$sample_id_ar[]=$ar['sample_id'];
-		}
-		$sample_id_csv=implode(',',$sample_id_ar);
-	}
-	///////////////////find primary results of sample id selected above//////////////////////
-	if(strlen($sample_id_csv)>0)
-	{
 		//echo $sql.'<br>';
 
 		if(strlen($ex_list_csv)>0)
 		{
-			$root_sql='select * from primary_result where examination_id in ('.$ex_list_csv.') and sample_id in ('.$sample_id_csv.')';
+			$root_sql='select * from primary_result where examination_id in ('.$ex_list_csv.') and sample_id in ('.$sql.')';
 		}
 		else
 		{
-			$root_sql='select * from primary_result where sample_id in ('.$sample_id_csv.')';		
+			$root_sql='select * from primary_result where sample_id in ('.$sql.')';		
 		}
 
 	}
@@ -230,10 +218,6 @@ function prepare_qc_data_from_search_condition($link,$post)
 		}
 	}
 	
-
-	
-	/////////////add ordering//////////////////////////
-	
 	if($_POST['sort_order']=='sample_id')
 	{
 		$root_sql=$root_sql.' order by sample_id desc,examination_id,uniq desc limit 400';
@@ -247,8 +231,6 @@ function prepare_qc_data_from_search_condition($link,$post)
 		$root_sql=$root_sql.' order by examination_id,sample_id desc,uniq desc limit 400';		
 	}
 	
-	
-	//////////final//////////////////
 	echo $root_sql.'<br>';
 	//view_sql_result_as_table($link,$root_sql,$show_hide='yes');
 	$result=run_query($link,$GLOBALS['database'],$root_sql);
@@ -426,7 +408,6 @@ function display_one_qc($link,$primary_result_array,$first)
 	$q['manufacturer_data']=isset($ref_val_array['manufacturer_data'])?$ref_val_array['manufacturer_data']:'';
 	
 	$final_q=array(
-	'qc_lot(sample)'=>$qc_lot,
 	'qc_id'=>$qc_id,
 	'examination_id'=>$q['examination_id'],
 	'examination_name'=>$q['examination_name'],
@@ -439,6 +420,7 @@ function display_one_qc($link,$primary_result_array,$first)
 	'sdi'=>$q['sdi'],
 	'uniq'=>$q['uniq'],
 	'qc_analysis_time'=>$qc_analysis_time,
+	'qc_lot(sample)'=>$qc_lot,
 	'qc_lot(ref)'=>$q['qc_lot'],
 	'remark(ref)'=>$q['remark'],
 	'sample_id'=>$q['sample_id']
@@ -450,8 +432,9 @@ function display_one_qc($link,$primary_result_array,$first)
 	if($first=='yes')
 	{
 
-		$lj_graphics= '
-		<th style="border-right-style: dotted;padding:0px;border-left-style: dotted;padding:0px;text-align:right">
+		$lj_graphics= '<tr>
+		<td>Action</td>
+		<td style="border-right-style: dotted;padding:0px;border-left-style: dotted;padding:0px;text-align:right">
 		
 					<canvas id="lj_header_negative" 
 							height="30" 
@@ -462,9 +445,9 @@ function display_one_qc($link,$primary_result_array,$first)
 						ctx=can.getContext("2d");
 						ctx.font = "15px Arial";
 
-						ctx.strokeText("-3s", 40,20);
-						ctx.strokeText("-2s", 80,20);
-						ctx.strokeText("-1s", 120,20);
+						ctx.strokeText("3s", 40,20);
+						ctx.strokeText("2s", 80,20);
+						ctx.strokeText("1s", 120,20);
 
 						ctx.strokeStyle = "red";
 						ctx.strokeText(".", 40 , 5);
@@ -473,8 +456,8 @@ function display_one_qc($link,$primary_result_array,$first)
 						ctx.strokeStyle = "lightgreen";
 						ctx.strokeText(".", 120 , 5);
 					</script>
-		</th>
-		<th style="border-right-style: dotted;padding:0px;text-align:left">
+		</td>
+		<td style="border-right-style: dotted;padding:0px;text-align:left">
 		
 		
 					<canvas id="lj_header_positive" 
@@ -498,22 +481,13 @@ function display_one_qc($link,$primary_result_array,$first)
 						ctx.strokeText(".", 120 , 5);
 					</script>	
 		
-		</th>';
+		</td>';
 	
-		echo '<tr>
-		<th>sample_id</th>';
-		
-		//echo '<td>'.$lj_graphics.'</td>';
+		echo '<tr>';
+		echo '<td>'.$lj_graphics.'</td>';
 		foreach($q as $k=>$v)
 		{
-			if(!in_array($k,['sample_id']))
-			{
-				echo '<th style="border-right-style: dotted;border-right-color: lightgray;">'.$k.'</th>';
-			}
-			if(in_array($k,['sdi']))
-			{
-				echo $lj_graphics;
-			}
+			echo '<th style="border-right-style: dotted;border-right-color: lightgray;">'.$k.'</th>';
 		}
 		echo '</tr>';
 	}
@@ -521,10 +495,10 @@ function display_one_qc($link,$primary_result_array,$first)
 	echo '<tr>';
 
 	echo '<td>';
-		xxx_sample_id_edit_button($q['sample_id'],' target=_blank ',$q['sample_id']);
+		xxx_sample_id_edit_button($q['sample_id'],' target=_blank ','E');
 	echo '</td>';
 
-	//format_one_lj_point($q);
+	format_one_lj_point($q);
 
 	foreach($q as $k=>$v)
 	{
@@ -536,16 +510,6 @@ function display_one_qc($link,$primary_result_array,$first)
 		{
 			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;"><button title="'.$v.'" type=button onclick="alert(\''.$v.'\')" >'.substr($v,0,3).'</button></td>';
 		}
-		elseif(in_array($k,['sdi']))
-		{
-			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;">'.$v.'</td>';
-			format_one_lj_point($q);
-		}
-		elseif(in_array($k,['sample_id']))
-		{
-			//echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;">'.$v.'</td>';
-		}
-		
 		else
 		{
 			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;">'.$v.'</td>';
@@ -644,7 +608,7 @@ function get_qc_search_conditions($link,$examination_id,$search_list_of_examinat
 	}
 
 	echo '<fieldset ><legend>Sort</legend>';
-	echo '<div><label for="sample_id_sort" >sample_id sort</lable><input type="radio" checked="checked" id="sample_id_sort" name="sort_order" value="sample_id"></div>';
+	echo '<div><label for="sample_id_sort" >sample_id sort</lable><input type="radio" id="sample_id_sort" name="sort_order" value="sample_id"></div>';
 	echo '<div><label for=examination_id_sort >examination_id sort</lable><input type="radio" name="sort_order" id=examination_id_sort value="examination_id"></div>';
 	echo '</fieldset>';
 	
@@ -657,6 +621,9 @@ function get_qc_search_conditions($link,$examination_id,$search_list_of_examinat
 	echo '</form>';
 
 }
+
+
+
 
 function xxx_edit_primary_result_extra_button($sample_id,$examination_id,$uniq,$extra,$target=' target=_blank ',$label='extra')
 {
