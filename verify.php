@@ -217,12 +217,12 @@ function f_5015($link,$sample_id,$ex_id)
 //10011 Acc symbol
 function f_10011($link,$sample_id,$ex_id)
 {
-	echo '......Verification of examination_id=10011 (Acc symbol).....<br>';
+	echo '<br>......Verification of examination_id=10011 (Acc symbol).....<br>';
 	if(xxx_should_display_accreditation_symbol($link,$sample_id))
 	{
 		//$acc=get_config_value_blob($link,'nabl_symbol');
 		update_one_examination_with_result($link,$sample_id,$ex_id,'nabl_symbol');
-		echo 'symbol required . setting value to "nabl_symbol"<br>';
+		//echo 'symbol required . setting value to "nabl_symbol"<br>';
 		return true;
 	}
 	else

@@ -450,7 +450,7 @@ INSERT INTO `examination` VALUES
 (10003,'sample_receipt','None','{\"type\":\"datetime-local\"}','','Misc/Sample Details/Sample Status','Sample Details','Sample Details','','','','compact_report',1,1,0,1,NULL,'','','','',''),
 (10004,'sample_processing','None','{\"hide\":\"yes\",\"type\":\"datetime-local\"}','','Misc/Sample Details/Sample Status','Sample Details','Sample Details','','','','compact_report',1,1,0,1,NULL,'','','','',''),
 (10006,'sample_analysis','None','{\"hide\":\"yes\",\"type\":\"datetime-local\"}','','Misc/Sample Details/Sample Status','Sample Details','Sample Details','','','','compact_report',1,1,0,1,NULL,'','','','',''),
-(10007,'sample_verification','None','{\"hide\":\"yes\",\"type\":\"datetime-local\",\"readonly\":\"readonly\"}','','Misc/Sample Details/Sample Status','Sample Details','Sample Details','','','','compact_report',1,1,0,1,1,'','','','',''),
+(10007,'sample_verification','None','{\"readonly\":\"readonly\",\"hide\":\"yes\",\"type\":\"datetime-local\",\"readonly\":\"readonly\"}','','Misc/Sample Details/Sample Status','Sample Details','Sample Details','','','','compact_report',1,1,0,1,1,'','','','',''),
 (10008,'sample_release','None','{\"type\":\"datetime-local\"}','','Misc/Sample Details/Sample Status','Header','Header','','98','','compact_report',2,3,0,3,1,'','','','',''),
 (10010,'sample_interim_release','None','{\"type\":\"datetime-local\"}','','Misc/Sample Details/Sample Status','Header','Header','','96','','compact_report',2,2,0,2,1,'','','','',''),
 (10011,'Accreditation Symbol','None','{\"type\":\"config_value_blob\",\"readonly\":\"readonly\",\"img\":\"png\",\"width\":\"100\",\"height\":\"130\"}','','Misc/Laboratory Details','Header','Header','','10','','compact_report',2,2,0,2,NULL,'','','','',''),
@@ -1189,4 +1189,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-22 14:35:55
+-- Dump completed on 2023-10-22 15:11:50
