@@ -17,7 +17,8 @@ if(isset($_POST['action']))
 {
 	if($_POST['action']=='set_sample_status')
 	{
-		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
+		xxx_update_sample_status($link,$_POST['sample_id'],$_POST['status_examination_id']);
+		//insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
 	}
 
 	if($_POST['action']=='bulk_status_change')
@@ -206,7 +207,7 @@ function xxx_make_unique_id_option($link)
 
 }
 
-
+/*
 function insert_update_one_examination_with_result_using_unique_id($link,$unique_id,$examination_id,$result)
 {
 	//echo '====finding sample_id for unique_id====<br>';
@@ -256,7 +257,7 @@ function insert_update_one_examination_with_result_using_unique_id($link,$unique
 		}
 	}
 }
-
+*/
 function echo_style_good($status_lot_size,$status_column_size)
 {
 	echo '<style>

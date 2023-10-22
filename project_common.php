@@ -56,45 +56,7 @@ function main_menu($link)
 	//$link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 	$user=get_user_info($link,$_SESSION['login']);
 	$auth=explode(',',$user['authorization']);
-	if(in_array('requestonly',$auth))
-	{
-		echo '
-		<form method=post class="form-group m-0 p-0">
-		<input type=hidden name=session_name value=\''.session_name().'\'>
-
-		<div class="btn-group">
-			<div class="dropdown m-0 p-0">
-				<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New</button>
-				<div class="dropdown-menu m-0 p-0 ">
-					<div class="btn-group-vertical d-block">
-						<button class="btn btn-outline-primary m-0 p-0 " formaction=new_requestonly.php type=submit name=action value=direct>New Request(Doctor)</button>
-					</div>
-				</div>
-			</div>
-
-
-			<div class="dropdown m-0 p-0">
-				<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">View</button>
-					<div class="dropdown-menu m-0 p-0">
-						<div class="btn-group-vertical  d-block">
-							<button class="btn btn-outline-primary m-0 p-0" formaction=view_database_id.php type=submit name=action value=get_dbid>View Sample ID</button>
-							<button class="btn btn-outline-primary m-0 p-0" formaction=search_si.php type=submit name=action value=get_search_condition>Search-SI</button>			
-						</div>
-					</div>
-			</div>
-
-			<div class="dropdown m-0 p-0">
-				<button class="btn btn-outline-primary m-0 p-0" formaction=location_report.php type=submit name=action value=get_location_list>LocationWise Report</button>			
-			</div>
-			
-			<button class="btn btn-outline-primary m-0 p-0" formaction=start.php type=submit name=action value=home><img src=img/home.jpeg height=20></button>
-			<button class="btn btn-outline-primary m-0 p-0" formaction=start.php type=submit formtarget=_blank name=action value=home>+</button>
-
-		</div>
-
-		</form>';		
-		return;
-	}
+	
 
 	echo '
 	<form method=post class="form-group m-0 p-0 print_hide">
@@ -106,9 +68,11 @@ function main_menu($link)
 		<div class="collapse navbar-collapse" id="menu_strip">  
 							
 				<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit name=action value=home><img src=img/home.jpeg height=20></button>
-				<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit formtarget=_blank name=action value=home> (+) </button>
-				
-				<div class="dropdown m-0 p-0">
+				<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_start_button.php type=submit formtarget=_blank name=action value=home> (+) </button>';
+
+		if($user['insert_authorization_level']>=1)
+		{		
+				echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
@@ -116,8 +80,12 @@ function main_menu($link)
 							create_newww_special($link);
 						echo '</div>
 					</div>
-				</div>
-				<div class="dropdown m-0 p-0">
+				</div>';
+		}		
+
+		if($user['insert_authorization_level']>=0)
+		{					
+				echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">View-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
@@ -125,25 +93,39 @@ function main_menu($link)
 							xxx_make_view_menu($link);
 						echo '</div>
 					</div>
-				</div>
-				<div class="dropdown m-0 p-0">
+				</div>';
+		}		
+				
+
+		if($user['insert_authorization_level']>=2)
+		{	
+					echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Worklist-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_unique_id.php type=submit name=action value="get_worklist">by Examination</button>
 						</div>
 					</div>
-				</div>
-				<div class="dropdown m-0 p-0">
+				</div>';
+		}		
+				
+
+		if($user['insert_authorization_level']>=0)
+		{	
+				echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Print-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_get_print_id.php type=submit name=action value="get_print_id">Scan and Print</button>
 						</div>
 					</div>
-				</div>
-				
-				<div class="dropdown m-0 p-0">
+				</div>';
+		}	
+		
+
+		if($user['insert_authorization_level']>=2)
+		{				
+				echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Quality Control</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
@@ -151,9 +133,13 @@ function main_menu($link)
 							<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_analyse_TAT.php type=submit name=action value=TAT>Analyse TAT</button>							
 						</div>
 					</div>
-				</div>
-				
-				<div class="dropdown m-0 p-0">
+				</div>';
+		}
+		
+		
+		if($user['insert_authorization_level']>=2)
+		{			
+				echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Manage Status</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
@@ -161,10 +147,13 @@ function main_menu($link)
 							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_start_button.php type=submit name=action value="view">Status-2</button>'; 
 						echo '</div>
 					</div>
-				</div>
-				
-				
-				<div class="dropdown m-0 p-0">
+				</div>';
+		}		
+		
+		
+		if($user['insert_authorization_level']>=2)
+		{			
+				echo '<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Misc</button>
 						<div class="dropdown-menu m-0 p-0">
 							<div class="btn-group-vertical  d-block">
@@ -187,12 +176,12 @@ function main_menu($link)
 
 							</div>
 						</div>
-				</div>
-
+				</div>';
+		}
 
 				
 				
-		</div>
+		echo '</div>
 	</nav>
 	</form>';		
 }
@@ -2593,7 +2582,10 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 					read_field($link,$examination_id,$value=$result, $search='',$readonly=$readonly, $attributes_str=$attributes_str,$autosave);
 				echo '</div>';
 				echo '<div class="d-inline  no-gutters">';
+				if($readonly!='readonly')
+				{					
 					if($frill){get_primary_result($link,$sample_id,$examination_id);}
+				}
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
@@ -2604,7 +2596,48 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	}
 
 
+///////////////////////
+	elseif(in_array($type,['id_multi_sample','id_single_sample']))
+	{
+		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+			////
+			echo '<div class="btn-group">';
+			set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
+			xxx_set_unique_id_prev_next_button($link,$sample_id,$examination_id,$mode='edit');
+			echo '</div>';
+			////
+			echo '<div class="m-0 p-0 no-gutters">';
+				////
+				echo '<div class="d-inline-block no-gutters">';
+				echo '<PRE><textarea rows=1 
+					'.$readonly.'
+					id="'.$element_id.'" 
+						name=result 
+					data-primary="'.$primary.'" 
+					data-uniq="'.$uniq.'" 
+					data-exid="'.$examination_id.'" 
+					data-sid="'.$sample_id.'" 
+					data-user="'.$_SESSION['login'].'" 
+					pattern="'.$pattern.'" 
+					data-session_name="'.$_POST['session_name'].'"
+					class="form-control autosave p-0 m-0 no-gutters '.$zoom.' " 
+					style="resize: both;"
+					minlength=\''.$minlength.'\'';
+					if(strlen($required)>0)	{echo 'required=\''.$required.'\'';}
+					echo 'type=\''.$type.'\' >'.
+					htmlspecialchars($result,ENT_QUOTES).'</textarea></PRE>';
+				echo '</div>';
+				echo '<div class="d-inline  no-gutters">';
+					if($readonly!='readonly')
+					{
+						if($frill){get_primary_result($link,$sample_id,$examination_id);}
+					}
+				echo '</div>';
+			echo '</div>';
+			echo '<div class="help"><pre>'.$help.'</pre></div>';	
+		echo '</div>';
 
+	}
 ///////////////////////
 
 
@@ -3417,7 +3450,14 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
 			$result=run_query($link,$GLOBALS['database'],$sql);
 			$ar=get_single_row($result);
 			$user_info=get_user_info($link,$ar['recorded_by']);
-			$append_info=' ,'.$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
+			if(isset($user_info[$GLOBALS['user_id']]))
+			{
+				$append_info=' ,'.$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
+			}
+			else
+			{
+			$append_info='';				
+			}
 		}
 		else
 		{
@@ -4567,6 +4607,7 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 			else
 			{
 				echo '<input class="w-100" type=text  '.$readonly.' name=\''.'__ex__'.$examination_field_specification['examination_id'].'\' value=\''.htmlentities($value,ENT_QUOTES).'\'>';
+				//echo '<textarea class="w-100" '.$readonly.' name=\''.'__ex__'.$examination_field_specification['examination_id'].'\' value=\''.htmlentities($value,ENT_QUOTES).'\'>'.htmlentities($value,ENT_QUOTES).'</textarea>';
 			}
 		}
 		else if($examination_field_specification['ftype']=='dtable')
@@ -10589,11 +10630,13 @@ function xxx_show_all_buttons_for_sample($link,$sample_id)
 
 function xxx_show_all_buttons_for_sample($link,$sample_id,$mode='view')
 {
+	if($mode=='edit'){$action='edit_generalll.php';}
+	else{$action='viewww_single.php';}
 	echo '<div class="btn-toolbar" role="group">';
 			get_lables_button($link,$sample_id,'sample_id');
-			xxx_sample_id_prev_button($sample_id);
+			xxx_sample_id_prev_button($sample_id,$action);
 			xxx_sample_id_view_button($sample_id);
-			xxx_sample_id_next_button($sample_id);
+			xxx_sample_id_next_button($sample_id,$action);
 			
 			//edit delete not possible if examination is complated. This is single examination
 			$res=get_config_value($link,'restrictive_examination_for_edit_delete');
@@ -10673,9 +10716,9 @@ function xxx_sample_id_edit_button($sample_id,$target='',$label='Edit')
 }
 
 
-function xxx_sample_id_prev_button($sample_id)
+function xxx_sample_id_prev_button($sample_id,$action='viewww_single.php')
 {
-	echo '<div class="d-inline-block"  ><form method=post action=viewww_single.php class=print_hide>
+	echo '<div class="d-inline-block"  ><form method=post action=\''.$action.'\' class=print_hide>
 	<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=sample_id value=\''.($sample_id-1).'\' >Previous</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=view_single>
@@ -10683,9 +10726,9 @@ function xxx_sample_id_prev_button($sample_id)
 }
 
 
-function xxx_sample_id_next_button($sample_id)
+function xxx_sample_id_next_button($sample_id,$action='viewww_single.php')
 {
-	echo '<div class="d-inline-block" ><form method=post action=viewww_single.php  class=print_hide>
+	echo '<div class="d-inline-block" ><form method=post action=\''.$action.'\'  class=print_hide>
 	<button class="btn btn-outline-danger btn-sm m-0 p-0" name=sample_id value=\''.($sample_id+1).'\' >Next</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=view_single>
@@ -10865,18 +10908,21 @@ function xxx_find_max_unique_id($link,$ex_id)
 }
 
 
-function xxx_set_unique_id_prev_next_button($link,$sample_id,$examination_id)
+function xxx_set_unique_id_prev_next_button($link,$sample_id,$examination_id,$mode='view')
 {
+	if($mode=='edit'){$action='edit_generalll.php';}
+	else{$action='viewww_single_unique.php';}
+	
 	$x=get_id_type_examination_result($link,$sample_id,$examination_id);
 	//echo 'xxxxxxxxxxxxxxxx'.$x.'<br>';
 	$current=intval($x);
 	$next=$current+1;
 	$prev=max($current-1,1);
 
-	echo '<div class="btn-toolbar " role="group">';
+	echo '<div class="btn-toolbar d-inline-block" role="group" >';
 	
 	echo '<div class="d-inline-block" >
-			<form method=post action=viewww_single_unique.php class=print_hide>
+			<form method=post action=\''.$action.'\' class=print_hide>
 			<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=action value=prev>Prev</button>
 			<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 			<input type=hidden name=unique_id_value value=\''.$prev.'\'>
@@ -10885,7 +10931,7 @@ function xxx_set_unique_id_prev_next_button($link,$sample_id,$examination_id)
 	</div>';
 	
 	echo '<div class="d-inline-block"  >
-			<form method=post action=viewww_single_unique.php class=print_hide>
+			<form method=post action=\''.$action.'\' class=print_hide>
 			<button class="btn btn-outline-danger  btn-sm m-0 p-0" name=action value=next>Next</button>
 			<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 			<input type=hidden name=unique_id_value value=\''.$next.'\'>
@@ -11101,13 +11147,12 @@ function get_config_value($link,$config_item)
 	return $ar['value'];
 }
 
-
-
 function get_config_value_blob($link,$config_item)
 {
 	$sql='select * from config where name=\''.$config_item.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
-	$ar=get_single_row($result);	
+	$ar=get_single_row($result);
+	if(!$ar){return false;}
 	return $ar['value_blob'];
 }
 
@@ -11287,30 +11332,46 @@ function get_header($link,$sample_id)
 				$examination_details=get_one_examination_details($link,$ex[0]);
 				$edit_specification=json_decode($examination_details['edit_specification'],true);
 				$type=isset($edit_specification['type'])?$edit_specification['type']:'';
-				
-				if($type!='blob')
-				{
 
-							
-		
-					$sql='select * from result where sample_id=\''.$sample_id.'\' and examination_id=\''.$ex[0].'\'';
+				if($type=='config_value_blob')
+				{
+					//continue;
+					$node->nodeValue='';
+
+					$img=isset($edit_specification['img'])?$edit_specification['img']:'';
+					if($img!="png"){continue;}		//not png , go to hell, we donot want to print anything
+					$w=isset($edit_specification['width'])?$edit_specification['width']:'200';
+					$h=isset($edit_specification['height'])?$edit_specification['height']:'200';
+					$sql='select examination_id,result from result where sample_id=\''.$sample_id.'\' and examination_id=\''.$ex[0].'\'';
+					//echo $sql; 
 					$result=run_query($link,$GLOBALS['database'],$sql);
-					if(get_row_count($result)!=1){$node->nodeValue='';continue;}
 					$ar=get_single_row($result);
+					//echo $ar['result'];
+					if(!isset($ar['result'])){continue;}
+					$config_blob=get_config_value_blob($link,$ar['result']);
 					
-					if($examination_details['append_user']==1)
-					{
-						$user_info=get_user_info($link,$ar['recorded_by']);
-						$append_info=' ,'.$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
-					}
-					else
-					{
-						$append_info='';
-					}
-										
-					$node->nodeValue=$ar['result'].$append_info;
+					//if(get_row_count($result)!=1){continue;}		//if no such examination
+					if(strlen($config_blob)==0){continue;}			//if no blob uploaded. formatting wrong if not broken here
+					$encoded_image=base64_encode($config_blob);
+					$i=$dom->createElement('img');
+					
+					$domAttribute = $dom->createAttribute('src');
+					$domAttribute->value = '@'.$encoded_image;
+					$i->appendChild($domAttribute);
+					
+					$domAttribute = $dom->createAttribute('width');
+					$domAttribute->value = $w;					
+					$i->appendChild($domAttribute);
+					
+					$domAttribute = $dom->createAttribute('height');
+					$domAttribute->value = $h;					
+ 					$i->appendChild($domAttribute);
+
+					$node->appendChild($i);
 				}
-				else
+
+
+				else if ($type=='blob')
 				{
 					$node->nodeValue='';
 
@@ -11343,6 +11404,31 @@ function get_header($link,$sample_id)
 
 					$node->appendChild($i);
 				}
+	
+
+				else
+				{
+					$sql='select * from result where sample_id=\''.$sample_id.'\' and examination_id=\''.$ex[0].'\'';
+					$result=run_query($link,$GLOBALS['database'],$sql);
+					if(get_row_count($result)!=1){$node->nodeValue='';continue;}
+					$ar=get_single_row($result);
+					
+					if($examination_details['append_user']==1)
+					{
+						$user_info=get_user_info($link,$ar['recorded_by']);
+						$append_info=' ,'.$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
+					}
+					else
+					{
+						$append_info='';
+					}
+										
+					$node->nodeValue=$ar['result'].$append_info;
+				}
+
+
+								
+
 			}
 		}
 		
@@ -13173,5 +13259,78 @@ function create_multi_label_button($link,$received)
 	</form>
 	</div>';
 }
+
+
+
+function xxx_update_sample_status($link,$sample_id,$examination_id)
+{
+	$examination_details=get_one_examination_details($link,$examination_id);
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	if(!$edit_specification){$edit_specification=array();}
+	$readonly=isset($edit_specification['readonly'])?$edit_specification['readonly']:'';
+	if($readonly!='readonly')
+	{
+		insert_update_one_examination_with_result($link,$sample_id,$examination_id,strftime("%Y-%m-%dT%H:%M"));
+	}
+	else
+	{
+		//
+	}
+}
+
+
+function insert_update_one_examination_with_result_using_unique_id($link,$unique_id,$examination_id,$result)
+{
+	//echo '====finding sample_id for unique_id====<br>';
+	//echo 'unique_id='.$unique_id.'<br>';
+	if(my_is_int($unique_id))
+	{
+		//echo 'unique_id='.$unique_id.' is a number<br>';		
+		if(sample_exist($link,$unique_id))
+		{
+			//echo $unique_id.' is an existing sample_id<br>';
+			xxx_update_sample_status($link,$unique_id,$examination_id);
+
+			//insert_update_one_examination_with_result($link,$unique_id,$examination_id,strftime("%Y-%m-%d %H:%M"));
+		}
+		else
+		{
+			
+			//echo $unique_id.' is an NOT existing sample_id<br>';			
+		}
+	}
+	else
+	{
+		//echo 'unique_id='.$unique_id.' is not a number<br>';		
+		$sql="SELECT * from examination
+					where 
+					JSON_EXTRACT(edit_specification, '$.type')='id_single_sample'";
+					
+					
+		$result=run_query($link,$GLOBALS['database'],$sql);
+		while($examination_details=get_single_row($result))
+		{
+			$edit_specification=json_decode($examination_details['edit_specification'],true);
+			//////print_r($edit_specification);
+			$prefix=isset($edit_specification['unique_prefix'])?$edit_specification['unique_prefix']:'';
+			$table=isset($edit_specification['table'])?$edit_specification['table']:'';
+			$prefix_len=strlen($prefix);
+			if(substr($unique_id,0,$prefix_len)==$prefix)
+			{
+				//echo 'prefix='.$prefix.' is for examination_id='.$examination_details['examination_id'].' and found in table='.$table.'<br>';
+					$sql='select sample_id from `'.$table.'` where id=\''.substr($unique_id,$prefix_len).'\'';
+					//echo $sql.'<br>';
+					$result=run_query($link,$GLOBALS['database'],$sql);
+					while($ar=get_single_row($result))
+					{
+						//echo 'target sample_id is'.$ar['sample_id'].' updating '.$examination_id.'<br>';
+						//insert_update_one_examination_with_result($link,$ar['sample_id'],$examination_id,strftime("%Y-%m-%d %H:%M"));
+						xxx_update_sample_status($link,$ar['sample_id'],$examination_id);
+					}
+			}
+		}
+	}
+}
+
 
 ?>

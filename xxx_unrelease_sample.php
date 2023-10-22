@@ -17,7 +17,9 @@ $auth=explode(',',$user['authorization']);
 
 if($_POST['action']=='set_sample_status')
 {
-	insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
+	//insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
+	xxx_update_sample_status($link,$_POST['sample_id'],$_POST['status_examination_id']);
+
 }
 else if($_POST['action']=='unrelease_sample')
 {

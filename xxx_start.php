@@ -13,7 +13,8 @@ if(isset($_POST['action']))
 {
 	if($_POST['action']=='set_sample_status')
 	{
-		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
+		xxx_update_sample_status($link,$_POST['sample_id'],$_POST['status_examination_id']);
+		//insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
 	}
 
 	if($_POST['action']=='bulk_status_change')
@@ -198,57 +199,6 @@ function xxx_make_unique_id_option($link)
 	echo '</div>';
 
 }
-
-function insert_update_one_examination_with_result_using_unique_id($link,$unique_id,$examination_id,$result)
-{
-	//echo '====finding sample_id for unique_id====<br>';
-	//echo 'unique_id='.$unique_id.'<br>';
-	if(my_is_int($unique_id))
-	{
-		//echo 'unique_id='.$unique_id.' is a number<br>';		
-		if(sample_exist($link,$unique_id))
-		{
-			//echo $unique_id.' is an existing sample_id<br>';
-			insert_update_one_examination_with_result($link,$unique_id,$examination_id,strftime("%Y-%m-%d %H:%M"));
-		}
-		else
-		{
-			
-			//echo $unique_id.' is an NOT existing sample_id<br>';			
-		}
-	}
-	else
-	{
-		//echo 'unique_id='.$unique_id.' is not a number<br>';		
-		$sql="SELECT * from examination
-					where 
-					JSON_EXTRACT(edit_specification, '$.type')='id_single_sample'";
-					
-					
-		$result=run_query($link,$GLOBALS['database'],$sql);
-		while($examination_details=get_single_row($result))
-		{
-			$edit_specification=json_decode($examination_details['edit_specification'],true);
-			//////print_r($edit_specification);
-			$prefix=isset($edit_specification['unique_prefix'])?$edit_specification['unique_prefix']:'';
-			$table=isset($edit_specification['table'])?$edit_specification['table']:'';
-			$prefix_len=strlen($prefix);
-			if(substr($unique_id,0,$prefix_len)==$prefix)
-			{
-				//echo 'prefix='.$prefix.' is for examination_id='.$examination_details['examination_id'].' and found in table='.$table.'<br>';
-					$sql='select sample_id from `'.$table.'` where id=\''.substr($unique_id,$prefix_len).'\'';
-					//echo $sql.'<br>';
-					$result=run_query($link,$GLOBALS['database'],$sql);
-					while($ar=get_single_row($result))
-					{
-						//echo 'target sample_id is'.$ar['sample_id'].' updating '.$examination_id.'<br>';
-						insert_update_one_examination_with_result($link,$ar['sample_id'],$examination_id,strftime("%Y-%m-%d %H:%M"));
-					}
-			}
-		}
-	}
-}
-
 
 
 ?>

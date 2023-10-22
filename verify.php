@@ -220,13 +220,14 @@ function f_10011($link,$sample_id,$ex_id)
 	echo '......Verification of examination_id=10011 (Acc symbol).....<br>';
 	if(xxx_should_display_accreditation_symbol($link,$sample_id))
 	{
-		$acc=get_config_value_blob($link,'nabl_symbol');
-		update_one_examination_with_result_blobvalue($link,$sample_id,$ex_id,my_safe_string($link,$acc),'10011.blob');
+		//$acc=get_config_value_blob($link,'nabl_symbol');
+		update_one_examination_with_result($link,$sample_id,$ex_id,'nabl_symbol');
+		echo 'symbol required . setting value to "nabl_symbol"<br>';
 		return true;
 	}
 	else
 	{
-		update_one_examination_with_result_blobvalue_set_to_null($link,$sample_id,$ex_id);
+		update_one_examination_with_result($link,$sample_id,$ex_id,'');
 	}
 }
 
