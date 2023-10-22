@@ -739,11 +739,7 @@ cht2=new Chart(
 				{
 					type: 'line',
 					data: 	{
-								datasets:[
-											{
-
-											}
-										]
+								/*datasets:[{}]*/
 							},
 
 					options: 	{
@@ -752,37 +748,42 @@ cht2=new Chart(
 										x:
 										{
 											type: 'linear',
+											grid:{
+													display:false,
+												},
 											ticks: {
-														callback: function(value, index, values) 
-																			{
-																				valuee=value.toString()
-																				if(valuee.substring(6,8)>31)
-																				{
-																					return ''
-																				}
-																				else
-																				{
-																					return valuee.substring(0,4)+"-"+valuee.substring(4,6)+"-"+valuee.substring(6,8)
-																				}
-																				//return valuee.substring(0,4)+"-"+valuee.substring(4,6)+"-"+valuee.substring(6,8)+" "+valuee.substring(8,10)+":"+valuee.substring(10,12)+":"+valuee.substring(12,14)
-																				//return ('"'+(value.toFixed())+'"').replace(",","");
-																				//return value.substring(0,10);
-																				//return value;
-																			},
+														//callback: function(value, index, values) 
+																			//{
+																				//valuee=value.toString()
+																				//if(valuee.substring(6,8)>31)
+																				//{
+																					//return ''
+																				//}
+																				//else
+																				//{
+																					//return valuee.substring(0,4)+"-"+valuee.substring(4,6)+"-"+valuee.substring(6,8)
+																				//}
+																				////return valuee.substring(0,4)+"-"+valuee.substring(4,6)+"-"+valuee.substring(6,8)+" "+valuee.substring(8,10)+":"+valuee.substring(10,12)+":"+valuee.substring(12,14)
+																				////return ('"'+(value.toFixed())+'"').replace(",","");
+																				////return value.substring(0,10);
+																				////return value;
+																			//},
 													maxRotation: 90,
 													minRotation: 90,
 													stepSize:1000000
 													},
 										},
 
-
 										y:
 										{
 										type: 'linear',
+										grid:	{
+														color:'#131c2b',
+													},
 										ticks: {
 													callback: function(value, index, values) 
 																		{
-																			valuee=value.toString()+' SD'
+																			valuee=value.toString()+' SDD'
 																			return valuee
 																		},
 												},

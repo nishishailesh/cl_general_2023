@@ -5,11 +5,6 @@ require_once 'base/verify_login.php';
 echo '		  <link rel="stylesheet" href="project_common.css">
 		  <script src="project_common.js"></script>
 		  <script src="bootstrap/chart.min.js"></script>';	
-		  
-//<script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
-//<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-
-		  
 ////////User code below/////////////////////
 //echo '<pre>';print_r($_POST);echo '</pre>';
 
@@ -48,11 +43,7 @@ echo '</div>';
 
 if($_POST['action']=='find_qc_data')
 {
-	echo '<button class="btn btn-primary" type="button"  data-toggle="collapse" data-target="#lj_table" aria-expanded="false" >Show Hide Results</button>';
-			echo '<div id="lj_table" class="show p-3 bg-light border border-dark">';
-				$data=prepare_qc_data_from_search_condition($link,$_POST);
-			echo '</div>';
-
+	$data=prepare_qc_data_from_search_condition($link,$_POST);
 	//echo '<pre>';print_r($data);echo '</pre>';
 	$json=json_encode($data);	//used by chart.js
 	//echo $json;
@@ -60,10 +51,8 @@ if($_POST['action']=='find_qc_data')
 	$sorted_array=array();
 	foreach($data as $qc)
 	{
-		$ex_data=get_one_examination_details($link,$qc['examination_id']);
-		
-		//$sorted_array[$qc['examination_id'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
-		$sorted_array[$ex_data['name'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
+		//$sorted_array[$qc['examination_id'].'_'.$qc['equipment'].'_'.$qc['qc_lot']][]=[  'examintaion_name' =>$qc['examination_name'], 'sample_analysis'=>$qc['sample_analysis'], 'uniq'=>$qc['uniq'],'sdi'=>$qc['sdi'] ];
+		$sorted_array[$qc['examination_id'].'_'.$qc['qc_lot(sample)']][]=$qc;
 	}
 	//echo '<pre>';print_r($sorted_array);echo '</pre>';
 	$sorted=json_encode($sorted_array);		//used by chart.js
@@ -623,9 +612,9 @@ function xxx_edit_primary_result_extra_button($sample_id,$examination_id,$uniq,$
     height:500px;
   }
 </style>
-
-<div id="chart-wrapper" class="d-block">
-	<canvas id="lj_chart2" ></canvas>
+<div id="chart-wrapper">
+<!-- <canvas id="lj_chart" ></canvas> -->
+<canvas id="lj_chart2" ></canvas>
 </div>
 
 <script>
@@ -659,7 +648,6 @@ function my_search_test()
 jdata=<?php echo $json; ?>;
 sdata=<?php echo $sorted; ?>;
 
-//original linear scale
 function addData(chart, label, newData) 
 {
 	len=chart.data.datasets.push({"data":newData})	
@@ -673,9 +661,7 @@ function addData(chart, label, newData)
 	//now add one member whose value is json array
 	
 	//chart.data.datasets[len-1].parsing.xAxisKey="sample_analysis"
-	//chart.data.datasets[len-1].parsing.xAxisKey="uniq"
-	//chart.data.datasets[len-1].parsing.xAxisKey="qc_id"
-	chart.data.datasets[len-1].parsing.xAxisKey="sample_id"
+	chart.data.datasets[len-1].parsing.xAxisKey="uniq"
     //to ensure that it do not replace , but adds value  
     
     chart.data.datasets[len-1].backgroundColor=getRandomColor()
@@ -684,27 +670,53 @@ function addData(chart, label, newData)
 }
 
 
+/*
+cht=new Chart(
+			document.getElementById("lj_chart"), 
+			{
+				type: 'line',
+				data: 	{
+							datasets:[
+										{
+											label: 'LJ Chart1',
+											data:jdata,
+											parsing:
+											{
+												yAxisKey:'sdi',
+												xAxisKey:'uniq',
+											}
+										},
+									]
+						},
 
+				options: 	{
+								scales:
+								{
+									y:{min:-4, max:4},
+								},
+								responsive: true
+							}
+			}
+         );
+*/
 cht2=new Chart(
 				document.getElementById("lj_chart2"), 
 				{
-					/*type: 'line',*/
-					type: 'scatter',
+					type: 'line',
+					data: 	{
+								datasets:[
+											{
 
-					options: {	
-									showLine: true,
+											}
+										]
+							},
+
+					options: 	{
 									scales:
 									{
-										
 										x:
 										{
 											type: 'linear',
-											reverse: true,
-											grid:	{
-														/*color:["black","red","orange","green","green","green","orange","red","black"],*/
-														display:false
-												},
-											title: {text:"sample id",display:true,color:"red"},
 											ticks: {
 														callback: function(value, index, values) 
 																			{
@@ -724,17 +736,14 @@ cht2=new Chart(
 																			},
 													maxRotation: 90,
 													minRotation: 90,
-													/*stepSize:1000000*/
+													stepSize:1000000
 													},
 										},
-										
+
 
 										y:
 										{
-										type: 'linear',										
-										grid:	{
-													color:["black","red","orange","green","green","green","orange","red","black"],
-												},
+										type: 'linear',
 										ticks: {
 													callback: function(value, index, values) 
 																		{
