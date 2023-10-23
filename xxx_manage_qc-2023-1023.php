@@ -15,19 +15,14 @@ echo '		  <link rel="stylesheet" href="project_common.css">
 
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
-//echo '<h1>'.find_max_qc_id($link).'</h1>';
-$sar=find_today_qc_id($link);
-//print_r($sar);
-
-
 $qc_sql="select * from examination  where sample_requirement!='None' order by request_route,name";
 
 echo '<button class="btn btn-primary" type="button" 
 		data-toggle="collapse" data-target="#get_data" aria-expanded="false" >Show Hide Search Window</button>';
-echo '<div id="get_data" class=" p-3 bg-light border border-dark collapse">';
+echo '<div id="get_data" class="show p-3 bg-light border border-dark">';
 	echo '<div class="two_column_one_by_two show" >';
 				echo '<div>';
-
+		
 						xxx_get_examination_data_for_qc($link,$qc_sql);
 
 						echo '<div>
@@ -42,6 +37,7 @@ echo '<div id="get_data" class=" p-3 bg-light border border-dark collapse">';
 											<div id=my_search_result></div>
 										</div>						
 						</div>';
+					
 				echo '</div>';
 		
 				echo '<div>';
@@ -72,44 +68,6 @@ if($_POST['action']=='find_qc_data')
 	//echo '<pre>';print_r($sorted_array);echo '</pre>';
 	$sorted=json_encode($sorted_array);		//used by chart.js
 	
-}
-else
-{
-	//echo implode(',',$sar);
-	
-	$sql='select * from primary_result where sample_id in ('.implode(',',$sar).') order by sample_id';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-
-
-	echo '<button class="btn btn-primary" type="button"  data-toggle="collapse" data-target="#lj_table" aria-expanded="false" >Show Hide Results</button>';
-	echo '<div id="lj_table" class="show p-3 bg-light border border-dark">';
-					echo $sql;
-				
-					echo '<table class="table table-striped table-sm m-3 table-responsive">';
-					
-					$first='yes';
-					$data=[];
-					while($ar=get_single_row($result))
-					{
-						$q=display_one_qc($link,$ar,$first);
-						$data[]=$q;
-						$first='no';
-					}
-					echo '</table>';
-	
-	echo '</div>';
-	$json=json_encode($data);
-	$sorted_array=array();
-	foreach($data as $qc)
-	{
-		$ex_data=get_one_examination_details($link,$qc['examination_id']);
-		
-		//$sorted_array[$qc['examination_id'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
-		$sorted_array[$ex_data['name'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
-	}
-	//echo '<pre>';print_r($sorted_array);echo '</pre>';
-	$sorted=json_encode($sorted_array);		//used by chart.js
-
 }
 
 //////////////user code ends////////////////
@@ -239,7 +197,7 @@ function prepare_qc_data_from_search_condition($link,$post)
 	$result=run_query($link,$GLOBALS['database'],$root_sql);
 	$data=array();
 		
-	echo '<table class="table table-striped table-sm m-3 table-responsive">';
+	echo '<table class="table table-striped table-sm m-3">';
 
 	$first='yes';
 	while($ar=get_single_row($result))
@@ -511,27 +469,19 @@ function display_one_qc($link,$primary_result_array,$first)
 
 	//format_one_lj_point($q);
 
-
-
-			
 	foreach($q as $k=>$v)
 	{
-			if ( ($q['sdi']>=2 and $q['sdi']<3) or ($q['sdi']<=-2 and $q['sdi']>-3) ){$style="text-warning";}
-			elseif($q['sdi']>=3 or $q['sdi']<=-3){$style="text-danger";}
-			else{$style="text-success";}
-			
 		if(in_array($k,['result','mean','sd']))
 		{
-			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;" class=" '.$style.'" >'.$v.'</td>';
+			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;" class="text-danger">'.$v.'</td>';
 		}
 		elseif(in_array($k,['remark(result)']))
 		{
-			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;"><button class="btn btn-sm btn-info" title="'.$v.'" type=button onclick="alert(\''.$v.'\')" >'.substr($v,0,3).'.</button></td>';
+			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;"><button title="'.$v.'" type=button onclick="alert(\''.$v.'\')" >'.substr($v,0,3).'</button></td>';
 		}
 		elseif(in_array($k,['sdi']))
 		{
-
-			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;" class="'.$style.'">'.$v.'</td>';
+			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;">'.$v.'</td>';
 			format_one_lj_point($q);
 		}
 		elseif(in_array($k,['sample_id']))
@@ -624,7 +574,6 @@ function get_qc_search_conditions($link,$examination_id,$search_list_of_examinat
 		get_one_field_for_search($link,$examination_id);
 	}
 
-	$qc_id_examination_id=get_config_value($link,'qc_id_examination_id');
 	foreach($range_search_list_of_examination_id as $examination_id)
 	{
 		if($examination_id=='sample_id')
@@ -633,16 +582,7 @@ function get_qc_search_conditions($link,$examination_id,$search_list_of_examinat
 		}
 		else
 		{
-			
-			if($qc_id_examination_id==$examination_id)
-			{
-				$max_qc_id=find_max_qc_id($link);
-				get_one_field_for_range_search($link,$examination_id,$max_qc_id-10,$max_qc_id);
-			}
-			else
-			{
-				get_one_field_for_range_search($link,$examination_id);
-			}
+			get_one_field_for_range_search($link,$examination_id);
 		}
 	}
 
@@ -671,54 +611,6 @@ function xxx_edit_primary_result_extra_button($sample_id,$examination_id,$uniq,$
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=edit_qc_extra>
 	</form></div>';
-}
-
-
-function find_max_qc_id($link)
-{
-	$qc_id_examination_id=get_config_value($link,'qc_id_examination_id');
-	$examination_details=get_one_examination_details($link,$qc_id_examination_id);
-	$edit_specification=json_decode($examination_details['edit_specification'],true);
-	if(!$edit_specification){echo 'No such examination_id??'; return false;}
-	$table=$edit_specification['table'];
-	$sql='select max(id) max_id from `'.$table.'`';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	$ar=get_single_row($result);
-	print_r($ar);
-	return $ar['max_id'];
-}
-
-
-function find_today_qc_id($link)
-{
-	$qc_id_examination_id=get_config_value($link,'qc_id_examination_id');
-	$examination_details=get_one_examination_details($link,$qc_id_examination_id);
-	$edit_specification=json_decode($examination_details['edit_specification'],true);
-	if(!$edit_specification){echo 'No such examination_id??'; return false;}
-	$table=$edit_specification['table'];
-	
-	$qc_analysis_time_examination_id=get_config_value($link,'qc_analysis_time_examination_id');
-
-	$sql='select  s.sample_id sid,r.sample_id, r.result , q.sample_id,q.id
-			from sample_link s 
-			
-			join result r 
-			join `'.$table.'` q
-			
-			on 
-				s.sample_id=r.sample_id and 
-				r.examination_id=\''.$qc_analysis_time_examination_id.'\' and 
-				r.result like concat(date(sysdate()),"%")
-				and q.sample_id=r.sample_id';
-				
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	$sar=[];
-	while($ar=get_single_row($result))
-	{
-		//print_r($ar);
-		$sar[]=$ar['sid'];
-	}
-	return $sar;
 }
 
 ?>
