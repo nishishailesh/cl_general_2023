@@ -12282,10 +12282,6 @@ function get_one_field_for_search($link,$examination_id)
 	{
 		$option_html='';
 	}
-	
-
-
-
 
 	//echo 'x';print_r($ex_data);echo 'x';
 	if(!is_array($ex_data)){return;}
@@ -12306,7 +12302,7 @@ function get_one_field_for_search($link,$examination_id)
 }
 
 //used in search and print
-function get_one_field_for_range_search($link,$examination_id)
+function get_one_field_for_range_search($link,$examination_id,$default_from='',$default_to='')
 {
 	$ex_data=get_one_examination_details($link,$examination_id);
 	//echo 'x';print_r($ex_data);echo 'x';
@@ -12344,7 +12340,7 @@ function get_one_field_for_range_search($link,$examination_id)
 		echo '</div>';
 		
 		echo '<div class="d-inline p-2">';
-		echo '		<input type=text size=13 id=\'__from__'.$examination_id.'\'  	name=\'__from__'.$examination_id.'\' 	class="form-control text-danger"\>'.$option_html_from;
+		echo '		<input type=text size=13 value=\''.$default_from.'\' id=\'__from__'.$examination_id.'\'  	name=\'__from__'.$examination_id.'\' 	class="form-control text-danger"\>'.$option_html_from;
 			echo '<input type=hidden 					name=\'__ex__'.$examination_id.'\' 		value=\'\'>';
 
 		echo '</div>';		
@@ -12356,7 +12352,7 @@ function get_one_field_for_range_search($link,$examination_id)
 		echo '</div>';
 		
 		echo '<div class="d-inline p-2">';
-		echo '		<input type=text size=13 id=\'__to__'.$examination_id.'\'   	name=\'__to__'.$examination_id.'\' 		class="form-control text-danger"\>'.$option_html_to;
+		echo '		<input type=text size=13 value=\''.$default_to.'\' id=\'__to__'.$examination_id.'\'   	name=\'__to__'.$examination_id.'\' 		class="form-control text-danger"\>'.$option_html_to;
 		echo '</div>';		
 	echo '</div>';
 	echo '</fieldset>';		
@@ -13332,5 +13328,20 @@ function insert_update_one_examination_with_result_using_unique_id($link,$unique
 	}
 }
 
+function xxx_echo_download_button($link,$tname,$fname,$id)
+{
+	echo '<form method=post action=xxx_download.php class="d-inline" >
+			<input type=hidden name=table value=\''.$tname.'\'>
+			<input type=hidden name=field value=\''.$fname.'\' >
+			<input type=hidden name=primary_key value=\''.$id.'\'>
+			<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+			
+			<button class="btn btn-info  btn-sm"  
+			formtarget=_blank
+			type=submit
+			name=action
+			value=download>Download</button>
+		</form>';
+}
 
 ?>

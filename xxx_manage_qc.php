@@ -20,10 +20,12 @@ $sar=find_today_qc_id($link);
 //print_r($sar);
 
 
+$limit=isset($_POST['row_limit'])?$_POST['row_limit']:get_config_value($link,'qc_result_limit');
+
+
 $qc_sql="select * from examination  where sample_requirement!='None' order by request_route,name";
 
-echo '<button class="btn btn-primary" type="button" 
-		data-toggle="collapse" data-target="#get_data" aria-expanded="false" >Show Hide Search Window</button>';
+echo '<a  data-toggle="collapse" href="#get_data" aria-expanded="false" class="m-2 p-2">Show/Hide Search Window</a>';
 echo '<div id="get_data" class=" p-3 bg-light border border-dark collapse">';
 	echo '<div class="two_column_one_by_two show" >';
 				echo '<div>';
@@ -45,16 +47,17 @@ echo '<div id="get_data" class=" p-3 bg-light border border-dark collapse">';
 				echo '</div>';
 		
 				echo '<div>';
-						get_qc_search_conditions($link,1048,array('3001','9000'),array('1048','10006','sample_id'));
+						get_qc_search_conditions($link,1048,array('3001','9000'),array('1048','10006','sample_id'),$limit);
 				echo '</div>';
 	echo '</div>';
 echo '</div>';
 
 if($_POST['action']=='find_qc_data')
 {
-	echo '<button class="btn btn-primary" type="button"  data-toggle="collapse" data-target="#lj_table" aria-expanded="false" >Show Hide Results</button>';
+	echo '<a  data-toggle="collapse" href="#lj_table" class="m-2 p-2" aria-expanded="false" >Show/Hide Results</a>';
+	//echo '<button class="btn btn-primary" type="button"  data-toggle="collapse" data-target="#lj_table" aria-expanded="false" >Show Hide Results</button>';
 			echo '<div id="lj_table" class="show p-3 bg-light border border-dark">';
-				$data=prepare_qc_data_from_search_condition($link,$_POST);
+				$data=prepare_qc_data_from_search_condition($link,$_POST,$limit);
 			echo '</div>';
 
 	//echo '<pre>';print_r($data);echo '</pre>';
@@ -72,45 +75,68 @@ if($_POST['action']=='find_qc_data')
 	//echo '<pre>';print_r($sorted_array);echo '</pre>';
 	$sorted=json_encode($sorted_array);		//used by chart.js
 	
+	
+	//convert in to csv and upload in database and display download link
+	$csv='';
+	foreach($sorted_array as $v)
+	{
+		foreach($v as $vv)
+		{
+			$csv=$csv.'"'.implode('","',$vv).'"'.PHP_EOL;
+		}
+	}
+	
+	$safe_csv=my_safe_string($link,$csv);
+	$csv_sql='insert into upload_data (upload_data,upload_data_name) values (\''.$safe_csv.'\', \'qc.csv\')';
+	//echo $csv_sql.'<br>';
+	$result_csv=run_query($link,$GLOBALS['database'],$csv_sql);
+	if($result_csv!==false)
+	{
+		$upload_id=last_autoincrement_insert($link);
+		xxx_echo_download_button($link,'upload_data','upload_data',$upload_id);
+	}
 }
-else
+else if(count($sar)>0)
 {
 	//echo implode(',',$sar);
 	
 	$sql='select * from primary_result where sample_id in ('.implode(',',$sar).') order by sample_id';
 	$result=run_query($link,$GLOBALS['database'],$sql);
-
-
-	echo '<button class="btn btn-primary" type="button"  data-toggle="collapse" data-target="#lj_table" aria-expanded="false" >Show Hide Results</button>';
-	echo '<div id="lj_table" class="show p-3 bg-light border border-dark">';
-					echo $sql;
-				
-					echo '<table class="table table-striped table-sm m-3 table-responsive">';
-					
-					$first='yes';
-					$data=[];
-					while($ar=get_single_row($result))
-					{
-						$q=display_one_qc($link,$ar,$first);
-						$data[]=$q;
-						$first='no';
-					}
-					echo '</table>';
-	
-	echo '</div>';
-	$json=json_encode($data);
-	$sorted_array=array();
-	foreach($data as $qc)
+	if(get_row_count($result)>=1)
 	{
-		$ex_data=get_one_examination_details($link,$qc['examination_id']);
+		echo '<a  data-toggle="collapse" href="#lj_table" class="m-2 p-2" aria-expanded="false" >Show/Hide Results</a>';
+		//echo '<button class="btn btn-primary" type="button"  data-toggle="collapse" data-target="#lj_table" aria-expanded="false" >Show Hide Results</button>';
+		echo '<div id="lj_table" class="show p-3 bg-light border border-dark">';
+						echo $sql;
+					
+						echo '<table class="table table-striped table-sm m-3 table-responsive">';
+						
+						$first='yes';
+						$data=[];
+						while($ar=get_single_row($result))
+						{
+							$q=display_one_qc($link,$ar,$first);
+							$data[]=$q;
+							$first='no';
+						}
+						echo '</table>';
 		
-		//$sorted_array[$qc['examination_id'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
-		$sorted_array[$ex_data['name'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
+		echo '</div>';
+		$json=json_encode($data);
+		$sorted_array=array();
+		foreach($data as $qc)
+		{
+			$ex_data=get_one_examination_details($link,$qc['examination_id']);
+			
+			//$sorted_array[$qc['examination_id'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
+			$sorted_array[$ex_data['name'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
+		}
+		//echo '<pre>';print_r($sorted_array);echo '</pre>';
+		$sorted=json_encode($sorted_array);		//used by chart.js
 	}
-	//echo '<pre>';print_r($sorted_array);echo '</pre>';
-	$sorted=json_encode($sorted_array);		//used by chart.js
-
 }
+else if(count($sar)<=0){echo '<h2 class="text-warning">no qc results available today</h2>';}
+
 
 //////////////user code ends////////////////
 tail();
@@ -119,7 +145,7 @@ tail();
 
 //////////////Functions///////////////////////
 
-function prepare_qc_data_from_search_condition($link,$post)
+function prepare_qc_data_from_search_condition($link,$post,$limit=400)
 {
 	//echo '<pre>';print_r($post);echo '</pre>';
 	
@@ -139,7 +165,14 @@ function prepare_qc_data_from_search_condition($link,$post)
 			{
 				//echo 'It is a range search ..<br>';
 				$from=$post['__from__'.$search_examination_id];
-				$to=$post['__to__'.$search_examination_id];
+				if(strlen($post['__to__'.$search_examination_id])>0)
+				{
+					$to=$post['__to__'.$search_examination_id];
+				}
+				else
+				{
+					$to=$from;
+				}
 				//echo 'required range is from '.$from.' to '.$to.'..<br>';
 				
 				if($search_examination_id!=='sample_id')
@@ -160,7 +193,9 @@ function prepare_qc_data_from_search_condition($link,$post)
 				}
 				else
 				{
+						//echo 'hiiiii';
 						$sql=$sql . '(select sample_id from sample_link where sample_id between \''.$from.'\' and  \''.$to.'\' ) intersect ';
+						//echo $sql;
 				}
 	
 				
@@ -221,20 +256,24 @@ function prepare_qc_data_from_search_condition($link,$post)
 	
 	if($_POST['sort_order']=='sample_id')
 	{
-		$root_sql=$root_sql.' order by sample_id desc,examination_id,uniq desc limit 400';
+		$root_sql=$root_sql.' order by sample_id desc,examination_id,uniq desc limit '.$limit;
 	}
 	else if($_POST['sort_order']=='examination_id')
 	{
-		$root_sql=$root_sql.' order by examination_id,sample_id desc,uniq desc limit 400';
+		$root_sql=$root_sql.' order by examination_id,sample_id desc,uniq desc limit '.$limit;
 	}
 	else
 	{
-		$root_sql=$root_sql.' order by examination_id,sample_id desc,uniq desc limit 400';		
+		$root_sql=$root_sql.' order by examination_id,sample_id desc,uniq desc limit '.$limit;
 	}
 	
 	
 	//////////final//////////////////
-	echo $root_sql.'<br>';
+	echo '<a data-toggle="collapse" href="#root_sql" role="button">View SQL</a>';
+	echo '<div id=root_sql class="collapse">';
+		echo $root_sql;
+	echo '</div>';
+	
 	//view_sql_result_as_table($link,$root_sql,$show_hide='yes');
 	$result=run_query($link,$GLOBALS['database'],$root_sql);
 	$data=array();
@@ -599,7 +638,7 @@ function xxx_get_examination_data_for_qc($link,$sql)
 
 
 
-function get_qc_search_conditions($link,$examination_id,$search_list_of_examination_id,$range_search_list_of_examination_id)
+function get_qc_search_conditions($link,$examination_id,$search_list_of_examination_id,$range_search_list_of_examination_id,$limit)
 {
 	if($examination_id=='sample_id')
 	{
@@ -612,7 +651,8 @@ function get_qc_search_conditions($link,$examination_id,$search_list_of_examinat
 	}	
 		
 	echo '<form method=post>';
-	echo '<input type=hidden size=13 id=from name=examination_id value=\''.$examination_id.'\' class="form-control text-danger"\>';
+	
+	//echo '<input type=hidden size=13 id=from name=examination_id value=\''.$examination_id.'\' class="form-control text-danger"\>';
 
 	//echo '<div class="basic_form">';
 	//	echo '<div>ID Range</div>';
@@ -637,7 +677,7 @@ function get_qc_search_conditions($link,$examination_id,$search_list_of_examinat
 			if($qc_id_examination_id==$examination_id)
 			{
 				$max_qc_id=find_max_qc_id($link);
-				get_one_field_for_range_search($link,$examination_id,$max_qc_id-10,$max_qc_id);
+				get_one_field_for_range_search($link,$examination_id,$max_qc_id-20,$max_qc_id);
 			}
 			else
 			{
@@ -650,7 +690,8 @@ function get_qc_search_conditions($link,$examination_id,$search_list_of_examinat
 	echo '<div><label for="sample_id_sort" >sample_id sort</lable><input type="radio" checked="checked" id="sample_id_sort" name="sort_order" value="sample_id"></div>';
 	echo '<div><label for=examination_id_sort >examination_id sort</lable><input type="radio" name="sort_order" id=examination_id_sort value="examination_id"></div>';
 	echo '</fieldset>';
-	
+	echo '<label for="row_limit" >limit</lable><input id=row_limit value=\''.$limit.'\' type=number name=row_limit>';
+
 	echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=find_qc_data>Search</button>';
 
 	
@@ -684,7 +725,7 @@ function find_max_qc_id($link)
 	$sql='select max(id) max_id from `'.$table.'`';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);
-	print_r($ar);
+	//print_r($ar);
 	return $ar['max_id'];
 }
 
@@ -723,16 +764,7 @@ function find_today_qc_id($link)
 
 ?>
 
-<style>
-  #chart-wrapper {
-    display: inline-block;
-    position: relative;
-    width: 1000px;
-    height:500px;
-  }
-</style>
-
-<div id="chart-wrapper" class="d-block">
+<div class="d-block" style="width:80%">
 	<canvas id="lj_chart2" ></canvas>
 </div>
 
@@ -766,6 +798,8 @@ function my_search_test()
 
 jdata=<?php echo $json; ?>;
 sdata=<?php echo $sorted; ?>;
+
+//alert(JSON.stringify(sdata));
 
 //original linear scale
 function addData(chart, label, newData) 
@@ -801,6 +835,7 @@ cht2=new Chart(
 
 					options: {	
 									showLine: true,
+									locale: 'en-EN', // Uncomment this line for "wrong" options
 									scales:
 									{
 										
@@ -823,7 +858,8 @@ cht2=new Chart(
 																				}
 																				else
 																				{
-																					return valuee.substring(0,4)+"-"+valuee.substring(4,6)+"-"+valuee.substring(6,8)
+																					return valuee.replace(/,/g, '');
+																					//return valuee.substring(0,4)+"-"+valuee.substring(4,6)+"-"+valuee.substring(6,8)
 																				}
 																				//return valuee.substring(0,4)+"-"+valuee.substring(4,6)+"-"+valuee.substring(6,8)+" "+valuee.substring(8,10)+":"+valuee.substring(10,12)+":"+valuee.substring(12,14)
 																				//return ('"'+(value.toFixed())+'"').replace(",","");
@@ -860,10 +896,22 @@ cht2=new Chart(
 										tooltip:
 										{
 											enabled: true,
+											bodyFont:{size:24},
 											callbacks:
 											{
 												title: function(){return '';},
-												label: function(context){return JSON.stringify(context.parsed)+', examination='+context.raw['examination_name']+',sample_id='+context.raw['sample_id']+',qc_id='+context.raw['qc_id']+',result='+context.raw['result']+',mean='+context.raw['mean']+',sd='+context.raw['sd'];}
+												//label: function(context){return JSON.stringify(context.parsed)+',<br>'+context.raw['qc_analysis_time']+', examination='+context.raw['examination_name']+',sample_id='+context.raw['sample_id']+',qc_id='+context.raw['qc_id']+',result='+context.raw['result']+',mean='+context.raw['mean']+',sd='+context.raw['sd'];}
+												label: function(context){
+																			return [
+																					'datetime='+context.raw['qc_analysis_time'],
+																					'examination='+context.raw['examination_name'],
+																					'sample_id='+context.raw['sample_id'],
+																					'qc_id='+context.raw['qc_id'],
+																					'result='+context.raw['result'],
+																					'mean='+context.raw['mean'],
+																					'sd='+context.raw['sd']
+																					]
+																		}
 												//label: function(context){return JSON.stringify(context.raw,null,"\t");}
 												//label: function(context){ return JSON.stringify(context.raw).replace(",","\t"); }
 												//label: function(context){ return JSON.stringify(context.raw) ;}

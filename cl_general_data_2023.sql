@@ -50,6 +50,7 @@ INSERT INTO `config` VALUES
 ('qc_equipment_examination_id','9000',NULL,NULL),
 ('qc_id_examination_id','1048',NULL,NULL),
 ('qc_lot_examination_id','3001',NULL,NULL),
+('qc_result_limit','400',NULL,NULL),
 ('qr_code_width','100',NULL,''),
 ('qr_link_prefix','https://gmcsurat.edu.in:12349/clg/',NULL,''),
 ('report_bottom_margin','15',NULL,''),
@@ -1189,4 +1190,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-24  0:47:57
+-- Dump completed on 2023-10-25  0:40:27
