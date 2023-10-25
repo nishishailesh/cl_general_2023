@@ -1060,74 +1060,6 @@ INSERT INTO `examination_field_specification` VALUES
 UNLOCK TABLES;
 
 --
--- Table structure for table `user`
---
-
-DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user` (
-  `user` bigint(20) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `password` varchar(1000) NOT NULL,
-  `expirydate` date NOT NULL,
-  `authorization` varchar(300) NOT NULL,
-  `insert_authorization_level` int(11) NOT NULL,
-  `update_authorization_level` int(11) NOT NULL,
-  `select_authorization_level` int(11) NOT NULL,
-  `delete_authorization_level` int(11) NOT NULL,
-  PRIMARY KEY (`user`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES
-(1,'shailesh','U5aSciO38lRp6','2024-04-21','lock,unlock,interimlock',3,3,3,3),
-(2,'Sarita','IcNtCQGAzp7VE','2024-04-21','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(4,'request reception','I4jVz9vb5jF1k','2024-04-21','lock,unlock,interimlock',1,0,1,0),
-(12345,'Doctor','uNs3jYN7IFYAg','2026-04-21','',0,0,0,0),
-(6351535170,'Hemlata Patel ','WntX7ZEcuDRCY','2028-06-05','interimlock',2,2,2,2),
-(7284091830,'Payal Patel','O0jIXUDqyn52M','2024-11-19','interimlock',2,2,2,2),
-(7487028262,'Dr KRISHNA THAKKAR','$2y$10$ZWWSMOFedHcVFsXVr0PTh.QzJF2igYnU47RaRB.NB3Fsz4WGLdgt6','2024-04-19','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(7490022677,'Dr.Nilam','bl.IZH8hheaDk','2025-03-05','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(7567024314,'Dr. Champak','2mt1qohdZblfI','2028-03-11','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(7600008019,'Rina Prajapati','0qvmnUPogS7KI','2030-01-23','interimlock',2,2,2,2),
-(7990328826,'Dr Purvi Tailor','ZtTQrpZieuZtc','2026-05-08','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(7990709978,'Sandeep Goyal','$2y$10$JUHR4ms/FifK5Q6kmftBTeuKw3iO4xTNNEsOL7FTcFwTa3gt5DRDa','2020-11-11','',2,2,2,2),
-(8160541939,'Dr. Arvachi','TkA9hhfzt3ovM','2028-03-11','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(8238468795,'Sonali ','XZamQ.w.ZfvUI','2024-11-19','interimlock',2,2,2,2),
-(8320142037,'Rutvi Vadadoriya','$2y$10$bvfrMRs4aeB9BaX/rTqY9Ova5PBp6N2z4VhseFjTtRsSwPUrs3AWC','2024-02-19','interimlock',2,2,2,2),
-(8469787088,'Dr. Vidhya','Sqc07MFn6bNBQ','2028-03-11','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(8500791867,'Dr. Shruti','$2y$10$XjtvB3LQaAZHKybzEY6te.IUcofBthuCDG17By8DMQ6a43rhgXwSS','2024-03-11','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(8866580625,'Dr. Dhvani Jethva','$2y$10$DujBQ1a9vcTVSktBFYUyn.DENl6qIfsL.NraBa7j6umij9tizB/.i','2025-04-29','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(8866829055,'Dr. Niral Savaliya ','s5sDnfQBwAYp6','2040-11-11','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(9067457098,'Kishor Vaghani','$2y$10$UiSIbjCI22NcrSbGsC2Mveu4Q2.DHe2VvDyMaQhRYIoiBxjaGPjtC','2023-11-05','interimlock',2,2,2,2),
-(9074412465,'Dr. Abhay','hnIagkwLEipVw','2028-03-11','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(9099666466,'Manisha Patel','$2y$10$CXf.G8P1rGKJfAG4/Ukws.Tc19KOkyj2BtQ1T0IbrzX5WAx2c7A66','2022-11-25','interimlock',2,2,2,2),
-(9408029245,'Anshu Yadav','5KU7yWVaceGI2','2023-11-04','interimlock',2,2,2,2),
-(9408906519,'Preeti Pandya','$2y$10$4.AOEMyk/Cx4hVFKoZvb6.mcHikswLMp5z4tMTAzwx4XaR2NvHiUW','2024-12-02','interimlock',2,2,2,2),
-(9409510124,'Dr Drashti Detroja','EYVeq4zJUFol2','2026-05-08','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(9426713235,'Dr. Shyam','tpwyGH4W.sfFc','2028-03-11','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(9427460293,'Viresh Patel','YRD/i/KKh9t3o','2030-11-20','interimlock',2,2,2,2),
-(9428743513,'Dr. Alok Parekh','ebykSezGMuDCk','2040-11-11','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(9512177451,'Dharmesh Patel','yRI8Pcvcx48Eg','2025-04-22','interimlock',2,2,2,2),
-(9537308448,'Kirti Pagada','$2y$10$OTwYyrR7MSrAkOocSuRSve6T9Rei9mCQJshlpIyZWVXCNxyfK3zXu','2024-01-27','interimlock',2,2,2,2),
-(9586395084,'Abhishek','$2y$10$ShvBG7iu70PpnWyXDwp9C.6uSB2VlB3cz9nx1qCqdtrCBaXhCG3Ge','2024-04-17','interimlock',2,2,2,2),
-(9586455544,'Dr Snehal Patel','$2y$10$RtDTboQFOYCPA.eQCRbgze2YfM0EGhiU8yi1wOxXAXoKzuWWI.GIm','2023-11-25','lock,unlock,interimlock,limit_request=2',3,3,3,3),
-(9687271872,'Trupti Ghevariya','$2y$10$WV4XVlJ1DQJlD.ZCECIgN.aJZ/I6vQgRjlQPNgdHCQETXAR2K5xUS','2023-11-27','interimlock',2,2,2,2),
-(9726765502,'Priyanka Vasava','$2y$10$86l8lBDpHcFMmVMJCGQoIudvayHj0X9tbE/oWNAwtVGKKC0lzTDka','2023-01-02','interimlock',2,2,2,2),
-(9824716448,'Ramesh Patel','FivZZbdlKwv/c','2025-06-26','interimlock',2,2,2,2),
-(9825259368,'Niharika Patel','b/EsTjkaCB0zI','2025-11-21','interimlock',2,2,2,2),
-(9925442232,'Divyesh Patel','$2y$10$X.kZhbC5pOd/sMy4iTQX2uusH2pnLHA3QAxAkIStH5bb5cLG5VYcq','2023-12-29','interimlock',2,2,2,2);
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `view_info_data`
 --
 
@@ -1190,4 +1122,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-25  0:40:27
+-- Dump completed on 2023-10-26  1:24:24

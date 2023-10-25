@@ -27,7 +27,6 @@ sample_id_strategy
 sample_status
 sql
 examination_field_specification
-user
 view_info_data
 '
 

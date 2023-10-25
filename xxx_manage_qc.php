@@ -141,12 +141,19 @@ else if(count($sar)<=0){echo '<h2 class="text-warning">no qc results available t
 //////////////user code ends////////////////
 tail();
 
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 
 //////////////Functions///////////////////////
 
 function prepare_qc_data_from_search_condition($link,$post,$limit=400)
 {
+	/* required $post
+	 * 		$post['selected_examination_list']
+	 * 		
+	 * 
+	 * 
+	 * */
+	 
 	//echo '<pre>';print_r($post);echo '</pre>';
 	
 	$ex_list_csv=$post['selected_examination_list'];
@@ -566,6 +573,54 @@ function display_one_qc($link,$primary_result_array,$first)
 		elseif(in_array($k,['remark(result)']))
 		{
 			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;"><button class="btn btn-sm btn-info" title="'.$v.'" type=button onclick="alert(\''.$v.'\')" >'.substr($v,0,3).'.</button></td>';
+		}
+		elseif(in_array($k,['qc_id']))
+		{
+
+						/*
+						Array
+							(
+								[__ex__3001] => 
+								[___ex___3001] => 
+								[chk^9000] => on
+								[__ex__9000] => XL_1000
+								[chk^1048] => on
+								[__from__1048] => 246
+								[__ex__1048] => 
+								[__to__1048] => 266
+								[__from__10006] => 
+								[__ex__10006] => 
+								[__to__10006] => 
+								[id_range] => 1000-1999999
+								[__from__sample_id] => 
+								[__ex__sample_id] => 
+								[__to__sample_id] => 
+								[sort_order] => sample_id
+								[row_limit] => 400
+								[action] => find_qc_data
+								[selected_examination_list] => 
+								[session_name] => sn_1532328930
+							)
+						*/
+						//post ex_id, lot, equipment
+						//
+			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;">
+					<form method=post>
+						<button type=submit class="btn btn-sm btn-info" title="'.$v.'" formtarget=_blank formaction="xxx_manage_qc.php" name=action value=find_qc_data >'.$v.'.</button>
+						<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+						<input type=hidden name=selected_examination_list value=\''.$q['examination_id'].'\'>
+						
+						<input type=hidden name=__ex__3001 value=\''.$q['qc_lot(sample)'].'\'>
+						<input type=hidden name=chk^3001 value=\'on\'>
+						
+						<input type=hidden name=__ex__9000 value=\''.$q['qc_equipment'].'\'>
+						<input type=hidden name=chk^9000 value=\'on\'>
+
+						<input type=hidden name="sort_order" value="sample_id"></div>
+						<input type=hidden name="row_limit" value="100"></div>
+
+					</form>
+			</td>';
 		}
 		elseif(in_array($k,['sdi']))
 		{
