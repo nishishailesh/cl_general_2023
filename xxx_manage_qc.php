@@ -4,12 +4,15 @@ require_once 'project_common.php';
 require_once 'base/verify_login.php';
 echo '		  <link rel="stylesheet" href="project_common.css">
 		  <script src="project_common.js"></script>
-		  <script src="bootstrap/chart.min.js"></script>';	
+		  <script src="bootstrap/chart.min.js"></script>
+		  <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+';	
 		  
 //<script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
 //<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
-		  
+
+	  
 ////////User code below/////////////////////
 //echo '<pre>';print_r($_POST);echo '</pre>';
 
@@ -100,7 +103,7 @@ else if(count($sar)>0)
 {
 	//echo implode(',',$sar);
 	
-	$sql='select * from primary_result where sample_id in ('.implode(',',$sar).') order by sample_id';
+	$sql='select * from primary_result where sample_id in ('.implode(',',$sar).') order by sample_id desc';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	if(get_row_count($result)>=1)
 	{
@@ -137,11 +140,15 @@ else if(count($sar)>0)
 }
 else if(count($sar)<=0){echo '<h2 class="text-warning">no qc results available today</h2>';}
 
-
+echo '<script>
+$(document).ready(function() {
+  $("#main_table").DataTable();
+});
+</script>';
 //////////////user code ends////////////////
 tail();
 
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
 
 //////////////Functions///////////////////////
 
@@ -285,8 +292,7 @@ function prepare_qc_data_from_search_condition($link,$post,$limit=400)
 	$result=run_query($link,$GLOBALS['database'],$root_sql);
 	$data=array();
 		
-	echo '<table class="table table-striped table-sm m-3 table-responsive">';
-
+	echo '<table id="main_table" class="table table-striped table-sm m-3 table-responsive">';
 	$first='yes';
 	while($ar=get_single_row($result))
 	{
@@ -570,6 +576,16 @@ function display_one_qc($link,$primary_result_array,$first)
 		{
 			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;" class=" '.$style.'" >'.$v.'</td>';
 		}
+
+		elseif(in_array($k,['uniq']))
+		{
+			
+			//20231021093112|XL_1000
+			//01234
+			$uniq_display=substr($v,0,4).'-'.substr($v,4,2).'-'.substr($v,6,2).' '.substr($v,8,2).':'.substr($v,10,2).':'.substr($v,12,2).substr($v,14);
+			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;" >'.$uniq_display.'</td>';
+		}
+		
 		elseif(in_array($k,['remark(result)']))
 		{
 			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;"><button class="btn btn-sm btn-info" title="'.$v.'" type=button onclick="alert(\''.$v.'\')" >'.substr($v,0,3).'.</button></td>';
@@ -610,14 +626,15 @@ function display_one_qc($link,$primary_result_array,$first)
 						<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 						<input type=hidden name=selected_examination_list value=\''.$q['examination_id'].'\'>
 						
-						<input type=hidden name=__ex__3001 value=\''.$q['qc_lot(sample)'].'\'>
-						<input type=hidden name=chk^3001 value=\'on\'>
+						<!-- qc_lot commented out to get all QC -->
+						<!-- <input type=hidden name=__ex__3001 value=\''.$q['qc_lot(sample)'].'\'>
+						<input type=hidden name=chk^3001 value=\'on\'> -->
 						
-						<input type=hidden name=__ex__9000 value=\''.$q['qc_equipment'].'\'>
+						<input type=hidden name=__ex__'.$qc_equipment_examination_id.' value=\''.$q['qc_equipment'].'\'>
 						<input type=hidden name=chk^9000 value=\'on\'>
 
 						<input type=hidden name="sort_order" value="sample_id"></div>
-						<input type=hidden name="row_limit" value="100"></div>
+						<input type=hidden name="row_limit" value="400"></div>
 
 					</form>
 			</td>';
@@ -805,7 +822,8 @@ function find_today_qc_id($link)
 				s.sample_id=r.sample_id and 
 				r.examination_id=\''.$qc_analysis_time_examination_id.'\' and 
 				r.result like concat(date(sysdate()),"%")
-				and q.sample_id=r.sample_id';
+				and q.sample_id=r.sample_id
+				order by s.sample_id desc';
 				
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$sar=[];
