@@ -836,3 +836,22 @@ function createContext(color,id) {
 	ctx.fillStyle = color;
 	ctx.fill();
 }
+
+
+function popup_qc_choice(me,html)
+{
+	const para = document.createElement("div");
+	para.innerHTML = html;
+	para.id = 'abcd';
+	para.style.position="absolute"; 
+	para.style.left=me.offsetLeft
+	para.style.top=me.offsetTop
+	//para.style.width="5%";
+	//para.style.height="5%";
+	para.style.border="black 1px solid";
+	para.style.backgroundColor="lightgray";
+	me.appendChild(para);
+	//para.addEventListener("click", function(){this.remove();})
+	
+	document.getElementById("this_lot").addEventListener("click", function(){document.getElementById('abcd').remove()})
+}
