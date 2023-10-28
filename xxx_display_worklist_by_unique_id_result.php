@@ -23,8 +23,8 @@ echo '<div id="response"></div>';
 
 foreach(explode(',',$_POST['selected_examination_list']) as  $ex)
 {
-	$sql='select * from result where examination_id=\''.$ex.'\' limit '.$_POST['offset'].','.$_POST['limit'];
-	//echo $sql.'<br>';
+	$sql='select * from result where examination_id=\''.$ex.'\' order by sample_id desc limit '.$_POST['offset'].','.$_POST['limit'];
+	echo $sql.'<br>';
 	echo '<h2>'.$ex.'</h2>';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	echo '<div class=two_column>';

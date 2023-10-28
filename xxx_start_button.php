@@ -407,7 +407,7 @@ function callServer()
 	xhttp.send(post);	
 	if(autoupdate==1)
 	{
-		 timeOutVar=setTimeout(callServer, 60000);
+		 timeOutVar=setTimeout(callServer, 10000);
 	}
 	else if(autoupdate==-1)
 	{
