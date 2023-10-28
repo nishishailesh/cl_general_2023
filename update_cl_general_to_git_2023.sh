@@ -22,6 +22,7 @@ lis_to_vitros_sample_type
 Laboratory
 menu_new
 menu_view
+menu_worklist
 route_priority
 sample_id_strategy
 sample_status

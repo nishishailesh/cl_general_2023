@@ -1,8 +1,8 @@
--- MySQL dump 10.17  Distrib 10.3.22-MariaDB, for debian-linux-gnu (x86_64)
+-- MariaDB dump 10.19  Distrib 10.11.3-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: clg
 -- ------------------------------------------------------
--- Server version	10.3.22-MariaDB-0+deb10u1
+-- Server version	10.11.3-MariaDB-1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `Laboratory`;
 CREATE TABLE `Laboratory` (
   `Laboratory` varchar(200) NOT NULL,
   PRIMARY KEY (`Laboratory`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `config` (
   `value_blob` mediumblob DEFAULT NULL,
   `help` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -57,7 +57,7 @@ CREATE TABLE `dashboard` (
   `description` varchar(2000) NOT NULL,
   `priority` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +78,7 @@ CREATE TABLE `dementia` (
   `recording_time` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   `recorded_by` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +93,7 @@ CREATE TABLE `emergency_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1179 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1164 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,30 +105,30 @@ DROP TABLE IF EXISTS `examination`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `examination` (
   `examination_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) COLLATE utf8_bin NOT NULL,
-  `sample_requirement` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT 'NULL',
-  `edit_specification` varchar(5000) COLLATE utf8_bin NOT NULL,
-  `description` varchar(300) COLLATE utf8_bin DEFAULT NULL,
-  `request_route` varchar(300) COLLATE utf8_bin DEFAULT NULL,
-  `display_route` varchar(300) COLLATE utf8_bin DEFAULT NULL,
-  `print_route` varchar(300) COLLATE utf8_bin DEFAULT NULL,
-  `request_route_priority` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `display_route_priority` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `print_route_priority` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `display_format` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `name` varchar(50) NOT NULL,
+  `sample_requirement` varchar(100) NOT NULL DEFAULT 'NULL',
+  `edit_specification` varchar(5000) NOT NULL,
+  `description` varchar(300) DEFAULT NULL,
+  `request_route` varchar(300) DEFAULT NULL,
+  `display_route` varchar(300) DEFAULT NULL,
+  `print_route` varchar(300) DEFAULT NULL,
+  `request_route_priority` varchar(10) DEFAULT NULL,
+  `display_route_priority` varchar(10) DEFAULT NULL,
+  `print_route_priority` varchar(10) DEFAULT NULL,
+  `display_format` varchar(50) DEFAULT NULL,
   `insert_minimum_authorization_level` int(11) DEFAULT NULL,
   `update_minimum_authorization_level` int(11) DEFAULT NULL,
   `select_minimum_authorization_level` int(11) DEFAULT NULL,
   `delete_minimum_authorization_level` int(11) DEFAULT NULL,
   `append_user` int(11) DEFAULT NULL COMMENT 'if ''yes;, it will add last editor name beside result',
-  `default_value` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `equipment` varchar(10) COLLATE utf8_bin DEFAULT NULL,
-  `display_help` text COLLATE utf8_bin DEFAULT NULL COMMENT 'help on screen',
-  `print_help` text COLLATE utf8_bin DEFAULT NULL COMMENT 'help in report',
-  `accr_status` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'if ''yes'', it report will display symbol',
+  `default_value` varchar(200) DEFAULT NULL,
+  `equipment` varchar(10) DEFAULT NULL,
+  `display_help` text DEFAULT NULL COMMENT 'help on screen',
+  `print_help` text DEFAULT NULL COMMENT 'help in report',
+  `accr_status` varchar(10) DEFAULT NULL COMMENT 'if ''yes'', it report will display symbol',
   PRIMARY KEY (`examination_id`),
   KEY `sample_requirement` (`sample_requirement`)
-) ENGINE=InnoDB AUTO_INCREMENT=105039 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=105039 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,7 +147,7 @@ CREATE TABLE `examination_field_specification` (
   `field_description` varchar(50) DEFAULT NULL,
   `where` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,7 +164,7 @@ CREATE TABLE `host_code` (
   PRIMARY KEY (`equipment`,`examination_id`),
   KEY `examination_id` (`examination_id`),
   CONSTRAINT `host_code_ibfk_1` FOREIGN KEY (`examination_id`) REFERENCES `examination` (`examination_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -179,7 +179,7 @@ CREATE TABLE `label_group` (
   `name` varchar(100) NOT NULL,
   `lable_list` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -200,7 +200,7 @@ CREATE TABLE `labels` (
   `fontsize` varchar(100) NOT NULL,
   `fontweight` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -219,7 +219,7 @@ CREATE TABLE `labels_old` (
   `other_data` varchar(5000) NOT NULL,
   `border` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,7 +233,7 @@ CREATE TABLE `lis_to_vitros_sample_type` (
   `lis_sample_type` varchar(100) NOT NULL,
   `vitros_sample_type` varchar(10) NOT NULL,
   PRIMARY KEY (`lis_sample_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -250,7 +250,7 @@ CREATE TABLE `menu_new` (
   `route` varchar(200) NOT NULL,
   `default_value` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=902 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=902 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -267,7 +267,24 @@ CREATE TABLE `menu_view` (
   `additional_search_id` varchar(200) NOT NULL,
   `additional_range_search_id` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `menu_worklist`
+--
+
+DROP TABLE IF EXISTS `menu_worklist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `menu_worklist` (
+  `id` int(11) NOT NULL,
+  `caption` varchar(100) NOT NULL,
+  `unique_id` varchar(200) NOT NULL,
+  `additional_search_id` varchar(200) NOT NULL,
+  `additional_range_search_id` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -282,7 +299,7 @@ CREATE TABLE `niramaya_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1266 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1251 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -297,7 +314,7 @@ CREATE TABLE `opd_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5378 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5363 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -317,7 +334,7 @@ CREATE TABLE `primary_result` (
   KEY `examination_id` (`examination_id`),
   CONSTRAINT `primary_result_ibfk_1` FOREIGN KEY (`sample_id`) REFERENCES `sample_link` (`sample_id`),
   CONSTRAINT `primary_result_ibfk_2` FOREIGN KEY (`examination_id`) REFERENCES `examination` (`examination_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -338,7 +355,7 @@ CREATE TABLE `primary_result_blob` (
   KEY `examination_id` (`examination_id`),
   CONSTRAINT `primary_result_blob_ibfk_1` FOREIGN KEY (`sample_id`) REFERENCES `sample_link` (`sample_id`),
   CONSTRAINT `primary_result_blob_ibfk_3` FOREIGN KEY (`examination_id`) REFERENCES `examination` (`examination_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -353,7 +370,7 @@ CREATE TABLE `qc_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=478 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=461 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -368,7 +385,7 @@ CREATE TABLE `qc_lot` (
   `in_use` varchar(100) DEFAULT NULL,
   `remark` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`qc_lot`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -387,7 +404,7 @@ CREATE TABLE `reminders` (
   `recording_time` varchar(100) DEFAULT NULL,
   `recorded_by` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -402,7 +419,7 @@ CREATE TABLE `request_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`sample_id`),
   KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,7 +441,7 @@ CREATE TABLE `result` (
   KEY `recorded_by` (`recorded_by`),
   CONSTRAINT `result_ibfk_1` FOREIGN KEY (`examination_id`) REFERENCES `examination` (`examination_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `result_ibfk_2` FOREIGN KEY (`sample_id`) REFERENCES `sample_link` (`sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -438,7 +455,7 @@ CREATE TABLE `result_blob` (
   `sample_id` bigint(20) NOT NULL,
   `examination_id` int(11) NOT NULL,
   `result` mediumblob DEFAULT NULL,
-  `extra` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `extra` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `fname` varchar(100) DEFAULT NULL,
   `recording_time` datetime DEFAULT NULL,
   `recorded_by` bigint(20) DEFAULT NULL,
@@ -447,7 +464,7 @@ CREATE TABLE `result_blob` (
   KEY `recorded_by` (`recorded_by`),
   CONSTRAINT `result_blob_ibfk_1` FOREIGN KEY (`examination_id`) REFERENCES `examination` (`examination_id`) ON UPDATE CASCADE,
   CONSTRAINT `result_blob_ibfk_3` FOREIGN KEY (`sample_id`) REFERENCES `sample_link` (`sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -464,7 +481,7 @@ CREATE TABLE `route_priority` (
   `display_route_priority` varchar(10) NOT NULL,
   `print_route_priority` varchar(10) NOT NULL,
   PRIMARY KEY (`route`,`node`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -475,12 +492,12 @@ DROP TABLE IF EXISTS `sample_id_strategy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sample_id_strategy` (
-  `sample_requirement` varchar(100) COLLATE utf8_bin NOT NULL,
+  `sample_requirement` varchar(100) NOT NULL,
   `lowest_id` bigint(20) DEFAULT NULL,
   `highest_id` bigint(20) DEFAULT NULL,
-  `description` varchar(500) COLLATE utf8_bin NOT NULL,
+  `description` varchar(500) NOT NULL,
   PRIMARY KEY (`sample_requirement`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -494,7 +511,7 @@ CREATE TABLE `sample_link` (
   `sample_id` bigint(20) NOT NULL,
   `link` varchar(500) NOT NULL,
   PRIMARY KEY (`sample_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -515,7 +532,7 @@ CREATE TABLE `sample_status` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `examination_id` (`examination_id`),
   CONSTRAINT `sample_status_ibfk_1` FOREIGN KEY (`examination_id`) REFERENCES `examination` (`examination_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -528,7 +545,7 @@ DROP TABLE IF EXISTS `sql`;
 CREATE TABLE `sql` (
   `name` varchar(100) NOT NULL,
   `sql` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -543,7 +560,7 @@ CREATE TABLE `upload_data` (
   `upload_data` mediumblob NOT NULL,
   `upload_data_name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=185 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -564,7 +581,7 @@ CREATE TABLE `user` (
   `select_authorization_level` int(11) NOT NULL,
   `delete_authorization_level` int(11) NOT NULL,
   PRIMARY KEY (`user`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -580,7 +597,7 @@ CREATE TABLE `view_info_data` (
   `Fields` varchar(2000) NOT NULL,
   `sql` varchar(1000) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -595,7 +612,7 @@ CREATE TABLE `ward_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10511 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=10487 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -619,7 +636,7 @@ CREATE TABLE `xxx_lab_reference_value` (
   PRIMARY KEY (`lab_reference_value_id`),
   KEY `qc_lot` (`qc_lot`),
   CONSTRAINT `xxx_lab_reference_value_ibfk_1` FOREIGN KEY (`qc_lot`) REFERENCES `qc_lot` (`qc_lot`)
-) ENGINE=InnoDB AUTO_INCREMENT=10420 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=10420 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -631,4 +648,4 @@ CREATE TABLE `xxx_lab_reference_value` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-28 21:46:02
+-- Dump completed on 2023-10-28 23:59:18

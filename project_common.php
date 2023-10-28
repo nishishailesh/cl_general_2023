@@ -103,8 +103,9 @@ function main_menu($link)
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Worklist-N</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
-							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_unique_id.php type=submit name=action value="get_worklist">by Examination</button>
-						</div>
+						<!--	<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_unique_id.php type=submit name=action value="get_worklist">by Examination</button> -->'; 
+							xxx_make_worklist_menu($link);
+						echo '</div>
 					</div>
 				</div>';
 		}		
@@ -8862,6 +8863,39 @@ function showww_sid_button_release_status($link,$sid,$extra_post='',$uid=0,$chec
 }
 
 
+
+function showww_sid_button_without_release_status($link,$sid,$extra_post='',$uid=0)
+{
+	if($uid>0)
+	{
+		$ex_value=get_id_type_examination_result($link,$sid,$uid);
+		$examination_details=get_one_examination_details($link,$uid);
+		$edit_specification=json_decode($examination_details['edit_specification'],true);
+		$prefix=isset($edit_specification['unique_prefix'])?$edit_specification['unique_prefix']:'';
+		//$did=str_pad($prefix.$ex_value,7,'.');
+		$did=$prefix.$ex_value;
+	}
+	else
+	{
+		 $did=$sid;
+	}
+	
+
+
+	//echo '<h1>'.$uid.'</h1>';
+	if(sample_exist($link,$sid))
+	{
+				echo '<div class="d-block w-100">
+					<form method=post action=viewww_single.php target=_blank>
+					<button style="width:100%;height:100%;" class="btn btn-outline-success btn-sm btn-block text-dark " name=sample_id value=\''.$sid.'\' >'.$did.'</button>
+					<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+					<input type=hidden name=action value=view_single>';
+					echo '</form>
+				</div>';
+	}		
+}
+
+
 ///////////////from viewwww_signle.php/////
 function xx_get_basic_specific()
 {
@@ -10882,6 +10916,22 @@ function xxx_make_view_menu($link)
 		echo '<button 
 					class="btn btn-outline-primary m-0 p-0 " 
 					formaction=viewww_database_id_from_to_for_unique_id.php 
+					type=submit 
+					name=action
+					value=\'get_dbids|'.$ar['unique_id'].'|'.$ar['additional_search_id'].'|'.$ar['additional_range_search_id'].'\'>'.$ar['caption'].'</button>';
+	}
+}
+function xxx_make_worklist_menu($link)
+{
+	$sql="SELECT * from menu_worklist";
+	
+	$result=run_query($link,$GLOBALS['database'],$sql);
+					
+	while($ar=get_single_row($result))
+	{
+		echo '<button 
+					class="btn btn-outline-primary m-0 p-0 " 
+					formaction=xxx_worklist.php 
 					type=submit 
 					name=action
 					value=\'get_dbids|'.$ar['unique_id'].'|'.$ar['additional_search_id'].'|'.$ar['additional_range_search_id'].'\'>'.$ar['caption'].'</button>';
@@ -13196,7 +13246,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 ///////////label group related functions////////////
 function is_examination_requested($link,$sample_id,$examination_id)
 {
-	$sql='select examination_id from result where examination_id=\''.$examination_id.'\'';
+	$sql='select examination_id from result where examination_id=\''.$examination_id.'\' and sample_id=\''.$sample_id.'\'';
 
 	//echo $sql.'<br>';
 	
