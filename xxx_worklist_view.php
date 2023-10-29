@@ -108,14 +108,15 @@ else if($_POST['examination_id']=='sample_id')
 
 //echo $sql.'<br>';
 //exit(0);
-$result=run_query($link,$GLOBALS['database'],$sql);
 
 
-echo '<div style="display: grid; grid-template-columns: 10% 20%;">';
 
 foreach(explode(',',$_POST['selected_examination_list']) as  $ex)
 {
 	$count=1;
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	echo '<h1 class="text-info">'.$ex.'</h1>';
+	echo '<div style="display: grid; grid-template-columns: 10% 40%;">';
 	while($ar=get_single_row($result))
 	{
 		if($count>199){break;}
@@ -139,9 +140,10 @@ foreach(explode(',',$_POST['selected_examination_list']) as  $ex)
 			}
 		}
 	}
+	echo '</div>';
+
 }
 
-echo '</div>';
 
 
 
