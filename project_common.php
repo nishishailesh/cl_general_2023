@@ -8882,7 +8882,7 @@ function showww_sid_button_without_release_status($link,$sid,$extra_post='',$uid
 	
 
 
-	//echo '<h1>'.$uid.'</h1>';
+	//echo '<h1>'.$did.'</h1>';
 	if(sample_exist($link,$sid))
 	{
 				echo '<div class="d-block w-100">
@@ -8892,7 +8892,12 @@ function showww_sid_button_without_release_status($link,$sid,$extra_post='',$uid
 					<input type=hidden name=action value=view_single>';
 					echo '</form>
 				</div>';
+		return true;
 	}		
+	else
+	{
+		return false;
+	}
 }
 
 
@@ -12123,7 +12128,17 @@ function generate_pdf_for_report($pdf)
 
 function get_sample_id_array_for_any_id($link,$id)
 {
-	if(ctype_digit($id)){return array($id);}		//it is sample_id
+	if(ctype_digit($id))
+	{
+		if(sample_exist($link,$id))
+		{
+			return array($id);
+		}
+		else
+		{
+			return false;
+		}
+	}		//it is sample_id
 	$sql='select 
 				examination_id,
 				json_extract(edit_specification,\'$.unique_prefix\') as unique_prefix,
