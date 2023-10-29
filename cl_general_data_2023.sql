@@ -39,7 +39,7 @@ LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
 INSERT INTO `config` VALUES
 ('eq_color_code','{\"C\":\"lightpink\",\"I\":\"red\",\"A\":\"cyan\",\"D\":\"#00F5E0\",\"6\":\"violet\",\"K\":\"#6699ff\",\"E\":\"mediumvioletred\",\"U\":\"#FFA500\"}',NULL,''),
-('examination_id_for_verification_record','10007',NULL,'a datetime examination which will be updated when verification/calculation is done'),
+('examination_id_for_verification_record','10007',NULL,'a datetime examination which will be updated when verification/calculation is done. Make is readonly'),
 ('footer_notice','Verify authenticity of report by scanning QR Code in mobile browser',NULL,NULL),
 ('header_route','Header',NULL,NULL),
 ('horizontal_status_lot_size','100',NULL,''),
@@ -1159,4 +1159,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-29 10:46:19
+-- Dump completed on 2023-10-29 15:49:05

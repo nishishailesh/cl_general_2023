@@ -82,7 +82,7 @@ foreach($_POST as $k=>$v)
 		{
 			//un-checked, not interested
 		}
-	}
+}
 
 
 //echo '<pre>';print_r($conditions);echo '</pre>';
@@ -106,7 +106,7 @@ else if($_POST['examination_id']=='sample_id')
 	
 //show samples as selected
 
-//echo $sql.'<br>';
+echo $sql.'<br>';
 //exit(0);
 
 

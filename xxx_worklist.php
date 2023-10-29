@@ -71,11 +71,25 @@ function get_dbid($link,$examination_id,$search_list_of_examination_id,$range_se
 	{
 		if($examination_id=='sample_id')
 		{
-			get_sample_id_for_range_search($link);
+			//$max_sid=find_max_any_id($link,'sample_id');
+			//get_sample_id_for_range_search($link,$max_sid-100,$max_sid);
+			get_sample_id_for_range_search($link);		//bacuase sample_id have choice for slots of id range
 		}
 		else
 		{
-			get_one_field_for_range_search($link,$examination_id);
+				$examination_details=get_one_examination_details($link,$examination_id);
+				$edit_specification=json_decode($examination_details['edit_specification'],true);
+				$type=isset($edit_specification['type'])?$edit_specification['type']:'';
+				if(in_array($type,['id_single_sample','id_multi_sample']))
+				{
+					$max_sid=find_max_any_id($link,$examination_id);
+					get_one_field_for_range_search($link,$examination_id,$max_sid-100,$max_sid);
+				}
+				else
+				{
+					get_one_field_for_range_search($link,$examination_id);
+				}
+				
 		}
 	}
 	

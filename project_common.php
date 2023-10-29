@@ -12166,6 +12166,36 @@ function get_sample_id_array_for_any_id($link,$id)
 	return $ret;
 }
 
+function get_ex_id_of_unique_id_from_any_id_value_string($link,$id_value_string)
+{
+	if(ctype_digit($id_value_string)){return 'sample_id';}
+
+	$sql='select 
+				examination_id,
+				json_extract(edit_specification,\'$.unique_prefix\') as unique_prefix,
+				json_extract(edit_specification,\'$.table\') as id_table 
+			from examination 
+			where 
+				json_extract(edit_specification,\'$.type\')="id_single_sample" or 
+				json_extract(edit_specification,\'$.type\')="id_multi_sample"';
+				
+	//echo $sql.'<br>';
+	
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	if(get_row_count($result)<=0){return false;}
+	
+	$ret=array();
+	while($ar=get_single_row($result))
+	{
+		$prefix=trim($ar['unique_prefix'],'"');
+		if($prefix==substr($id_value_string,0,strlen($prefix)))
+		{
+			return $ar['examination_id'];
+		}
+	}
+	return false;
+}
+
 //use ctype_int() builtin
 function my_is_int($string)
 {
@@ -12414,10 +12444,9 @@ function get_one_field_for_range_search($link,$examination_id,$default_from='',$
 }
 
 
-function get_sample_id_for_range_search($link)
+function get_sample_id_for_range_search($link,$from='',$to='')
 {
 	$ex_name='sample_id';
-
 
 	echo '<fieldset ><legend>'.$ex_name.'</legend>';
 
@@ -12433,7 +12462,7 @@ function get_sample_id_for_range_search($link)
 			echo '</div>';
 		
 			echo '<div class="d-inline p-2">';
-				echo '		<input type=text size=13 id=from  	name=\'__from__sample_id\'	class="form-control text-danger"\>';
+				echo '		<input type=text size=13 id=from  	value=\''.$from.'\' name=\'__from__sample_id\'	class="form-control text-danger"\>';
 				echo '<input type=hidden 	name=\'__ex__sample_id\'		value=\'\'>';
 		echo '</div>';		
 	echo '</div>';		
@@ -12444,7 +12473,7 @@ function get_sample_id_for_range_search($link)
 		echo '</div>';
 		
 		echo '<div class="d-inline p-2">';
-		echo '		<input type=text size=13 id=from  	name=\'__to__sample_id\' 		class="form-control text-danger"\>';
+		echo '		<input type=text size=13 id=from  	value=\''.$to.'\' name=\'__to__sample_id\' 		class="form-control text-danger"\>';
 		echo '</div>';		
 	echo '</div>';
 	echo '</fieldset>';						
@@ -13392,6 +13421,81 @@ function xxx_echo_download_button($link,$tname,$fname,$id)
 			name=action
 			value=download>Download</button>
 		</form>';
+}
+
+
+
+function find_max_qc_id($link)
+{
+	$qc_id_examination_id=get_config_value($link,'qc_id_examination_id');
+	$examination_details=get_one_examination_details($link,$qc_id_examination_id);
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	if(!$edit_specification){echo 'No such examination_id??'; return false;}
+	$table=$edit_specification['table'];
+	$sql='select max(id) max_id from `'.$table.'`';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);
+	//print_r($ar);
+	return $ar['max_id'];
+}
+
+
+function find_max_any_id($link,$ex_id_of_unique_id)
+{
+	if($ex_id_of_unique_id!='sample_id')
+	{
+		$examination_details=get_one_examination_details($link,$ex_id_of_unique_id);
+		$edit_specification=json_decode($examination_details['edit_specification'],true);
+		if(!$edit_specification){echo 'No such examination_id??'; return false;}
+		$table=$edit_specification['table'];
+		$sql='select max(id) max_id from `'.$table.'`';
+		$result=run_query($link,$GLOBALS['database'],$sql);
+		$ar=get_single_row($result);
+		//print_r($ar);
+		return $ar['max_id'];
+	}
+	else
+	{
+		$sql='select max(sample_id) max_id from sample_link';
+		$result=run_query($link,$GLOBALS['database'],$sql);
+		$ar=get_single_row($result);
+		//print_r($ar);
+		return $ar['max_id'];
+	}
+}
+
+
+function find_today_qc_id($link)
+{
+	$qc_id_examination_id=get_config_value($link,'qc_id_examination_id');
+	$examination_details=get_one_examination_details($link,$qc_id_examination_id);
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	if(!$edit_specification){echo 'No such examination_id??'; return false;}
+	$table=$edit_specification['table'];
+	
+	$qc_analysis_time_examination_id=get_config_value($link,'qc_analysis_time_examination_id');
+
+	$sql='select  s.sample_id sid,r.sample_id, r.result , q.sample_id,q.id
+			from sample_link s 
+			
+			join result r 
+			join `'.$table.'` q
+			
+			on 
+				s.sample_id=r.sample_id and 
+				r.examination_id=\''.$qc_analysis_time_examination_id.'\' and 
+				r.result like concat(date(sysdate()),"%")
+				and q.sample_id=r.sample_id
+				order by s.sample_id desc';
+				
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$sar=[];
+	while($ar=get_single_row($result))
+	{
+		//print_r($ar);
+		$sar[]=$ar['sid'];
+	}
+	return $sar;
 }
 
 ?>

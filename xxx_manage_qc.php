@@ -782,54 +782,6 @@ function xxx_edit_primary_result_extra_button($sample_id,$examination_id,$uniq,$
 }
 
 
-function find_max_qc_id($link)
-{
-	$qc_id_examination_id=get_config_value($link,'qc_id_examination_id');
-	$examination_details=get_one_examination_details($link,$qc_id_examination_id);
-	$edit_specification=json_decode($examination_details['edit_specification'],true);
-	if(!$edit_specification){echo 'No such examination_id??'; return false;}
-	$table=$edit_specification['table'];
-	$sql='select max(id) max_id from `'.$table.'`';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	$ar=get_single_row($result);
-	//print_r($ar);
-	return $ar['max_id'];
-}
-
-
-function find_today_qc_id($link)
-{
-	$qc_id_examination_id=get_config_value($link,'qc_id_examination_id');
-	$examination_details=get_one_examination_details($link,$qc_id_examination_id);
-	$edit_specification=json_decode($examination_details['edit_specification'],true);
-	if(!$edit_specification){echo 'No such examination_id??'; return false;}
-	$table=$edit_specification['table'];
-	
-	$qc_analysis_time_examination_id=get_config_value($link,'qc_analysis_time_examination_id');
-
-	$sql='select  s.sample_id sid,r.sample_id, r.result , q.sample_id,q.id
-			from sample_link s 
-			
-			join result r 
-			join `'.$table.'` q
-			
-			on 
-				s.sample_id=r.sample_id and 
-				r.examination_id=\''.$qc_analysis_time_examination_id.'\' and 
-				r.result like concat(date(sysdate()),"%")
-				and q.sample_id=r.sample_id
-				order by s.sample_id desc';
-				
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	$sar=[];
-	while($ar=get_single_row($result))
-	{
-		//print_r($ar);
-		$sar[]=$ar['sid'];
-	}
-	return $sar;
-}
-
 ?>
 
 <div class="d-block" style="width:80%">
