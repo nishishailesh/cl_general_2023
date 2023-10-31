@@ -517,7 +517,8 @@ function mk_select_from_array_with_description($name, $select_array,$disabled=''
 			if($value[0]==$default)
 			{
 				echo '<input type=hidden '.$readonly.' name=\''.$name.'\' id=\''.$name.'\'  value=\''.$default.'\'>';
-				echo $value[1].'('.$value[0].')';
+				//echo $value[1].'('.$value[0].')';
+				echo $value[1];
 			}
 			else
 			{
@@ -535,11 +536,13 @@ function mk_select_from_array_with_description($name, $select_array,$disabled=''
 		//print_r($value);
 		if($value[0]==$default)
 		{
-			echo '<option  selected value=\''.$value[0].'\' > '.$value[1].'('.$value[0].')'.' </option>';
+			//echo '<option  selected value=\''.$value[0].'\' > '.$value[1].'('.$value[0].')'.' </option>';
+			echo '<option  selected value=\''.$value[0].'\' >'.$value[1].'</option>';
 		}
 		else
 		{
-			echo '<option value=\''.$value[0].'\' > '.$value[1].'('.$value[0].')'.' </option>';
+			//echo '<option value=\''.$value[0].'\' > '.$value[1].'('.$value[0].')'.' </option>';
+			echo '<option value=\''.$value[0].'\' >'.$value[1].'</option>';
 		}
 	}
 	echo '</select>';	
@@ -2270,8 +2273,18 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	$minlength=isset($edit_specification['minlength'])?$edit_specification['minlength']:'';
 	$required=isset($edit_specification['required'])?$edit_specification['required']:'';
 	
-	
 	$element_id='r_id_'.$sample_id.'_'.$examination_id;
+	
+	if($examination_details['display_choice']=='yes')
+	{
+		$display_choice_html=get_display_choice_select($link,$examination_id,$element_id);
+	}
+	else
+	{
+		$display_choice_html='';
+	}
+	
+	
 	if($type=='yesno')
 	{
 				//////
@@ -2304,6 +2317,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 				{
 					if($frill){get_primary_result($link,$sample_id,$examination_id);}
 				}
+				echo $display_choice_html;
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
@@ -2675,6 +2689,9 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 					{
 						if($frill){get_primary_result($link,$sample_id,$examination_id);}
 					}
+				
+				echo $display_choice_html;
+
 				echo '</div>';
 			echo '</div>';
 			echo '<div class="help"><pre>'.$help.'</pre></div>';	
@@ -2683,6 +2700,30 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 }
 
 
+function get_display_choice_select($link,$examination_id,$target_element_id)
+{
+	$sql='select name as description, data  from `display_choice` where examination_id=\''.$examination_id.'\'';
+	//$attribute_str=' onchange="document.getElementById(\''.$target_element_id.'\').value=this[this.selectedIndex].text" ';
+	$attribute_str=' 
+				onchange="
+				document.getElementById(\''.$target_element_id.'\').value= document.getElementById(\''.$target_element_id.'\').value + \'\n\' +this[this.selectedIndex].value" 
+				
+				
+				var evt = new Event("HTMLEvents", {"bubbles":true, "cancelable":false});
+				document.dispatchEvent(evt);
+
+				// event can be dispatched from any element, not only the document
+				this.dispatchEvent(evt);';
+
+	
+	ob_start();
+	mk_select_from_sql_with_description($link,$sql,'data',$examination_id.'_display_data',$examination_id.'_display_data',
+										$disabled='',$default='',$blank='',$readonly='',$attribute_str=$attribute_str);
+	$myStr = ob_get_contents();
+	ob_end_clean();
+	
+	return $myStr;
+}
 
 function edit_field_good_2023_09_19($link,$examination_id,$result_array,$sample_id,$readonly='',$frill=True,$extra_array=array())
 {
@@ -11696,17 +11737,18 @@ function print_field($link,$ex_id,$ex_result,$sample_id='')
 				echo '</tr>
 				<tr>';
 
-					echo '<td  colspan="3"><i>Result:</i> '.
-					htmlspecialchars($ex_result.' '.
+					echo '<td  colspan="3"><i>Result:</i><br>'.
+					nl2br(htmlspecialchars($ex_result.' '.
 									decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h).
-									$append_info).
-					'
-					</td>';
+									$append_info)).
+					'</td>';
+					
+					//echo '<td  colspan="3"><i>Result:</i><br>'.nl2br(htmlspecialchars('<pre>'.$ex_result.'</pre>')).'</td>';
 				echo '</tr>
 				<tr>';
 			
 					//echo '<td  colspan="3"><i>Notes:</i> '.$help.'</td>';
-					echo '<td  colspan="3"><i>Notes:</i> '.$examination_details['print_help'].'</td>';
+					echo '<td  colspan="3"><i>Notes:</i><br>'.$examination_details['print_help'].'</td>';
 			
 			echo '</tr>';
 			

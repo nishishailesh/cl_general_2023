@@ -28,7 +28,7 @@ Array
     [selected_examination_list] => 5117
 )*/
 
-
+$conditions=array();	//in case no condition is given
 
 foreach($_POST as $k=>$v)
 {

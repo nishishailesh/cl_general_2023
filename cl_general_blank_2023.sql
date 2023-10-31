@@ -82,6 +82,22 @@ CREATE TABLE `dementia` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `display_choice`
+--
+
+DROP TABLE IF EXISTS `display_choice`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `display_choice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `examination_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `data` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `emergency_id`
 --
 
@@ -126,6 +142,7 @@ CREATE TABLE `examination` (
   `display_help` text DEFAULT NULL COMMENT 'help on screen',
   `print_help` text DEFAULT NULL COMMENT 'help in report',
   `accr_status` varchar(10) DEFAULT NULL COMMENT 'if ''yes'', it report will display symbol',
+  `display_choice` varchar(10) DEFAULT NULL COMMENT 'if yes, it will read display_choice table and show dropdown to copy text',
   PRIMARY KEY (`examination_id`),
   KEY `sample_requirement` (`sample_requirement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=105039 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
@@ -404,7 +421,7 @@ CREATE TABLE `reminders` (
   `recording_time` varchar(100) DEFAULT NULL,
   `recorded_by` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -648,4 +665,4 @@ CREATE TABLE `xxx_lab_reference_value` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-29 16:23:33
+-- Dump completed on 2023-10-31 10:17:24
