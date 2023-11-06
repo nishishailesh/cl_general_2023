@@ -92,16 +92,25 @@ function run_query($link,$db,$sql,$display_error='yes')
 	//echo $sql;
 	if(!$db_success)
 	{
-		if($display_error=='yes'){echo 'error2:'.mysqli_error($link);} return false;
+		if($display_error=='yes')
+		{
+			echo 'error2:'.mysqli_error($link);
+		}
+		return false;
 	}
 	else
 	{
 		try 
 		{
-				$result=mysqli_query($link,$sql);
+			$result=mysqli_query($link,$sql);
+			if($result===False)
+			{
+				echo 'error mysqli_query:'.mysqli_error($link);
+			}
 		}
 		catch (mysqli_sql_exception $e) 
 		{
+			echo 'Caught exception: ',  $e->getMessage(), "\n";
 			$result=false;
 		}
 	}

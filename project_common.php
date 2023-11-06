@@ -5582,8 +5582,9 @@ function get_one_ex_result_row($link,$sample_id,$examination_id)
 {
 		$sql='select * from result where sample_id=\''.$sample_id.'\' and examination_id=\''.$examination_id.'\'';
 		$result=run_query($link,$GLOBALS['database'],$sql);
-		return $ar=get_single_row($result);
-
+		$ar=get_single_row($result);
+		//print_r($ar);
+		return $ar;
 }
 
 function get_one_ex_result_blob($link,$sample_id,$examination_id)
@@ -5839,6 +5840,7 @@ function insert_one_examination_without_result($link,$sample_id,$examination_id,
 
 function insert_one_examination_with_result($link,$sample_id,$examination_id,$result)
 {
+	//echo '<h1>'.$result.'</h1>';
 	$res=get_config_value($link,'restrictive_examination_for_edit_delete');
 	$res_result=get_one_ex_result($link,$sample_id,$res);
 	if(strlen($res_result>0))
@@ -5854,15 +5856,29 @@ function insert_one_examination_with_result($link,$sample_id,$examination_id,$re
 	}	
 	//recording_time=now(),recorded_by=\''.$_POST['user'].'\'
 	
+	//echo '<pre>fffff';
+	//echo $sample_id.'-'.$examination_id;
+	//print_r(get_one_ex_result_row($link,$sample_id,$examination_id));
+	//echo 'ggggg</pre>';
+	
 	$sql='insert into result (sample_id,examination_id,result,recording_time,recorded_by)
 			values ("'.$sample_id.'","'.$examination_id.'","'.my_safe_string($link,$result).'",now(),"'.$_SESSION['login'].'")';
-	//echo $sql.'(without)<br>';
-	if(!run_query($link,$GLOBALS['database'],$sql))
+	
+	//echo 'function insert_one_examination_with_result(...):--->'.$sql.'<br>';
+	//run_query($link,$GLOBALS['database'],$sql,'yes');
+	
+	if(!run_query($link,$GLOBALS['database'],$sql,'yes'))
 	{
 		//echo $sql.'(without)<br>';
 		//echo 'Data not inserted(with)<br>'; 
 		return false;
-	}	else{return true;}
+	}	
+	else
+	{
+		//echo 'XXXXXXXXXXXXrun_query is SUCEESS<br>';
+		//print_r(get_one_ex_result_row($link,$sample_id,$examination_id));
+		return true;
+	}
 }
 
 
@@ -6230,19 +6246,12 @@ function set_sample_id($link, $sample_required_array)
 		if($stype!='None')
 		{
 			$sample_id_array[$stype]=find_next_sample_id($link,$stype);
-			//we must REALLY insert something in result to make increment possible in next cycle
-			//otherwise sample id for given stype will be returned
-			//so insert sample_requirement as first result!!!
-			//1000 is sample_requirement
-			//echo 'pp';
-			//echo $GLOBALS['sample_requirement'];
+			//echo 'hi<br>';
 			insert_one_examination_with_result($link,$sample_id_array[$stype],$GLOBALS['sample_requirement'],$stype);
-			//insert_one_examination_with_result($link,$sample_id_array[$stype],$GLOBALS['released_by'],'');
-			//insert_one_examination_with_result($link,$sample_id_array[$stype],$GLOBALS['release_date'],'');
-			//insert_one_examination_with_result($link,$sample_id_array[$stype],$GLOBALS['release_time'],'');			
-			//echo 'qq';
+			//echo 'hi<br>';
 		}
 	}
+	//print_r($sample_id_array);
 	return $sample_id_array;
 }
 
@@ -7941,9 +7950,9 @@ function get_equipment_str($link,$sample_id)
 	foreach($r as $k=>$v)
 	{
 		$examination_details=get_one_examination_details($link,$k);
-		$edit_specification=json_decode($examination_details['edit_specification'],true);
-		$eq=isset($edit_specification['equipment'])?$edit_specification['equipment']:'';
-		$eq_ar[]=$eq;
+		//$edit_specification=json_decode($examination_details['edit_specification'],true);
+		//$eq=isset($edit_specification['equipment'])?$edit_specification['equipment']:'';
+		$eq_ar[]=$examination_details['equipment'];
 	}
 	$eq_ar_u=array_unique($eq_ar);
 	sort($eq_ar_u);
@@ -10505,7 +10514,8 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 			{
 				if($ex==$GLOBALS['sample_requirement'])
 				{
-					//already inserted during set_sample_id()
+					//print_r(get_one_ex_result_row($link,$sid,$ex));
+					//echo 'already inserted during set_sample_id()';
 				}
 				else
 				{
@@ -10566,6 +10576,14 @@ function xxx_save_insert_specific($link,$selected_examination_list)
 		if(substr($k,0,6)=='__ex__')
 		{
 			$ex_id=substr($k,6);
+			
+			if($ex_id==$GLOBALS['sample_requirement'])
+			{
+				//print_r(get_one_ex_result_row($link,$sid,$ex));
+				//echo 'already inserted during set_sample_id()';
+				continue;
+			}
+			
 			if(!in_array($ex_id,$requested)){continue;}	//if not authorized to insert
 			$examination_details=get_one_examination_details($link,$ex_id);
 			$edit_specification=json_decode($examination_details['edit_specification'],true);
