@@ -7,7 +7,7 @@ echo '
 						<div><input class="form-control" type=text name=login placeholder=Username></div>
 						<div><input class="form-control" type=password name=password placeholder=Password></div>
 						<input type=hidden name=session_name value=\''.session_name().'\'>
-						<button class="form-control btn btn-primary" type=submit name=action value=login>Login</button></div>
+						<button class="form-control btn btn-primary" type=submit name=action value=login>Login</button>
 				</form>
 	';
 }

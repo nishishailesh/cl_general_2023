@@ -3,22 +3,74 @@ session_name('sn_'.rand(1000000000,1999999999));
 session_start();
 require_once 'base/common.php';
 require_once 'config.php';
+require_once $GLOBALS['main_user_location'];
 require_once 'project_common.php';
+
 echo '		  <link rel="stylesheet" href="project_common.css">
 		  <script src="project_common.js"></script>';
-		  
+
 head($GLOBALS['application_name']);
-login('xxx_start_button.php');
-/*
-echo '<form method=post action=get_database_id_no_login.php class="text-center jumbotron">
-		<button class="btn btn-info">Get PDF Report without Login (for Clinical Residents/Staff)</button>
-		<input type=hidden name=login value=9999999999>
-		<input type=hidden name=password value=doctor>	
-		<input type=hidden name=session_name value=\''.session_name().'\'>
-		</form>';
-*/
-mget_dbid();		
+echo '<div class="index_page">';
+
+	echo '<div 
+			style=	"
+					grid-area: login;
+					background-color:green;
+					padding:5px;
+					">';
+		login('xxx_start_button.php');
+	echo '</div>';
+	
+	echo '<div 
+			style=	"
+					grid-area: mmenu;
+					background-color:lightgray;
+					padding:5px;
+					">';
+					
+		index_menu();
+	echo '</div>';
+	
+	echo '<div 
+			style=	"
+					grid-area: sstatus;
+					background-color:lightblue;
+					padding:5px;
+					">';
+			display_info();
+	echo '</div>';
+	
+echo '</div>';
+
 tail();
+
+
+function display_info()
+{
+	$link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
+	$sql='select
+	accr_status as `NABL Accreditation` ,
+	examination_id, name,
+	sample_requirement,
+	display_help as `units/reference_range/(method)`
+	from examination 
+	where 
+	sample_requirement!=\'None\'
+	and
+	displayed_scope=\'yes\'
+	order by name,sample_requirement
+	';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	display_sql_result_data($result,$show_hide='no');
+}
+
+
+function index_menu()
+{
+	echo '<h1><center>Department of Biochemistry, NCHS and GMCS</center></h1>';
+	echo '<h2><center>Majura Gate, Surat</center></h2>';
+
+}
 
 function mget_dbid()
 {
@@ -41,4 +93,18 @@ echo '<button type=submit class="btn btn-primary form-control" name=action value
 echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 echo '</form>';
 }
+
 ?>
+
+<style>
+.index_page
+{
+	display:grid;
+	background-color:red;
+	grid-template-columns: 25% 25% 25% 25%;
+	grid-template-rows: 20% 75%;
+ 	grid-template-areas:
+	'login mmenu mmenu mmenu'
+	'sstatus sstatus sstatus sstatus';
+}
+</style>

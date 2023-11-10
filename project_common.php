@@ -542,7 +542,7 @@ function mk_select_from_array_with_description($name, $select_array,$disabled=''
 		else
 		{
 			//echo '<option value=\''.$value[0].'\' > '.$value[1].'('.$value[0].')'.' </option>';
-			echo '<option value=\''.$value[0].'\' >'.$value[1].'</option>';
+			echo '<option value=\''.$value[0].'\' title=\''.$value[0].'\'>'.$value[1].'</option>';
 		}
 	}
 	echo '</select>';	
@@ -1955,6 +1955,7 @@ Click to edit"
 					<input type=hidden name=sample_id value=\''.$sample_id.'\' >
 					<input type=hidden name=examination_id value=\''.$examination_id.'\'> 
 					<button id=\'button_'.$sample_id.$examination_id.'\'
+							tabindex="-1"
 							name=action value=insert class="btn btn-sm d-inline   no-gutters align-top"
 							>+</button>
 			</form>';
@@ -2705,17 +2706,12 @@ function get_display_choice_select($link,$examination_id,$target_element_id)
 	$sql='select name as description, data  from `display_choice` where examination_id=\''.$examination_id.'\'';
 	//$attribute_str=' onchange="document.getElementById(\''.$target_element_id.'\').value=this[this.selectedIndex].text" ';
 	$attribute_str=' 
-				onchange="
-				document.getElementById(\''.$target_element_id.'\').value= document.getElementById(\''.$target_element_id.'\').value + \'\n\' +this[this.selectedIndex].value" 
-				
-				
-				var evt = new Event("HTMLEvents", {"bubbles":true, "cancelable":false});
-				document.dispatchEvent(evt);
-
-				// event can be dispatched from any element, not only the document
-				this.dispatchEvent(evt);';
-
-	
+				onchange=
+				"
+					document.getElementById(\''.$target_element_id.'\').value= document.getElementById(\''.$target_element_id.'\').value + \'\n\' +this[this.selectedIndex].value 
+					var event = new Event(\'change\');
+					document.getElementById(\''.$target_element_id.'\').dispatchEvent(event);
+				"';
 	ob_start();
 	mk_select_from_sql_with_description($link,$sql,'data',$examination_id.'_display_data',$examination_id.'_display_data',
 										$disabled='',$default='',$blank='',$readonly='',$attribute_str=$attribute_str);
@@ -5716,8 +5712,12 @@ function set_lable($session_name,$sample_id,$examination_details,$examination_id
 					<input type=hidden name=session_name value=\''.$session_name.'\'>
 					<input type=hidden name=sample_id value=\''.$sample_id.'\'>
 					<input type=hidden name=examination_id value=\''.$examination_id.'\'>
-					
-					<button type=submit  class="btn btn-danger btn-sm d-inline m-0 p-0" name=action value=delete title=Delete>X</button>	
+					<button type=submit  
+							class="btn btn-danger btn-sm d-inline m-0 p-0" 
+							name=action 
+							value=delete 
+							title=Delete tabindex="-1"
+					>X</button>	
 				</form>
 				';
 			}
