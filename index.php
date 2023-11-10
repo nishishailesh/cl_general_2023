@@ -96,15 +96,4 @@ echo '</form>';
 
 ?>
 
-<style>
-.index_page
-{
-	display:grid;
-	background-color:red;
-	grid-template-columns: 25% 25% 25% 25%;
-	grid-template-rows: 20% 75%;
- 	grid-template-areas:
-	'login mmenu mmenu mmenu'
-	'sstatus sstatus sstatus sstatus';
-}
-</style>
+

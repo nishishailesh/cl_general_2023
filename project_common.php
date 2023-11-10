@@ -7072,11 +7072,12 @@ function display_sql_result_data($result,$show_hide='yes')
 	if($show_hide=='yes')
 	{
 		echo '<button data-toggle="collapse" data-target="#sql_result" class="btn btn-dark">Show/Hide Result</button>';
+		
 		echo '<div id="sql_result" class="collapse show">';		
 	}
-		
-	
-       echo '<table border=1 class="table-striped table-hover">';
+
+		echo '<div  class="table-responsive">';
+		echo '<table border=1 class="table-striped table-hover">';
 				
         $first_data='yes';
 
@@ -7102,8 +7103,12 @@ function display_sql_result_data($result,$show_hide='yes')
                 echo '</tr>';
 
         }
-        echo '</table>';	
-	echo '</div>';	
+        echo '</table></div>';
+
+	if($show_hide=='yes')
+	{
+		echo '</div>';	
+	}
 	
 }
 //111119500892
