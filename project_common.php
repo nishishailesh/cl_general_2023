@@ -7076,8 +7076,7 @@ function display_sql_result_data($result,$show_hide='yes')
 		echo '<div id="sql_result" class="collapse show">';		
 	}
 
-		echo '<div  class="table-responsive">';
-		echo '<table border=1 class="table-striped table-hover">';
+		echo '<table border=1 class="table table-sm table-striped table-hover table-responsive">';
 				
         $first_data='yes';
 
@@ -7098,12 +7097,12 @@ function display_sql_result_data($result,$show_hide='yes')
                 echo '<tr>';
                 foreach($array as $key=>$value)
                 {
-                        echo '<td>'.$value.'</td>';
+                        echo '<td style="white-space: nowrap;">'.$value.'</td>';
                 }
                 echo '</tr>';
 
         }
-        echo '</table></div>';
+        echo '</table>';
 
 	if($show_hide=='yes')
 	{
