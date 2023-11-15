@@ -158,7 +158,7 @@ function main_menu($link)
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Misc</button>
 						<div class="dropdown-menu m-0 p-0">
 							<div class="btn-group-vertical  d-block">
-								<button class="btn btn-outline-primary m-0 p-0" formaction=single_table_edit.php type=submit name=action value=get_record_list>Tables</button>
+								<!-- <button class="btn btn-outline-primary m-0 p-0" formaction=single_table_edit.php type=submit name=action value=get_record_list>Tables</button>-->
 								<button class="btn btn-outline-primary m-0 p-0" formtarget=_blank formaction="../cl_table/single_table_edit.php" type=submit name=action value=get_record_list>TablesX</button>
 								<button class="btn btn-outline-primary m-0 p-0" formaction=reminders.php type=submit name=action value=reminders>Reminders('.get_incomplete_reminder_count($link).')</button>
 														
@@ -7066,7 +7066,6 @@ function echo_export_button_dashboard($link,$id,$p1,$p2,$p3,$p4)
 			value=export>Export</button>
 		</form>';
 }
-	
 function display_sql_result_data($result,$show_hide='yes')
 {
 	if($show_hide=='yes')
