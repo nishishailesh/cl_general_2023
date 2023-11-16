@@ -159,7 +159,7 @@ function main_menu($link)
 						<div class="dropdown-menu m-0 p-0">
 							<div class="btn-group-vertical  d-block">
 								<!-- <button class="btn btn-outline-primary m-0 p-0" formaction=single_table_edit.php type=submit name=action value=get_record_list>Tables</button>-->
-								<button class="btn btn-outline-primary m-0 p-0" formtarget=_blank formaction="../cl_table/single_table_edit.php" type=submit name=action value=get_record_list>TablesX</button>
+								<button class="btn btn-outline-primary m-0 p-0" formtarget=_blank formaction="../table/single_table_edit.php" type=submit name=action value=get_record_list>TablesX</button>
 								<button class="btn btn-outline-primary m-0 p-0" formaction=reminders.php type=submit name=action value=reminders>Reminders('.get_incomplete_reminder_count($link).')</button>
 														
 								<button class="btn btn-outline-primary m-0 p-0" formaction=manage_reagent.php type=submit name=action value=manage_reagent>Reagent</button>

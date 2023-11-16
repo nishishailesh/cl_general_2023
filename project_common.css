@@ -199,8 +199,8 @@
 	{
 		display:grid;
 		background-color:red;
-		grid-template-columns: 25% 25% 25% 25%;
-		grid-template-rows: 20% 75%;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-rows: auto auto;
 		grid-template-areas:
 		'login mmenu mmenu mmenu'
 		'sstatus sstatus sstatus sstatus';
