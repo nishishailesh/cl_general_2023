@@ -276,11 +276,12 @@
 
 }
 
+/*
 .zoom:focus {
     height: 6em;
     width: 50em;
 }
-
+*/
 .two_column 
 {
   display: grid;
@@ -310,3 +311,8 @@ th, td {
 overflow-wrap: anywhere;
 }
 
+input[type=datetime-local]
+{
+overflow:auto;
+width: auto;
+}

@@ -855,3 +855,32 @@ function popup_qc_choice(me,html)
 	
 	document.getElementById("this_lot").addEventListener("click", function(){document.getElementById('abcd').remove()})
 }
+
+function w_plus(me)
+{
+	ta = document.getElementById(me);
+	ta.style.width=(Number(ta.style.width.slice(0,-2))+100)+"px";
+}
+
+function w_minus(me)
+{
+	ta = document.getElementById(me);
+	ta.style.width=(Number(ta.style.width.slice(0,-2))-100)+"px";
+}
+
+function h_plus(me)
+{
+	ta = document.getElementById(me);
+	ta.style.height=(Number(ta.style.height.slice(0,-2))+100)+"px";
+}
+
+function h_minus(me)
+{
+	ta = document.getElementById(me);
+	ta.style.height=(Number(ta.style.height.slice(0,-2))-100)+"px";
+}
+
+function popup_textarea(me)
+{
+	
+}

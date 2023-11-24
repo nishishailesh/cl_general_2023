@@ -102,25 +102,6 @@ function select_display_style()
 }
 
 
-function get_dbid_small($sample_id)
-{
-echo '<form method=post action=viewww_single.php>';
-echo '<input name=sample_id value=\''.$sample_id.'\' class="m-0 p-0 input-sm" type=text size=6>';
-echo '<button type=submit class="btn btn-sm m-0 p-0 btn-primary" name=action value=view_dbid>View</button>';
-echo '<input  type=hidden name=session_name value=\''.session_name().'\'>';
-echo '</form>';
-
-		echo '<table><tr>';
-		echo '<td>';
-		xxx_sample_id_prev_button($sample_id);
-		echo '</td>';
-		echo '<td>';
-		xxx_sample_id_next_button($sample_id);
-		echo '</td>';
-		echo '</tr></table>';
-}
-
-
 
 ?>
 

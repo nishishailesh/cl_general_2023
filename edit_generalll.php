@@ -22,7 +22,8 @@ elseif(isset($_POST['unique_id']))
 //echo '<pre>';print_r($_POST);echo '</pre>';
 
 echo '<div id=response></div>';
-echo '<div class="two_column_two_by_one">';
+
+echo '<div id=main_div class="two_column_two_by_one">';
 
 echo '<div>';
 
@@ -82,17 +83,7 @@ if($_POST['action']=='sync_single')
 }
 
 //done
-/*
-if($_POST['action']=='save_primary_result')
-{
- 
-    	//insert_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['result'],$_POST['uniq'],$_POST['equipment']);
-    	insert_primary_result($link,$sample_id,$_POST['examination_id'],$_POST['__ex__'.$_POST['examination_id']],$_POST['uniq']);
-		//echo '<div class="d-inline-block"">';
-		//xxx_manage_sample_status_change_horizontal($link,$sample_id);
-		//echo '</div>';	
-		//xxx_edit_sample($link,$_POST['sample_id']);    
-}*/
+
 	
 	echo '<div class="d-inline-block"">';
 	xxx_manage_sample_status_change_horizontal($link,$sample_id);
@@ -112,21 +103,28 @@ if($_POST['action']=='save_primary_result')
 		echo '</div>';
 
 		echo '<div>';
-			$request_sql="select * from examination order by request_route,name";
-			echo '<h3 class="bg-warning">Add new examinations</h3>';
-			xxx_get_data_specific_for_edit($link,$request_sql,$sample_id);
-			echo '<div>
-					<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
-					echo '	<div id="status-window" 
-								class="border border-success">
-							</div>
-					<span class="badge badge-primary"  data-toggle="collapse" data-target="#select-window">Select Examinations</span>';
-					echo '	<div id="select-window" class="border border-success">
-								<input type=text id=my_search_text  onchange="my_search_test()">
-								<button type=button id=my_search onclick="my_search_test()">search</button>
-								<div id=my_search_result></div>
-							</div>						
-			</div>';
+				/*echo '<button class="btn btn-sm btn-block" data-toggle="collapse" data-target="#add_section" 
+						onclick="document.getElementById(\'main_div\').style.gridTemplateColumns=\'auto\';"
+						>+/-</button>';
+				*/		
+				echo '<div id=add_section>';
+					$request_sql="select * from examination order by request_route,name";
+					echo '<h3 class="bg-warning">Add new examinations</h3>';
+					
+					xxx_get_data_specific_for_edit($link,$request_sql,$sample_id);
+					echo '<div>
+							<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
+							echo '	<div id="status-window" 
+										class="border border-success">
+									</div>
+							<span class="badge badge-primary"  data-toggle="collapse" data-target="#select-window">Select Examinations</span>';
+							echo '	<div id="select-window" class="border border-success">
+										<input type=text id=my_search_text  onchange="my_search_test()">
+										<button type=button id=my_search onclick="my_search_test()">search</button>
+										<div id=my_search_result></div>
+									</div>						
+					</div>';
+				echo '</div>';
 	}
 						
 echo '</div>';

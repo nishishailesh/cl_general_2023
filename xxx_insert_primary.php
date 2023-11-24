@@ -26,7 +26,7 @@ if($_POST['action']=='insert_save')
 
 if($_POST['action']=='edit_save')
 {
-	xxx_update_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq'],$_POST['__ex__'.$_POST['examination_id']],$_POST['extra']);
+	xxx_update_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq'],$_POST['result'],$_POST['extra']);
 	edit_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq']);
 	
 }

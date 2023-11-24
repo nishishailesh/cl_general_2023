@@ -181,10 +181,13 @@ function main_menu($link)
 		}
 
 				
-				
 		echo '</div>
 	</nav>
-	</form>';		
+	</form>';
+	echo '<div class="d-inline-block print_hide">';
+		get_one_id();
+	echo '</div>';	
+		
 }
 
 
@@ -1933,7 +1936,7 @@ function get_primary_result($link,$sample_id,$examination_id,$attributes_str='')
 title="uniq='.$ar['uniq'].'
 Extra='.$ar['extra'].'
 Click to sync"
-							value=sync_single>'.$ar['result'].'</button>
+							value=sync_single>'.substr($ar['result'],0,10).'</button>
 					<button type=submit 
 							class="btn btn-sm  no-gutters align-top '.$eclass.' "
 							name=action 
@@ -2273,6 +2276,8 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	$zoom=isset($edit_specification['zoom'])?$edit_specification['zoom']:'';
 	$minlength=isset($edit_specification['minlength'])?$edit_specification['minlength']:'';
 	$required=isset($edit_specification['required'])?$edit_specification['required']:'';
+	$textarea_width=isset($edit_specification['textarea_width'])?$edit_specification['textarea_width']:'20';
+	$textarea_height=isset($edit_specification['textarea_height'])?$edit_specification['textarea_height']:'1';
 	
 	$element_id='r_id_'.$sample_id.'_'.$examination_id;
 	
@@ -2667,25 +2672,110 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 			echo '<div class="m-0 p-0 no-gutters">';
 				////
 				echo '<div class="d-inline-block no-gutters">';
-				echo '<PRE><textarea rows=1 
-					'.$readonly.'
-					id="'.$element_id.'" 
-						name=result 
-					data-primary="'.$primary.'" 
-					data-uniq="'.$uniq.'" 
-					data-exid="'.$examination_id.'" 
-					data-sid="'.$sample_id.'" 
-					data-user="'.$_SESSION['login'].'" 
-					pattern="'.$pattern.'" 
-					data-session_name="'.$_POST['session_name'].'"
-					class="form-control autosave p-0 m-0 no-gutters '.$zoom.' " 
-					style="resize: both;"
-					minlength=\''.$minlength.'\'';
-					if(strlen($required)>0)	{echo 'required=\''.$required.'\'';}
-					echo 'type=\''.$type.'\' >'.
-					htmlspecialchars($result,ENT_QUOTES).'</textarea></PRE>';
+					if($zoom=='zoomm')		//delibrately mispelled to prevent its effect 
+					{
+						echo '
+								<button type="button" class="btn btn-primary" data-toggle="modal" title="'.htmlspecialchars($result,ENT_QUOTES).'" data-target="#'.$element_id.'_modal">E</button>
+								<div class="modal" id="'.$element_id.'_modal">
+								  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document" style="width:100%;">
+									<div class="modal-content">
+									
+									
+												  <div class="modal-header">
+													<h5 class="modal-title" id="exampleModalLabel">'.$examination_details['name'].'</h5>
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													  <span aria-hidden="true">&times;</span>
+													</button>
+												  </div>
+												  
+												  
+												  <div class="modal-body">';
+
+																echo '<PRE><textarea rows=10
+																	'.$readonly.'
+																	id="'.$element_id.'" 
+																		name=result 
+																	data-primary="'.$primary.'" 
+																	data-uniq="'.$uniq.'" 
+																	data-exid="'.$examination_id.'" 
+																	data-sid="'.$sample_id.'" 
+																	data-user="'.$_SESSION['login'].'" 
+																	pattern="'.$pattern.'" 
+																	data-session_name="'.$_POST['session_name'].'"
+																	class="form-control autosave p-0 m-0 no-gutters '.$zoom.' " 
+																	style="resize: both; overflow:auto;"
+																	minlength=\''.$minlength.'\'';
+																	if(strlen($required)>0)	{echo 'required=\''.$required.'\'';}
+																	echo 'type=\''.$type.'\' >'.
+																	htmlspecialchars($result,ENT_QUOTES).'</textarea></PRE>';
+												  echo '</div>
+												  
+												  
+												  <div class="modal-footer">
+													<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+													<button type="button" class="btn btn-primary">Save changes</button>
+												  </div>
+									</div>
+								  </div>
+								</div>
+						';
+						
+						echo '	<button onclick="document.getElementById(\'xxxyyy\').style.display=\'block\';">hi</button>
+								<div id=xxxyyy style="display:none">';
+								
+																echo '<PRE><textarea rows=10
+																	'.$readonly.'
+																	id="'.$element_id.'" 
+																		name=result 
+																	data-primary="'.$primary.'" 
+																	data-uniq="'.$uniq.'" 
+																	data-exid="'.$examination_id.'" 
+																	data-sid="'.$sample_id.'" 
+																	data-user="'.$_SESSION['login'].'" 
+																	pattern="'.$pattern.'" 
+																	data-session_name="'.$_POST['session_name'].'"
+																	class="form-control autosave p-0 m-0 no-gutters '.$zoom.' " 
+																	style="resize: both; overflow:auto;"
+																	minlength=\''.$minlength.'\'';
+																	if(strlen($required)>0)	{echo 'required=\''.$required.'\'';}
+																	echo 'type=\''.$type.'\' >'.
+																	htmlspecialchars($result,ENT_QUOTES).'</textarea></PRE>';								
+								
+								
+								
+								
+								
+								
+								
+								echo '</div>';
+					}
+					
+				else	
+					{
+							echo '<PRE><textarea 
+								rows='.$textarea_height.' 
+								cols='.$textarea_width.' 
+					
+							
+							'.$readonly.'
+							id="'.$element_id.'" 
+								name=result 
+							data-primary="'.$primary.'" 
+							data-uniq="'.$uniq.'" 
+							data-exid="'.$examination_id.'" 
+							data-sid="'.$sample_id.'" 
+							data-user="'.$_SESSION['login'].'" 
+							pattern="'.$pattern.'" 
+							data-session_name="'.$_POST['session_name'].'"
+							class="form-control autosave p-0 m-0 no-gutters '.$zoom.' " 
+							style="resize: both; overflow:auto;"
+							minlength=\''.$minlength.'\'';
+							if(strlen($required)>0)	{echo 'required=\''.$required.'\'';}
+							echo 'type=\''.$type.'\' >'.
+							htmlspecialchars($result,ENT_QUOTES).'</textarea></PRE>';
+					}
 				echo '</div>';
-				echo '<div class="d-inline  no-gutters">';
+				echo '<div class="d-inline-block  no-gutters">';
 					if($readonly!='readonly')
 					{
 						if($frill){get_primary_result($link,$sample_id,$examination_id);}
@@ -3074,7 +3164,9 @@ function edit_field_good_2023_09_19($link,$examination_id,$result_array,$sample_
 			echo '<div class="m-0 p-0 no-gutters">';
 				////
 				echo '<div class="d-inline-block no-gutters">';
-				echo '<PRE><textarea rows=1 
+				echo '<PRE><textarea 
+					rows='.$textarea_height.' 
+					cols='.$textarea_width.' 
 					'.$readonly.'
 					id="'.$element_id.'" 
 					name="'.$examination_id.'" 
@@ -5200,6 +5292,17 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 	
 	$element_id='r_id_'.$examination_id;
 
+
+	if($examination_details['display_choice']=='yes')
+	{
+		$display_choice_html=get_display_choice_select($link,$examination_id,$element_id);
+	}
+	else
+	{
+		$display_choice_html='';
+	}
+	
+	
 	if($type=='yesno')
 	{
 				//////
@@ -5476,10 +5579,10 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 					echo $examination_details['name'];
 				echo '</div>';
 			////
-				echo '<div class="m-0 p-0 no-gutters">';
+				echo '<div class="m-0 p-0 no-gutters w-100">';
 					////
-					echo '<div class="d-inline-block no-gutters">';
-					echo '<textarea rows=1
+					echo '<div class="d-inline-block no-gutters w-100">';
+					echo '<textarea rows=1 
 						
 						id="'.$element_id.'"
 								name="__ex__'.$examination_id.'"
@@ -5487,11 +5590,14 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
 						data-exid="'.$examination_id.'"
 						data-sid="__s__'.$sample_id.'" 
 						pattern="'.$pattern.'"
-						class="form-controlp-0 m-0 no-gutters"
+						class="form-controlp-0 m-0 no-gutters w-100"
 						type=\''.$type.'\' ></textarea>';
 					echo '</div>';
+					
+					
 					echo '<div class="d-inline  no-gutters">';
 						//get_primary_result($link,$sample_id,$examination_id);
+					echo $display_choice_html;
 					echo '</div>';
 				echo '</div>';
 			////
@@ -11692,16 +11798,26 @@ function print_field($link,$ex_id,$ex_result,$sample_id='')
 	$cinterval_h=isset($edit_specification['cinterval_h'])?$edit_specification['cinterval_h']:'';
 	$ainterval_h=isset($edit_specification['ainterval_h'])?$edit_specification['ainterval_h']:'';
 	$img=isset($edit_specification['img'])?$edit_specification['img']:'';
-	if($examination_details['append_user']==1)
-	{
-		$user_info=get_user_info($link,$_SESSION['login']);
-		$append_info=$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
-	}
-	else
-	{
-		$append_info='';
-	}
-
+	
+		if($examination_details['append_user']==1)
+		{
+			$sql='select * from result where sample_id=\''.$sample_id.'\' and examination_id=\''.$ex_id.'\'';
+			$result=run_query($link,$GLOBALS['database'],$sql);
+			$ar=get_single_row($result);
+			$user_info=get_user_info($link,$ar['recorded_by']);
+			if(isset($user_info[$GLOBALS['user_id']]))
+			{
+				$append_info=' ,'.$user_info['name'].'('.$user_info[$GLOBALS['user_id']].')';
+			}
+			else
+			{
+			$append_info='';				
+			}
+		}
+		else
+		{
+			$append_info='';
+		}		
 	if(strlen($display_format)==0){$display_format='horizontal3';}
 	//$display_format='horizontal3';
 	if($display_format=='horizontal3')
@@ -13163,6 +13279,40 @@ function get_label_details($link,$label_id)
 	return $ar=get_single_row($result);
 }
 
+
+
+	/**
+	 * Print a Linear Barcode.
+	 * @param string $code code to print
+	 * @param string $type type of barcode (see tcpdf_barcodes_1d.php for supported formats).
+	 * @param float|null $x x position in user units (null = current x position)
+	 * @param float|null $y y position in user units (null = current y position)
+	 * @param float|null $w width in user units (null = remaining page width)
+	 * @param float|null $h height in user units (null = remaining page height)
+	 * @param float|null $xres width of the smallest bar in user units (null = default value = 0.4mm)
+	 * @param array $style array of options:<ul>
+	 * <li>boolean $style['border'] if true prints a border</li>
+	 * <li>int $style['padding'] padding to leave around the barcode in user units (set to 'auto' for automatic padding)</li>
+	 * <li>int $style['hpadding'] horizontal padding in user units (set to 'auto' for automatic padding)</li>
+	 * <li>int $style['vpadding'] vertical padding in user units (set to 'auto' for automatic padding)</li>
+	 * <li>array $style['fgcolor'] color array for bars and text</li>
+	 * <li>mixed $style['bgcolor'] color array for background (set to false for transparent)</li>
+	 * <li>boolean $style['text'] if true prints text below the barcode</li>
+	 * <li>string $style['label'] override default label</li>
+	 * <li>string $style['font'] font name for text</li><li>int $style['fontsize'] font size for text</li>
+	 * <li>int $style['stretchtext']: 0 = disabled; 1 = horizontal scaling only if necessary; 2 = forced horizontal scaling; 3 = character spacing only if necessary; 4 = forced character spacing.</li>
+	 * <li>string $style['position'] horizontal position of the containing barcode cell on the page: L = left margin; C = center; R = right margin.</li>
+	 * <li>string $style['align'] horizontal position of the barcode on the containing rectangle: L = left; C = center; R = right.</li>
+	 * <li>string $style['stretch'] if true stretch the barcode to best fit the available width, otherwise uses $xres resolution for a single bar.</li>
+	 * <li>string $style['fitwidth'] if true reduce the width to fit the barcode width + padding. When this option is enabled the 'stretch' option is automatically disabled.</li>
+	 * <li>string $style['cellfitalign'] this option works only when 'fitwidth' is true and 'position' is unset or empty. Set the horizontal position of the containing barcode cell inside the specified rectangle: L = left; C = center; R = right.</li></ul>
+	 * @param string $align Indicates the alignment of the pointer next to barcode insertion relative to barcode height. The value can be:<ul><li>T: top-right for LTR or top-left for RTL</li><li>M: middle-right for LTR or middle-left for RTL</li><li>B: bottom-right for LTR or bottom-left for RTL</li><li>N: next line</li></ul>
+	 * @author Nicola Asuni
+	 * @since 3.1.000 (2008-06-09)
+	 * @public
+	 */
+	 
+	 
 function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 {
 		$border=0;
@@ -13172,7 +13322,7 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 		'position' => '',
 		'align' => 'C',
 		'stretch' => True,
-		'fitwidth' => true,
+		/*'fitwidth' => true,*/
 		'cellfitalign' => '',
 		'border' => $barcode_border,
 		'hpadding' => 'auto',
@@ -13182,7 +13332,8 @@ function xxx_prepare_sample_barcode($link,$sample_id,$label_id,$pdf)
 		'text' => false,
 		'font' => 'helvetica',
 		'fontsize' => 5,
-		'stretchtext' => true
+		/*'stretchtext' => true*/
+		'stretchtext' => 4
 	);
 
 	
@@ -13574,6 +13725,36 @@ function find_today_qc_id($link)
 		$sar[]=$ar['sid'];
 	}
 	return $sar;
+}
+
+
+
+function get_dbid_small($sample_id)
+{
+echo '<form method=post action=viewww_single.php>';
+echo '<input name=sample_id value=\''.$sample_id.'\' class="m-0 p-0 input-sm" type=text size=6>';
+echo '<button type=submit class="btn btn-sm m-0 p-0 btn-primary" name=action value=view_dbid>View</button>';
+echo '<input  type=hidden name=session_name value=\''.session_name().'\'>';
+echo '</form>';
+
+		echo '<table><tr>';
+		echo '<td>';
+		xxx_sample_id_prev_button($sample_id);
+		echo '</td>';
+		echo '<td>';
+		xxx_sample_id_next_button($sample_id);
+		echo '</td>';
+		echo '</tr></table>';
+}
+
+
+function get_one_id()
+{
+	echo '<form method=post action=viewww_single_unique_by_full_string.php>';
+	echo '<input name=unique_id class="m-0 p-0 input-sm" type=text size=15>';
+	echo '<button type=submit class="btn btn-sm m-0 p-0 btn-primary" name=action value=view_dbid>View</button>';
+	echo '<input  type=hidden name=session_name value=\''.session_name().'\'>';
+	echo '</form>';
 }
 
 ?>
