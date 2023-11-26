@@ -2253,6 +2253,10 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	$result=$result_array['result'];
 	//echo $result;
 	$examination_details=get_one_examination_details($link,$examination_id);
+	$display_format=$examination_details['display_format'];
+	if(strlen($display_format)==0){$display_format='horizontal3';}
+
+
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	if(!$edit_specification){$edit_specification=array();}
 	
@@ -2296,6 +2300,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 				//////
 		//if(strlen('result')==0){$result='no';}
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+		//echo '<div class="basic_form  m-0 p-0 no-gutters '.$display_format.' ">';
 			////
 			set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
 			////
@@ -2349,6 +2354,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 		
 				//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+		//echo '<div class="basic_form  m-0 p-0 no-gutters '.$display_format.' ">';
 			////
 			set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
 			////
@@ -2392,6 +2398,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 		//}
 				//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+		//echo '<div class="basic_form  m-0 p-0 no-gutters '.$display_format.' ">';
 			////
 			set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
 			////
@@ -2435,6 +2442,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 		elseif($type=='time'){$default=strftime("%H:%M");}
 		//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+		//echo '<div class="basic_form  m-0 p-0 no-gutters '.$display_format.' ">';
 			////
 			set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
 			////
@@ -2473,6 +2481,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 		$step=isset($edit_specification['step'])?$edit_specification['step']:1;
 		//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+		//echo '<div class="basic_form  m-0 p-0 no-gutters '.$display_format.' ">';
 			////
 			set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
 			////
@@ -2515,6 +2524,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	{
 		//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+		//echo '<div class="basic_form  m-0 p-0 no-gutters '.$display_format.' ">';
 			////
 			set_lable_subsection($_POST['session_name'],$sample_id,$examination_details,$examination_id);
 			////
@@ -2534,6 +2544,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	{
 		//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+		//echo '<div class="basic_form  m-0 p-0 no-gutters '.$display_format.' ">';
 			////
 			set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
 			////
@@ -2592,6 +2603,8 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 		
 		
 				echo '<div class="basic_form  m-0 p-0 no-gutters">';
+				//echo '<div class="basic_form  m-0 p-0 no-gutters '.$display_format.' ">';
+
 			////
 				set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
 				//echo $examination_details['name'];
@@ -2621,6 +2634,8 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	elseif(in_array($type,['id_multi_sample','id_single_sample']))
 	{
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+		//echo '<div class="basic_form  m-0 p-0 no-gutters '.$display_format.' ">';
+
 			////
 			echo '<div class="btn-group">';
 			set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
@@ -2666,6 +2681,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	{
 		//////
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
+		//echo '<div class="basic_form  m-0 p-0 no-gutters '.$display_format.' ">';
 			////
 			set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
 			////

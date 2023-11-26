@@ -316,3 +316,15 @@ input[type=datetime-local]
 overflow:auto;
 width: auto;
 }
+
+input[type=textarea]
+{
+overflow:scroll;
+width: auto;
+}
+
+.basic_form_without_help 
+{
+  display: grid;
+  grid-template-columns: 30% 70%;
+}	

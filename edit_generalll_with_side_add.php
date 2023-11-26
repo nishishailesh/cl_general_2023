@@ -84,7 +84,17 @@ if($_POST['action']=='sync_single')
 
 echo '<div id=response></div>';
 
-echo '<div id=main_div">';
+echo '<div id=main_div class="two_column_two_by_one">';
+
+		echo '<div>';
+
+					echo '<button class="btn btn-sm" 
+										onclick="document.getElementById(\'main_div\').style.display=\'block\';"
+										>View Add Examination Bar</button>';
+					echo '<button class="btn btn-sm" 
+										onclick="document.getElementById(\'main_div\').style.gridTemplateColumns=\'auto\';"
+										>Hide Add Examination Bar</button>';
+												
 					echo '<div class="d-inline-block"">';
 					xxx_manage_sample_status_change_horizontal($link,$sample_id);
 					echo '</div>';	
@@ -94,74 +104,42 @@ echo '<div id=main_div">';
 					if(strlen($res_result>0))
 					{	
 						xxx_view_sample($link,$sample_id);
+		echo '</div>';
+		echo '<div>
+		</div>';
 					}
 					else
 					{
-							echo '<button type=button class="btn btn-sm btn-important" data-toggle="collapse" data-target="#add_section">Additional Examinations</button>';
-							echo '<button id=help_toggle type=button class="btn btn-sm btn-important" data-status=block
-							onclick="
-							if(this.getAttribute(\'data-status\')==\'block\')
-							{
-								hh=document.getElementsByClassName(\'help\');
-								for(let i=0;i<(hh.length);i++)
-								{
-									hh[i].style.display=\'none\';
-								}
-								this.setAttribute(\'data-status\',\'none\');
-								this.innerHTML=\'Show Help\'
-								
-								hh=document.getElementsByClassName(\'basic_form\');
-								for(let i=0;i<(hh.length);i++)
-								{
-									hh[i].style.gridTemplateColumns=\'33% 67%\';
-								}
-																												
-							}
-							else
-							{
-								hh=document.getElementsByClassName(\'help\');
-								for(let i=0;i<(hh.length);i++)
-								{
-									hh[i].style.display=\'block\';
-								}
-								this.setAttribute(\'data-status\',\'block\');
-								this.innerHTML=\'Hide Help\'	
-														
-								hh=document.getElementsByClassName(\'basic_form\');
-								for(let i=0;i<(hh.length);i++)
-								{
-									hh[i].style.gridTemplateColumns=\'20% 40% 40%\';
-								}							}
-							
-							"
-							>Hide Help</button>';
+						xxx_edit_sample($link,$sample_id);
+		echo '</div>';
+		
+		echo '<div>';
+				/*echo '<button class="btn btn-sm btn-block" data-toggle="collapse" data-target="#add_section" 
+						onclick="document.getElementById(\'main_div\').style.gridTemplateColumns=\'auto\';"
+						>+/-</button>';
+				*/
 						
-							$request_sql="select * from examination order by request_route,name";
-							echo '<div id=add_section class="collapse">';
-									echo '<div class="two_column_one_by_two">';
-							  
-													echo '<div>';
-														xxx_get_data_specific_for_edit($link,$request_sql,$sample_id);							
-													echo '</div>';
+							echo '<div id=add_section>';
+											$request_sql="select * from examination order by request_route,name";
+											echo '<h3 class="bg-warning">Add new examinations</h3>';
 											
-													echo '<div class="two_column_one_by_two">';
+											xxx_get_data_specific_for_edit($link,$request_sql,$sample_id);
+											echo '<div>
+															<span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
+															
+															echo '	<div id="status-window" 
+																		class="border border-success">
+																	</div>
 																	
-																	echo '	<div id="select-window" class="border border-success">
-																				<input type=text id=my_search_text placeholder="part of examination name" onchange="my_search_test()">
-																				<button type=button class="btn btn-primary btn-sm" id=my_search onclick="my_search_test()">search</button>
-																				<div id=my_search_result></div>
-																	</div>';
-																																					
-																	echo '	<div id="status-window" class="border border-success">
-																	Selection of Additional Examinations will be listed here
-																	</div>											
-													</div>';
-									
-									echo '</div>';
+															<span class="badge badge-primary"  data-toggle="collapse" data-target="#select-window">Select Examinations</span>';
+															
+															echo '	<div id="select-window" class="border border-success">
+																		<input type=text id=my_search_text  onchange="my_search_test()">
+																		<button type=button id=my_search onclick="my_search_test()">search</button>
+																		<div id=my_search_result></div>
+																	</div>						
+											</div>';
 							echo '</div>';
-							
-							xxx_edit_sample($link,$sample_id);				
-
 					}
 						
 echo '</div>';
