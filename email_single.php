@@ -18,7 +18,6 @@ print_sample($link,$_POST['sample_id'],$pdf);
 $output=$pdf->Output('report.pdf', 'S');
 
 $rlink=get_remote_link($GLOBALS['email_db_server'],$GLOBALS['email_user'],$GLOBALS['email_pass']);
-
 $email=get_one_ex_result($link,$_POST['sample_id'],$GLOBALS['email']);
 echo 'Result will sent to ('.$email.')<br>';
 if(strlen($email)==0)

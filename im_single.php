@@ -4,49 +4,15 @@ require_once 'project_common.php';
 require_once 'base/verify_login.php';
 
 	////////User code below/////////////////////
-require_once('tcpdf/tcpdf.php');
-
 echo '            <link rel="stylesheet" href="project_common.css">
 				<script src="project_common.js"></script>';  
                   
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 
-/*
-$pdf = new ACCOUNT1('P', 'mm', 'A4', true, 'UTF-8', false);
-
-print_sample($link,$_POST['sample_id'],$pdf);
-
-$output=$pdf->Output('report.pdf', 'S');
-
-$rlink=get_remote_link($GLOBALS['email_db_server'],$GLOBALS['email_user'],$GLOBALS['email_pass']);
-
-$email=get_one_ex_result($link,$_POST['sample_id'],$GLOBALS['email']);
-
-echo 'Result will sent to ('.$email.')<br>';
-if(strlen($email)==0)
-{
-  echo 'email address not available';
-  exit(0);
-}
-*/
-
-//				recording_time=now(),
-//				recorded_by=\''.$_SESSION['login'].'\'
-
-$GLOBALS['location_id']=1006;
-
 $location=get_one_ex_result($link,$_POST['sample_id'],$GLOBALS['location_id']);
 
-
-//$send_to='shailesh_patel@nchs.gmcsurat.edu.in';
-$send_to=$location.'@nchs.gmcsurat.edu.in';
-
-//$message=fetch_lab_report($link,$_POST['sample_id']);
-
-$message=print_sample_for_xmpp($link,$_POST['sample_id']).'\n'.make_link($link,$_POST['sample_id']);
-
-
+$message=make_link($link,$_POST['sample_id']);
 $xmpp_sql='insert into im_message (send_to,message,message_status,recording_time,recorded_by) 
 		values
 		(
@@ -70,7 +36,8 @@ else
 {
   echo 'xmpp message can not be sent to main server.';
 }
-view_sample($link,$_POST['sample_id']);
+
+include 'viewww_single.php';
 //////////////user code ends////////////////
 tail();
 

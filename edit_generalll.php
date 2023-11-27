@@ -113,7 +113,7 @@ echo '<div id=main_div">';
 								hh=document.getElementsByClassName(\'basic_form\');
 								for(let i=0;i<(hh.length);i++)
 								{
-									hh[i].style.gridTemplateColumns=\'33% 67%\';
+									hh[i].style.gridTemplateColumns=\'20% 80%\';
 								}
 																												
 							}

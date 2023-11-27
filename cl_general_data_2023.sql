@@ -39,7 +39,9 @@ LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
 INSERT INTO `config` VALUES
 ('eq_color_code','{\"C\":\"lightpink\",\"I\":\"red\",\"A\":\"cyan\",\"D\":\"#00F5E0\",\"6\":\"violet\",\"K\":\"#6699ff\",\"E\":\"mediumvioletred\",\"U\":\"#FFA500\",\"F\":\"#FFA500\"}',NULL,''),
+('examination_id_for_email','1024',NULL,NULL),
 ('examination_id_for_verification_record','10007',NULL,'a datetime examination which will be updated when verification/calculation is done'),
+('examination_id_for_xmpp','1051',NULL,NULL),
 ('footer_notice','Verify authenticity of report by scanning QR Code in mobile browser',NULL,NULL),
 ('header_route','Header',NULL,NULL),
 ('horizontal_status_lot_size','100',NULL,''),
@@ -233,7 +235,7 @@ INSERT INTO `examination` VALUES
 (1021,'Age(D)','None','{\"type\":\"number\",\"help\":\"Days\"}','','Misc/Patient Details','Patient Details','','','','','compact_report',1,1,0,1,NULL,'','','Days','Days',NULL,NULL,'yes',NULL,''),
 (1022,'Sample Remark','None','','','Misc/Sample Details','Sample Details','Sample Details','','','','compact_report',1,2,0,2,NULL,'','','','','',NULL,'yes',NULL,''),
 (1023,'Sample Collection Condition','None','{\"type\":\"select\",\"option\":\"Random,Fasting,Postprendial-2HR,PostGlucose-75GM-1HR,PostGlucose-75GM-2HR,PostGlucose-75GM-3HR,PostGlucose-50GM-1HR\"}','','Misc/Sample Details','Sample Details','Sample Details','','10','','compact_report',1,1,0,1,NULL,'','','','','',NULL,'yes',NULL,''),
-(1024,'email','None','{\"type\":\"select\",\"option\":\",suratcv19@gmail.com\"}','suratcv19@gmail.com','Misc/Patient Details','Patient Details','','','','','compact_report',1,1,0,1,NULL,'','',NULL,NULL,NULL,NULL,'yes',NULL,''),
+(1024,'email','None','','suratcv19@gmail.com','Misc/Patient Details','Patient Details','','','','','compact_report',1,1,0,1,NULL,'','',NULL,NULL,NULL,NULL,'yes',NULL,''),
 (1025,'mobile','None','{\"type\":\"realtext\"}','','Misc/Patient Details','Patient Details','','','','','compact_report',1,1,0,1,NULL,'','',NULL,NULL,NULL,NULL,'yes',NULL,''),
 (1026,'sample_volume','None','{\"type\":\"select\",\"option\":\"-,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5\"}','','Misc/Sample Details','Sample Details','','','','','compact_report',1,1,0,1,NULL,'','','','','',NULL,'yes',NULL,''),
 (1027,'request_date','None','{\"type\":\"date\",\"hide\":\"yes\"}','','','Sample Details','','','','','compact_report',1,1,0,1,NULL,'','','','','',NULL,'yes',NULL,''),
@@ -259,7 +261,7 @@ INSERT INTO `examination` VALUES
 (1048,'qc_id','None','{\"type\":\"id_single_sample\",\"table\":\"qc_id\",\"readonly\":\"readonly\",\"unique_prefix\":\"U\",\"minimum\":\"1000\"}','inserted, never edited, one for each sample','Misc/Sample Details/IDs','IDs','Sample Details/IDs','','30','','compact_report',1,1,0,1,NULL,'','','','','',NULL,'yes',NULL,''),
 (1049,'niramaya_id','None','{\"type\":\"id_single_sample\",\"table\":\"niramaya_id\",\"readonly\":\"readonly\",\"unique_prefix\":\"N\",\"minimum\":\"1000\"}','inserted, never edited, one for each sample','Misc/Sample Details/IDs','IDs','Sample Details/IDs','','30','','compact_report',1,1,0,1,NULL,'','','','','',NULL,'yes',NULL,''),
 (1050,'emergency_id','None','{\"type\":\"id_single_sample\",\"table\":\"emergency_id\",\"readonly\":\"readonly\",\"unique_prefix\":\"E\",\"minimum\":\"1000\"}','inserted, never edited, one for each sample','Misc/Sample Details/IDs','IDs','Sample Details/IDs','','35','','compact_report',1,1,0,1,NULL,'','','','','',NULL,'yes',NULL,''),
-(1099,'LDL Cholesterol','Plain-Blood','{\"type\":\"number\",\"help\":\" mg/dL &lt;130 (Calculated)\",\"calculate\":\"(E/0.948) - (E/0.971) -  (E/8.56 + ( (E-E)/2140 ) - ( (E^2)/16100 )) - 9.44\",\"ex_list\":\" 5015,5016,5018,5015,5016,5018\",\"equipment\":\"C\"}','','Misc/HDL','Clinical chemistry/Lipid profile','Lipid Profile','550','','','',1,1,0,1,NULL,'','C','mg/dL &lt;=130 (Calculated)\r\n<a href=\"https://pubmed.ncbi.nlm.nih.gov/19009762/\" >Maureen Sampson Equation</a>','mg/dL &lt;=130 (Calculated)\r\n<a href=\"https://pubmed.ncbi.nlm.nih.gov/19009762/\" >Maureen Sampson Equation</a>','yes',NULL,'yes',NULL,',Blood,NABL'),
+(1051,'xmpp_id','None','','','','','','','','','',1,2,0,2,NULL,'','','','mg/dL &lt;=130 (Calculated)\r\n<a href=\"https://pubmed.ncbi.nlm.nih.gov/19009762/\" >Maureen Sampson Equation</a>','',NULL,'',NULL,''),
 (3001,'Lot','None','{\"type\":\"examination_field_specification\"}','','Misc/QC/Sample Details','Sample Details/QC','','','','','',NULL,NULL,0,NULL,NULL,'','','','',NULL,NULL,'yes',NULL,''),
 (5001,'Creatinine','Plain-Blood','{\"type\":\"number\",\"help\":\"mg/dL (&lt;h5&gt;Jaffe two point)&lt;/h5&gt;\\n Male: 0.9-1.3\\n Female: 0.6-1.1\\n&lt;b&gt;(Not in NABL Scope)&lt;/b&gt;\",\"step\":\"0.1\",\"interval_h\":\"1.3\",\"cinterval_h\":\"4.0\",\"ainterval_h\":\"40.0\",\"ainterval_l\":\"0.1\",\"equipment\":\"C\",\"accr_status\":\"no\",\"cost\":\"150\"}','Biochemistry/OPD/RFT,Biochemistry/OPD/Basic,Biochemistry/Basic/RFT','LREG,LRE,LRE-ALBTP-CRPLDH,LRE-CALCRP,BIG1,Misc/QC/clinical chemistry','Clinical chemistry/RFT','Renal Function Tests','450','','','',1,1,0,1,NULL,'','C','mg/dL <h5>(Jaffe two point)</h5><i>Male: 0.9-1.3 <br>Female: 0.6-1.1<h4></i></h4>','mg/dL (Jaffe two point)<br>\r\nMale: 0.9-1.3<br>\r\nFemale: 0.6-1.1','yes',NULL,'yes',NULL,',Blood,NABL'),
 (5002,'Urea','Plain-Blood','{\"type\":\"number\",\"help\":\"mg/dL 13-43 (Urease  GLDH)\",\"interval_h\":\"43\",\"interval_l\":\"13\",\"cinterval_h\":\"100\",\"ainterval_h\":\"400\",\"equipment\":\"C\",\"cost\":\"200\"}','','BIG1,Misc/Osmolarity-Serum,Misc/QC/clinical chemistry','Clinical chemistry/RFT','Renal Function Tests','','','','',1,1,0,1,NULL,'','C','mg/dL 13-43 (Urease  GLDH)','mg/dL 13-43 (Urease  GLDH)','yes',NULL,'yes',NULL,',Blood,NABL'),
@@ -1196,4 +1198,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-26 11:26:23
+-- Dump completed on 2023-11-28  0:11:12

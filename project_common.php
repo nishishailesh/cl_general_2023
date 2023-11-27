@@ -2243,8 +2243,6 @@ function sync_all($link,$sample_id)
 			{echo 'blob data synchronization failed';}
 		}	
 	}
-	
-		
 }
 
 function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',$frill=True,$extra_array=array(),$primary='',$uniq='',$autosave='')
@@ -2255,7 +2253,6 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 	$examination_details=get_one_examination_details($link,$examination_id);
 	$display_format=$examination_details['display_format'];
 	if(strlen($display_format)==0){$display_format='horizontal3';}
-
 
 	$edit_specification=json_decode($examination_details['edit_specification'],true);
 	if(!$edit_specification){$edit_specification=array();}
@@ -2294,10 +2291,9 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
 		$display_choice_html='';
 	}
 	
-	
 	if($type=='yesno')
 	{
-				//////
+		//////
 		//if(strlen('result')==0){$result='no';}
 		echo '<div class="basic_form  m-0 p-0 no-gutters">';
 		//echo '<div class="basic_form  m-0 p-0 no-gutters '.$display_format.' ">';
@@ -10899,10 +10895,10 @@ function xxx_show_all_buttons_for_sample($link,$sample_id,$mode='view')
 					{
 						xxx_sample_id_print_button($link,$sample_id);	
 						//xxx_sample_id_wprint_button($link,$sample_id);
-						//sample_id_email_button($sample_id);
+						xxx_sample_id_email_button($link,$sample_id);
 						//sample_id_telegram_button($sample_id);
 						//sample_id_sms_button($sample_id,$link);
-						//sample_id_xmpp_button($sample_id);
+						xxx_sample_id_xmpp_button($link,$sample_id);
 					}		
 			//echo '</div>';
 			xxx_sample_id_TAT_button($sample_id,$target=' target=_blank ',$label='TAT');
@@ -10995,6 +10991,28 @@ function xxx_sample_id_print_button($link,$sample_id)
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=print>
 	</form></div>';
+}
+
+function xxx_sample_id_email_button($link,$sample_id)
+{
+	echo '<div class="d-inline-block"  ><form method=post action=xxx_email_single.php class=print_hide>
+	<button class="btn btn-outline-success btn-sm" name=sample_id value=\''.$sample_id.'\' >Email</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=print>
+	</form></div>';
+	//	<input type=hidden name=email value=\''.get_one_ex_result($link,$sample_id,get_config_value($link,'	examination_id_for_email')).'\'>
+
+}
+
+function xxx_sample_id_xmpp_button($link,$sample_id)
+{
+	echo '<div class="d-inline-block"  ><form method=post action=xxx_im_single.php class=print_hide>
+	<button class="btn btn-outline-success btn-sm" name=sample_id value=\''.$sample_id.'\' >XMPP</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=print>
+	</form></div>';
+	//	<input type=hidden name=email value=\''.get_one_ex_result($link,$sample_id,get_config_value($link,'	examination_id_for_email')).'\'>
+
 }
 
 function xxx_sample_id_wprint_button($link,$sample_id)
@@ -11409,8 +11427,9 @@ function is_authorized($link,$user,$examination_id,$action)
 	//echo '<pre>';
 	//echo 'is_authorized() parameters<br>';
 	//print_r($user_info);
+	//echo 'ex_info as follows:';
 	//print_r($ex_info);
-	//echo 'action='.$action.'<br>';	
+	//echo '<br>action='.$action.'<br>';	
 
 	if($user_info[$action.'_authorization_level']>=$ex_info[$action.'_minimum_authorization_level'])
 	{
@@ -12318,6 +12337,11 @@ function generate_pdf_for_report($pdf)
 		$pdf->Output('report.pdf', 'I');
 }
 
+
+function generate_pdf_for_report_as_file($pdf)
+{
+		return $pdf->Output('report.pdf', 'S');
+}
 
 
 
