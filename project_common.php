@@ -10864,6 +10864,7 @@ function xxx_show_all_buttons_for_sample($link,$sample_id,$mode='view')
 			if(strlen($res_result<=0))
 			{
 				xxx_sample_id_edit_button($sample_id);
+				xxx_sample_id_edit2_button($sample_id,$target='',$label='Edit2');
 				if($mode=='edit')
 				{
 					xxx_sample_id_sync_all_button($sample_id);
@@ -10934,6 +10935,15 @@ function xxx_sample_id_edit_button($sample_id,$target='',$label='Edit')
 	</form></div>';
 }
 
+
+function xxx_sample_id_edit2_button($sample_id,$target='',$label='Edit')
+{
+	echo '<div class="d-inline-block" ><form method=post '.$target.' action=edit_generalll_2.php class=print_hide>
+	<button class="btn btn-outline-primary btn-sm" name=sample_id value=\''.$sample_id.'\' >'.$label.'</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=edit_general>
+	</form></div>';
+}
 
 function xxx_sample_id_prev_button($sample_id,$action='viewww_single.php')
 {
