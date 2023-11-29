@@ -1,6 +1,7 @@
 <?php
 $GLOBALS['main_user_location']='/var/gmcs_config/staff.conf';
 $GLOBALS['user_database']='clg';
+$GLOBALS['email_database']='clg';
 $GLOBALS['user_table']='user';
 $GLOBALS['user_id']='user';
 $GLOBALS['user_pass']='password';

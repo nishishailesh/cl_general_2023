@@ -14,7 +14,7 @@ $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 $pdf=xxx_prepare_for_report_printing();
 xxx_fill_report($link,$_POST['sample_id'],$pdf);
 $output=generate_pdf_for_report_as_file($pdf);
-
+//echo $GLOBALS['email_db_server'];
 $rlink=get_remote_link($GLOBALS['email_db_server'],$GLOBALS['email_user'],$GLOBALS['email_pass']);
 $email=get_one_ex_result($link,$_POST['sample_id'],get_config_value($link,'examination_id_for_email'));
 
@@ -32,7 +32,7 @@ else
 			values(\''.$email.'\',\''.$subject.'\',\''.$content.'\',0,\''.my_safe_string($rlink,$output).'\',\''.$subject.'.pdf\')';
 	//echo $mail_sql;
 
-	if(run_query($rlink,'email',$mail_sql))
+	if(run_query($rlink,$GLOBALS['email_database'],$mail_sql))
 	{
 	  echo 'email sent to main server. It may reach destination after 5-30 minutes, depending on main server configuration<br>';
 	}
