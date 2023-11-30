@@ -162,7 +162,8 @@ function main_menu($link)
 								<button class="btn btn-outline-primary m-0 p-0" formtarget=_blank formaction="../table/single_table_edit.php" type=submit name=action value=get_record_list>TablesX</button>
 								<button class="btn btn-outline-primary m-0 p-0" formaction=reminders.php type=submit name=action value=reminders>Reminders('.get_incomplete_reminder_count($link).')</button>
 														
-								<button class="btn btn-outline-primary m-0 p-0" formaction=manage_reagent.php type=submit name=action value=manage_reagent>Reagent</button>
+								<!-- <button class="btn btn-outline-primary m-0 p-0" formaction=manage_reagent.php type=submit name=action value=manage_reagent>Reagent</button> -->
+								<button class="btn btn-outline-primary m-0 p-0" formaction=consumable.php type=submit name=action value=consumable>Consumable</button>
 								
 								<!-- <button class="btn btn-outline-primary m-0 p-0" formaction=sms.php type=submit name=action value=sms>Bulk SMS</button> -->
 								<button class="btn btn-outline-primary m-0 p-0" formaction=statistics_and_info.php type=submit name=action value=statistics>Statistics and Info</button>
