@@ -13,6 +13,11 @@ main_menu($link);
 
 $save_mode='no';
 
+//if($_POST['action']=='consumable')
+//{
+	list_consumable($link);
+//}
+
 if(isset($_POST['save_id']))
 {
 	$pk_name='save_id';
@@ -33,16 +38,35 @@ if(isset($_POST['save_id']))
 	$save_mode='yes';
 }
 
-if($_POST['action']=='consumable')
+
+if($_POST['action']=='save_insert')
 {
-	list_consumable($link);
+	for($sr=$_POST['from^serial_number'];$sr<=$_POST['to^serial_number'];$sr++)
+	{
+		$temp_post=$_POST;
+		unset($temp_post['from^serial_number']);
+		unset($temp_post['to^serial_number']);
+		$temp_post['serial_number']=$sr;		
+		xxx_insert_direct_with_default($link,'consumable_receipt',$temp_post,$default=array());
+	}
+	$edit_id= isset($_POST['id'])?$_POST['id']:0;
+	view_edit_consumable_receipt($link,$_POST['consumable_name'],$edit_id,$save_mode);	
 }
 
-if($_POST['action']=='view_edit')
+
+
+if($_POST['action']=='view_edit' || $_POST['action']=='view_edit')
 {
 	$edit_id= isset($_POST['id'])?$_POST['id']:0;
 	view_edit_consumable_receipt($link,$_POST['consumable_name'],$edit_id,$save_mode);
 }
+
+if($_POST['action']=='insert')
+{
+	xxx_add_direct_with_default($link,'consumable_receipt',$header='no',$default=array(),$readonly=array());
+}
+
+
 //////////////user code ends////////////////
 tail();
 
@@ -52,10 +76,18 @@ tail();
 
 function list_consumable($link)
 {
-	echo '<h3>Select Consumable</h3>';
 	echo '<form method=post><input type=hidden name=session_name value=\''.session_name().'\'>';
-	mk_select_from_sql($link,'select consumable_name from consumable_name','consumable_name','consumable_name','consumable_name','','',$blank='yes',$extra='');
-	echo '<button class="btn btn-outline-primary m-0 p-0" type=submit name=action value=view_edit>View/Edit Consumable</button>';	
+	
+	echo '<div class="btn-group">';
+			echo '<div class="border border-important p-1 m-1">';
+				mk_select_from_sql($link,'select consumable_name from consumable_name','consumable_name','consumable_name','consumable_name','','',$blank='yes',$extra='');
+				echo '<button class="btn btn-outline-primary m-0 p-0" type=submit name=action value=view_edit>View/Edit Consumable</button>';	
+			echo '</div>';
+			echo '<div class="border border-important p-1 m-1">';
+				echo '<button class="btn btn-outline-primary m-0 p-0" type=submit name=action value=insert>Insert Consumable</button>';
+			echo '</div>';
+	echo '</div>';
+	
 	echo '</form>';
 }
 
@@ -77,7 +109,352 @@ recording_time	datetime NULL
 recorded_by	varchar(100) NULL	
 */
 
+
+function xxx_add_direct_with_default($link,$tname,$header='no',$default=array(),$readonly=array())
+{
+    //print_r($readonly);
+    
+    $sql='show columns from `'.$tname.'` ';
+    $result=run_query($link,$GLOBALS['database'],$sql);
+        
+    echo '<form method=post class="d-inline" enctype="multipart/form-data">';
+    echo '<div class="two_column_one_by_two bg-light border border-success m-3 p-3">';
+            while ( $ar=get_single_row($result))
+            {
+                //print_r($ar);
+                //Array ( [Field] => id [Type] => int(11) [Null] => NO [Key] => PRI [Default] => [Extra] => auto_increment ) 
+                $defval=isset($default[$ar['Field']])?$default[$ar['Field']]:'';
+                $readonly_val=isset($readonly[ $ar['Field'] ])?'readonly':'';
+                //echo '<h1>'.$readonly_val.'</h1>';
+                if($ar['Field']=='id')
+                {
+                    echo '<div class="border">'.$ar['Field'].'</div>';
+                    echo '<div class="border">';
+                        echo 'auto';
+                    echo '</div>';
+                }
+                
+                elseif($ar['Field']=='serial_number')
+                {
+                    echo '<div class="border">'.$ar['Field'].'</div>';
+                    echo '<div class="border btn-group">';
+							echo '<input class="w-100" type=text  name=from^serial_number placeholder=from>';
+							echo '<input class="w-100" type=text  name=to^serial_number placeholder=to>';
+                    echo '</div>';
+                }
+                
+                elseif(substr($ar['Type'],-4)=='blob')
+                {
+                    echo '<div class="border">'.$ar['Field'].'</div>';
+                    echo '<div class="border">';
+                        echo '<input type=file name=\''.$ar['Field'].'\' >';
+                    echo '</div>';
+                }
+                elseif(in_array($ar['Field'],array('recording_time','recorded_by')))
+                {
+                    echo '<div class="border">'.$ar['Field'].'</div>';
+                    echo '<div class="border">';
+                        echo 'auto';
+                    echo '</div>';
+                }
+                else
+                {
+                    echo '<div class="border">'.$ar['Field'].'</div>';
+                    echo '<div class="border">';                
+                        xxx_read_field($link,$tname,$ar['Field'],$defval,'no',$readonly_val);
+                    echo '</div>';
+                }
+                
+            }
+
+            echo '</div>';
+
+            echo 
+                '<div class="d-block" >
+                    <button type=submit class="btn btn-block btn-outline-success btn-sm m-0 p-0" name=action value=save_insert ><h5>Save</h5></button>
+                    <input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+                    <input type=hidden name=tname value=\''.$tname.'\'>
+                </div>';
+                 
+    echo'</form>';
+
+}
+
+
+function xxx_insert_direct_with_default($link,$tname,$post,$default=array())
+{
+    //print_r($post);
+    $sql1='insert into `'.$tname.'` ';
+    $sql2='(';
+    $sql3='values(';
+
+    foreach($post as $key=>$value)
+    {
+        if(!in_array($key,array('action','tname','session_name','id','recording_time','recorded_by')))
+        {
+            $sql2=$sql2.'`'.$key.'`, ';
+            $sql3=$sql3.'\''.(isset($default['key'])?$default['key']:$value).'\', ';
+        }
+    }
+    $sql2=$sql2.'`recording_time`,`recorded_by` ';
+    $sql3=$sql3.'now(),\''.$_SESSION['login'].'\'';
+    //echo $sql1.$sql2.')'.$sql3.')';
+    $sql= $sql1.$sql2.')'.$sql3.')';
+    //echo $sql;
+    if($result=run_query($link,$GLOBALS['database'],$sql))
+    {
+        $id=last_autoincrement_insert($link);
+        foreach($_FILES as $k=>$v)
+        {
+            if(!in_array($k,array('action','tname','session_name','id','recording_time','recorded_by')))
+            {
+                xxx_update_one_field_blob($link,$tname,$k,$k.'_name',$id);
+            }
+        } 
+        return $id;       //echo 'inserted a record with id: '.last_autoincrement_insert($link);
+    }
+    else
+    {
+        echo 'Record not inserted';
+        return false;
+    }
+}
+
+function insert_consumable($link,$consumable_name)
+{
+	echo '<h3>New Consumable</h3>';
+	echo '<form method=post><input type=hidden name=session_name value=\''.session_name().'\'>';
+    echo '<input type=hidden name=action value=save_insert>';
+    echo '<input type=hidden name=consumable_name value=\''.$consumable_name.'\'>';
+
+	$sql='select * from consumable_receipt where consumable_name=\''.$consumable_name.'\'';
+	if(!$result=run_query($link,$GLOBALS['database'],$sql))
+	{
+		 return false;
+	}
+	
+		echo '<table border=1 class="table table-sm table-striped table-hover table-responsive">';
+		//echo '<table border=1 class="table table-sm table-striped table-hover ">';
+				
+        $first_data='yes';
+
+        while($array=get_single_row($result))
+        {
+				$id=$array['id'];
+				
+                if($first_data=='yes')
+                {
+                        echo '<tr bgcolor=lightgreen>';
+                        foreach($array as $key=>$value)
+                        {
+                                echo '<th >'.$key.'</th>';
+                                //echo '<th style="writing-mode: sideways-lr;">'.$key.'</th>';
+                                //echo '<th >'.str_replace('_','<br>',$key).'</th>';	//style="writing-mode: sideways-lr;"
+                        }
+                        echo '</tr>';
+                        $first_data='no';
+                }
+                
+                
+                echo '<tr>';
+                
+                if($array['id']==$edit_id && $save_mode=='no')
+				{
+					echo '<td colspan=20>';
+					echo '<table>';
+					
+							foreach($array as $key=>$value)
+							{
+								if($key=='id')
+								{
+									echo '<tr>
+												<td>'.$key.'</td>
+												<td>';
+														echo '<button class="btn btn-outline-primary btn-sm" name=id value='.$value.'>'.$value.'</button>';
+														echo '<input type=hidden name=save_id value=\''.$value.'\'>';
+												echo '</td>
+									</tr>';							
+								}
+								else
+								{
+									echo '<tr><td>'.$key.'</td>';
+									echo '<td>';
+									xxx_read_field($link,'consumable_receipt',$key,$value,$search='no',$readonly='');
+									echo '</td>';
+									echo '</tr>';							
+								}
+							}
+					
+					
+					echo '</table>'; 
+					echo '</td>';
+				}
+				
+				else
+				{
+					foreach($array as $key=>$value)
+					{
+						if($key=='id')
+						{
+							if($value==$edit_id && $save_mode=='no')
+							{
+								echo '<td>';
+								echo '<button class="btn btn-outline-primary btn-sm" name=id value='.$value.'>'.$value.'</button>';
+								echo '<input type=hidden name=save_id value=\''.$value.'\'>';
+								echo '</td>';							
+								
+							}
+							else
+							{
+								echo '<td>';
+								echo '<button class="btn btn-outline-primary btn-sm" name=id value='.$value.'>'.$value.'</button>';
+								echo '</td>';
+							}
+						}
+						else
+						{
+							if($id==$edit_id && $save_mode=='no') 
+							{						
+								//echo '<td style="white-space: nowrap;"><input type=text name=\''.$key.'\' value=\''.$value.'\'>'.$value.'</td>';
+								echo '<td>';
+								xxx_read_field($link,'consumable_receipt',$key,$value,$search='no',$readonly='');
+								echo '</td>';
+							}
+							else
+							{						
+								echo '<td style="white-space: nowrap;">'.$value.'</td>';
+							}
+							
+						}
+					}
+					
+				}
+                
+                echo '</tr>';
+
+        }
+        echo '</table>';
+	echo '</form>';
+}
+
 function view_edit_consumable_receipt($link,$consumable_name,$edit_id=0,$save_mode='no')
+{
+	//echo '<h3>Consumable Details</h3>';
+	echo '<form method=post><input type=hidden name=session_name value=\''.session_name().'\'>';
+    echo '<input type=hidden name=action value=view_edit>';
+    echo '<input type=hidden name=consumable_name value=\''.$consumable_name.'\'>';
+
+	$sql='select * from consumable_receipt where consumable_name=\''.$consumable_name.'\' order by id desc limit 100';
+	if(!$result=run_query($link,$GLOBALS['database'],$sql))
+	{
+		 return false;
+	}
+	
+		echo '<table border=1 class="table table-sm table-striped table-hover table-responsive">';
+		//echo '<table border=1 class="table table-sm table-striped table-hover ">';
+				
+        $first_data='yes';
+
+        while($array=get_single_row($result))
+        {
+				$id=$array['id'];
+				
+                if($first_data=='yes')
+                {
+                        echo '<tr bgcolor=lightgreen>';
+                        foreach($array as $key=>$value)
+                        {
+                                //echo '<th >'.$key.'</th>';
+                                //echo '<th style="writing-mode: sideways-lr;">'.$key.'</th>';
+                                echo '<th >'.str_replace('_','<br>',$key).'</th>';	//style="writing-mode: sideways-lr;"
+                        }
+                        echo '</tr>';
+                        $first_data='no';
+                }
+                
+                
+                echo '<tr>';
+                
+                if($array['id']==$edit_id && $save_mode=='no')
+				{
+					echo '<td colspan=20>';
+					echo '<table>';
+					
+							foreach($array as $key=>$value)
+							{
+								if($key=='id')
+								{
+									echo '<tr>
+												<td>'.$key.'</td>
+												<td>';
+														echo '<button class="btn btn-outline-primary btn-sm" name=id value='.$value.'>'.$value.'</button>';
+														echo '<input type=hidden name=save_id value=\''.$value.'\'>';
+												echo '</td>
+									</tr>';							
+								}
+								else
+								{
+									echo '<tr><td>'.$key.'</td>';
+									echo '<td>';
+									xxx_read_field($link,'consumable_receipt',$key,$value,$search='no',$readonly='');
+									echo '</td>';
+									echo '</tr>';							
+								}
+							}
+					
+					
+					echo '</table>'; 
+					echo '</td>';
+				}
+				
+				else
+				{
+					foreach($array as $key=>$value)
+					{
+						if($key=='id')
+						{
+							if($value==$edit_id && $save_mode=='no')
+							{
+								echo '<td>';
+								echo '<button class="btn btn-outline-primary btn-sm" name=id value='.$value.'>'.$value.'</button>';
+								echo '<input type=hidden name=save_id value=\''.$value.'\'>';
+								echo '</td>';							
+								
+							}
+							else
+							{
+								echo '<td>';
+								echo '<button class="btn btn-outline-primary btn-sm" name=id value='.$value.'>'.$value.'</button>';
+								echo '</td>';
+							}
+						}
+						else
+						{
+							if($id==$edit_id && $save_mode=='no') 
+							{						
+								//echo '<td style="white-space: nowrap;"><input type=text name=\''.$key.'\' value=\''.$value.'\'>'.$value.'</td>';
+								echo '<td>';
+								xxx_read_field($link,'consumable_receipt',$key,$value,$search='no',$readonly='');
+								echo '</td>';
+							}
+							else
+							{						
+								echo '<td style="white-space: nowrap;">'.$value.'</td>';
+							}
+							
+						}
+					}
+					
+				}
+                
+                echo '</tr>';
+
+        }
+        echo '</table>';
+	echo '</form>';
+}
+
+function view_edit_consumable_receipt_horizontal($link,$consumable_name,$edit_id=0,$save_mode='no')
 {
 	echo '<h3>Consumable Details</h3>';
 	echo '<form method=post><input type=hidden name=session_name value=\''.session_name().'\'>';
@@ -107,7 +484,6 @@ function view_edit_consumable_receipt($link,$consumable_name,$edit_id=0,$save_mo
                                 echo '<th >'.$key.'</th>';
                                 //echo '<th style="writing-mode: sideways-lr;">'.$key.'</th>';
                                 //echo '<th >'.str_replace('_','<br>',$key).'</th>';	//style="writing-mode: sideways-lr;"
-
                         }
                         echo '</tr>';
                         $first_data='no';
@@ -155,6 +531,7 @@ function view_edit_consumable_receipt($link,$consumable_name,$edit_id=0,$save_mo
 	echo '</form>';
 }
 
+
 function xxx_read_field($link,$tname,$field,$value,$search='no',$readonly='')
 {
     //echo '<h1>'.$readonly.'</h1>';
@@ -173,8 +550,8 @@ function xxx_read_field($link,$tname,$field,$value,$search='no',$readonly='')
             }
             else
             {
-                //echo '<input class="w-100" type=text  '.$readonly.' name=\''.$field.'\' value=\''.htmlentities($value,ENT_QUOTES).'\'>';
-                echo '<input  type=text  '.$readonly.' name=\''.$field.'\' value=\''.htmlentities($value,ENT_QUOTES).'\'>';
+                echo '<input class="w-100" type=text  '.$readonly.' name=\''.$field.'\' value=\''.htmlentities($value,ENT_QUOTES).'\'>';
+                //echo '<input  type=text  '.$readonly.' name=\''.$field.'\' value=\''.htmlentities($value,ENT_QUOTES).'\'>';
             }
         }
         else if($fspec['ftype']=='dtable')
@@ -228,8 +605,8 @@ function xxx_read_field($link,$tname,$field,$value,$search='no',$readonly='')
     }
     else
     {
-        //echo '<input class="w-100" type=text  '.$readonly.' name=\''.$field.'\' value=\''.htmlentities($value,ENT_QUOTES).'\'>';
-        echo '<input type=text  '.$readonly.' size=10 name=\''.$field.'\' value=\''.htmlentities($value,ENT_QUOTES).'\'>';
+        echo '<input class="w-100" type=text  '.$readonly.' name=\''.$field.'\' value=\''.htmlentities($value,ENT_QUOTES).'\'>';
+        //echo '<input type=text  '.$readonly.' size=10 name=\''.$field.'\' value=\''.htmlentities($value,ENT_QUOTES).'\'>';
     }
 }
 

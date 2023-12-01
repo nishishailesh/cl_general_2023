@@ -13802,9 +13802,9 @@ echo '</form>';
 function get_one_id()
 {
 	echo '<form method=post action=viewww_single_unique_by_full_string.php>';
-	echo '<input name=unique_id class="m-0 p-0 input-sm" type=text size=15>';
+	echo '<input name=unique_id class="m-0 p-0 input-sm" placeholder="sample unique id" type=text size=15>';
 	echo '<button type=submit class="btn btn-sm m-0 p-0 btn-primary" name=action value=view_dbid>View</button>';
-	echo '<input  type=hidden name=session_name value=\''.session_name().'\'>';
+	echo '<input  type=hidden name=session_name  value=\''.session_name().'\'>';
 	echo '</form>';
 }
 
