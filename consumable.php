@@ -344,7 +344,8 @@ function view_edit_consumable_receipt($link,$consumable_name,$edit_id=0,$save_mo
     echo '<input type=hidden name=action value=view_edit>';
     echo '<input type=hidden name=consumable_name value=\''.$consumable_name.'\'>';
 
-	$sql='select * from consumable_receipt where consumable_name=\''.$consumable_name.'\' order by id desc limit 100';
+	//$sql='select * from consumable_receipt where consumable_name=\''.$consumable_name.'\' order by id desc limit 100';
+	$sql='select * from consumable_receipt where consumable_name=\''.$consumable_name.'\' order by date_of_expiry desc limit 100';
 	if(!$result=run_query($link,$GLOBALS['database'],$sql))
 	{
 		 return false;

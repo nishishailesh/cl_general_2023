@@ -479,7 +479,7 @@ DROP TABLE IF EXISTS `host_code`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host_code` (
   `examination_id` int(11) NOT NULL,
-  `equipment` enum('XL_640','XL_1000','VITROS3600','RP500','TOSOH','R9-402016') NOT NULL,
+  `equipment` enum('XL_640','XL_1000','VITROS3600','RP500','TOSOH','R9-402016','quikread') NOT NULL,
   `code` varchar(10) NOT NULL,
   PRIMARY KEY (`equipment`,`examination_id`),
   KEY `examination_id` (`examination_id`),
@@ -706,7 +706,8 @@ INSERT INTO `host_code` VALUES
 (5188,'R9-402016','Na+'),
 (5189,'R9-402016','K+'),
 (5192,'R9-402016','Ca++'),
-(5215,'R9-402016','Cl-');
+(5215,'R9-402016','Cl-'),
+(5121,'quikread','CRP');
 /*!40000 ALTER TABLE `host_code` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1309,82 +1310,6 @@ INSERT INTO `consumable_name` VALUES
 UNLOCK TABLES;
 
 --
--- Table structure for table `consumable_receipt`
---
-
-DROP TABLE IF EXISTS `consumable_receipt`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `consumable_receipt` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `consumable_name` varchar(100) DEFAULT NULL,
-  `lot_identifier` varchar(20) DEFAULT NULL,
-  `serial_number` varchar(20) DEFAULT NULL,
-  `unit_size` varchar(50) DEFAULT NULL,
-  `manufacturer` varchar(50) DEFAULT NULL,
-  `date_of_manufacture` date DEFAULT NULL,
-  `date_of_expiry` date DEFAULT NULL,
-  `date_of_receipt` date DEFAULT NULL,
-  `condition_on_receipt` varchar(50) DEFAULT NULL,
-  `date_of_starting_use` varchar(100) DEFAULT NULL,
-  `date_of_ending_use` varchar(100) DEFAULT NULL,
-  `remark` varchar(100) DEFAULT NULL,
-  `recording_time` datetime DEFAULT NULL,
-  `recorded_by` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `consumable_name_lot_identifier_serial_number` (`consumable_name`,`lot_identifier`,`serial_number`),
-  CONSTRAINT `consumable_receipt_ibfk_1` FOREIGN KEY (`consumable_name`) REFERENCES `consumable_name` (`consumable_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=788 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `consumable_receipt`
---
-
-LOCK TABLES `consumable_receipt` WRITE;
-/*!40000 ALTER TABLE `consumable_receipt` DISABLE KEYS */;
-INSERT INTO `consumable_receipt` VALUES
-(745,'ALP-R1','34','1','200','AAA BBBBB','2024-12-01','2025-12-01','2028-12-01','good 8\'C','2023-12-01','2023-12-01','iii','2023-12-01 23:47:01','1'),
-(746,'ALP-R1','34','2','200','CZX AAPL EEE','2023-12-01','2023-12-01','2023-12-01','rejected. Joy','2023-12-21','2023-12-22',NULL,'2023-12-01 23:47:05','1'),
-(747,'ALP-R2','Inhouse-34','35','1000','Dr Dhrasti','2023-12-01','2023-12-01','2023-12-01','Calibrated. Result Acceptable','2023-12-02','2023-12-02',NULL,'2023-12-02 00:04:21','1'),
-(748,'ALP-R1','Inhouse-34','35','1000','Dr Dhrasti','2023-12-01','2023-12-01','2023-12-01','','','','','2023-12-01 23:41:46','1'),
-(749,'ALP-R1','Inhouse-34','36','1000','Dr Dhrasti','2023-12-01','2023-12-01','2023-12-01',NULL,NULL,NULL,NULL,'2023-12-01 23:46:59','1'),
-(751,'ALP-R1','Inhouse-34','56','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:01:13','1'),
-(753,'ALP-R1','Inhouse-34','57','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:10','1'),
-(754,'ALP-R1','Inhouse-34','58','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:10','1'),
-(755,'ALP-R1','Inhouse-34','59','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:10','1'),
-(756,'ALP-R1','Inhouse-34','60','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:10','1'),
-(757,'ALP-R1','Inhouse-34','10','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:50','1'),
-(758,'ALP-R1','Inhouse-34','11','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:50','1'),
-(759,'ALP-R1','Inhouse-34','12','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:50','1'),
-(760,'ALP-R1','Inhouse-34','13','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:50','1'),
-(761,'ALP-R1','Inhouse-34','14','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:50','1'),
-(762,'ALP-R1','Inhouse-34','15','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:50','1'),
-(763,'ALP-R1','Inhouse-34','16','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:50','1'),
-(764,'ALP-R1','Inhouse-34','17','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:50','1'),
-(765,'ALP-R1','Inhouse-34','18','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:50','1'),
-(766,'ALP-R1','Inhouse-34','19','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:50','1'),
-(767,'ALP-R1','Inhouse-34','20','1000','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:02:50','1'),
-(768,'ALP-R2','Inhouse-551','1','200 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','good 8\'C','2023-12-02','2023-12-02',NULL,'2023-12-02 00:13:39','1'),
-(769,'ALP-R2','Inhouse-551','2','200 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:04:00','1'),
-(770,'ALP-R2','Inhouse-551','3','200 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:04:00','1'),
-(771,'ALP-R2','Inhouse-551','4','200 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:04:00','1'),
-(772,'ALP-R2','Inhouse-551','5','200 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:04:00','1'),
-(773,'ALP-R2','Inhouse-551','6','200 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:04:00','1'),
-(774,'ALP-R2','Inhouse-551','7','200 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02',NULL,NULL,NULL,NULL,'2023-12-02 00:13:58','1'),
-(775,'ALP-R2','Inhouse-551','8','200 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:04:00','1'),
-(776,'ALP-R2','Inhouse-551','9','200 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02',NULL,NULL,NULL,NULL,'2023-12-02 00:13:54','1'),
-(777,'ALP-R2','Inhouse-551','10','200 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','','','','','2023-12-02 00:04:00','1'),
-(778,'ADA KIT','Inhouse-01','1','250','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','rejected. Joy','','','','2023-12-02 00:14:56','1'),
-(779,'ADA KIT','Inhouse-01','2','250','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','rejected. Joy','','','','2023-12-02 00:14:56','1'),
-(780,'ADA KIT','Inhouse-01','3','250','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','rejected. Joy','','','','2023-12-02 00:14:56','1'),
-(781,'ADA KIT','Inhouse-01','4','250','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','rejected. Joy','','','','2023-12-02 00:14:56','1'),
-(786,'ALB_BCG','Inhouse-34','1','500 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02','Calibrated. Result Acceptable','2023-12-02','2023-12-02',NULL,'2023-12-02 00:17:52','1'),
-(787,'ALB_BCG','Inhouse-34','2','500 ml','Dr Dhrasti','2023-12-02','2023-12-02','2023-12-02',NULL,NULL,NULL,NULL,'2023-12-02 00:16:38','1');
-/*!40000 ALTER TABLE `consumable_receipt` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `view_info_data`
 --
 
@@ -1447,4 +1372,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-02  0:27:37
+-- Dump completed on 2023-12-06  2:46:35

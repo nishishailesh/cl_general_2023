@@ -83,6 +83,19 @@ function main_menu($link)
 				</div>';
 		}		
 
+		if($user['insert_authorization_level']>=1)
+		{		
+				echo '<div class="dropdown m-0 p-0">
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New-NN</button>
+					<div class="dropdown-menu m-0 p-0 ">
+						<div class="btn-group-vertical d-block">
+							<!--<button class="btn btn-outline-primary m-0 p-0 " formaction=newww_general_tab.php type=submit name=action value="newww_general||">New</button>-->';
+							create_newww_special_tab($link);
+						echo '</div>
+					</div>
+				</div>';
+		}
+		
 		if($user['insert_authorization_level']>=0)
 		{					
 				echo '<div class="dropdown m-0 p-0">
@@ -8481,6 +8494,21 @@ function create_newww_special($link)
 		echo '<button 
 					class="btn btn-outline-primary m-0 p-0 " 
 					formaction=newww_general.php 
+					type=submit 
+					name=action
+					value="newww_general|'.$ar['ex_list'].'|'.$ar['route'].'|'.$ar['default_value'].'">'.$ar['caption'].'</button>';
+	}
+}
+
+
+function create_newww_special_tab($link)
+{
+	$result=run_query($link,$GLOBALS['database'],'select * from menu_new');
+	while($ar=get_single_row($result))
+	{
+		echo '<button 
+					class="btn btn-outline-primary m-0 p-0 " 
+					formaction=newww_general_tab.php 
 					type=submit 
 					name=action
 					value="newww_general|'.$ar['ex_list'].'|'.$ar['route'].'|'.$ar['default_value'].'">'.$ar['caption'].'</button>';

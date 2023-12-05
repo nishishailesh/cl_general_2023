@@ -30,7 +30,6 @@ sql
 examination_field_specification
 table_field_specification
 consumable_name
-consumable_receipt
 view_info_data
 '
 
