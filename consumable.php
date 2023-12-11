@@ -70,7 +70,7 @@ if($_POST['action']=='insert')
 //////////////user code ends////////////////
 tail();
 
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 
 //////////////Functions///////////////////////
 
@@ -193,7 +193,14 @@ function xxx_insert_direct_with_default($link,$tname,$post,$default=array())
         if(!in_array($key,array('action','tname','session_name','id','recording_time','recorded_by')))
         {
             $sql2=$sql2.'`'.$key.'`, ';
-            $sql3=$sql3.'\''.(isset($default['key'])?$default['key']:$value).'\', ';
+            if(strlen($value)==0)
+            {
+				$sql3=$sql3.' null , ';
+			}
+			else
+			{
+				$sql3=$sql3.'\''.(isset($default['key'])?$default['key']:$value).'\', ';
+			}
         }
     }
     $sql2=$sql2.'`recording_time`,`recorded_by` ';
