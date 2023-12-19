@@ -14,6 +14,7 @@ tnames='
 config
 dashboard
 dementia
+display_choice
 examination
 host_code
 labels

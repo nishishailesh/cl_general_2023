@@ -2,6 +2,7 @@
 //$GLOBALS['nojunk']='';
 require_once 'project_common.php';
 require_once 'base/verify_login.php';
+require_once "Math/Stats.php";
 	////////User code below/////////////////////
 echo '		  <link rel="stylesheet" href="project_common.css">
 		  <script src="project_common.js"></script>';	
@@ -13,19 +14,22 @@ echo '<div id=response></div>';
 
 main_menu($link);
 
-	echo '<br>';
-
-for($sample_id=42787;$sample_id<42793;$sample_id++)
+$data=array();
+echo '<h1>TAT in hours, Release - Receipt</h1>';
+$max_sid=find_max_any_id($link,'sample_id');
+for($sample_id=$max_sid-200;$sample_id<=$max_sid;$sample_id++)
 {
-	$interval=get_TAT_between_two_status($link,$sample_id,10003,10008);
-	if($interval==False){echo 'NA';}
+	$interval=get_TAT_between_two_status($link,$sample_id,10008,10003);
+	if($interval==False){		echo $sample_id.': NA';}
 	else
 	{
-		echo 'data:'.$interval;
+		echo $sample_id.':'.$interval;
+		$data[]=$interval;
 	}
 	echo '<br>';
 }
-echo '<h1>થોડી વાર લાગશે  ...</h1>';
+echo 'Mean:'.array_sum($data)/count($data).'<br>';
+echo 'SD:'.stats_standard_deviation($data).'<br>';
 exit(0);
 //////////////user code ends////////////////
 tail();
@@ -70,7 +74,7 @@ function get_TAT_between_two_status($link,$sample_id,$status_ex_id_1,$status_ex_
 				{
 					$interval=strtotime($val_1)-strtotime($val_2);
 					//$interval_str=date_interval_format($interval,'%Y Years, %m Months, %d Days, %H Hours, %i Minutes, %s Seconds');
-					return $interval/60;
+					return $interval/60/60;
 				}
 }
 

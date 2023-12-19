@@ -1976,8 +1976,6 @@ Click to edit"
 							name=action value=insert class="btn btn-sm d-inline   no-gutters align-top"
 							>+</button>
 			</form>';
-			
-
 }
 
 
@@ -2129,6 +2127,17 @@ function get_primary_result_blob($link,$sample_id,$examination_id)
 					<input type=hidden name=session_name value=\''.session_name().'\'>
 			</form>';					
 	}
+	
+	
+				echo '<form method=post class="d-inline-block" target=_blank action=xxx_insert_primary_blob.php>
+					<input type=hidden name=session_name value=\''.session_name().'\'>
+					<input type=hidden name=sample_id value=\''.$sample_id.'\' >
+					<input type=hidden name=examination_id value=\''.$examination_id.'\'> 
+					<button id=\'button_'.$sample_id.$examination_id.'\'
+							tabindex="-1"
+							name=action value=insert class="btn btn-sm d-inline   no-gutters align-top"
+							>+</button>
+			</form>';
 	//return $values;
 }
 
@@ -2215,7 +2224,12 @@ function sync_all($link,$sample_id)
 			//echo $ar['sample_id'].'>>'.$ar['examination_id'].'>>'.$ar['result'].'||||'.
 		    //$arr['sample_id'].'>>'.$arr['examination_id'].'>>'.$arr['result'].'>>'.$arr['uniq'].'<br>';
 		
-			$update_sql='update result set result=\''.my_safe_string($link,$arr['result']).'\' where
+			$update_sql='update result 
+								set 
+								result=\''.my_safe_string($link,$arr['result']).'\' ,
+								recording_time=now(),
+								recorded_by=\''.$_SESSION['login'].'\'
+								where
 									sample_id=\''.$sample_id.'\' and 
 									examination_id=\''.$ar['examination_id'].'\'';
 			//echo $update_sql.'<br>';
@@ -2248,7 +2262,9 @@ function sync_all($link,$sample_id)
 			$update_sql_blob='update result_blob 
 								set 
 									result=\''.my_safe_string($link,$arr_blob['result']).'\' ,
-									fname=\''.my_safe_string($link,$arr_blob['fname']).'\' 
+									fname=\''.my_safe_string($link,$arr_blob['fname']).'\' ,
+									recording_time=now(),
+									recorded_by=\''.$_SESSION['login'].'\'
 								where
 									sample_id=\''.$sample_id.'\' and 
 									examination_id=\''.$arr_blob['examination_id'].'\'';
@@ -11460,7 +11476,6 @@ function is_authorized($link,$user,$examination_id,$action)
 	 * 
 	 * 
 	 * */
-
 	$user_info=get_user_info($link,$user);
 	$ex_info=get_one_examination_details($link,$examination_id);
 	//echo '<pre>';
@@ -13294,7 +13309,6 @@ function insert_primary_result($link,$sample_id,$examination_id,$ex_result,$uniq
 		return True;			
 	}
 }
-
 
 function edit_one_primary_result($link,$sample_id,$examination_id,$uniq)
 {

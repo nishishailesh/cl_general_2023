@@ -11,8 +11,7 @@ $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 
 $xmpp=get_one_ex_result($link,$_POST['sample_id'],get_config_value($link,'examination_id_for_xmpp'));
-
-
+echo 'xmpp address='.$xmpp.'<br>';
 $ha=get_header_for_xmpp($link,$_POST['sample_id']);
 //print_r($ha);
 
