@@ -16,6 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `Laboratory`
+--
+
+DROP TABLE IF EXISTS `Laboratory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Laboratory` (
+  `Laboratory` varchar(200) NOT NULL,
+  PRIMARY KEY (`Laboratory`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Laboratory`
+--
+
+LOCK TABLES `Laboratory` WRITE;
+/*!40000 ALTER TABLE `Laboratory` DISABLE KEYS */;
+INSERT INTO `Laboratory` VALUES
+('Biochemistry Laboratory New Civil Hospital Surat'),
+('NCHS Biochemistry Section'),
+('NCHS Pathology Section');
+/*!40000 ALTER TABLE `Laboratory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `config`
 --
 
@@ -66,6 +92,186 @@ INSERT INTO `config` VALUES
 ('status_lot_size','200',NULL,''),
 ('TAT_remark_id','5191',NULL,NULL);
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `consumable_name`
+--
+
+DROP TABLE IF EXISTS `consumable_name`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `consumable_name` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `consumable_name` varchar(100) DEFAULT NULL,
+  `reorder_value` decimal(10,0) DEFAULT NULL,
+  `recording_time` datetime DEFAULT NULL,
+  `recorded_by` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `consumable_name` (`consumable_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=123 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `consumable_name`
+--
+
+LOCK TABLES `consumable_name` WRITE;
+/*!40000 ALTER TABLE `consumable_name` DISABLE KEYS */;
+INSERT INTO `consumable_name` VALUES
+(2,'ADA_HOCL',NULL,'2020-08-17 14:59:08','9099514805'),
+(3,'ADA_PHENOL',NULL,'2020-08-17 14:59:32','9099514805'),
+(4,'ADA_S60',NULL,'2020-08-17 14:59:44','9099514805'),
+(5,'ADENOSINE BUFFER',NULL,'2020-08-17 14:59:54','9099514805'),
+(6,'ALB_BCG',NULL,'2020-08-17 15:01:18','9099514805'),
+(7,'ALP-R1',NULL,'2020-08-17 15:02:42','9099514805'),
+(8,'ALP-R2',NULL,'2020-08-17 15:02:51','9099514805'),
+(9,'ALT_UV',2500,'2020-09-15 13:00:00','1'),
+(10,'AMY_CNPG3',100,'2020-08-17 15:03:28','9099514805'),
+(12,'DIAZO-A',NULL,'2020-08-17 15:04:01','9099514805'),
+(13,'CALIBRATOR-2',NULL,'2020-08-17 15:04:23','9099514805'),
+(14,'CALIBRATOR-3',NULL,'2020-08-17 15:04:32','9099514805'),
+(15,'CALCIUM_ARSENAZO',NULL,'2020-08-17 15:04:43','9099514805'),
+(16,'CHE-CHOLINESTERASE',NULL,'2020-08-17 15:05:06','9099514805'),
+(17,'CHOLESTEROL',200,'2020-08-17 15:05:24','9099514805'),
+(18,'CKMB-UV',200,'2020-08-17 15:05:40','9099514805'),
+(19,'CK-TOTAL',NULL,'2020-08-17 15:05:48','9099514805'),
+(20,'CR-R1 NAOH',NULL,'2020-08-17 15:06:08','9099514805'),
+(21,'CR-R2 PICRATE',NULL,'2020-08-17 15:06:20','9099514805'),
+(22,'DBIL-R1_HCL',NULL,'2020-08-17 15:06:40','9099514805'),
+(23,'DITHONITE BUFFER',NULL,'2020-08-17 15:06:55','9099514805'),
+(24,'GLC_GODPOD',NULL,'2020-08-17 15:07:11','9099514805'),
+(25,'HBS CONTROL LOT',NULL,'2020-08-17 15:08:10','9099514805'),
+(26,'HBF CONTROL LOT',NULL,'2020-08-17 15:08:20','9099514805'),
+(27,'HDL-PPT',NULL,'2020-08-17 15:08:34','9099514805'),
+(28,'IRON STOCKK SOLUTION',NULL,'2020-08-17 15:08:53','9099514805'),
+(29,'IRON-R1 THIOSEMICARBAZIDE',NULL,'2020-08-17 15:09:13','9099514805'),
+(30,'IRON-R2 FERROZINE',NULL,'2020-08-17 15:09:25','9099514805'),
+(31,'KETONE BODY CONTROL LOT',NULL,'2020-08-17 15:09:50','9099514805'),
+(32,'LDH-DEA-R1',NULL,'2020-08-17 15:10:13','9099514805'),
+(33,'LDH-R2-NAD',NULL,'2020-08-17 15:10:24','9099514805'),
+(34,'LIP-TURBIDOMETRY',NULL,'2020-08-17 15:10:48','9099514805'),
+(35,'MPR QC LOT',NULL,'2020-08-17 15:11:06','9099514805'),
+(36,'MPR',NULL,'2020-08-17 15:11:26','9099514805'),
+(37,'STD-A -NA + K',NULL,'2020-08-17 15:12:11','9099514805'),
+(38,'STD-B NA+K',NULL,'2020-08-17 15:12:26','9099514805'),
+(39,'PEPSIN',NULL,'2020-08-17 15:12:46','9099514805'),
+(40,'PH CALIBRATOR-4.01,6.08,9.13',NULL,'2020-08-17 15:13:30','9099514805'),
+(41,'PHOSPHATE BUFFER',NULL,'2020-08-17 15:13:44','9099514805'),
+(42,'PHOSPHATE MOLYBDATE',NULL,'2020-08-17 15:14:03','9099514805'),
+(43,'QC-5',NULL,'2020-08-17 15:14:15','9099514805'),
+(44,'QC-8',NULL,'2020-08-17 15:14:21','9099514805'),
+(45,'TBIL-R1_CAFFINE',NULL,'2020-08-17 15:14:42','9099514805'),
+(46,'TG-GPO',NULL,'2020-08-17 15:14:54','9099514805'),
+(47,'TP-BIURET',NULL,'2020-08-17 15:15:06','9099514805'),
+(48,'UA-URICASE',100,'2020-08-17 15:15:20','9099514805'),
+(49,'UIBC-R1_HYDROXYLAMINE',NULL,'2020-08-17 15:15:41','9099514805'),
+(50,'UIBC-R2_FERROZINE',NULL,'2020-08-17 15:15:55','9099514805'),
+(51,'UREA-UREASE',200,'2020-08-27 17:36:21','3'),
+(52,'URINE DILUENT_MOPS',NULL,'2020-08-17 15:16:32','9099514805'),
+(53,'URINE ACID CONTROL LOT',NULL,'2020-08-17 15:17:02','9099514805'),
+(54,'URINE NEUTRAL CONTROL LOT',NULL,'2020-08-17 15:17:15','9099514805'),
+(55,'URINE BASIC CONTROL LOT',NULL,'2020-08-17 15:17:27','9099514805'),
+(57,'DIAZO-B',NULL,'2020-09-01 18:42:25','9099514805'),
+(59,'TIBC STANDARD SOLUTION',NULL,'2020-09-24 17:17:20','8866829055'),
+(60,'signal reagent',8,'2020-12-01 12:16:11','9099514805'),
+(61,'versa tips',2000,'2020-12-01 12:16:03','9099514805'),
+(62,'wash buffer reagent',10000,'2020-12-01 14:58:19','9099514805'),
+(63,'Control-TSH',NULL,'2020-11-18 16:10:15','9099514805'),
+(64,'Microsensor check fluid-1 and 2',NULL,'2020-11-18 16:11:00','9099514805'),
+(65,'calibrator-25-OH Vit-D Total',1,'2020-12-01 12:15:36','9099514805'),
+(66,'calibrator-Total beta hcg -2',1,'2020-12-01 12:15:45','9099514805'),
+(67,'calibrator-ferritin',1,'2020-12-01 12:15:28','9099514805'),
+(68,'calibrator- Total T4',1,'2020-12-01 12:15:21','9099514805'),
+(69,'calibrator- Free T4',1,'2020-12-01 12:15:14','9099514805'),
+(70,'calibrator- TSH',1,'2020-12-01 12:15:05','9099514805'),
+(71,'calibrator- Free T3',1,'2020-12-01 12:14:55','9099514805'),
+(72,'calibrator- Vit B12',1,'2020-12-01 12:14:48','9099514805'),
+(73,'calibrator- FSH',1,'2020-12-01 12:14:37','9099514805'),
+(74,'calibrator- LH',1,'2020-12-01 12:14:26','9099514805'),
+(75,'Reagent-PCT',100,'2020-12-01 12:14:15','9099514805'),
+(76,'Reagent-FSH',100,'2020-12-01 12:14:08','9099514805'),
+(77,'Reagent-Total beta hcg-2',100,'2020-12-01 12:14:01','9099514805'),
+(78,'Reagent-LH',100,'2020-12-01 12:13:54','9099514805'),
+(79,'Reagent-Ferritin',200,'2020-12-01 12:13:47','9099514805'),
+(80,'Reagent-Free T3',100,'2020-12-01 12:13:40','9099514805'),
+(81,'Reagent-Free T4',100,'2020-12-01 12:13:33','9099514805'),
+(82,'Reagent-vit B12',100,'2020-12-01 12:13:26','9099514805'),
+(83,'Reagent-prolactin',100,'2020-12-01 12:13:18','9099514805'),
+(84,'Reagent-25 OH Vit-D Total',100,'2020-12-01 12:13:03','9099514805'),
+(85,'Reagent-TSH',200,'2020-12-01 12:12:56','9099514805'),
+(86,'Reagent-B12+folate pack-3',100,'2020-12-01 12:12:49','9099514805'),
+(87,'maintenance pack vitros',1,'2020-12-01 12:12:42','9099514805'),
+(89,'calibrator-Prolactin',1,'2020-12-01 12:12:34','9099514805'),
+(90,'sample cap',1000,'2020-12-01 14:54:33','9099514805'),
+(91,'calibrator-PCT',1,'2020-12-01 12:12:18','9099514805'),
+(93,'CRP',220,'2023-09-30 01:32:34','1'),
+(94,' D-Dimer',90,'2020-12-01 14:57:16','9099514805'),
+(95,'REAGENT -PROGESTERONE',100,'2020-12-01 12:11:53','9099514805'),
+(96,'REAGENT-HSTROP ',100,'2020-12-01 12:11:32','9099514805'),
+(97,'REAGENT-NT-PROBNP 2',100,'2020-12-01 13:04:05','9099514805'),
+(98,'CALIBRATOR PROGESTERONE',1,'2020-12-01 12:11:10','9099514805'),
+(99,'CALIBRATOR HSTROP',1,'2020-12-01 12:11:03','9099514805'),
+(100,'CALIBRATOR NT-PROBNP 2',1,'2020-12-01 12:10:52','9099514805'),
+(101,'vitrous eppendropp cup',1000,'2020-12-01 14:44:55','9099514805'),
+(102,'IL-6 REAGENT KIT ',80,'2020-12-02 15:59:40','8866580625'),
+(103,'High sample diluent A',NULL,'2020-12-05 13:28:55','9099514805'),
+(104,'High sample diluent B ',NULL,'2020-12-05 13:30:11','9099514805'),
+(105,'MAGANESIUM',NULL,'2020-12-24 13:21:08','8866580625'),
+(106,'Anti-SARS-CoV-2IgG',NULL,'2021-03-31 10:55:54','8866580625'),
+(107,'SGOT',NULL,'2021-04-08 13:33:46','8866580625'),
+(109,'IMMUNO QC  TRI LEVEL',NULL,'2021-04-09 18:19:11','8866580625'),
+(110,'CALIBRATOR-COV 2IgG',NULL,'2021-04-13 21:30:05','8866580625'),
+(111,'PH CALIBRATOR 6.08',NULL,'2021-07-19 15:57:20','8866580625'),
+(112,'PH CALIBRATOR 9.13',NULL,'2021-07-19 15:57:36','8866580625'),
+(113,'PH CALIBRATOR 4.01',NULL,'2021-07-19 15:58:24','8866580625'),
+(115,'MICROALBUMIN KIT',NULL,'2021-07-27 13:00:18','8866580625'),
+(116,'ADA KIT',NULL,'2021-07-27 13:06:35','8866580625'),
+(117,'IMMUNO QC POOL',NULL,'2021-08-11 13:27:32','8866580625'),
+(118,'QC/L1_BNP/3600',NULL,'2021-08-19 11:27:18','8866580625'),
+(119,'QC/L2_BNP/3600',NULL,'2021-08-19 11:27:29','8866580625'),
+(120,'TSH3',7,NULL,NULL),
+(121,'TP-R2',NULL,NULL,NULL),
+(122,'TP-R1 (BLANK BIURET)',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `consumable_name` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `copy_labels`
+--
+
+DROP TABLE IF EXISTS `copy_labels`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `copy_labels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `examination_id` varchar(30) DEFAULT NULL,
+  `caption` varchar(10) DEFAULT NULL,
+  `barcode_format` varchar(50) DEFAULT NULL,
+  `data` text NOT NULL,
+  `other_data` varchar(5000) NOT NULL,
+  `border` int(11) NOT NULL,
+  `fontsize` varchar(100) NOT NULL,
+  `fontweight` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `copy_labels`
+--
+
+LOCK TABLES `copy_labels` WRITE;
+/*!40000 ALTER TABLE `copy_labels` DISABLE KEYS */;
+INSERT INTO `copy_labels` VALUES
+(7,'1045','R1','C128','{\r\n\"1\":\"1045,h,b,05,05,40,10\",\r\n\"2\":\"1001,h,t,20,15,25,03\",\r\n\"3\":\"1045,h,t,5,15,15,03\",\r\n\"4\":\"other_data,h,t,5,18,25,03\",\r\n\"5\":\"1002,h,t,30,18,15,03\"\r\n}','select group_concat(sample_id separator \",\") other_data from request_id where id in(select id from request_id where sample_id={sample_id})',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
+(10,'sample_id','S1','C128','{\r\n \"1\":\"sample_id,h,b,05,05,40,10\",\r\n \"2\":\"1000,h,t,25,15,20,03\",\r\n \"3\":\"1001,h,t,10,15,15,03\",\r\n \"4\":\"sample_id,h,t,10,18,15,03\",\r\n \"5\":\"1002,h,t,25,18,20,03\",\r\n \"6\":\"other_data,h,t,5,15,5,6\"\r\n}','select group_concat(distinct equipment SEPARATOR \'\') other_data from result,examination where sample_id={sample_id} and examination.examination_id=result.examination_id',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
+(11,'1047','W1','C128','{\r\n\"1\":\"1047,h,b,05,05,40,10\",\r\n\"2\":\"1000,h,t,25,15,20,03\",\r\n\"3\":\"1047,h,t,10,15,15,03\",\r\n\"4\":\"sample_id,h,t,10,18,15,03\",\r\n\"5\":\"1002,h,t,25,18,20,03\",\r\n\"6\":\"other_data,h,t,5,15,5,6\"\r\n}','select group_concat(distinct equipment SEPARATOR \'\') other_data from result,examination where sample_id={sample_id} and examination.examination_id=result.examination_id',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
+(12,'sample_id','S2','C39','{\r\n \"1\":\"sample_id,h,b,05,05,40,10\",\r\n \"2\":\"1000,h,t,25,15,20,03\",\r\n \"3\":\"1001,h,t,10,15,15,03\",\r\n \"4\":\"sample_id,h,t,10,18,15,03\",\r\n \"5\":\"1002,h,t,25,18,20,03\",\r\n \"6\":\"other_data,h,t,5,15,5,6\"\r\n}','select group_concat(distinct equipment SEPARATOR \'\') other_data from result,examination where sample_id={sample_id} and examination.examination_id=result.examination_id',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
+(13,'1049','N2','C128','{\"1\":\"1049,h,b,05,05,40,10\",\"2\":\"1000,h,t,25,15,20,03\",\"3\":\"1049,h,t,10,15,20,03\",\"4\":\"sample_id,h,t,10,18,15,03\",\"5\":\"1002,h,t,25,18,20,03\",\"6\":\"other_data,h,t,5,15,5,6\"}','select group_concat(distinct equipment SEPARATOR \'\') other_data from result,examination where sample_id={sample_id} and examination.examination_id=result.examination_id',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
+(14,'1046','P1','C128','{\r\n\"1\":\"1046,h,b,05,05,40,10\",\r\n\"2\":\"1000,h,t,25,15,20,03\",\r\n\"3\":\"1046,h,t,10,15,15,03\",\r\n\"4\":\"sample_id,h,t,10,18,15,03\",\r\n\"5\":\"1002,h,t,25,18,20,03\",\r\n\"6\":\"other_data,h,t,5,15,5,6\"\r\n}','select group_concat(distinct equipment SEPARATOR \'\') other_data from result,examination where sample_id={sample_id} and examination.examination_id=result.examination_id',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
+(15,'1050','E1','C128','{\"1\":\"1050,h,b,05,05,40,10\",\"2\":\"1000,h,t,20,15,15,03\",\"3\":\"1050,h,t,05,15,15,03\",\"4\":\"sample_id,h,t,05,18,15,03\",\"5\":\"1002,h,t,20,18,15,03\"}','select group_concat(distinct equipment SEPARATOR \'\') other_data from result,examination where sample_id={sample_id} and examination.examination_id=result.examination_id',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}');
+/*!40000 ALTER TABLE `copy_labels` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -505,6 +711,37 @@ INSERT INTO `examination` VALUES
 UNLOCK TABLES;
 
 --
+-- Table structure for table `examination_field_specification`
+--
+
+DROP TABLE IF EXISTS `examination_field_specification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `examination_field_specification` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `examination_id` int(11) DEFAULT NULL,
+  `ftype` varchar(50) DEFAULT NULL,
+  `table` varchar(50) DEFAULT NULL,
+  `field` varchar(50) DEFAULT NULL,
+  `field_description` varchar(50) DEFAULT NULL,
+  `where` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `examination_field_specification`
+--
+
+LOCK TABLES `examination_field_specification` WRITE;
+/*!40000 ALTER TABLE `examination_field_specification` DISABLE KEYS */;
+INSERT INTO `examination_field_specification` VALUES
+(1,10012,'table','Laboratory','Laboratory','',''),
+(2,3001,'dtable','qc_lot','qc_lot','qc_lot,remark','where in_use=1');
+/*!40000 ALTER TABLE `examination_field_specification` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `host_code`
 --
 
@@ -744,6 +981,37 @@ INSERT INTO `host_code` VALUES
 UNLOCK TABLES;
 
 --
+-- Table structure for table `label_group`
+--
+
+DROP TABLE IF EXISTS `label_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `label_group` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `lable_list` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `label_group`
+--
+
+LOCK TABLES `label_group` WRITE;
+/*!40000 ALTER TABLE `label_group` DISABLE KEYS */;
+INSERT INTO `label_group` VALUES
+(1,'ABGA Id','{\"10\":\"2\"}'),
+(6,'WARD ID','{\"11\":\"1\",\"7\":\"1\"}'),
+(7,'OPD ID','{\"14\":\"1\",\"7\":\"1\"}'),
+(8,'Sample ID(2)','{\"10\":\"2\"}'),
+(9,'Sample ID and Request ID','{\"10\":\"1\",\"7\":\"1\"}'),
+(11,'NIRAMAYA ID','{\"13\":\"1\"}');
+/*!40000 ALTER TABLE `label_group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `labels`
 --
 
@@ -781,37 +1049,6 @@ INSERT INTO `labels` VALUES
 UNLOCK TABLES;
 
 --
--- Table structure for table `label_group`
---
-
-DROP TABLE IF EXISTS `label_group`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `label_group` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `lable_list` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `label_group`
---
-
-LOCK TABLES `label_group` WRITE;
-/*!40000 ALTER TABLE `label_group` DISABLE KEYS */;
-INSERT INTO `label_group` VALUES
-(1,'ABGA Id','{\"10\":\"2\"}'),
-(6,'WARD ID','{\"11\":\"1\",\"7\":\"1\"}'),
-(7,'OPD ID','{\"14\":\"1\",\"7\":\"1\"}'),
-(8,'Sample ID(2)','{\"10\":\"2\"}'),
-(9,'Sample ID and Request ID','{\"10\":\"1\",\"7\":\"1\"}'),
-(11,'NIRAMAYA ID','{\"13\":\"1\"}');
-/*!40000 ALTER TABLE `label_group` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `lis_to_vitros_sample_type`
 --
 
@@ -835,32 +1072,6 @@ INSERT INTO `lis_to_vitros_sample_type` VALUES
 ('Plain-Blood','5'),
 ('Plain-Swab','10');
 /*!40000 ALTER TABLE `lis_to_vitros_sample_type` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `Laboratory`
---
-
-DROP TABLE IF EXISTS `Laboratory`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Laboratory` (
-  `Laboratory` varchar(200) NOT NULL,
-  PRIMARY KEY (`Laboratory`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Laboratory`
---
-
-LOCK TABLES `Laboratory` WRITE;
-/*!40000 ALTER TABLE `Laboratory` DISABLE KEYS */;
-INSERT INTO `Laboratory` VALUES
-('Biochemistry Laboratory New Civil Hospital Surat'),
-('NCHS Biochemistry Section'),
-('NCHS Pathology Section');
-/*!40000 ALTER TABLE `Laboratory` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -931,8 +1142,39 @@ INSERT INTO `menu_view` VALUES
 (3,'Niramaya','1049','1001,1002,1006,10003','1049'),
 (4,'QC','1048','3001,9000,10006','1048'),
 (5,'ward','1047','1001,1002,1006,10003','1047'),
-(6,'request','1045','1001,1002,1006,10003','1045');
+(6,'request','1045','1001,1002,1006,10003','1045'),
+(7,'MRD(Fast)','','1001',''),
+(8,'Name(Fast)','','1002','');
 /*!40000 ALTER TABLE `menu_view` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `menu_view_fast`
+--
+
+DROP TABLE IF EXISTS `menu_view_fast`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `menu_view_fast` (
+  `id` int(11) NOT NULL,
+  `caption` varchar(100) NOT NULL,
+  `examination_id` int(11) NOT NULL,
+  `range` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `menu_view_fast`
+--
+
+LOCK TABLES `menu_view_fast` WRITE;
+/*!40000 ALTER TABLE `menu_view_fast` DISABLE KEYS */;
+INSERT INTO `menu_view_fast` VALUES
+(1,'PID',1001,0),
+(2,'Name',1002,0),
+(3,'Date of receipt',10003,1);
+/*!40000 ALTER TABLE `menu_view_fast` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -966,6 +1208,62 @@ INSERT INTO `menu_worklist` VALUES
 (5,'ward','1047','10003','1047'),
 (6,'request','1045','10003','1045');
 /*!40000 ALTER TABLE `menu_worklist` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `qc_lot`
+--
+
+DROP TABLE IF EXISTS `qc_lot`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `qc_lot` (
+  `qc_lot` varchar(100) NOT NULL,
+  `in_use` varchar(100) DEFAULT NULL,
+  `remark` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`qc_lot`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `qc_lot`
+--
+
+LOCK TABLES `qc_lot` WRITE;
+/*!40000 ALTER TABLE `qc_lot` DISABLE KEYS */;
+INSERT INTO `qc_lot` VALUES
+('QC/0/BlankW','1','updated from OLD LIS'),
+('QC/1/Radiometer/R0148','1','updated from OLD LIS'),
+('QC/5/ADALOW','1','updated from OLD LIS'),
+('QC/5/CRP','1','updated from OLD LIS'),
+('QC/5/Lipase','1','updated from OLD LIS'),
+('QC/5/MPR/1320UN','0','updated from OLD LIS'),
+('QC/5/MPR/1588UN','1','updated from OLD LIS'),
+('QC/5/Randox/1554UN','0','updated from OLD LIS'),
+('QC/5/Randox/1584UN','1','updated from OLD LIS'),
+('QC/8/ADAHIGH','1','updated from OLD LIS'),
+('QC/8/CRP','1','updated from OLD LIS'),
+('QC/8/Lipase','1','updated from OLD LIS'),
+('QC/8/MPR/1024UE','0','updated from OLD LIS'),
+('QC/8/MPR/1262UE','1','updated from OLD LIS'),
+('QC/8/Randox/1247UE','0','updated from OLD LIS'),
+('QC/8/Randox/1320UE','1','updated from OLD LIS'),
+('QC/BNP/3600','1','updated from OLD LIS'),
+('QC/DDIMER','1','updated from OLD LIS'),
+('QC/HbA1c/L1','0','updated from OLD LIS'),
+('QC/HbA1c/L1-lot(4)','1','new lot '),
+('QC/HbA1c/L2','0','updated from OLD LIS'),
+('QC/HbA1c/L2-lot(5)','1','new lot'),
+('QC/L1/Randox/2024EC','0','updated from OLD LIS'),
+('QC/L2/Randox/1939EC','0','updated from OLD LIS'),
+('QC/L2/Randox/2180EC','0','updated from OLD LIS'),
+('QC/L2/Randox/2228EC','1','updated from OLD LIS'),
+('QC/L3/Randox/2028EC','0','updated from OLD LIS'),
+('QC/PCT/3600','0','updated from OLD LIS'),
+('QC/SPIN_CK/24','1','updated from OLD LIS'),
+('QC/TNI/3600','1','updated from OLD LIS'),
+('QC/Vit-D serum pool','0','updated from OLD LIS');
+/*!40000 ALTER TABLE `qc_lot` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1144,37 +1442,6 @@ INSERT INTO `sql` VALUES
 UNLOCK TABLES;
 
 --
--- Table structure for table `examination_field_specification`
---
-
-DROP TABLE IF EXISTS `examination_field_specification`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `examination_field_specification` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `examination_id` int(11) DEFAULT NULL,
-  `ftype` varchar(50) DEFAULT NULL,
-  `table` varchar(50) DEFAULT NULL,
-  `field` varchar(50) DEFAULT NULL,
-  `field_description` varchar(50) DEFAULT NULL,
-  `where` varchar(500) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `examination_field_specification`
---
-
-LOCK TABLES `examination_field_specification` WRITE;
-/*!40000 ALTER TABLE `examination_field_specification` DISABLE KEYS */;
-INSERT INTO `examination_field_specification` VALUES
-(1,10012,'table','Laboratory','Laboratory','',''),
-(2,3001,'dtable','qc_lot','qc_lot','qc_lot,remark','where in_use=1');
-/*!40000 ALTER TABLE `examination_field_specification` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `table_field_specification`
 --
 
@@ -1211,145 +1478,33 @@ INSERT INTO `table_field_specification` VALUES
 UNLOCK TABLES;
 
 --
--- Table structure for table `consumable_name`
+-- Table structure for table `unit_name`
 --
 
-DROP TABLE IF EXISTS `consumable_name`;
+DROP TABLE IF EXISTS `unit_name`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `consumable_name` (
+CREATE TABLE `unit_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `consumable_name` varchar(100) DEFAULT NULL,
-  `reorder_value` decimal(10,0) DEFAULT NULL,
+  `unit_name` varchar(100) DEFAULT NULL,
   `recording_time` datetime DEFAULT NULL,
   `recorded_by` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `consumable_name` (`consumable_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=123 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `consumable_name`
+-- Dumping data for table `unit_name`
 --
 
-LOCK TABLES `consumable_name` WRITE;
-/*!40000 ALTER TABLE `consumable_name` DISABLE KEYS */;
-INSERT INTO `consumable_name` VALUES
-(2,'ADA_HOCL',NULL,'2020-08-17 14:59:08','9099514805'),
-(3,'ADA_PHENOL',NULL,'2020-08-17 14:59:32','9099514805'),
-(4,'ADA_S60',NULL,'2020-08-17 14:59:44','9099514805'),
-(5,'ADENOSINE BUFFER',NULL,'2020-08-17 14:59:54','9099514805'),
-(6,'ALB_BCG',NULL,'2020-08-17 15:01:18','9099514805'),
-(7,'ALP-R1',NULL,'2020-08-17 15:02:42','9099514805'),
-(8,'ALP-R2',NULL,'2020-08-17 15:02:51','9099514805'),
-(9,'ALT_UV',2500,'2020-09-15 13:00:00','1'),
-(10,'AMY_CNPG3',100,'2020-08-17 15:03:28','9099514805'),
-(12,'DIAZO-A',NULL,'2020-08-17 15:04:01','9099514805'),
-(13,'CALIBRATOR-2',NULL,'2020-08-17 15:04:23','9099514805'),
-(14,'CALIBRATOR-3',NULL,'2020-08-17 15:04:32','9099514805'),
-(15,'CALCIUM_ARSENAZO',NULL,'2020-08-17 15:04:43','9099514805'),
-(16,'CHE-CHOLINESTERASE',NULL,'2020-08-17 15:05:06','9099514805'),
-(17,'CHOLESTEROL',200,'2020-08-17 15:05:24','9099514805'),
-(18,'CKMB-UV',200,'2020-08-17 15:05:40','9099514805'),
-(19,'CK-TOTAL',NULL,'2020-08-17 15:05:48','9099514805'),
-(20,'CR-R1 NAOH',NULL,'2020-08-17 15:06:08','9099514805'),
-(21,'CR-R2 PICRATE',NULL,'2020-08-17 15:06:20','9099514805'),
-(22,'DBIL-R1_HCL',NULL,'2020-08-17 15:06:40','9099514805'),
-(23,'DITHONITE BUFFER',NULL,'2020-08-17 15:06:55','9099514805'),
-(24,'GLC_GODPOD',NULL,'2020-08-17 15:07:11','9099514805'),
-(25,'HBS CONTROL LOT',NULL,'2020-08-17 15:08:10','9099514805'),
-(26,'HBF CONTROL LOT',NULL,'2020-08-17 15:08:20','9099514805'),
-(27,'HDL-PPT',NULL,'2020-08-17 15:08:34','9099514805'),
-(28,'IRON STOCKK SOLUTION',NULL,'2020-08-17 15:08:53','9099514805'),
-(29,'IRON-R1 THIOSEMICARBAZIDE',NULL,'2020-08-17 15:09:13','9099514805'),
-(30,'IRON-R2 FERROZINE',NULL,'2020-08-17 15:09:25','9099514805'),
-(31,'KETONE BODY CONTROL LOT',NULL,'2020-08-17 15:09:50','9099514805'),
-(32,'LDH-DEA-R1',NULL,'2020-08-17 15:10:13','9099514805'),
-(33,'LDH-R2-NAD',NULL,'2020-08-17 15:10:24','9099514805'),
-(34,'LIP-TURBIDOMETRY',NULL,'2020-08-17 15:10:48','9099514805'),
-(35,'MPR QC LOT',NULL,'2020-08-17 15:11:06','9099514805'),
-(36,'MPR',NULL,'2020-08-17 15:11:26','9099514805'),
-(37,'STD-A -NA + K',NULL,'2020-08-17 15:12:11','9099514805'),
-(38,'STD-B NA+K',NULL,'2020-08-17 15:12:26','9099514805'),
-(39,'PEPSIN',NULL,'2020-08-17 15:12:46','9099514805'),
-(40,'PH CALIBRATOR-4.01,6.08,9.13',NULL,'2020-08-17 15:13:30','9099514805'),
-(41,'PHOSPHATE BUFFER',NULL,'2020-08-17 15:13:44','9099514805'),
-(42,'PHOSPHATE MOLYBDATE',NULL,'2020-08-17 15:14:03','9099514805'),
-(43,'QC-5',NULL,'2020-08-17 15:14:15','9099514805'),
-(44,'QC-8',NULL,'2020-08-17 15:14:21','9099514805'),
-(45,'TBIL-R1_CAFFINE',NULL,'2020-08-17 15:14:42','9099514805'),
-(46,'TG-GPO',NULL,'2020-08-17 15:14:54','9099514805'),
-(47,'TP-BIURET',NULL,'2020-08-17 15:15:06','9099514805'),
-(48,'UA-URICASE',100,'2020-08-17 15:15:20','9099514805'),
-(49,'UIBC-R1_HYDROXYLAMINE',NULL,'2020-08-17 15:15:41','9099514805'),
-(50,'UIBC-R2_FERROZINE',NULL,'2020-08-17 15:15:55','9099514805'),
-(51,'UREA-UREASE',200,'2020-08-27 17:36:21','3'),
-(52,'URINE DILUENT_MOPS',NULL,'2020-08-17 15:16:32','9099514805'),
-(53,'URINE ACID CONTROL LOT',NULL,'2020-08-17 15:17:02','9099514805'),
-(54,'URINE NEUTRAL CONTROL LOT',NULL,'2020-08-17 15:17:15','9099514805'),
-(55,'URINE BASIC CONTROL LOT',NULL,'2020-08-17 15:17:27','9099514805'),
-(57,'DIAZO-B',NULL,'2020-09-01 18:42:25','9099514805'),
-(59,'TIBC STANDARD SOLUTION',NULL,'2020-09-24 17:17:20','8866829055'),
-(60,'signal reagent',8,'2020-12-01 12:16:11','9099514805'),
-(61,'versa tips',2000,'2020-12-01 12:16:03','9099514805'),
-(62,'wash buffer reagent',10000,'2020-12-01 14:58:19','9099514805'),
-(63,'Control-TSH',NULL,'2020-11-18 16:10:15','9099514805'),
-(64,'Microsensor check fluid-1 and 2',NULL,'2020-11-18 16:11:00','9099514805'),
-(65,'calibrator-25-OH Vit-D Total',1,'2020-12-01 12:15:36','9099514805'),
-(66,'calibrator-Total beta hcg -2',1,'2020-12-01 12:15:45','9099514805'),
-(67,'calibrator-ferritin',1,'2020-12-01 12:15:28','9099514805'),
-(68,'calibrator- Total T4',1,'2020-12-01 12:15:21','9099514805'),
-(69,'calibrator- Free T4',1,'2020-12-01 12:15:14','9099514805'),
-(70,'calibrator- TSH',1,'2020-12-01 12:15:05','9099514805'),
-(71,'calibrator- Free T3',1,'2020-12-01 12:14:55','9099514805'),
-(72,'calibrator- Vit B12',1,'2020-12-01 12:14:48','9099514805'),
-(73,'calibrator- FSH',1,'2020-12-01 12:14:37','9099514805'),
-(74,'calibrator- LH',1,'2020-12-01 12:14:26','9099514805'),
-(75,'Reagent-PCT',100,'2020-12-01 12:14:15','9099514805'),
-(76,'Reagent-FSH',100,'2020-12-01 12:14:08','9099514805'),
-(77,'Reagent-Total beta hcg-2',100,'2020-12-01 12:14:01','9099514805'),
-(78,'Reagent-LH',100,'2020-12-01 12:13:54','9099514805'),
-(79,'Reagent-Ferritin',200,'2020-12-01 12:13:47','9099514805'),
-(80,'Reagent-Free T3',100,'2020-12-01 12:13:40','9099514805'),
-(81,'Reagent-Free T4',100,'2020-12-01 12:13:33','9099514805'),
-(82,'Reagent-vit B12',100,'2020-12-01 12:13:26','9099514805'),
-(83,'Reagent-prolactin',100,'2020-12-01 12:13:18','9099514805'),
-(84,'Reagent-25 OH Vit-D Total',100,'2020-12-01 12:13:03','9099514805'),
-(85,'Reagent-TSH',200,'2020-12-01 12:12:56','9099514805'),
-(86,'Reagent-B12+folate pack-3',100,'2020-12-01 12:12:49','9099514805'),
-(87,'maintenance pack vitros',1,'2020-12-01 12:12:42','9099514805'),
-(89,'calibrator-Prolactin',1,'2020-12-01 12:12:34','9099514805'),
-(90,'sample cap',1000,'2020-12-01 14:54:33','9099514805'),
-(91,'calibrator-PCT',1,'2020-12-01 12:12:18','9099514805'),
-(93,'CRP',220,'2023-09-30 01:32:34','1'),
-(94,' D-Dimer',90,'2020-12-01 14:57:16','9099514805'),
-(95,'REAGENT -PROGESTERONE',100,'2020-12-01 12:11:53','9099514805'),
-(96,'REAGENT-HSTROP ',100,'2020-12-01 12:11:32','9099514805'),
-(97,'REAGENT-NT-PROBNP 2',100,'2020-12-01 13:04:05','9099514805'),
-(98,'CALIBRATOR PROGESTERONE',1,'2020-12-01 12:11:10','9099514805'),
-(99,'CALIBRATOR HSTROP',1,'2020-12-01 12:11:03','9099514805'),
-(100,'CALIBRATOR NT-PROBNP 2',1,'2020-12-01 12:10:52','9099514805'),
-(101,'vitrous eppendropp cup',1000,'2020-12-01 14:44:55','9099514805'),
-(102,'IL-6 REAGENT KIT ',80,'2020-12-02 15:59:40','8866580625'),
-(103,'High sample diluent A',NULL,'2020-12-05 13:28:55','9099514805'),
-(104,'High sample diluent B ',NULL,'2020-12-05 13:30:11','9099514805'),
-(105,'MAGANESIUM',NULL,'2020-12-24 13:21:08','8866580625'),
-(106,'Anti-SARS-CoV-2IgG',NULL,'2021-03-31 10:55:54','8866580625'),
-(107,'SGOT',NULL,'2021-04-08 13:33:46','8866580625'),
-(109,'IMMUNO QC  TRI LEVEL',NULL,'2021-04-09 18:19:11','8866580625'),
-(110,'CALIBRATOR-COV 2IgG',NULL,'2021-04-13 21:30:05','8866580625'),
-(111,'PH CALIBRATOR 6.08',NULL,'2021-07-19 15:57:20','8866580625'),
-(112,'PH CALIBRATOR 9.13',NULL,'2021-07-19 15:57:36','8866580625'),
-(113,'PH CALIBRATOR 4.01',NULL,'2021-07-19 15:58:24','8866580625'),
-(115,'MICROALBUMIN KIT',NULL,'2021-07-27 13:00:18','8866580625'),
-(116,'ADA KIT',NULL,'2021-07-27 13:06:35','8866580625'),
-(117,'IMMUNO QC POOL',NULL,'2021-08-11 13:27:32','8866580625'),
-(118,'QC/L1_BNP/3600',NULL,'2021-08-19 11:27:18','8866580625'),
-(119,'QC/L2_BNP/3600',NULL,'2021-08-19 11:27:29','8866580625'),
-(120,'TSH3',7,NULL,NULL),
-(121,'TP-R2',NULL,NULL,NULL),
-(122,'TP-R1 (BLANK BIURET)',NULL,NULL,NULL);
-/*!40000 ALTER TABLE `consumable_name` ENABLE KEYS */;
+LOCK TABLES `unit_name` WRITE;
+/*!40000 ALTER TABLE `unit_name` DISABLE KEYS */;
+INSERT INTO `unit_name` VALUES
+(1,'ml','2020-08-17 13:06:25','3'),
+(2,'100 Test Pack','2020-12-01 10:59:22','9099514805'),
+(3,'40 TEST KIT','2020-12-02 16:00:18','8866580625'),
+(6,'TEST','2022-01-13 15:15:25','8866580625');
+/*!40000 ALTER TABLE `unit_name` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1402,7 +1557,8 @@ INSERT INTO `view_info_data` VALUES
 (103,'OPD Release Status of Samples on a date','<input type=date name=__p1 title=\'Give Date\'>','select \r\n	s1.sample_id as sample_id ,\r\n\r\nconcat(\'<div class=\"d-inline-block\" ><form target=_blank method=post action=edit_general.php class=print_hide>\r\n	<button class=\"btn btn-outline-primary btn-sm\" name=sample_id value=\\\'\',s1.sample_id,\'\\\' >\',s1.sample_id,\'</button>\r\n	<input type=hidden name=session_name value=\\\'\\\'.$_POST[\\\'session_name\\\'].\\\'\\\'>\r\n	<input type=hidden name=action value=edit_general>\r\n	</form></div>\')\r\n\r\nas sample_id,\r\n\r\n	s1.result as date ,\r\n	if(s2.result=\"OPD\",concat(\'<span class=bg-danger>\',s2.result,\'</span>\'),s2.result) as location,   \r\n	s3.result as release_status\r\nfrom \r\n	result s1, result s2, result s3\r\n	\r\nwhere\r\n    s1.examination_id=1017 \r\n    and \r\n    s1. result like \"__p1\" and  s2.examination_id=1006    \r\n    and  \r\n	s3.examination_id=1014    \r\n    and      \r\n    \r\n    s1.sample_id=s2.sample_id \r\n    and\r\n    s1.sample_id=s3.sample_id \r\n    \r\n    and\r\n    s2.result=\'OPD\''),
 (104,'Location + Date Specific Release Status','<input type=date name=__p1 title=\'Give Date\'><input type=text name=__p2 title=\'Give Location\' placeholder=OPDWard>','select \r\n	s1.sample_id as sample_id ,\r\n	s1.result as date ,\r\n	if(s2.result=\"__p2\",concat(\'<span class=bg-danger>\',s2.result,\'</span>\'),s2.result) as location,   \r\n	s3.result as release_status\r\nfrom \r\n	result s1, result s2, result s3\r\n	\r\nwhere\r\n    s1.examination_id=1017 \r\n    and \r\n    s1. result like \"__p1\" and  s2.examination_id=1006    \r\n    and  \r\n	s3.examination_id=1014    \r\n    and      \r\n    \r\n    s1.sample_id=s2.sample_id \r\n    and\r\n    s1.sample_id=s3.sample_id \r\n    \r\n    and\r\n    s2.result=\'__p2\''),
 (105,'NMC (date + department sample numbers)','<input type=date name=__p1 title=\'Give Date\'><input type=text name=__p2 title=\'Give Department\' placeholder=Department>','select r.result as date,o.result as department ,count(r.sample_id) as Total_Samples\r\n\r\nfrom \r\nresult r, result o \r\n\r\nwhere \r\nr.examination_id=1017 and r.result like \"%__p1%\" \r\nand \r\no.examination_id=1004 and o.result like \"%__p2%\"\r\n\r\nand o.sample_id=r.sample_id'),
-(106,'(problem)','','select * from result where result like \"%(problem)%\"');
+(106,'(problem)','','select * from result where result like \"%(problem)%\"'),
+(107,'test','','select * from result where examination_id=1001 and result like \"%22%\" order by sample_id desc limit 200');
 /*!40000 ALTER TABLE `view_info_data` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1415,4 +1571,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-20  0:31:52
+-- Dump completed on 2024-02-13 23:12:40

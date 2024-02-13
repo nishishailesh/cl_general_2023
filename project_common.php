@@ -57,7 +57,6 @@ function main_menu($link)
 	$user=get_user_info($link,$_SESSION['login']);
 	$auth=explode(',',$user['authorization']);
 	
-
 	echo '
 	<form method=post class="form-group m-0 p-0 print_hide">
 	<input type=hidden name=session_name value=\''.session_name().'\'>
@@ -104,6 +103,8 @@ function main_menu($link)
 						<div class="btn-group-vertical d-block">
 							<!--<button class="btn btn-outline-primary m-0 p-0 " formaction=viewww_database_id_from_to.php type=submit name=action value="get_dbids||">by Sample ID(s)</button>-->'; 
 							xxx_make_view_menu($link);
+							echo '<button class="btn btn-outline-primary m-0 p-0 " type=button name=action value="get_dbids||">-----Fast Search-----</button>';
+							xxx_make_view_menu_fast($link);
 						echo '</div>
 					</div>
 				</div>';
@@ -11183,6 +11184,24 @@ function xxx_make_view_menu($link)
 					value=\'get_dbids|'.$ar['unique_id'].'|'.$ar['additional_search_id'].'|'.$ar['additional_range_search_id'].'\'>'.$ar['caption'].'</button>';
 	}
 }
+
+function xxx_make_view_menu_fast($link)
+{
+	$sql="SELECT * from menu_view_fast";
+	
+	$result=run_query($link,$GLOBALS['database'],$sql);
+						
+	while($ar=get_single_row($result))
+	{
+		echo '<button 
+					class="btn btn-outline-primary m-0 p-0 " 
+					formaction=get_fast_search.php 
+					type=submit 
+					name=action
+					value=\'get_dbids|'.$ar['examination_id'].'|'.$ar['range'].'\'>'.$ar['caption'].'</button>';
+	}
+}
+
 function xxx_make_worklist_menu($link)
 {
 	$sql="SELECT * from menu_worklist";

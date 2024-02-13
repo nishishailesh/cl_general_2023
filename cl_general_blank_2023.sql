@@ -364,6 +364,22 @@ CREATE TABLE `lis_to_vitros_sample_type` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `logged`
+--
+
+DROP TABLE IF EXISTS `logged`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `logged` (
+  `user` bigint(20) NOT NULL,
+  `private` varchar(5000) NOT NULL,
+  `expire` datetime NOT NULL,
+  PRIMARY KEY (`user`),
+  CONSTRAINT `logged_ibfk_1` FOREIGN KEY (`user`) REFERENCES `user` (`user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `menu_new`
 --
 
@@ -393,6 +409,22 @@ CREATE TABLE `menu_view` (
   `unique_id` varchar(200) NOT NULL,
   `additional_search_id` varchar(200) NOT NULL,
   `additional_range_search_id` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `menu_view_fast`
+--
+
+DROP TABLE IF EXISTS `menu_view_fast`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `menu_view_fast` (
+  `id` int(11) NOT NULL,
+  `caption` varchar(100) NOT NULL,
+  `examination_id` int(11) NOT NULL,
+  `range` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -723,7 +755,7 @@ CREATE TABLE `upload_data` (
   `upload_data` mediumblob NOT NULL,
   `upload_data_name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2335 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2338 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -811,4 +843,4 @@ CREATE TABLE `xxx_lab_reference_value` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-20  0:31:52
+-- Dump completed on 2024-02-13 23:12:40

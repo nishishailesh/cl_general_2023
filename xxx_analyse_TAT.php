@@ -17,20 +17,49 @@ main_menu($link);
 $data=array();
 echo '<h1>TAT in hours, Release - Receipt</h1>';
 $max_sid=find_max_any_id($link,'sample_id');
+
 for($sample_id=$max_sid-200;$sample_id<=$max_sid;$sample_id++)
 {
 	$interval=get_TAT_between_two_status($link,$sample_id,10008,10003);
-	if($interval==False){		echo $sample_id.': NA';}
+	if($interval==False)
+	{
+		//echo $sample_id.': NA';
+	}
 	else
 	{
-		echo $sample_id.':'.$interval;
+		//echo $sample_id.':'.$interval;
 		$data[]=$interval;
 	}
-	echo '<br>';
+	//echo '<br>';
 }
-echo 'Mean:'.array_sum($data)/count($data).'<br>';
-echo 'SD:'.stats_standard_deviation($data).'<br>';
-exit(0);
+
+print_r($data);
+
+$mean=array_sum($data)/count($data);
+$count=count($data);
+echo '<br>';
+echo 'Count:'.$count.'<br>';
+echo 'Mean:'.$mean.'<br>';
+sort($data);
+//print_r($data);
+$frequency=array();
+foreach($data as $k=>$v)
+{
+		if(isset($frequency[round($v,0)."-".round($v,0)+1 ]))
+		{
+			$frequency[round($v,0)."-".round($v,0)+1 ]=$frequency[round($v,0)."-".round($v,0)+1]+1 ;
+		}
+		else
+		{
+			$frequency[round($v,0)."-".round($v,0)+1]=1;
+		}
+}
+
+echo '<br>';
+echo 'Frequency<br>';
+
+echo '<pre>';print_r($frequency);echo '</pre>';
+
 //////////////user code ends////////////////
 tail();
 

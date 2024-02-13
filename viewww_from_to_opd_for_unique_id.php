@@ -30,12 +30,13 @@ echo ';}
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 
+//echo '<pre>';print_r($_POST);echo '</pre>';
 
 if(isset($_POST['action']))
 {
 	if($_POST['action']=='set_sample_status')
 	{
-		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%d %H:%M"));
+		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%dT%H:%M"));
 	}
 }
 
@@ -74,7 +75,7 @@ else
 					//sample_id will never be non-range
 				}					
 			}
-			else
+			else if($ex[1]>0)
 			{
 				if(isset($_POST['__from__'.$ex[1]]))
 				{
@@ -108,16 +109,7 @@ else
 
 $extra_post='<input type=hidden name=conditions value=\''.json_encode($conditions).'\'>';
 
-if($_POST['examination_id']!='sample_id')
-{
-	$examination_details=get_one_examination_details($link,$_POST['examination_id']);
-	$edit_specification=json_decode($examination_details['edit_specification'],true);
-	$table=isset($edit_specification['table'])?$edit_specification['table']:'';
-	if(strlen($table)==0){echo 'error: the examination_id is not id_multiple_sample or id_unique_sample';}
-	//$sql='select sample_id from `'.$table.'` order by id desc';
-	$sql='select sample_id from `'.$table.'` order by id';
-}
-else if($_POST['examination_id']=='sample_id')
+if($_POST['examination_id']=='sample_id')
 {
 	$id_range_array=explode("-",$_POST['id_range']);
 	//$sql='select sample_id from sample_link 
@@ -127,10 +119,22 @@ else if($_POST['examination_id']=='sample_id')
 			where 
 			sample_id between \''.$id_range_array[0].'\' and  \''.$id_range_array[1].'\' ';	//echo $sql;
 }
-	
+else if($_POST['examination_id']>0)
+{
+	$examination_details=get_one_examination_details($link,$_POST['examination_id']);
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	$table=isset($edit_specification['table'])?$edit_specification['table']:'';
+	if(strlen($table)==0){echo 'error: the examination_id is not id_multiple_sample or id_unique_sample';}
+	//$sql='select sample_id from `'.$table.'` order by id desc';
+	$sql='select sample_id from `'.$table.'` order by id';
+}	
 //show samples as selected
+else
+{
+	$sql='select sample_id from result where examination_id=\''.array_key_first($conditions).'\' and result like \'%'.$conditions[array_key_first($conditions)].'%\' ';
+}
 
-//echo $sql.'<br>';
+echo $sql.'<br>';
 $result=run_query($link,$GLOBALS['database'],$sql);
 
 echo '<div class=monitor_grid>';
@@ -177,7 +181,6 @@ echo '</div>';
 
 //////////////user code ends////////////////
 tail();
-//echo '<pre>';print_r($_POST);echo '</pre>';
 //echo '<pre>';print_r($_SESSION);echo '</pre>';
 
 //////////////Functions///////////////////////

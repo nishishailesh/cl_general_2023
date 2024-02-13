@@ -33,7 +33,7 @@ function get_dbid($link,$examination_id,$search_list_of_examination_id,$range_se
 	{
 		$ex_name='sample_id';
 	}
-	else
+	else if($examination_id>0)
 	{
 		$examination_details=get_one_examination_details($link,$examination_id);
 		$ex_name=$examination_details['name'];
@@ -72,7 +72,7 @@ function get_dbid($link,$examination_id,$search_list_of_examination_id,$range_se
 			//get_sample_id_for_range_search($link,$max_sid-100,$max_sid);
 			get_sample_id_for_range_search($link);		//bacuase sample_id have choice for slots of id range
 		}
-		else
+		else  if($examination_id>0)
 		{
 				$examination_details=get_one_examination_details($link,$examination_id);
 				$edit_specification=json_decode($examination_details['edit_specification'],true);
