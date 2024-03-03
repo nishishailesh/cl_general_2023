@@ -32,8 +32,11 @@ $GLOBALS['serum_IBIL']=5024;
 $GLOBALS['serum_CHOL']=5015;
 $GLOBALS['serum_TG']=5018;
 $GLOBALS['serum_HDL']=5016;
-$GLOBALS['serum_VLDL']=5017;
-$GLOBALS['serum_LDL']=5028;
+$GLOBALS['serum_LDL']=5017;
+$GLOBALS['serum_VLDL']=5028;
+
+$GLOBALS['serum_potassium']=5020;
+$GLOBALS['serum_calcium']=5014;
 
 $GLOBALS['Remark']=5098;
 $GLOBALS['Critical_Alert']=5097;

@@ -206,10 +206,10 @@ function f_5015($link,$sample_id,$ex_id)
 		else
 		{
 			echo '<span class="text-success d-block">TG >400 mg/dL. LDL not reliable.</span>';
-			insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['serum_HDL'],'see LDL remark');
-			insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['serum_VLDL'],'see LDL remark');
+			insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['serum_HDL'],$ex_result_array[$GLOBALS['serum_HDL']]);
+			insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['serum_VLDL'],$ex_result_array[$GLOBALS['serum_VLDL']]);
 			insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['serum_LDL'],'TG>400, LDL unreliable, Homogeneous assay advised');
-		}	
+		}
 		return true;
 	}
 }
@@ -231,5 +231,22 @@ function f_10011($link,$sample_id,$ex_id)
 	}
 }
 
+function f_5020($link,$sample_id,$ex_id)
+{
+	echo '.....Verification of examination_id=5020 (Potassium, serum).....<br>';
+	if(!examination_id_verified($ex_id,$GLOBALS['serum_potassium'],'serum potassium')){return false;}
+
+	$ex_result_array=get_result_of_sample_in_array($link,$sample_id);
+	if( !examination_result_numeric($ex_result_array[$GLOBALS['serum_potassium']],'serum cholesterol')){return false;}
+	
+	$potassium=$ex_result_array[$GLOBALS['serum_potassium']];
+	if($potassium>7.5)
+	{
+		echo '<span class="badge badge-danger d-inline">potassium is more than 7.5 mmol/L. Adding calcium reflexly</span><br>';
+		insert_one_examination_without_result($link,$sample_id,$GLOBALS['serum_calcium'],$error='yes');
+		return true;
+	}
+	return true;
+}
 
 ?>
