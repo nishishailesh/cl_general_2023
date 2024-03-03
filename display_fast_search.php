@@ -27,27 +27,75 @@ echo ';}
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
 
-if(isset($_POST['action']))
+if(!isset($_POST['sql']))
 {
-	if($_POST['action']=='set_sample_status')
+	if(isset($_POST['action']))
 	{
-		insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%dT%H:%M"));
+		if($_POST['action']=='set_sample_status')
+		{
+			insert_update_one_examination_with_result($link,$_POST['sample_id'],$_POST['status_examination_id'],strftime("%Y-%m-%dT%H:%M"));
+		}
 	}
-}
 
-if(!isset($_POST['from']))
-{
-	$sql='select sample_id from result where examination_id=\''.$_POST['examination_id'].'\' and result like \'%'.$_POST['search_string'].'%\' ';
+	if(!isset($_POST['from']))
+	{
+		$sql='select sample_id from result where examination_id=\''.$_POST['examination_id'].'\' and result like \'%'.$_POST['search_string'].'%\' ';
+	}
+	else
+	{
+		$sql='select sample_id from result where examination_id=\''.$_POST['examination_id'].'\' and result between \''.$_POST['from'].'\'  and \''.$_POST['to'].'\'';
+	}
+
+	$result=run_query($link,$GLOBALS['database'],$sql);
+
+	$fast_search_result_page_limit=get_config_value($link,'fast_search_result_page_limit');
+	$fast_search_result_pages_limit=get_config_value($link,'fast_search_result_pages_limit');
+	$total_data=get_row_count($result);
+
+	$offset=isset($_POST['offset'])?$_POST['offset']:0;
+	$limit_sql=$sql.' limit '.$fast_search_result_page_limit.' offset '.$offset;
+	for($i=0;$i<min($total_data,$fast_search_result_page_limit*$fast_search_result_pages_limit);$i=$i+$fast_search_result_page_limit)
+	{
+		echo '<form method=post class="d-inline">';
+		echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+		echo '<input type=hidden name=sql value=\''.base64_encode($limit_sql).'\' >';
+		echo '<input type=hidden name=base_sql value=\''.base64_encode($sql).'\' >';
+		echo '<button name=offset value=\''.$i.'\'>'.$i.'</button>';
+		echo '</form>';
+	}
+	//echo $sql.'<br>';
+	//echo $limit_sql.'<br>';
+	$result=run_query($link,$GLOBALS['database'],$limit_sql);
 }
 else
 {
-	$sql='select sample_id from result where examination_id=\''.$_POST['examination_id'].'\' and result between \''.$_POST['from'].'\'  and \''.$_POST['to'].'\'';
-}
+	$sql=base64_decode($_POST['base_sql']);	
+	$limit_sql=base64_decode($_POST['sql']);
+		
+	$result=run_query($link,$GLOBALS['database'],$sql);
 
-echo $sql.'<br>';
-$result=run_query($link,$GLOBALS['database'],$sql);
+	$fast_search_result_page_limit=get_config_value($link,'fast_search_result_page_limit');
+	$fast_search_result_pages_limit=get_config_value($link,'fast_search_result_pages_limit');
+	$total_data=get_row_count($result);
+
+	$limit_sql=$sql.' limit '.$fast_search_result_page_limit.' offset '.$_POST['offset'];
+	for($i=0;$i<min($total_data,$fast_search_result_page_limit*$fast_search_result_pages_limit);$i=$i+$fast_search_result_page_limit)
+	{
+		echo '<form method=post class="d-inline">';
+		echo '<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+		echo '<input type=hidden name=sql value=\''.base64_encode($limit_sql).'\' >';
+		echo '<input type=hidden name=base_sql value=\''.base64_encode($sql).'\' >';
+		echo '<button name=offset value=\''.$i.'\'>'.$i.'</button>';
+		echo '</form>';
+	}
+
+	//echo '<br>'.$sql.'<br>';
+	//echo $limit_sql.'<br>';	
+	$result=run_query($link,$GLOBALS['database'],$limit_sql);
+
+}
 
 echo '<div class=monitor_grid>';
 	$count=1;
