@@ -91,6 +91,13 @@ function list_consumable($link)
 	echo '</form>';
 }
 
+
+function print_lable($link,$pdf,$id)
+{
+	
+	
+	
+}
 /*
 id	int(11) Auto Increment	
 consumable_name	varchar(100) NULL	
@@ -433,6 +440,7 @@ function view_edit_consumable_receipt($link,$consumable_name,$edit_id=0,$save_mo
 							{
 								echo '<td>';
 								echo '<button class="btn btn-outline-primary btn-sm" name=id value='.$value.'>'.$value.'</button>';
+								echo '<button formaction="print_consumable_lable.php" formtarget=_blank class="btn btn-outline-primary btn-sm" name=id value='.$value.'><img src="img/barcode.png" width=20  /></button>';
 								echo '</td>';
 							}
 						}
