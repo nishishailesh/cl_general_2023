@@ -13,11 +13,15 @@ main_menu($link);
 
 $save_mode='no';
 
-//if($_POST['action']=='consumable')
-//{
-	list_consumable($link);
-//}
-
+	echo '<div class="btn-group">';
+			echo '<div class="border border-important p-1 m-1">';
+				list_consumable($link);
+			echo '</div>';
+			echo '<div class="border border-important p-1 m-1">';
+				update_consumable($link);
+			echo '</div>';
+	echo '</div>';
+	
 if(isset($_POST['save_id']))
 {
 	$pk_name='save_id';
@@ -51,6 +55,18 @@ if($_POST['action']=='save_insert')
 	}
 	$edit_id= isset($_POST['id'])?$_POST['id']:0;
 	view_edit_consumable_receipt($link,$_POST['consumable_name'],$edit_id,$save_mode);	
+}
+
+if($_POST['action']=='start')
+{
+	start_consumable($link,$_POST['id']);
+	view_edit_consumable_receipt($link,get_consumable_name($link,$_POST['id']),0,$save_mode);	
+}
+
+if($_POST['action']=='end')
+{
+	end_consumable($link,$_POST['id']);
+	view_edit_consumable_receipt($link,get_consumable_name($link,$_POST['id']),0,$save_mode);	
 }
 
 
@@ -88,6 +104,25 @@ function list_consumable($link)
 			echo '</div>';
 	echo '</div>';
 	
+	echo '</form>';
+}
+
+
+function update_consumable($link)
+{
+	echo '<form method=post><input type=hidden name=session_name value=\''.session_name().'\'>';
+	
+	echo '<div class="btn-group">';
+			echo '<div class="border border-important p-1 m-1">';
+				echo '<input type=text name=id placeholder="start consumable">';
+				echo '<button class="btn btn-outline-primary m-0 p-0" type=submit name=action value=start>Start Consumable</button>';
+			echo '</div>';
+	echo '</form>';
+	echo '<form method=post><input type=hidden name=session_name value=\''.session_name().'\'>';			echo '<div class="border border-important p-1 m-1">';
+				echo '<input type=text name=id placeholder="end consumable">';
+				echo '<button class="btn btn-outline-primary m-0 p-0" type=submit name=action value=end>End Consumable</button>';
+			echo '</div>';
+	echo '</div>';
 	echo '</form>';
 }
 
@@ -725,6 +760,65 @@ function xxx_update($link,$tname,$pk_name,$array,$farray)
     }   
 }
 
+function get_consumable_name($link,$id)
+{
+	$sql="select consumable_name from consumable_receipt where id='".$id."'";
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$array=get_single_row($result);
+	return $array['consumable_name'];
+}
 
+function start_consumable($link,$id)
+{
+        $sql='update consumable_receipt
+            set 
+                `date_of_starting_use` ="'.strftime("%Y-%m-%d").'"
+            where 
+                id=\''.$id.'\' ';
+        //echo $sql;
+    
+    if(!$result=run_query($link,$GLOBALS['database'],$sql))
+    {
+        echo '<p>Data not updated</p>';
+    }
+    else
+    {
+        if(rows_affected($link)==1)
+        {
+            echo '<p>Saved</p>';              
+        }
+        else
+        {
+            echo '<p>Result need no update</p>';
+        }
+    }
+}
+
+
+function end_consumable($link,$id)
+{
+        $sql='update consumable_receipt
+            set 
+                `date_of_ending_use` ="'.strftime("%Y-%m-%d").'"
+            where 
+                id=\''.$id.'\' ';
+        //echo $sql;
+    
+    if(!$result=run_query($link,$GLOBALS['database'],$sql))
+    {
+        echo '<p>Data not updated</p>';
+    }
+    else
+    {
+        if(rows_affected($link)==1)
+        {
+            echo '<p>Saved</p>';              
+        }
+        else
+        {
+            echo '<p>Result need no update</p>';
+        }
+    }
+}
 
 ?>
