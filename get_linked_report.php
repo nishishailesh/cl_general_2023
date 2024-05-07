@@ -9,7 +9,6 @@ $_SESSION['login']='3';
 require_once('tcpdf/tcpdf.php');
 //echo '<pre>';print_r($_GET);echo '</pre>';
 //echo '<pre>';print_r($_SESSION);echo '</pre>';
-
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 $sample_id=get_slink($link,$_GET['token']);
 //echo $sample_id;
