@@ -5698,6 +5698,16 @@ function get_id_type_examination_result($link,$sample_id,$examination_id)
 }
 
 
+function get_id_type_table_name($link,$examination_id)
+{
+	$examination_details=get_one_examination_details($link,$examination_id);
+	$edit_specification=json_decode($examination_details['edit_specification'],true);
+	if(!isset($edit_specification['table'])){'echo table for id allocation of examination_id='.$examination_id.' does not exist<br>';return false;}
+	else {return $edit_specification['table'];}
+}
+
+
+
 function get_any_examination_result($link,$sample_id,$examination_id)
 {
 	//echo 'pppppppppppp'.$examination_id.'<br>';
@@ -13690,7 +13700,7 @@ function xxx_update_sample_status($link,$sample_id,$examination_id)
 	}
 	else
 	{
-		//
+		echo 'readonly status';
 	}
 }
 
