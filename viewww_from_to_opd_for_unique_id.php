@@ -121,19 +121,12 @@ Array
 
 )
 
-select r1.result,r2.result,ward_id.sample_id,ward_id.id
-
-from
-ward_id 
-inner join result r1 on ward_sample_id=r1.sample_id
-inner join result r1 on r1.sample_id=r2.sample_id
-inner join ward_id on ward_id.sample_id=r1.sample_id
-
-where 
-r1.examination_id=1002 and r1.result like "%sh%"
-and
-r2.examination_id=1006 and r2.result like "%E0(506)%"
-limit 200;
+select sample_link.sample_id as uid, e_1002.result as `Name` , e_10003.result as `sample_receipt` 
+from 
+sample_link 
+inner join result e_1002 on e_1002.sample_id=sample_link.sample_id and e_1002.result like "%Sachin%"
+inner join result e_10003 on e_10003.sample_id=sample_link.sample_id and e_10003.result like "%2024-05-28%"
+limit 200
 
 */
 
@@ -157,7 +150,6 @@ if($u!='sample_id')
 
 	$select=' select '.$id_type_table.'.id as uid, '.$id_type_table.'.sample_id, ';
 	$sql_from=' from '.$id_type_table;
-	$where=' where '.$id_type_table.'.id between '. $id_type_from_value.' and '. $id_type_to_value. ' and ';
 
 	foreach($conditions as $examination_id=>$result)
 	{
@@ -170,14 +162,15 @@ if($u!='sample_id')
 		}
 		else
 		{
-			$where=$where.' e_'.$examination_id.'.examination_id='.$examination_id. ' and e_'.$examination_id.'.result like "%'.$result.'%" and ';
+			$and=' and e_'.$examination_id.'.result like "%'.$result.'%" ';
 		}
-		
+		$sql_from=$sql_from.$and;
 	}
+	
 	$select=substr($select,0,-2);
-	$where=substr($where,0,-4);
 
-	$final_sql=$select.$sql_from.$where;
+
+	$final_sql=$select.$sql_from;
 	echo $final_sql;
 }
 else
@@ -197,7 +190,6 @@ else
 	}
 	$select=' select sample_link.sample_id as uid, ';
 	$sql_from=' from sample_link ';
-	$where=' where sample_link.sample_id between '. $id_type_from_value.' and '. $id_type_to_value. ' and ';
 
 	foreach($conditions as $examination_id=>$result)
 	{
@@ -210,14 +202,15 @@ else
 		}
 		else
 		{
-					$where=$where.' e_'.$examination_id.'.examination_id='.$examination_id. ' and e_'.$examination_id.'.result like "%'.$result.'%" and ';
+					$and=' and e_'.$examination_id.'.result like "%'.$result.'%" ';
 		}
+		$sql_from=$sql_from.$and;
 	}
 	$select=substr($select,0,-2);
-	$where=substr($where,0,-4);
 
-	$final_sql=$select.$sql_from.$where;
+	$final_sql=$select.$sql_from. 'limit 400';
 	echo $final_sql.'<br>';	
+	//exit();
 	
 	
 }
