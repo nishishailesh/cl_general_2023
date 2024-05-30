@@ -162,7 +162,7 @@ if($u!='sample_id')
 		}
 		else
 		{
-			$and=' and e_'.$examination_id.'.result like "%'.$result.'%" ';
+			$and='and e_'.$examination_id.'.examination_id= '.$examination_id. ' and e_'.$examination_id.'.result like "%'.$result.'%" ';
 		}
 		$sql_from=$sql_from.$and;
 	}
@@ -202,7 +202,7 @@ else
 		}
 		else
 		{
-					$and=' and e_'.$examination_id.'.result like "%'.$result.'%" ';
+			$and='and e_'.$examination_id.'.examination_id= '.$examination_id. ' and e_'.$examination_id.'.result like "%'.$result.'%" ';
 		}
 		$sql_from=$sql_from.$and;
 	}
