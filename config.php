@@ -100,6 +100,17 @@ $GLOBALS['critical_high_message']='<--Critical High';
 $GLOBALS['abnormal_low_message']='<--Abnormal Low';
 $GLOBALS['abnormal_high_message']='<--Abnormal High';
 
+//must be div
+$GLOBALS['absurd_low_message_format']='<div class="bg-danger d-inline">';
+$GLOBALS['absurd_high_message_format']='<div class="bg-danger d-inline">';
+$GLOBALS['critical_low_message_format']='<div class="text-danger d-inline">';
+$GLOBALS['critical_high_message_format']='<div class="text-danger d-inline">';
+$GLOBALS['abnormal_low_message_format']='<div class="text-warning d-inline">';
+$GLOBALS['abnormal_high_message_format']='<div class="text-warning d-inline">';
+
+
+
+
 
 #for Sample Status
 

@@ -30,7 +30,7 @@ echo ';}
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
 
 if(isset($_POST['action']))
 {
@@ -87,7 +87,7 @@ else
 }
 //echo '</pre>';
 
-echo '<pre>';print_r($conditions);echo '</pre>';
+//echo '<pre>';print_r($conditions);echo '</pre>';
 
 
 

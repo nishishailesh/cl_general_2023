@@ -3457,6 +3457,77 @@ function decide_alert($result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,
 	return '';			
 }
 
+
+
+
+function decide_alert_format($result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)
+{
+	if(strlen($interval_l)==0 && strlen($cinterval_l)==0 && strlen($ainterval_l)==0 &&
+	strlen($interval_h)==0 && strlen($cinterval_h)==0 && strlen($ainterval_h)==0){'<div class="d-inline">';}
+	if(strlen($result)==0){'<div class="d-inline">';}
+	if(!is_numeric($result)){'<div class="d-inline">';}
+		
+	if(is_numeric($ainterval_l))
+	{
+		if($result<$ainterval_l)
+		{
+			return $alert=$GLOBALS['absurd_low_message_format'];
+			//return $alert='<--'.$result.'<'.$ainterval_l.' Absurd Low';
+		}
+	}
+
+	if(is_numeric($ainterval_h))
+	{
+		if($result>$ainterval_h)
+		{
+			return $alert=$GLOBALS['absurd_high_message_format'];
+			//return $alert='<--'.$result.'>'.$ainterval_h.' Absurd high';
+		}
+		
+	}
+
+	if(is_numeric($cinterval_l))
+	{
+		if($result<$cinterval_l)
+		{
+			return $alert=$GLOBALS['critical_low_message_format'];
+			//return $alert='<--'.$result.'<'.$cinterval_l.' Critical Low';
+
+		}
+	}
+
+	if(is_numeric($cinterval_h))
+	{
+		if($result>$cinterval_h)
+		{
+			//return $alert='<--'.$result.'>'.$cinterval_h.' Critical High';
+			return $alert=$GLOBALS['critical_high_message_format'];;
+		}
+	}
+
+
+	if(is_numeric($interval_l))
+	{
+		if($result<$interval_l)
+		{
+			//return $alert='<--'.$result.'<'.$interval_l.' Abnormal Low';
+			return $alert=$GLOBALS['abnormal_low_message_format'];;
+		}
+	}
+
+	if(is_numeric($interval_h))
+	{
+		if($result>$interval_h)
+		{
+			//return $alert='<--'.$result.'>'.$interval_h.' Abnormal high';
+			return $alert=$GLOBALS['abnormal_high_message_format'];;
+		}
+	}
+
+	return '<div class="d-inline">';			
+}
+
+
 function display_dw($ex_result,$label='')
 {
 	$ar=unpack('C*', $ex_result);
@@ -3665,29 +3736,46 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
 			
 			
 				echo '<div class="  '.$display_format.' " id="ex_'.$ex_id.'">';
-					if(in_array($type,['id_multi_sample','id_single_sample']))
-					{
-						echo '	<div role=group class="my_label text-wrap btn-toolbar lead w-auto border '.$print_hide.' ">'.$examination_details['name'];
-							get_lables_button($link,$sample_id,$ex_id);
-							xxx_set_unique_id_prev_next_button($link,$sample_id,$ex_id);
-						echo '</div>';
-					}
-					else
-					{
-						echo '	<div class="my_label text-wrap lead w-auto border '.$print_hide.'">'.$examination_details['name'].':';					
-						echo '</div>';
-
-					}
-						
 					
-					echo '<div class="border"><pre class="m-1 p-0 border-0 '.$print_hide.'" style="white-space: pre-wrap;">'.
-						htmlspecialchars($ex_result.' '.
-						decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).
-						$append_info.
-						'</pre></div>';
+					//1st div
+						if(in_array($type,['id_multi_sample','id_single_sample']))
+						{
+							echo '	<div role=group class="my_label text-wrap btn-toolbar lead w-auto border '.$print_hide.' ">'.$examination_details['name'];
+								get_lables_button($link,$sample_id,$ex_id);
+								xxx_set_unique_id_prev_next_button($link,$sample_id,$ex_id);
+							echo '</div>';
+						}
+						else
+						{
+							echo '	<div class="my_label text-wrap lead w-auto border '.$print_hide.'">'.$examination_details['name'].':';					
+							echo '</div>';
+
+						}
+							
+					//2nd div
+						echo '<div class="border">
+								<pre class="m-1 p-0 border-0 d-inline '.$print_hide.'" style="white-space: pre-wrap;">'.
+								htmlspecialchars($ex_result.' ').
+								'</pre>'.
+								
+								decide_alert_format($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h).
+									decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h).
+								'</div>'.
+								htmlspecialchars($append_info);
+						echo '</div>';							
+						//before introduction of color						
+						/*
+						echo '<div class="border text-danger"><pre class="m-1 p-0 border-0 '.$print_hide.'" style="white-space: pre-wrap;">'.
+							htmlspecialchars($ex_result.' '.
+							decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h)).
+							$append_info.
+							'</pre></div>';
+						*/
+					
+					//3rd div		
+						echo '<div class="help border '.$print_hide.'"><pre style="border-color:white" style="white-space: pre-wrap;">'.$examination_details['display_help'].'</pre></div>';
 						
-					//echo '<div class="help border '.$print_hide.'"><pre style="border-color:white" style="white-space: pre-wrap;">'.$help.'</pre></div>';
-					echo '<div class="help border '.$print_hide.'"><pre style="border-color:white" style="white-space: pre-wrap;">'.$examination_details['display_help'].'</pre></div>';
+						
 				echo '</div>';
 		}
 		
