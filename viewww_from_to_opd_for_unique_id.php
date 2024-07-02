@@ -305,7 +305,7 @@ function display_sql_result_data_with_button($link,$result,$prefix)
 					}
                 }
 
-				if(print_allowed($link,$array['sample_id'])===True)
+				if(print_allowed($link,$prefix.$array['uid'])===True)
 				{
 					echo '<td><span class="badge badge-success">Released</span></td>';
 				}
