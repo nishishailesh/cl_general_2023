@@ -95,7 +95,7 @@ function get_dbid($link,$examination_id,$search_list_of_examination_id,$range_se
 	}
 	
 	echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_summary>View</button>';
-	echo '<button type=submit formaction=xxx_print_sequence.php formtarget=_blank class="btn btn-primary form-control m-1" name=action value=view_dbid_summary>Print</button>';
+	//echo '<button type=submit formaction=xxx_print_sequence.php formtarget=_blank class="btn btn-primary form-control m-1" name=action value=view_dbid_summary>Print</button>';
 	//echo '<button type=submit class="btn btn-primary form-control m-1" name=action value=view_dbid_detail>View (Detail)</button>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	echo '</form>';

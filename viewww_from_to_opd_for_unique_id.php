@@ -229,8 +229,20 @@ else
 
 
 
-view_sql_result_as_table_with_button($link,$final_sql,$prefix=$prefix);
+$sample_id_csv=view_sql_result_as_table_with_button($link,$final_sql,$prefix=$prefix);
 
+echo '<form method=post action=xxx_print_multiple.php target=_blank>
+			<button 	style="width:100%;height:100%;" 
+						class="btn btn-outline-success btn-sm btn-block text-dark " 
+						name=list_of_id value=\''.$sample_id_csv.'\' >Print</button>
+			<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+			<input type=hidden name=action value=view_single>
+			<input type=hidden name=ignore value=yes>
+			<span class="badge badge-danger">Unreleased reports will not be printed.</span>
+</form>';
+							
+
+echo $sample_id_csv;
 		
 
 //////////////user code ends////////////////
@@ -245,11 +257,13 @@ function view_sql_result_as_table_with_button($link,$sql,$prefix)
 		 echo '<h1>Problem</h1>';
 		 return false;
 	}
-	display_sql_result_data_with_button($result,$prefix);
+	
+	return display_sql_result_data_with_button($link,$result,$prefix);
 }
 
-function display_sql_result_data_with_button($result,$prefix)
+function display_sql_result_data_with_button($link,$result,$prefix)
 {
+		$sample_id_csv='';
 		echo '<table border=1 class="table table-sm table-striped table-hover table-responsive">';
 				
         $first_data='yes';
@@ -265,9 +279,11 @@ function display_sql_result_data_with_button($result,$prefix)
                         {
                                 echo '<th>'.$key.'</th>';
                         }
+                        echo '<th>Release Status</th>';
                         echo '</tr>';
                         $first_data='no';
                 }
+
                 echo '<tr>';
                 foreach($array as $key=>$value)
                 {
@@ -280,18 +296,29 @@ function display_sql_result_data_with_button($result,$prefix)
 							<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 							<input type=hidden name=action value=view_single>';
 							echo '</form>
-						</td>';					
+						</td>';
+						$sample_id_csv=$sample_id_csv.$array[$real_sample_id].',';
 					}
 					else
 					{
                         echo '<td style="white-space: nowrap;">'.$value.'</td>';
 					}
                 }
-                echo '</tr>';
+
+				if(print_allowed($link,$array['sample_id'])===True)
+				{
+					echo '<td><span class="badge badge-success">Released</span></td>';
+				}
+				else
+				{
+					echo '<td><span class="badge badge-danger">UnReleased</span></td>';
+				}
+               echo '</tr>';
 
         }
         echo '</table>';
-	
+		//echo $sample_id_csv;
+		return $sample_id_csv;
 }
 //111119500892
 

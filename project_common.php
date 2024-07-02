@@ -72,7 +72,7 @@ function main_menu($link)
 		if($user['insert_authorization_level']>=1)
 		{		
 				echo '<div class="dropdown m-0 p-0">
-					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New-N</button>
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<!--<button class="btn btn-outline-primary m-0 p-0 " formaction=newww_general.php type=submit name=action value="newww_general||">New</button>-->';
@@ -85,7 +85,7 @@ function main_menu($link)
 		if($user['insert_authorization_level']>=1)
 		{		
 				echo '<div class="dropdown m-0 p-0">
-					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">New-NN</button>
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">NewH</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<!--<button class="btn btn-outline-primary m-0 p-0 " formaction=newww_general_tab.php type=submit name=action value="newww_general||">New</button>-->';
@@ -98,12 +98,12 @@ function main_menu($link)
 		if($user['insert_authorization_level']>=0)
 		{					
 				echo '<div class="dropdown m-0 p-0">
-					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">View-N</button>
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">View</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<!--<button class="btn btn-outline-primary m-0 p-0 " formaction=viewww_database_id_from_to.php type=submit name=action value="get_dbids||">by Sample ID(s)</button>-->'; 
 							xxx_make_view_menu($link);
-							echo '<button class="btn btn-outline-primary m-0 p-0 " type=button name=action value="get_dbids||">-----Fast Search-----</button>';
+							echo '<button class="btn btn-outline-primary m-0 p-0 " type=button name=action value="get_dbids||">-----Simple Search-----</button>';
 							xxx_make_view_menu_fast($link);
 						echo '</div>
 					</div>
@@ -114,7 +114,7 @@ function main_menu($link)
 		if($user['insert_authorization_level']>=2)
 		{	
 					echo '<div class="dropdown m-0 p-0">
-					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Worklist-N</button>
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Worklist</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 						<!--	<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_worklist_by_unique_id.php type=submit name=action value="get_worklist">by Examination</button> -->'; 
@@ -128,7 +128,7 @@ function main_menu($link)
 		if($user['insert_authorization_level']>=0)
 		{	
 				echo '<div class="dropdown m-0 p-0">
-					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Print-N</button>
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown">Print</button>
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_get_print_id.php type=submit name=action value="get_print_id">Scan and Print</button>
@@ -163,7 +163,7 @@ function main_menu($link)
 						echo '</div>
 					</div>
 				</div>';
-		}		
+		}
 		
 		
 		if($user['insert_authorization_level']>=2)
