@@ -51,10 +51,16 @@ foreach ($ar_of_id=explode(',',$_POST['list_of_id']) as $any_id)
 			continue;
 		}*/
 		
-		if(!print_allowed($link,$id) )
+		if(print_allowed($link,$id))
 		{
-			if(!isset($_POST['ignore']))
-			{
+				xxx_fill_report($link,$id,$pdf);
+		} 
+		elseif(isset($_POST['ignore']))
+		{
+			
+		}
+		else
+		{
 				$ex_id_of_unique_id=get_ex_id_of_unique_id_from_any_id_value_string($link,$any_id);
 				//print($ex_id_of_unique_id);
 				if($ex_id_of_unique_id=='sample_id'){$u=0;}else{$u=$ex_id_of_unique_id;}
@@ -69,12 +75,10 @@ foreach ($ar_of_id=explode(',',$_POST['list_of_id']) as $any_id)
 
 				$final_print='no';
 				continue;
-			}
 		}
-		
-		xxx_fill_report($link,$id,$pdf);
 	}
 }
+
 //exit(0);
 if($final_print=='yes')
 {
