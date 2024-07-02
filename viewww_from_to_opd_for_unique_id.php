@@ -265,6 +265,7 @@ function display_sql_result_data_with_button($link,$result,$prefix)
 {
 		$sample_id_csv='';
 		echo '<table border=1 class="table table-sm table-striped table-hover table-responsive">';
+		if($prefix==''){$real_sample_id='uid';}else{$real_sample_id='sample_id';}
 				
         $first_data='yes';
 
@@ -285,9 +286,9 @@ function display_sql_result_data_with_button($link,$result,$prefix)
                 }
 
                 echo '<tr>';
+                
                 foreach($array as $key=>$value)
                 {
-					if($prefix==''){$real_sample_id='uid';}else{$real_sample_id='sample_id';}
 					if($key=='uid')
 					{
 						echo '<td>
@@ -304,8 +305,9 @@ function display_sql_result_data_with_button($link,$result,$prefix)
                         echo '<td style="white-space: nowrap;">'.$value.'</td>';
 					}
                 }
-
-				if(print_allowed($link,$prefix.$array['uid'])===True)
+				
+				
+				if(print_allowed($link,$array[$real_sample_id])===True)
 				{
 					echo '<td><span class="badge badge-success">Released</span></td>';
 				}
