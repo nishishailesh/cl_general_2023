@@ -71,6 +71,34 @@ function any_examination_id($link,$sample_id,$eid,$eval)
 
 }
 
+function examination_id_verified($which_id,$required_id,$display_name)
+{
+	if($required_id!=$which_id)
+	{
+		echo '<span class="text-danger">'.$display_name.' code provided ('.$which_id.') is not same as required code('.$required_id.').</span>';return false;
+	}
+	else
+	{
+		echo '<span class="text-success d-block">'.$display_name.' id is verified.</span>';return true;
+		return true;
+	}
+}
+
+function examination_result_numeric($result,$display_text)
+{
+	//echo '<span>Checking if result of '.$display_text.' is numeric</span>';
+	if(!is_numeric($result))
+	{
+		echo '<span class="text-danger">'.$display_text.' result is not numeric.</span>';return false;
+	}
+	else
+	{
+		echo '<span class="text-success d-block">'.$display_text.' result is numeric.</span>';return true;
+	}
+	
+	
+}
+
 //Plasma Glucose
 function f_5031($link,$sample_id,$ex_id)
 {
@@ -154,33 +182,6 @@ Otherwise, Result may be considered absurd and repeat sample collection is advis
 	}	
 }
 
-function examination_id_verified($which_id,$required_id,$display_name)
-{
-	if($required_id!=$which_id)
-	{
-		echo '<span class="text-danger">'.$display_name.' code provided ('.$which_id.') is not same as required code('.$required_id.').</span>';return false;
-	}
-	else
-	{
-		echo '<span class="text-success d-block">'.$display_name.' id is verified.</span>';return true;
-		return true;
-	}
-}
-
-function examination_result_numeric($result,$display_text)
-{
-	//echo '<span>Checking if result of '.$display_text.' is numeric</span>';
-	if(!is_numeric($result))
-	{
-		echo '<span class="text-danger">'.$display_text.' result is not numeric.</span>';return false;
-	}
-	else
-	{
-		echo '<span class="text-success d-block">'.$display_text.' result is numeric.</span>';return true;
-	}
-	
-	
-}
 //serum Total Cholesterol
 function f_5015($link,$sample_id,$ex_id)
 {
@@ -231,19 +232,40 @@ function f_10011($link,$sample_id,$ex_id)
 	}
 }
 
+//K absurd
 function f_5020($link,$sample_id,$ex_id)
 {
 	echo '.....Verification of examination_id=5020 (Potassium, serum).....<br>';
 	if(!examination_id_verified($ex_id,$GLOBALS['serum_potassium'],'serum potassium')){return false;}
 
 	$ex_result_array=get_result_of_sample_in_array($link,$sample_id);
-	if( !examination_result_numeric($ex_result_array[$GLOBALS['serum_potassium']],'serum cholesterol')){return false;}
+	if( !examination_result_numeric($ex_result_array[$GLOBALS['serum_potassium']],'serum potassium')){return false;}
 	
 	$potassium=$ex_result_array[$GLOBALS['serum_potassium']];
 	if($potassium>7.5)
 	{
 		echo '<span class="badge badge-danger d-inline">potassium is more than 7.5 mmol/L. Adding calcium reflexly</span><br>';
 		insert_one_examination_without_result($link,$sample_id,$GLOBALS['serum_calcium'],$error='yes');
+		return true;
+	}
+	return true;
+}
+
+function f_5001($link,$sample_id,$ex_id)
+{
+	echo '<br><b>.....Verification of examination_id=5001 (Creatinine, serum).....</b><br>';
+	if(!examination_id_verified($ex_id,$GLOBALS['serum_creatinine'],'serum creatinine')){return false;}
+
+	$ex_result_array=get_result_of_sample_in_array($link,$sample_id);
+	if( !examination_result_numeric($ex_result_array[$GLOBALS['serum_creatinine']],'serum creatinine')){return false;}
+	
+	$creatinine=$ex_result_array[$GLOBALS['serum_creatinine']];
+	if($creatinine>1.5)
+	{
+		echo '<span class="badge badge-danger d-inline">serum creatinine is more than 1.5 mg/dL. Adding Urea and electrolytes reflexly</span><br>';
+		insert_one_examination_without_result($link,$sample_id,$GLOBALS['serum_urea'],$error='yes');
+		insert_one_examination_without_result($link,$sample_id,$GLOBALS['serum_potassium'],$error='yes');
+		insert_one_examination_without_result($link,$sample_id,$GLOBALS['serum_sodium'],$error='yes');
 		return true;
 	}
 	return true;

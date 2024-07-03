@@ -29,6 +29,13 @@ $GLOBALS['serum_TBIL']=5009;
 $GLOBALS['serum_DBIL']=5010;
 $GLOBALS['serum_IBIL']=5024;
 
+
+$GLOBALS['serum_creatinine']=5001;
+
+
+
+
+
 $GLOBALS['serum_CHOL']=5015;
 $GLOBALS['serum_TG']=5018;
 $GLOBALS['serum_HDL']=5016;
@@ -37,6 +44,9 @@ $GLOBALS['serum_VLDL']=5028;
 
 $GLOBALS['serum_potassium']=5020;
 $GLOBALS['serum_calcium']=5014;
+$GLOBALS['serum_urea']=5002;
+$GLOBALS['serum_sodium']=5019;
+
 
 $GLOBALS['Remark']=5098;
 $GLOBALS['Critical_Alert']=5097;
