@@ -240,7 +240,15 @@ echo '<form method=post action=xxx_print_multiple.php target=_blank>
 			<input type=hidden name=ignore value=yes>
 			<span class="badge badge-danger">Unreleased reports will not be printed.</span>
 </form>';
-							
+echo '<form method=post action=xxx_print_collective.php target=_blank>
+			<button 	style="width:100%;height:100%;" 
+						class="btn btn-outline-success btn-sm btn-block text-dark " 
+						name=list_of_id value=\''.$sample_id_csv.'\' >Print Collective Report</button>
+			<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+			<input type=hidden name=action value=view_single>
+			<input type=hidden name=ignore value=yes>
+			<span class="badge badge-danger">Unreleased reports will not be printed.</span>
+</form>';							
 
 echo $sample_id_csv;
 		
