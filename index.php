@@ -21,7 +21,7 @@ echo '<div class="index_page">';
 					">';
 		login('xxx_start_button.php');
 	echo '</div>';
-	
+
 	echo '<div 
 			style=	"
 					grid-area: mmenu;
@@ -32,6 +32,7 @@ echo '<div class="index_page">';
 		$tag_list=index_menu();
 	echo '</div>';
 	
+
 	echo '<div 
 			style=	"
 					grid-area: sstatus;
@@ -154,8 +155,21 @@ function index_menu()
 		}
 	}
 	//print_r($class_tag_array);
+	echo '<table>';
+	echo '<tr>';
+	echo '<td>';
+		echo '<div><img src="img/biogmcs.jpg" width="150" ></div>';
+	echo '</td>';
+	echo '<td>';
 	echo '<h1><center>Department of Biochemistry, NCHS and GMCS</center></h1>';
 	echo '<h2><center>Majura Gate, Surat</center></h2>';
+	echo '</td>';
+	echo '<td>';
+	echo '<div><img src="img/biogmcs.jpg" width="150" ></div>';
+	echo '</td>';
+
+	echo '</tr>';
+	echo '</table>';
 	foreach($class_tag_array as $one_tag=>$v)
 	{
 		echo '<button style="background-color:lightpink" type=button id='.$one_tag.'>'.$one_tag.'</button>';
@@ -169,6 +183,8 @@ function index_menu()
 }
 
 ?>
+
+
 <script>
 	
 	tag_list=<?php echo $tag_list; ?>;

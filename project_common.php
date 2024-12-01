@@ -145,7 +145,7 @@ function main_menu($link)
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_manage_qc.php type=submit name=action value="get_print_id">Internal Quality Control</button>
-							<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_analyse_TAT.php type=submit name=action value=TAT>Analyse TAT</button>							
+							<button class="btn btn-outline-primary m-0 p-0 " formtarget=_blank formaction="http://11.207.2.240:3838/TAT" type=submit name=action value="get_print_id">TAT analysis</button>
 						</div>
 					</div>
 				</div>';
@@ -189,6 +189,7 @@ function main_menu($link)
 								<!-- <button class="btn btn-outline-primary m-0 p-0" formaction=request.php type=submit name=action value=request>Request</button> -->
 								<!-- <button class="btn btn-outline-primary m-0 p-0" formaction=import_erba_xl_640_results.php type=submit name=action value=get_file>Import XL-640 Result</button>	-->
 								<button class="btn btn-outline-primary m-0 p-0" formaction=import_erba_xl_1000_results.php type=submit name=action value=get_file>Import XL-1000 Result</button>											
+								<a href=cl_general_2023_validation.pdf class="btn btn-outline-primary m-0 p-0" >About</a>											
 
 							</div>
 						</div>
@@ -7276,7 +7277,7 @@ function prepare_result_from_view_data_id($link,$id)
 			$p4='';
 		}
         //////////////
-		//echo $sql;
+	echo $sql;
 
 
         if(!$result=run_query($link,$GLOBALS['database'],$sql))
