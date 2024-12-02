@@ -1360,7 +1360,7 @@ LOCK TABLES `menu_worklist` WRITE;
 /*!40000 ALTER TABLE `menu_worklist` DISABLE KEYS */;
 INSERT INTO `menu_worklist` VALUES
 (1,'sample_id','sample_id','10003','sample_id'),
-(2,'OPD','1046','10003','1046'),
+(2,'OPD','1046','','1046,10003'),
 (3,'Niramaya','1049','10003','1049'),
 (4,'QC','1048','10003','1048'),
 (5,'ward','1047','10003','1047'),
@@ -1767,4 +1767,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-02  9:48:29
+-- Dump completed on 2024-12-02 10:58:35

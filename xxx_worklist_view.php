@@ -117,7 +117,7 @@ foreach ($examination_requested as $ex)
 					{
 						$and=$and.' and '.$id_type_table.'.id between "'.$_POST['__from__'.$_POST['examination_id']].'" and "'.$_POST['__to__'.$_POST['examination_id']].'"';
 						$first_inner=False;
-						echo '<h1>'.$and.'</h1>';			
+						//echo '<h1>'.$and.'</h1>';			
 					}
 					//echo '<h1>'.$and.'</h1>';			
 				}
