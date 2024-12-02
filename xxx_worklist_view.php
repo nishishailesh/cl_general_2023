@@ -4,59 +4,38 @@ require_once 'base/verify_login.php';
 	////////User code below/////////////////////
 echo '	<link rel="stylesheet" href="project_common.css">
 		  <script src="project_common.js"></script>';
-		  
-		  
-//$link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
-//echo '<div>';
+
+$link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
+echo '<div>';
 main_menu($link); 
 
 $user=get_user_info($link,$_SESSION['login']);
 echo '<div id="response"></div>';
 //echo '<pre>';print_r($_POST);echo '</pre>';
-/*
-Array
-(
-    [examination_id] => 1046
-    [chk^10003] => on
-    [__ex__10003] => 2023-10-28T22:53
-    [chk^1046] => on
-    [__from__1046] => 112
-    [__ex__1046] => 
-    [__to__1046] => 234
-    [action] => view_dbid_summary
-    [session_name] => sn_1318371026
-    [selected_examination_list] => 5117
-)*/
 
-$conditions=array();	//in case no condition is given
 
-foreach($_POST as $k=>$v)
+$examination_requested=explode(",",$_POST['selected_examination_list']);
+//foreach ($examination_requested as $ex)
+//{
+//	echo $ex.'<br>';
+//}
+
+$conditions=array();
+if(isset($_POST['conditions']))
 {
+	$conditions=json_decode($_POST['conditions']);
+}
+else
+{
+	foreach($_POST as $k=>$v)
+	{
 		//echo $k.'<br>';
 		$ex=explode('^',$k);
 		//print_r($ex);
 		if($ex[0]=='chk')
 		{
-			
-			if($ex[1]=='sample_id')
-			{
-				if(isset($_POST['__from__sample_id']))
-				{
-					if(strlen($_POST['__to__sample_id'])>0)
-					{
-						$conditions['sample_id']=array($_POST['__from__sample_id'],$_POST['__to__sample_id']);
-					}
-					else
-					{
-						$conditions['sample_id']=array($_POST['__from__sample_id'],$_POST['__from__sample_id']);
-					}
-				}
-				else
-				{
-					//sample_id will never be non-range
-				}					
-			}
-			else
+			if($ex[1]==$_POST['examination_id']){continue;}
+			else if($ex[1]>0)
 			{
 				if(isset($_POST['__from__'.$ex[1]]))
 				{
@@ -82,90 +61,220 @@ foreach($_POST as $k=>$v)
 		{
 			//un-checked, not interested
 		}
-}
-
-
-//echo '<pre>';print_r($conditions);echo '</pre>';
-
-if($_POST['examination_id']!='sample_id')
-{
-	$examination_details=get_one_examination_details($link,$_POST['examination_id']);
-	$edit_specification=json_decode($examination_details['edit_specification'],true);
-	$table=isset($edit_specification['table'])?$edit_specification['table']:'';
-	if(strlen($table)==0){echo 'error: the examination_id is not id_multiple_sample or id_unique_sample';}
-	//$sql='select sample_id from `'.$table.'` order by id desc';
-	$sql='select sample_id from `'.$table.'` order by id';
-}
-else if($_POST['examination_id']=='sample_id')
-{
-	$id_range_array=explode("-",$_POST['id_range']);
-	$sql='select sample_id from sample_link 
-			where 
-			sample_id between \''.$id_range_array[0].'\' and  \''.$id_range_array[1].'\' ';	//echo $sql;
-}
-	
-//show samples as selected
-
-echo $sql.'<br>';
-//exit(0);
-
-
-
-foreach(explode(',',$_POST['selected_examination_list']) as  $ex)
-{
-	$count=1;
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	echo '<h1 class="text-info">'.$ex.'</h1>';
-	echo '<div style="display: grid; grid-template-columns: 10% 40%;">';
-	while($ar=get_single_row($result))
-	{
-		if($count>199){break;}
-		
-		if(check_for_conditions($link,$ar['sample_id'],$conditions))
-		{
-			if(is_examination_requested($link,$ar['sample_id'],$ex)!==False)
-			{
-				$extra_post='';
-				if($_POST['examination_id']=='sample_id'){$u=0;}else{$u=$_POST['examination_id'];}
-
-				echo '<div class="d-inline-block">';
-					//showww_sid_button_release_status($link,$ar['sample_id'],$extra_post,$u,$checkbox='no');
-					showww_sid_button_without_release_status($link,$ar['sample_id'],$extra_post,$u);
-				echo '</div>';
-				echo '<div class="d-inline-block">';
-					edit_field_any($link,$ex,$ar['sample_id'],$readonnly='',$frill=False,$extra_array=array());
-				echo '</div>';
-
-				$count++;	//increase only if successful
-			}
-		}
 	}
-	echo '</div>';
-
 }
 
-
-
-
+//echo '<pre>';
+//print_r($conditions);
+//echo '</pre>';
 
 /*
-foreach(explode(',',$_POST['selected_examination_list']) as  $ex)
-{
-	//$sql='select * from result where examination_id=\''.$ex.'\' order by sample_id desc limit '.$_POST['offset'].','.$_POST['limit'];
-	$sql='select * from result where examination_id=\''.$ex.'\' limit '.$_POST['offset'].','.$_POST['limit'];
-	echo $sql.'<br>';
-	echo '<h2>'.$ex.'</h2>';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	echo '<div class=two_column>';
-	while($ar=get_single_row($result))
+$conditions[$_POST['examination_id']]=array($_POST['__from__'.$_POST['examination_id']],$_POST['__to__'.$_POST['examination_id']]);
+echo '<pre>';
+print_r($conditions);
+echo '</pre>';
+*/
+
+
+$u=$_POST['examination_id'];
+
+foreach ($examination_requested as $ex)
+{ 
+	if($u!='sample_id')
 	{
-		echo '<div>';
-		echo $ar['sample_id'];
-		echo '</div>';
-		echo '<div>';
-		edit_field_any($link,$ar['examination_id'],$ar['sample_id'],$readonnly='',$frill=False,$extra_array=array());
-		echo '</div>';		
+		$id_type_table=get_id_type_table_name($link,$u);
+		$id_type_from='__from__'.$u;
+		$id_type_to='__to__'.$u;
+		if(strlen($_POST[$id_type_from])>0 && strlen($_POST[$id_type_to])>0)
+		{
+			$id_type_from_value=$_POST[$id_type_from];
+			$id_type_to_value=$_POST[$id_type_to];
+		}
+		else
+		{
+			$max_sid=find_max_any_id($link,$_POST['examination_id']);
+			$id_type_from_value=$max_sid-200+1;		
+			$id_type_to_value=$max_sid;
+		}
+
+		$select=' select '.$id_type_table.'.id as uid, '.$id_type_table.'.sample_id, ';
+		$sql_from=' from '.$id_type_table.' ';
+
+		$first_inner=True;
+		
+		
+		if(count($conditions)>0)
+		{
+			foreach($conditions as $examination_id=>$result)
+			{
+				$ex_details=get_one_examination_details($link,$examination_id);
+				$select=$select.'e_'.$examination_id.'.result as `'.$ex_details['name'].'` , ';
+				$sql_from=$sql_from.' inner join result '.'e_'.$examination_id.' on '.'e_'.$examination_id.'.sample_id='.$id_type_table.'.sample_id ';
+				if(is_array($result))
+				{
+					$and='and e_'.$examination_id.'.examination_id= '.$examination_id. ' and e_'.$examination_id.'.result between "'.$result[0].'" and "'.$result[1].'" ';
+					if($first_inner==True)
+					{
+						$and=$and.' and '.$id_type_table.'.id between "'.$_POST['__from__'.$_POST['examination_id']].'" and "'.$_POST['__to__'.$_POST['examination_id']].'"';
+						$first_inner=False;
+						echo '<h1>'.$and.'</h1>';			
+					}
+					//echo '<h1>'.$and.'</h1>';			
+				}
+				else
+				{
+					$and='and e_'.$examination_id.'.examination_id= '.$examination_id. ' and e_'.$examination_id.'.result like "%'.$result.'%" ';
+					if($first_inner==True)
+					{
+						$and=$and.' and '.$id_type_table.'.id between "'.$_POST['__from__'.$_POST['examination_id']].'" and "'.$_POST['__to__'.$_POST['examination_id']].'"';
+						$first_inner=False;
+					}
+				}
+				$sql_from=$sql_from.$and;
+			}
+
+			$ex_join=' inner join result ex_'.$ex.' on '.$id_type_table.'.sample_id=ex_'.$ex.'.sample_id and ex_'.$ex.'.examination_id='.$ex;
+
+		}
+		else
+		{
+			$sql_for_no_condition=' and '.$id_type_table.'.id between "'.$_POST['__from__'.$_POST['examination_id']].'" and "'.$_POST['__to__'.$_POST['examination_id']].'"';			
+			$ex_join=' inner join result ex_'.$ex.' on '.$id_type_table.'.sample_id=ex_'.$ex.'.sample_id and ex_'.$ex.'.examination_id='.$ex;
+			$ex_join=$ex_join.$sql_for_no_condition;
+		}
+
+		
+		$select=substr($select,0,-2);
+
+		$final_sql=$select.$sql_from.$ex_join;
+		$final_sql=$final_sql. ' limit 400';
+
+		echo $final_sql;
 	}
-	echo '</div>';
+	else
+	{
+		$id_type_from='__from__'.$u;
+		$id_type_to='__to__'.$u;
+		if(strlen($_POST[$id_type_from])>0 && strlen($_POST[$id_type_to])>0)
+		{
+			$id_type_from_value=$_POST[$id_type_from];
+			$id_type_to_value=$_POST[$id_type_to];
+		}
+		else
+		{
+			$max_sid=find_max_any_id($link,$_POST['examination_id']);
+			$id_type_from_value=$max_sid-200+1;		
+			$id_type_to_value=$max_sid;
+		}
+		$select=' select sample_link.sample_id as uid, sample_link.sample_id as sample_id , ';
+		$sql_from=' from sample_link ';
+
+		$first_inner=True;
+
+		if(count($conditions)>0)
+		{
+			
+			foreach($conditions as $examination_id=>$result)
+			{
+				$ex_details=get_one_examination_details($link,$examination_id);
+				$select=$select.'e_'.$examination_id.'.result as `'.$ex_details['name'].'` , ';
+				$sql_from=$sql_from.' inner join result '.'e_'.$examination_id.' on '.'e_'.$examination_id.'.sample_id=sample_link.sample_id ';
+				if(is_array($result))
+				{
+					$and='and e_'.$examination_id.'.examination_id= '.$examination_id. ' and e_'.$examination_id.'.result between "'.$result[0].'" and "'.$result[1].'" ';
+					if($first_inner==True)
+					{
+						$and=$and.' and sample_link.sample_id between "'.$_POST['__from__'.$_POST['examination_id']].'" and "'.$_POST['__to__'.$_POST['examination_id']].'"';
+						$first_inner=False;
+					}
+				}
+				else
+				{
+					$and='and e_'.$examination_id.'.examination_id= '.$examination_id. ' and e_'.$examination_id.'.result like "%'.$result.'%" ';
+					if($first_inner==True)
+					{
+						$and=$and.' and sample_link.sample_id between "'.$_POST['__from__'.$_POST['examination_id']].'" and "'.$_POST['__to__'.$_POST['examination_id']].'"';
+						$first_inner=False;
+					}
+				}
+				$sql_from=$sql_from.$and;
+			}
+		}
+		else
+		{
+			$sql_for_no_condition=' and sample_link.sample_id between "'.$_POST['__from__'.$_POST['examination_id']].'" and "'.$_POST['__to__'.$_POST['examination_id']].'"';			
+			$ex_join=' inner join result ex_'.$ex.' on sample_link.sample_id=ex_'.$ex.'.sample_id and ex_'.$ex.'.examination_id='.$ex;
+			$ex_join=$ex_join.$sql_for_no_condition;			
+		}
+
+		$select=substr($select,0,-2);
+		$final_sql=$select.$sql_from.$ex_join;
+		$final_sql=$final_sql. ' limit 400';
+		echo $final_sql.'<br>';	
+		//exit();	
+	}
+	
+	show_worklist($link,$ex,$final_sql);
 }
+
+
+function show_worklist($link,$examination_id,$sql)
+{
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	echo '<table class="table table-sm table-striped">';
+	echo '<tr><th>sample id</th><th>unique id</th><th>examination---->result</th></tr>';
+	while($each_data=get_single_row($result))
+	{
+		//print_r($each_data);
+		echo '<tr>';
+			echo '<td>';
+				echo $each_data['sample_id'];
+			echo '</td>';
+			echo '<td>';
+				echo $each_data['uid'];
+			echo '</td>';
+			echo '<td>';
+				edit_field_any($link,$examination_id,$each_data['sample_id'],$readonly='',$frill=False);
+			echo '</td>';
+		echo '</tr>';
+	}
+	echo '</table>';
+}
+/*
+
+Array
+(
+    [examination_id] => 1046
+    [chk^10003] => on
+    [__ex__10003] => 2024-05
+    [chk^1046] => on
+    [__from__1046] => 68680
+    [__ex__1046] => 
+    [__to__1046] => 68780
+    [action] => show_worklist
+    [session_name] => sn_1851926975
+    [selected_examination_list] => 5006,5001
+)
+
+
+select 
+	opd_id.id as uid, 
+	opd_id.sample_id, 
+	e_10004.result as `sample_processing` , 
+	e_10003.result as `sample_receipt` 
+from 
+	opd_id 
+		inner join 
+			result e_10004 on e_10004.sample_id=opd_id.sample_id 
+			and 
+				e_10004.examination_id= 10004 
+			and
+				e_10004.result like "%2024-05%" 
+		
+		inner join result e_10003 on e_10003.sample_id=opd_id.sample_id 
+			and 
+				e_10004.examination_id= 10004 
+			and 
+				e_10004.result like "%2024-05%" 
+
 */

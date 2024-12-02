@@ -17,12 +17,12 @@ $_SESSION['login']=$_POST['user'];
 
 //echo $_POST['session_name'];
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
-$released_by=get_one_ex_result($link,$_POST['sample_id'],$GLOBALS['released_by']);
+//$released_by=get_one_ex_result($link,$_POST['sample_id'],$GLOBALS['released_by']);
 
 $primary=isset($_POST['primary'])?$_POST['primary']:'';
 
-if(strlen($released_by)==0)
-{
+//if(strlen($released_by)==0)
+//{
 	if($primary=='yes')
 	{
 		save_result_primary($link);
@@ -31,16 +31,16 @@ if(strlen($released_by)==0)
 	{
 		save_result($link);
 	}
-}
-else
-{
-	echo '<h3>Released samples can not be edited, refresh/view to get previous data</h3>';	
-}
+//}
+//else
+//{
+//	echo '<h3>Released samples can not be edited, refresh/view to get previous data</h3>';	
+//}
 
 function save_result($link)
 {
-
 	$res=get_config_value($link,'restrictive_examination_for_edit_delete');
+	//echo 'hi2=========<br>';
 	$res_result=get_one_ex_result($link,$_POST['sample_id'],$res);
 	if(strlen($res_result>0))
 	{
@@ -81,6 +81,7 @@ function save_result($link)
 			echo '<p>nothing to update (no row / same data)</p>';
 		}
 	}
+	//echo 'hi=========<br>';
 }
 
 

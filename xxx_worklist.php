@@ -62,7 +62,7 @@ function get_dbid($link,$examination_id,$search_list_of_examination_id,$range_se
 	//	show_id_range_options($link);
 	//echo '</div>';
 	
-	foreach($search_list_of_examination_id as $examination_id)
+	foreach(array_filter($search_list_of_examination_id) as $examination_id)
 	{
 		get_one_field_for_search($link,$examination_id);
 	}
