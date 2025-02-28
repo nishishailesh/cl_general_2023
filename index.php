@@ -155,14 +155,14 @@ function index_menu()
 		}
 	}
 	//print_r($class_tag_array);
-	echo '<table>';
+	echo '<table class="table help">';
 	echo '<tr>';
 	echo '<td>';
 		echo '<div><img src="img/biogmcs.jpg" width="150" ></div>';
 	echo '</td>';
 	echo '<td>';
-	echo '<h1><center>Department of Biochemistry, NCHS and GMCS</center></h1>';
-	echo '<h2><center>Majura Gate, Surat</center></h2>';
+	echo '<h1>Department of Biochemistry, NCHS and GMCS</h1>';
+	echo '<h2>Majura Gate, Surat</h2>';
 	echo '</td>';
 	echo '<td>';
 	echo '<div><img src="img/biogmcs.jpg" width="150" ></div>';

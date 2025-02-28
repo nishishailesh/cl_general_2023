@@ -145,7 +145,7 @@ function main_menu($link)
 					<div class="dropdown-menu m-0 p-0 ">
 						<div class="btn-group-vertical d-block">
 							<button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_manage_qc.php type=submit name=action value="get_print_id">Internal Quality Control</button>
-							<button class="btn btn-outline-primary m-0 p-0 " formtarget=_blank formaction="http://11.207.2.240:3838/TAT" type=submit name=action value="get_print_id">TAT analysis</button>
+							<button class="btn btn-outline-primary m-0 p-0 " formtarget=_blank formaction="http://172.16.2.240:3838/TAT" type=submit name=action value="get_print_id">TAT analysis</button>
 						</div>
 					</div>
 				</div>';
@@ -181,6 +181,7 @@ function main_menu($link)
 								
 								<!-- <button class="btn btn-outline-primary m-0 p-0" formaction=sms.php type=submit name=action value=sms>Bulk SMS</button> -->
 								<button class="btn btn-outline-primary m-0 p-0" formaction=statistics_and_info.php type=submit name=action value=statistics>Statistics and Info</button>
+								<button class="btn btn-outline-primary m-0 p-0" formaction=survey.php type=submit name=action value=statistics>Survey</button>
 								<button class="btn btn-outline-primary m-0 p-0" formaction=dashboard.php type=submit name=action value=dashboard>Dashboard</button>
 								<button class="btn btn-outline-primary m-0 p-0" formaction=manage_label.php type=submit name=action value=manage_label>Labels</button>
 								<button class="btn btn-outline-primary m-0 p-0" formaction=xxx_prepare_for_group_barcode.php type=submit name=action value=group_label>Print Group Labels</button>
@@ -2161,28 +2162,42 @@ function calculate_result($link,$equation,$ex_list,$sample_id,$decimal=0)
 {
 	//check devide by zero,  e is not allowed to have 0
 	//check if ex result is empty
-	//echo $equation;
+	echo $equation.'<br>';
 	$data=explode(',',$ex_list);
 	$data_count=count($data);
 	//print_r($data);
+	//echo '<br>';
 	$eq=$equation;
 	$eq_length=strlen($eq);
-	
+	//echo 'equation length='.$eq_length.'<br>';
+
 	$parameter=0;
 	
 	$ret='';
 	for($i=0;$i<$eq_length;$i++)
 	{
+
+		
 		if($eq[$i]=='E')
-		{		
+		{
 			$ex_result=get_one_ex_result($link,$sample_id,$data[$parameter]);
 			//echo $data[$parameter].'-result = '.$ex_result;
+			if(is_numeric($ex_result)===False)
+			{
+				echo 'calculate_result():One of the result is not numeric/ is empty<br>';
+				return false;
+			}
 			$ret=$ret.$ex_result;
 			$parameter++;
 		}
 		elseif($eq[$i]=='e')
 		{		
 			$ex_result=get_one_ex_result($link,$sample_id,$data[$parameter]);
+			if(is_numeric($ex_result)===False)
+			{
+				echo 'calculate_result():One of the result is not numeric/ is empty<br>';
+				return false;
+			}
 			if($ex_result>0)
 			{
 				//echo $ex_result;
@@ -2191,7 +2206,7 @@ function calculate_result($link,$equation,$ex_list,$sample_id,$decimal=0)
 			}
 			else
 			{
-				//echo $data[$parameter].'-result = 0';
+				echo 'result is 0, can not devide by 0<br>';
 				return false;
 			}
 		}
@@ -2199,7 +2214,7 @@ function calculate_result($link,$equation,$ex_list,$sample_id,$decimal=0)
 	}
 	echo 'round('.$ret.','.$decimal.')<br>';
 	return trim(shell_exec('calc "round('.$ret.','.$decimal.')"'));
-	
+
 }
 
 
@@ -11601,6 +11616,7 @@ function is_authorized($link,$user,$examination_id,$action)
 	//print_r($user_info);
 	//echo 'ex_info as follows:';
 	//print_r($ex_info);
+	//echo '<h1>--->'.$examination_id.'<---</h1>';
 	//echo '<br>action='.$action.'<br>';	
 
 	if($user_info[$action.'_authorization_level']>=$ex_info[$action.'_minimum_authorization_level'])

@@ -83,6 +83,7 @@ foreach ($examination_requested as $ex)
 	if($u!='sample_id')
 	{
 		$id_type_table=get_id_type_table_name($link,$u);
+		echo '<h3>Unique ID type:'.$id_type_table.'</h3>';
 		$id_type_from='__from__'.$u;
 		$id_type_to='__to__'.$u;
 		if(strlen($_POST[$id_type_from])>0 && strlen($_POST[$id_type_to])>0)
@@ -153,6 +154,8 @@ foreach ($examination_requested as $ex)
 	}
 	else
 	{
+		$id_type_table='sample_id'; //Used only for table display
+		
 		$id_type_from='__from__'.$u;
 		$id_type_to='__to__'.$u;
 		if(strlen($_POST[$id_type_from])>0 && strlen($_POST[$id_type_to])>0)
@@ -199,6 +202,9 @@ foreach ($examination_requested as $ex)
 				}
 				$sql_from=$sql_from.$and;
 			}
+			
+			$ex_join=' inner join result ex_'.$ex.' on sample_link.sample_id=ex_'.$ex.'.sample_id and ex_'.$ex.'.examination_id='.$ex;
+			
 		}
 		else
 		{
@@ -214,21 +220,22 @@ foreach ($examination_requested as $ex)
 		//exit();	
 	}
 	
-	show_worklist($link,$ex,$final_sql);
+	show_worklist($link,$ex,$final_sql,$id_type_table);
 }
 
 
-function show_worklist($link,$examination_id,$sql)
+function show_worklist($link,$examination_id,$sql,$unique_id_type)
 {
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	echo '<table class="table table-sm table-striped">';
-	echo '<tr><th>sample id</th><th>unique id</th><th>examination---->result</th></tr>';
+	echo '<tr><th>sample id</th><th>'.$unique_id_type.'</th><th>examination---->result</th></tr>';
 	while($each_data=get_single_row($result))
 	{
 		//print_r($each_data);
 		echo '<tr>';
 			echo '<td>';
-				echo $each_data['sample_id'];
+				//echo $each_data['sample_id'];
+				xxx_sample_id_view_button($each_data['sample_id'],$target=' target=_blank ',$label=$each_data['sample_id']);
 			echo '</td>';
 			echo '<td>';
 				echo $each_data['uid'];
