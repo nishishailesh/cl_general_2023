@@ -10,7 +10,8 @@ $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //exit(0);	//echo will cause problem in pdf
 
 $pdf=get_pdf_link_for_barcode();
-xxx_prepare_sample_barcode($link,$_POST['sample_id'],$_POST['label_id'],$pdf);
+//xxx_prepare_sample_barcode($link,$_POST['sample_id'],$_POST['label_id'],$pdf);
+xxx_prepare_sample_barcode_1D_2D($link,$_POST['sample_id'],$_POST['label_id'],$pdf);
 print_pdf($pdf,'barcode.pdf');
 
 

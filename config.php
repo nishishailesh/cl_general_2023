@@ -31,6 +31,10 @@ $GLOBALS['serum_IBIL']=5024;
 
 
 $GLOBALS['serum_creatinine']=5001;
+$GLOBALS['Age(Y)']=1007;  //for eGFR
+$GLOBALS['Sex']=1008;  //for eGFR
+$GLOBALS['Sex for eGFR']=5087;  //for eGFR
+$GLOBALS['eGFR']=5060;  //for eGFR
 
 
 
@@ -62,28 +66,28 @@ $GLOBALS['ser']='XYZ LAb';
 //$GLOBALS['ser']='BIOCHEMISTRY'; in /var/gmcs_config
 
 $GLOBALS['HI']=array('name'=>'New Civil Hospital Surat Laboratory Services',
-						'section'=>'Hematology and Immunology Section',
-						'address'=>'OPD-10, NCHS, Surat',
-						'phone'=>'0261 2244456 Ext. 424,425,426'
-						);
+            'section'=>'Hematology and Immunology Section',
+            'address'=>'OPD-10, NCHS, Surat',
+            'phone'=>'0261 2244456 Ext. 424,425,426'
+            );
 
 $GLOBALS['CP']=array('name'=>'New Civil Hospital Surat Laboratory Services',
-						'section'=>'Clinical Pathology Section',
-						'address'=>'OPD-10, NCHS, Surat',
-						'phone'=>'0261 2244456 Ext. 424,425,426'
-						);
-						
+            'section'=>'Clinical Pathology Section',
+            'address'=>'OPD-10, NCHS, Surat',
+            'phone'=>'0261 2244456 Ext. 424,425,426'
+            );
+            
 $GLOBALS['BI']=array('name'=>'New Civil Hospital Surat Laboratory Services',
-						'section'=>'Biochemistry Section',
-						'address'=>'Beside Blood Bank, 2nd Floor, NCHS, Surat',
-						'phone'=>'0261 2244456 Ext. 317,366'
-						);
+            'section'=>'Biochemistry Section',
+            'address'=>'Beside Blood Bank, 2nd Floor, NCHS, Surat',
+            'phone'=>'0261 2244456 Ext. 317,366'
+            );
 
 $GLOBALS['HP']=array('name'=>'New Civil Hospital Surat Laboratory Services',
-						'section'=>'Histopathology Section',
-						'address'=>'3nd Floor, GMC, Surat',
-						'phone'=>'0261 2244456 Ext. 317,366'
-						);
+            'section'=>'Histopathology Section',
+            'address'=>'3nd Floor, GMC, Surat',
+            'phone'=>'0261 2244456 Ext. 317,366'
+            );
 $GLOBALS['MI']=array('name'=>'New Civil Hospital Surat Laboratory Services',
                                                 'section'=>'VRDL Microbiology Section',
                                                 'address'=>'3nd Floor, GMC, Surat',
@@ -102,7 +106,7 @@ $GLOBALS['normal_qc_tick']='N';
 $GLOBALS['abnormal_qc_tick']='A';
 
 
-$GLOBALS['critical_autoinsert']='yes';	# 'yes' to enable, anything else to disable
+$GLOBALS['critical_autoinsert']='yes';  # 'yes' to enable, anything else to disable
 $GLOBALS['absurd_low_message']='<--Absurd Low';
 $GLOBALS['absurd_high_message']='<--Absurd High';
 $GLOBALS['critical_low_message']='<--Critical Low';
@@ -170,17 +174,17 @@ $GLOBALS['QC_Remark_id']=5098;
 
 $GLOBALS['sample_status']=
 array(
-		['sample_requested',[$GLOBALS['request_date'],$GLOBALS['request_time']],'white',['date','time'],'hide'],
-		['sample_collected',[$GLOBALS['collection_date'],$GLOBALS['collection_time']],'lightgray',['date','time'],'show'],
-		['sample_received',[$GLOBALS['receipt_date'],$GLOBALS['receipt_time']],'yellow',['date','time'],'show'],
-		['sample_prepared',[$GLOBALS['sample_preparation_date'],$GLOBALS['sample_preparation_time']],'orange',['date','time'],'show'],
-		['analysis_started',[$GLOBALS['analysis_date'],$GLOBALS['analysis_time']],'lightpink',['date','time'],'show'],
-		['verification_done',[$GLOBALS['verification_date'],$GLOBALS['verification_time']],'lightblue',['date','time'],'hide'],
-		['interim_report_released',[$GLOBALS['interim_release_date'],$GLOBALS['interim_release_time']],'greenyellow',['date','time'],'hide'],		
-		['interim_report_released',[$GLOBALS['interim_released_by']],'greenyellow',['username'],'hide'],
-		['report_released',[$GLOBALS['release_date'],$GLOBALS['release_time']],'lightgreen',['date','time'],'hide'],		
-		['report_released',[$GLOBALS['released_by']],'lightgreen',['username'],'hide']
-	);
+    ['sample_requested',[$GLOBALS['request_date'],$GLOBALS['request_time']],'white',['date','time'],'hide'],
+    ['sample_collected',[$GLOBALS['collection_date'],$GLOBALS['collection_time']],'lightgray',['date','time'],'show'],
+    ['sample_received',[$GLOBALS['receipt_date'],$GLOBALS['receipt_time']],'yellow',['date','time'],'show'],
+    ['sample_prepared',[$GLOBALS['sample_preparation_date'],$GLOBALS['sample_preparation_time']],'orange',['date','time'],'show'],
+    ['analysis_started',[$GLOBALS['analysis_date'],$GLOBALS['analysis_time']],'lightpink',['date','time'],'show'],
+    ['verification_done',[$GLOBALS['verification_date'],$GLOBALS['verification_time']],'lightblue',['date','time'],'hide'],
+    ['interim_report_released',[$GLOBALS['interim_release_date'],$GLOBALS['interim_release_time']],'greenyellow',['date','time'],'hide'],   
+    ['interim_report_released',[$GLOBALS['interim_released_by']],'greenyellow',['username'],'hide'],
+    ['report_released',[$GLOBALS['release_date'],$GLOBALS['release_time']],'lightgreen',['date','time'],'hide'],    
+    ['report_released',[$GLOBALS['released_by']],'lightgreen',['username'],'hide']
+  );
 
 $GLOBALS['is_verification_success_important']='yes';
 

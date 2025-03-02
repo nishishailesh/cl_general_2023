@@ -1,144 +1,80 @@
 <?php
-// PHP section to handle form submission and display feedback
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $rating = $_POST['rating'];
-    $comments = $_POST['comments'];
-    
-    // Check if rating is selected
-    if (empty($rating)) {
-        $errorMessage = "Please select a rating before submitting.";
-    } else {
-        // Save feedback to a file or database (Here, we'll just display it for simplicity)
-        $feedback = "Rating: " . $rating . "\nComments: " . $comments . "\n\n";
-        file_put_contents('feedback.txt', $feedback, FILE_APPEND);
-    
-        // Display a thank you message
-        $thankYouMessage = "Thank you for your feedback!";
-    }
+require_once 'project_common.php';
+require_once 'base/verify_login.php';
+echo '      <link rel="stylesheet" href="project_common.css">
+      <script src="project_common.js"></script>'; 
+      
+  ////////User code below/////////////////////
+echo '<script>
+function no_enter()
+{
+  if(event.keyCode === 13) 
+  {
+    //alert("You have pressed Enter key, use submit button instead");
+    return false;
+  }
 }
+
+setTimeout(
+            function()
+              {         
+                th=document.getElementsByClassName("thanks");
+                for (i = 0; i < th.length; i++) 
+                {
+                        th[i].style.display="none";
+                }
+              }
+            ,5000
+          );
+
+</script>';
+
+echo '
+    <div class="container">
+    <form method="POST" id="application" action="survey.php" >
+     <h4>Feedback</h4>
+     <h4>Collection/Biochemistry</h4>
+     <h4>STEM/NCHS/Surat</h4>
+       <div class="rating-buttons">
+            <input class="form-control" required type=text name="uid" placeholder=sample_id autofocus    onkeypress="return no_enter();"/>
+            <button class="btn btn-block center btn-danger   " type="submit" name="rating" value=1 >&#9733;</button>
+            <button class="btn btn-block center btn-warning  " type="submit" name="rating" value=2>&#9733;&#9733;</button>
+            <button class="btn btn-block center btn-info     " type="submit" name="rating" value=3>&#9733;&#9733;&#9733;</button>
+            <button class="btn btn-block center btn-primary  " type="submit" name="rating" value=4>&#9733;&#9733;&#9733;&#9733;</button>
+            <button class="btn btn-block center btn-success " type="submit" name="rating" value=5>&#9733;&#9733;&#9733;&#9733;&#9733;</button>
+            <input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+            
+        </div>
+    </form>';
+
+
+//echo '<pre>';
+//print_r($_POST);
+//echo '</pre>';
+
+if(isset($_POST['rating']))
+{
+  $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
+  $sql='INSERT INTO feedback 
+            (sample_id, rating, timestamp) VALUES ("'.$_POST['uid'].'","'.$_POST['rating'].'","'.strftime("%Y-%m-%dT%H:%M:%S").'") 
+            on duplicate key 
+            update
+            rating="'.$_POST['rating'].'" ,
+            timestamp="'.strftime("%Y-%m-%dT%H:%M:%S").'"
+            ';
+            
+  //echo '<br>'.$sql.'<br>';
+  if($result=run_query($link,$GLOBALS['database'],$sql,$display_error='no')===False)
+  {
+    echo '<h5 class="text-danger thanks" >No Such Sample ID</h5>';
+  }
+  else
+  {
+    echo '<h2 class="text-success thanks">Thank you for giving '.$_POST['rating'].' star rating </h2>';
+  }
+}
+
+echo '</div>';
+tail();
+
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feedback Form - Laboratory/Blood Collection Center</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 60%;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
- .center {
-  margin: auto;
-  width: 50%;
-}
-
-	button{display:block;margin:10px; padding:5px;align:center;}
-        h1 {
-            text-align: center;
-            color: #4CAF50;
-        }
-        .rating-buttons {
-            text-align: center;
-            justify-content: space-evenly;
-            margin: 20px 0;;
-        }
-        .rating-buttons button {
-            text-align: center;
-            font-size: 36px;
-            background: lightgray;
-            border: 2px solid red;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-		padding:10px;
-        }
-        .rating-buttons button:hover {
-            transform: scale(1.1);
-            background: lightgreen;
-		
-        }
-        textarea {
-            width: 100%;
-            height: 100px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        .submit-btn {
-            display: block;
-            margin: 20px auto;
-            background-color: #4CAF50;
-            color: red;
-            padding: 10px 20px;
-            border: 2px solid black;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .submit-btn:hover {
-            background-color: green;
-        }
-        .thank-you {
-            text-align: center;
-            font-size: 20px;
-            color: #4CAF50;
-            margin-top: 20px;
-        }
-        .error-message {
-            color: red;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>Feedback (Stem Cell OPD Sample Collection Center)</h1>
-
-    <?php //if (isset($thankYouMessage)) { echo "<div class='thank-you'>$thankYouMessage</div>"; } 
-	?>
-    <?php //if (isset($errorMessage)) { echo "<div class='error-message'>$errorMessage</div>"; } 
-	?>
-
-    <form method="POST" action="survey_response.php">
-<!--
-        <div class="rating-buttons">
-            <button type="submit" name="rating" value="😍">😍</button>
-            <button type="submit" name="rating" value="🙂">🙂</button>
-            <button type="submit" name="rating" value="😐">😐</button>
-            <button type="submit" name="rating" value="😡">��</button>
-            <button type="submit" name="rating" value="😕">😕</button>
-        </div>
--->
-
-        <div class="rating-buttons">
-	    <input type=text name="uid" style="font-size:36px;" placeholder=sample_id />
-            <button class=center type="submit" name="rating" value=1>&#9733;</button>
-            <button class=center type="submit" name="rating" value=2>&#9733;&#9733;</button>
-            <button class=center type="submit" name="rating" value=3>&#9733;&#9733;&#9733;</button>
-            <button class=center type="submit" name="rating" value=4>&#9733;&#9733;&#9733;&#9733;</button>
-            <button class=center type="submit" name="rating" value=5>&#9733;&#9733;&#9733;&#9733;&#9733;</button>
-        </div>
-
-<!--        <textarea name="comments" placeholder="Additional comments..."></textarea> 
-
-        <button type="submit" class="submit-btn">Submit Feedback</button> -->
-    </form>
-</div>
-
-</body>
-</html>
