@@ -73,7 +73,7 @@ if($_POST['action']=='calculate')
       if(strlen($calculate)>0){$cal_count=$cal_count+1;}
     }
     echo '<h1>'.$cal_count.'</h1>';
-    for($i=0;$i<$cal_count;$i++)
+    for($i=0;$i<=$cal_count;$i++)
     {
      echo '<h1>Round:'.$i.'</h1>';
      calculate_and_update($link,$sample_id);
