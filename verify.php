@@ -86,7 +86,7 @@ function examination_id_verified($which_id,$required_id,$display_name)
 
 function examination_result_numeric($result,$display_text)
 {
-  //echo '<span>Checking if result of '.$display_text.' is numeric</span>';
+  echo '<span>Checking if ('.$result.') result of '.$display_text.' is numeric</span>';
   if(!is_numeric($result))
   {
     echo '<span class="text-danger">'.$display_text.' result is not numeric.</span>';return false;
@@ -370,5 +370,39 @@ function f_1008($link,$sample_id,$ex_id)
   }    
   return true;
 }
+
+//eGFR (MDRD, Non african)
+//$GLOBALS['eGFR']
+function f_5060($link,$sample_id,$ex_id)
+{
+  //information display on web page. Not strictly necessary
+  echo '<b>.....Verification of examination_id=5060(eGFR (MDRD, Non african), Serum).....</b><br>';
+  
+  //This is cross check. If someone mistakenly alter examination_id of Sex, this function will not be run
+  //If someone gives another examination this(1008) ID, then also it may create problems
+  //see config.php for $GLOBALS defination
+  if(!examination_id_verified($ex_id,$GLOBALS['eGFR'],'eGFR (MDRD, Non african)')){return false;}
+  //if name and id do not match as per expectation, do not do any thing
+  
+  //get examination results 
+  $ex_result_array=get_result_of_sample_in_array($link,$sample_id);
+  //print on page for debug purpose
+  //print_r($ex_result_array);
+  
+  
+  //if eGFR is not numeric, we will not touch it
+  if( !examination_result_numeric($ex_result_array[$GLOBALS['eGFR']],'eGFR (MDRD, Non african)')){return false;}
+   
+  $gfr_value=$ex_result_array[$GLOBALS['eGFR']];
+  //(male:1) (female:0.742)
+  if($gfr_value>60)
+  {
+    echo '<span class="badge badge-danger d-inline">MDRD eGFR is valid only upto 60</span><br>';
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'greater than 60');
+    return true;
+  }
+  return true;
+}
+
 
 ?>

@@ -37,9 +37,6 @@ $GLOBALS['Sex for eGFR']=5087;  //for eGFR
 $GLOBALS['eGFR']=5060;  //for eGFR
 
 
-
-
-
 $GLOBALS['serum_CHOL']=5015;
 $GLOBALS['serum_TG']=5018;
 $GLOBALS['serum_HDL']=5016;

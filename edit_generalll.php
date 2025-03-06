@@ -55,9 +55,11 @@ if($_POST['action']=='insert')
 //does calculation and verification post=calculate
 if($_POST['action']=='calculate')
 {
+
     echo '<button  class="btn btn-info btn-sm" type="button" data-toggle="collapse" data-target="#cal_data" >Hide Calculation Info</button>';
 
-    echo '<div class="collapse navbar-collapse show" id="cal_data"> ';
+    echo '<div class="collapse navbar-collapse show" id="cal_data"> ';    
+    //echo '<div class="collapse navbar-collapse collapsed" id="cal_data"> ';
   
     $all_result_of_a_sample=get_result_of_sample_in_array($link,$sample_id);
     
@@ -69,8 +71,10 @@ if($_POST['action']=='calculate')
       $ar=get_one_examination_details($link,$ex_details['examination_id']);
       $edit_specification=json_decode($ar['edit_specification'],true);
       if(!$edit_specification){$edit_specification=array();}
+      
+      
       $calculate=isset($edit_specification['calculate'])?$edit_specification['calculate']:''; 
-      if(strlen($calculate)>0){$cal_count=$cal_count+1;}
+      if(strlen($calculate)>0){$cal_count=$cal_count+1;}    
     }
     echo '<h1>'.$cal_count.'</h1>';
     for($i=0;$i<=$cal_count;$i++)
@@ -205,15 +209,16 @@ function calculate_and_update($link,$sample_id)
   
   while($ar=get_single_row($result))
   {
+    //print_r($ar);
     $examination_details=get_one_examination_details($link,$ar['examination_id']);
     $edit_specification=json_decode($examination_details['edit_specification'],true);
     if(!$edit_specification){$edit_specification=array();}
     
     $decimal=isset($edit_specification['decimal'])?$edit_specification['decimal']:0;
     $calculate=isset($edit_specification['calculate'])?$edit_specification['calculate']:''; 
+    $procedure=isset($edit_specification['procedure'])?$edit_specification['procedure']:''; 
     $ex_list=isset($edit_specification['ex_list'])?$edit_specification['ex_list']:''; 
 
-    
     if(strlen($calculate)>0)
     {   
       //echo 'ex='.$ar['examination_id'].'<br>';
@@ -221,8 +226,24 @@ function calculate_and_update($link,$sample_id)
         //echo $ex_result;
         save_single_result($link,$sample_id,$ar['examination_id'],$ex_result);
     }
+    
+    
+    if(strlen($procedure)>0)
+    {  
+      //echo '<h1>Just before  run_multi_query</h1><br>';
+      //$result was creating problem in next loop
+      $sql='call '.$procedure.'('.$sample_id.');';
+      //echo $sql.'<br>';      
+      $resultt=run_multi_query($link,$GLOBALS['database'],$sql,$display_error='yes');
+      //echo $sql.'<br>';
+      //echo '<h1>Just after run_multi_query</h1><br>';
+    }
   }
+
+  //echo '<h1>Just before verify_sample</h1><br>';
   verify_sample($link,$sample_id);
+  //echo '<h1>Just after verify_sample</h1><br>';
+
   insert_update_one_examination_with_result($link,$sample_id,get_config_value($link,'examination_id_for_verification_record'),strftime("%Y-%m-%dT%H:%M"));
 }
 

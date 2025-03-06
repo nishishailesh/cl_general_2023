@@ -102,7 +102,7 @@ function run_query($link,$db,$sql,$display_error='yes')
   {
     try 
     {
-      $result=mysqli_query($link,$sql);
+      $result=mysqli_query($link,$sql);    
       if($result===False)
       {
         if($display_error=='yes')
@@ -131,6 +131,54 @@ function run_query($link,$db,$sql,$display_error='yes')
   } 
 }
 
+function run_multi_query($link,$db,$sql,$display_error='yes')
+{
+  $db_success=mysqli_select_db($link,$db);
+  //echo $sql;
+  if(!$db_success)
+  {
+    if($display_error=='yes')
+    {
+      echo 'error2:'.mysqli_error($link);
+    }
+    return false;
+  }
+  else
+  {
+    try 
+    {
+      $result=mysqli_multi_query($link,$sql);     
+      if($result===False)
+      {
+        if($display_error=='yes')
+        {
+          echo 'error mysqli_query:'.mysqli_error($link);
+        }
+      }
+    }
+    catch (mysqli_sql_exception $e) 
+    {
+      if($display_error=='yes')
+      {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
+      }
+      $result=false;
+    }
+  }
+  
+  if(!$result)
+  {
+    if($display_error=='yes'){echo 'error3:'.$sql.'<br>'.mysqli_error($link);} return false;
+  }
+  else
+  {
+    //echo 'no error:'.$sql.'<br>';
+    return $result;
+  } 
+}
+
+
+
 function get_single_row($result)
 {
     if($result!=false)
@@ -141,10 +189,29 @@ function get_single_row($result)
     else
     {
       //return false;
-      echo 'error get_single_row():'.mysqli_error($link); return false;
+      echo 'error get_single_row()'; 
+      return false;
     }
 }
 
+
+//$link is parameter , not $result
+function get_multi_row($link)
+{
+      do {
+         if ($r = mysqli_use_result($link)) {
+            while ($row = mysqli_fetch_row($r)) {
+               print_r($row);
+            }
+            mysqli_free_result($r);
+         }
+         if (mysqli_more_results($link)) {
+            print("\n");
+         }
+      } while (mysqli_next_result($link));
+}      
+      
+      
 function my_safe_string($link,$str)
 {
   return mysqli_real_escape_string($link,$str);
