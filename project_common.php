@@ -2293,9 +2293,10 @@ function sync_all($link,$sample_id)
 
 function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',$frill=True,$extra_array=array(),$primary='',$uniq='',$autosave='')
 {
+  $f_readonly=$readonly;
   //print_r($result_array);
   $result=$result_array['result'];
-  //echo $result;
+  echo 'xxxxx'.$readonly;
   $examination_details=get_one_examination_details($link,$examination_id);
   $display_format=$examination_details['display_format'];
   if(strlen($display_format)==0){$display_format='horizontal3';}
@@ -2304,11 +2305,15 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
   if(!$edit_specification){$edit_specification=array();}
   
   $type=isset($edit_specification['type'])?$edit_specification['type']:'text';
+  
+  
+  //if by defination readonly
+  //if not authorized readonly
+  //if function tells to make readonly
   $readonly=isset($edit_specification['readonly'])?$edit_specification['readonly']:'';
   if(!is_authorized($link,$_SESSION['login'],$examination_id,'update')){$readonly='readonly';}
-  
-  //echo $readonly;
-  
+  if($f_readonly=='readonly'){$readonly='readonly';}
+    
   if($frill){
         $help=isset($edit_specification['help'])?$edit_specification['help']:'';
       }
@@ -3305,7 +3310,7 @@ function edit_blob_field($link,$examination_id,$sample_id)
 
 function edit_field_any($link,$ex_id,$sample_id,$readonly='',$frill=True,$extra_array=array(),$primary='',$uniq='',$autosave='')
 {
-  //echo $compact;
+  //echo $readonly;
   $examination_details=get_one_examination_details($link,$ex_id);
   $edit_specification=json_decode($examination_details['edit_specification'],true);
   $type=isset($edit_specification['type'])?$edit_specification['type']:'';
@@ -13445,16 +13450,20 @@ function insert_primary_result($link,$sample_id,$examination_id,$ex_result,$uniq
   }
 }
 
-function edit_one_primary_result($link,$sample_id,$examination_id,$uniq)
+function edit_one_primary_result($link,$sample_id,$examination_id,$uniq,$only_remark=False)
 {
   echo '<h2 class="text-info">Primary Result: Close window after update. Refresh parent page</h2>';
 
   $pr=xxx_select_one_primary_result($link,$sample_id,$examination_id,$uniq);
 
+
+  if($only_remark==True){$readonly='readonly';}else{$readonly='';}
+
+
   //print_r($pr);
   echo '<form method=post>';
     echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
-    edit_field_any($link,$pr['examination_id'],$pr['sample_id'],$readonly='',$frill=False,$extra_array=array(),$primary='yes',$uniq=$pr['uniq'],$autosave='no');
+    edit_field_any($link,$pr['examination_id'],$pr['sample_id'],$readonly=$readonly,$frill=False,$extra_array=array(),$primary='yes',$uniq=$pr['uniq'],$autosave='no');
     echo '<div class="basic_form  m-0 p-0 no-gutters">';
       echo '<div>Extra</div><input type=text name=extra value=\''.$pr['extra'].'\' ><div class="help">any Extra Remark</div>';
       echo '<div>Sample ID</div><input type=text readonly name=sample_id value=\''.$pr['sample_id'].'\' ><div  class="help"></div>';

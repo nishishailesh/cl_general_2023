@@ -17,6 +17,7 @@ if(in_array('requestonly',$auth))
 
 main_menu($link);
 
+/*
 if($user['update_authorization_level']<=3)
 {
   echo '<h4>Unauthorized Access!!</h4>';
@@ -24,6 +25,7 @@ if($user['update_authorization_level']<=3)
   tail();
   exit(0);
 }
+*/
 
 if($_POST['action']=='edit_save')
 {
@@ -31,7 +33,11 @@ if($_POST['action']=='edit_save')
   
 }
 
-edit_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq']);
+
+if($user['update_authorization_level']<=3){$only_remark=True;}else{$only_remark=False;}
+
+
+edit_one_primary_result($link,$_POST['sample_id'],$_POST['examination_id'],$_POST['uniq'],$only_remark);
     echo '<div class="basic_form  m-0 p-0 no-gutters">';
       echo '<div></div><button type=button class="btn btn-danger" onclick="window.close()" value=insert_save>Close Window</button><div  class="help"></div>';
     echo '</div>';
