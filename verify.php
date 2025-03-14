@@ -392,6 +392,16 @@ function f_5060($link,$sample_id,$ex_id)
   
   //if eGFR is not numeric, we will not touch it
   if( !examination_result_numeric($ex_result_array[$GLOBALS['eGFR']],'eGFR (MDRD, Non african)')){return false;}
+
+  if( !examination_result_numeric($ex_result_array[$GLOBALS['Age(Y)']],'Age (In Completed Years)'))
+  {
+    return false;
+  }
+  else if (get_one_ex_result($link,$sample_id,$GLOBALS['Age(Y)'])<18)
+  {
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'age<18? eGFR can not be calculated');
+    return true;
+  }
    
   $gfr_value=$ex_result_array[$GLOBALS['eGFR']];
   //(male:1) (female:0.742)

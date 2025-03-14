@@ -1977,8 +1977,9 @@ Click to edit"
           <button id=\'button_'.$sample_id.$examination_id.'\'
               tabindex="-1"
               name=action value=insert class="btn btn-sm d-inline   no-gutters align-top"
-              >+</button>
-      </form>';
+              >+</button>';
+  echo '    </form>';
+   
 }
 
 
@@ -13297,6 +13298,8 @@ function date_mysql_to_PHP_object($str)
   return $datetime = new DateTime($str);
 }
 
+
+
 function date_PHP_object_to_mysql($datetime)
 {
    return $datetime->format('Y-m-d H:i:s');
@@ -14204,5 +14207,6 @@ function get_one_id()
   echo '<input  type=hidden name=session_name  value=\''.session_name().'\'>';
   echo '</form>';
 }
+
 
 ?>

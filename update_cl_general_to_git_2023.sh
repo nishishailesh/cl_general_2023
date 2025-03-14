@@ -28,7 +28,6 @@ menu_new
 menu_view
 menu_view_fast
 menu_worklist
-my_procedure_code
 qc_lot
 route_priority
 sample_id_strategy

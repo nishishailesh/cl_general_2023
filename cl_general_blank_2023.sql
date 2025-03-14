@@ -289,6 +289,36 @@ CREATE TABLE `display_choice` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `ehospital`
+--
+
+DROP TABLE IF EXISTS `ehospital`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ehospital` (
+  `UHID` varchar(100) NOT NULL,
+  `mobile` varchar(100) DEFAULT NULL,
+  `prefix` varchar(100) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `middlename` varchar(100) DEFAULT NULL,
+  `surname` varchar(100) DEFAULT NULL,
+  `sex` varchar(100) DEFAULT NULL,
+  `DOB` varchar(100) DEFAULT NULL,
+  `billing_type` varchar(100) DEFAULT NULL,
+  `department` varchar(100) DEFAULT NULL,
+  `unit` varchar(100) DEFAULT NULL,
+  `clinic` varchar(100) DEFAULT NULL,
+  `address` varchar(100) DEFAULT NULL,
+  `f8` varchar(100) DEFAULT NULL,
+  `f10` varchar(100) DEFAULT NULL,
+  `f11` varchar(100) DEFAULT NULL,
+  `f15` varchar(100) DEFAULT NULL,
+  `f16` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`UHID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `email`
 --
 
@@ -594,7 +624,7 @@ CREATE TABLE `my_procedure_code` (
   `code` text DEFAULT NULL,
   `help` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -974,7 +1004,7 @@ CREATE TABLE `ward_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=313839 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=313844 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1010,4 +1040,4 @@ CREATE TABLE `xxx_lab_reference_value` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-06 11:38:05
+-- Dump completed on 2025-03-14 21:15:51
