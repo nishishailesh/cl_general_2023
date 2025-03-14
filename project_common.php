@@ -2296,7 +2296,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
   $f_readonly=$readonly;
   //print_r($result_array);
   $result=$result_array['result'];
-  echo 'xxxxx'.$readonly;
+  //echo 'xxxxx'.$readonly;
   $examination_details=get_one_examination_details($link,$examination_id);
   $display_format=$examination_details['display_format'];
   if(strlen($display_format)==0){$display_format='horizontal3';}
