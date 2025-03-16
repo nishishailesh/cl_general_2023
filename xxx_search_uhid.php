@@ -23,7 +23,8 @@ function find_age_years($dob)
 {
   // 13/01/1987 00:00:00
   //("%Y-%m-%dT%H:%M"));
-  $dtobj=date_mysql_to_PHP_object_with_format($dob,"d/m/Y H:i:s");
+  //$dtobj=date_mysql_to_PHP_object_with_format($dob,"d-m-Y H:i:s");
+  $dtobj=date_mysql_to_PHP_object_with_format($dob,"d-m-Y");
   //$interval=date_diff(new DateTime(),date_mysql_to_PHP_object($dob));
   $interval=date_diff(new DateTime(),$dtobj);
   //$interval_str=date_interval_format($interval,'%Y Years, %m Months, %d Days, %H Hours, %i Minutes, %s Seconds');

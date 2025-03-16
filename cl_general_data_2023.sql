@@ -468,7 +468,7 @@ INSERT INTO `examination` VALUES
 (1000,'Sample_requirement','None','{\"type\":\"text\",\"help\":\"Describe\",\"readonly\":\"readonly\"}','None','Misc/Sample Details','Sample Details','Header','','20','','compact_report',1,1,0,1,NULL,'','','Describe','Describe','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (1001,'PID','None','','None','Misc/Patient Details','Header','Header','','30','','compact_report',1,2,0,2,NULL,'SELECT  year(CURDATE()) as default_value','',NULL,NULL,NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (1002,'Name','None','','None','Misc/Patient Details','Header','Header','','40','','compact_report',1,1,0,1,NULL,'','',NULL,NULL,NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
-(1004,'Department','None','{\"type\":\"select\",\"option\":\",ART,Dentistry,IHBT,EmergencyMedicine,ENT,Medicine,Neurology,OG,Opthalmology,Orthopaedics,Kidney Hospital,Paediatrics,PlasticSurgery,Psychiatry,Skin,Surgery,TBChest,Samaras,Unspecified,Casualty,Otorhinolaryngology\"}','None','Misc/Sample Details','Header','Header','','60','','compact_report',1,1,0,1,NULL,'','',NULL,NULL,NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
+(1004,'Department','None','{\"type\":\"select\",\"option\":\",ART,Dentistry,IHBT,EmergencyMedicine,ENT,Medicine,Neurology,OG,Opthalmology,Orthopaedics,Kidney Hospital,Paediatrics,PlasticSurgery,Psychiatry,Skin,Surgery,TBChest,Samaras,Unspecified,Casualty,Otorhinolaryngology,Medicine,Orthopaedics,Neurology,Psychiatry,NCD (Non Communicable Disease),Respiratory Medicine,Paediatrics,Dermatology,ANC,Ophthalmology,General Surgery,General,Casualty,Dental,Gynaecology,Otorhinolaryngology,Neurosurgery,ARV\"}','None','Misc/Sample Details','Header','Header','','60','','compact_report',1,1,0,1,NULL,'','',NULL,NULL,NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (1005,'Unit','None','{\"type\":\"select\",\"option\":\",-,Unit1,Unit2,Unit3,Unit4,Unit5,Unit6,Unit7,Unit8,UnitA,UnitB\"}','None','Misc/Sample Details','Header','Header','','70','','compact_report',1,1,0,1,NULL,'','',NULL,NULL,NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (1006,'Location','None','{\"type\":\"select\",\"option\":\",C2(684),HAJ,Niramaya_Camp,old building 1st floor,old building 2nd floor,old building 3rd floor,old building ground floor,IHBT,Hemophilia ,C3(685),PICU,Casualty(446),E0(506),E1(507),E2(508),E3(509),E4(510),EMW(485),EOT(591),F0(511),F1(512),F2(513),F3(514),F3N(503),F4(515),FOW,G0(516),G0MICU(500),G1(517),G2(518),G3(519),G4(520),GOT(551),H0(497),H1(522),H2(523),H3(524),H4(525),HemodialysisUNIT(741),Isolation Ward,J0(521),J1(531),J2(527),J3(529),J4(530),LeptoWard(506),MICU(500-2),MOT(567),MOW(310),NEWORTHO(311),NOT(551),NOW(311),O2(539),OB(546),OBICU(546),OLDORTHO(310),OPD,PrisonerWard(310),RI(548),RII(564),RIII(580),SICU-1(478),SICU-2(478),SpecialWard(570-71),SwineFluWard(529),StemGround,StemF1,StemF2,StemF3,StemF4,StemF5,StemF6,StemF7,StemF8,StemF9,StemF10,StemHosp,KidneyOPD,StemOPD,TBICU,TRAUMA1(476),TRAUMA2(485),TraumaCenter(472-87),4A Kidney,4B Kidney,4C Kidney,4D Kidney,5A Kidney,5B Kidney,5C Kidney,5D Kidney,StemTriageSemiCritical,StemTriageICU,Stem Triage,Kidney 6th ICU- B,Kidney 6th ICU-A,,NICU(692),RICU,SAMRAS,6A Kidney,6B Kidney,6C Kidney,6D Kidney,7A Kidney,7B Kidney,7C Kidney,7D Kidney,8A Kidney,8B Kidney,8C Kidney,8D Kidney,Unspecified,OPD-23 (Paediatrics OPD),OPD-26 (ENT OPD)\"}','None','Misc/Sample Details','Header','Header','','80','','compact_report',1,1,0,1,NULL,'','',NULL,NULL,NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (1007,'Age (In Completed Years)','None','{\"type\":\"number\",\"help\":\"Full Years\",\"procedure\":\"reflex_eGFRcr\"}','','Misc/Patient Details','Patient Details','Patient Details','','','','compact_report',1,1,0,1,NULL,'','','Full Years','Full Years',NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
@@ -800,7 +800,7 @@ DROP TABLE IF EXISTS `host_code`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `host_code` (
   `examination_id` int(11) NOT NULL,
-  `equipment` enum('XL_640','XL_1000','VITROS3600','RP500','TOSOH','R9-402016','BS600M','JOKOH','NXL_1000') NOT NULL,
+  `equipment` enum('XL_640','XL_1000','VITROS3600','RP500','TOSOH','R9-402016','BS600M','JOKOH','NXL_1000','COBAS411') NOT NULL,
   `code` varchar(10) NOT NULL,
   PRIMARY KEY (`equipment`,`examination_id`),
   KEY `examination_id` (`examination_id`),
@@ -1120,7 +1120,9 @@ INSERT INTO `host_code` VALUES
 (5212,'NXL_1000','GLCC'),
 (9241,'NXL_1000','ALTBB'),
 (9242,'NXL_1000','MPRBB'),
-(105053,'NXL_1000','ALBB');
+(105053,'NXL_1000','ALBB'),
+(5001,'COBAS411','444'),
+(5002,'COBAS411','UREE');
 /*!40000 ALTER TABLE `host_code` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1781,4 +1783,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-15  0:47:50
+-- Dump completed on 2025-03-16 14:15:46
