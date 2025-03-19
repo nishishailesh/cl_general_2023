@@ -905,8 +905,10 @@ function distribute()
   //Indoor are selected manually
   //document.getElementById("r_id_1006").value="OPD"
   document.getElementById("r_id_1008").value= JSON.parse(x)["sex"]
-  
-  dt=JSON.parse(x)["DOB"].split(' ')[0].split('/')
+
+  //17-07-1981
+  dt=JSON.parse(x)["DOB"].split('-')
+
   mydate=dt[2]+'-'+dt[1]+'-'+dt[0]
   document.getElementById("r_id_1012").value=mydate
   

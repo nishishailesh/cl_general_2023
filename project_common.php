@@ -132,6 +132,7 @@ function main_menu($link)
           <div class="dropdown-menu m-0 p-0 ">
             <div class="btn-group-vertical d-block">
               <button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_get_print_id.php type=submit name=action value="get_print_id">Scan and Print</button>
+              <button class="btn btn-outline-primary m-0 p-0 " formtarget=_blank formaction=xxx_get_pid_for_print_collective.php type=submit name=action value="get_print_id">Print Cumulative Report</button>
             </div>
           </div>
         </div>';
@@ -12592,6 +12593,33 @@ function get_sample_id_array_for_any_id($link,$id)
   return $ret;
 }
 
+
+
+
+
+function get_sample_id_array_for_pid($link,$pid)
+{
+  $sql='select 
+        sample_id
+      from result
+      where 
+      examination_id=\''.$GLOBALS['mrd'].'\' and
+      result=\''.$pid.'\'';
+       
+  $result=run_query($link,$GLOBALS['database'],$sql);
+  if(get_row_count($result)<=0){return false;}
+  
+  $ret='';
+  while($ar=get_single_row($result))
+  {
+        $ret=$ret.$ar['sample_id'].',';
+  }
+  $ret=substr($ret,0,-1);
+  print_r($ret);
+  return $ret;
+}
+
+
 function get_ex_id_of_unique_id_from_any_id_value_string($link,$id_value_string)
 {
   if(ctype_digit($id_value_string)){return 'sample_id';}
@@ -13718,15 +13746,22 @@ function xxx_prepare_sample_barcode_1D_2D($link,$sample_id,$label_id,$pdf)
             //$pdf->Rotate(90, 0 , 0);
             $pdf->Rotate(90);
             $pdf->Cell($item[5],$item[6],' '.$other_data,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M'); 
-            
+ 
             $pdf->StopTransform();
           }
         }
-                
+
       }
       else
       {
         $ex_result=get_any_examination_result($link,$sample_id,$item[0]);
+
+	if($GLOBALS['patient_name']==$item[0])    //Patient name
+        {
+          $ex_result=substr($ex_result,0,10);
+        }
+
+
         //if(!$ex_result){continue;}
         if($item[0]==$label_details['examination_id']){$ex_result=$prefix.$ex_result;}
 

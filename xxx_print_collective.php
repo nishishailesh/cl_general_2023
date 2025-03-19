@@ -10,6 +10,8 @@ require_once('tcpdf/tcpdf_barcodes_2d.php');
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //echo '<pre>';print_r($_POST);echo '</pre>';
 
+$list_of_id=get_sample_id_array_for_pid($link,$_POST['pid']);
+
 $sql='select 	sample_id,
 				examination.examination_id,
 				examination.name,
@@ -21,11 +23,11 @@ $sql='select 	sample_id,
 				result,examination 
 			
 			where 
-				sample_id in ('.substr($_POST['list_of_id'],0,-1).') and 
+				sample_id in ('.$list_of_id.') and 
 				result.examination_id=examination.examination_id
 			order by
 				examination.name,examination.examination_id,sample_id';
-//echo $sql;
+echo $sql;
 if(!$result=run_query($link,$GLOBALS['database'],$sql))
 {
 	 echo '<h1>Problem</h1>';

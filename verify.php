@@ -13,9 +13,12 @@ function verify_sample($link,$sample_id)
 
     if(function_exists('f_'.$eid))
     {
-      echo 'running f_'.$eid.'()';
+      echo '<div class="collapse navbar-collapse collapsed cal_data">[Start] Verifying ex='.$eid.'<hr>';
+      echo '<p>running f_'.$eid.'().</p>';
       $fun_name='f_'.$eid;              ////This is how function name is found
       $fun_name($link,$sample_id,$eid); ////The function is executed
+      //echo '[End] Verifying ex='.$eid.'<br><hr>';
+      echo '</div>';
     } 
   }
   
@@ -28,9 +31,11 @@ function verify_sample($link,$sample_id)
 
     if(function_exists('f_'.$eid))
     {
-      echo 'running f_'.$eid.'()';
+      echo '<div class="collapse navbar-collapse collapsed cal_data">[Start] Verifying ex='.$eid.'<hr>';
+      echo '<p>running f_'.$eid.'().</p>';
       $fun_name='f_'.$eid;
       $fun_name($link,$sample_id,$eid);
+      echo '</div>';
     } 
   }
 

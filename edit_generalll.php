@@ -56,9 +56,9 @@ if($_POST['action']=='insert')
 if($_POST['action']=='calculate')
 {
 
-    echo '<button  class="btn btn-info btn-sm" type="button" data-toggle="collapse" data-target="#cal_data" >Hide Calculation Info</button>';
+    echo '<button  class="btn btn-info btn-sm" type="button" data-toggle="collapse" data-target=".cal_data" >Show/Hide Calculation/Verification Info</button>';
 
-    echo '<div class="collapse navbar-collapse show" id="cal_data"> ';    
+    //echo '<div class="collapse navbar-collapse collapsed" class="cal_data"> ';    
     //echo '<div class="collapse navbar-collapse collapsed" id="cal_data"> ';
   
     $all_result_of_a_sample=get_result_of_sample_in_array($link,$sample_id);
@@ -76,14 +76,13 @@ if($_POST['action']=='calculate')
       $calculate=isset($edit_specification['calculate'])?$edit_specification['calculate']:''; 
       if(strlen($calculate)>0){$cal_count=$cal_count+1;}    
     }
-    echo '<h1>'.$cal_count.'</h1>';
-    for($i=0;$i<=$cal_count;$i++)
+    //echo '<h1>'.$cal_count.'</h1>';
+    for($i=0;$i<=$cal_count+1;$i++)
     {
-     echo '<h1>Round:'.$i.'</h1>';
+     echo '<h1 class="collapse navbar-collapse collapsed cal_data" >Round:'.$i.'</h1>';
      calculate_and_update($link,$sample_id);
     }
-    
-    echo '</div>';
+    //echo '</div>';
 }
 
 if($_POST['action']=='sync_ALL')
@@ -221,10 +220,12 @@ function calculate_and_update($link,$sample_id)
 
     if(strlen($calculate)>0)
     {   
-      //echo 'ex='.$ar['examination_id'].'<br>';
+        echo '<div class="collapse navbar-collapse collapsed cal_data">[Start]Calculating ex='.$ar['examination_id'].'';
         $ex_result=calculate_result($link,$calculate,$ex_list,$sample_id,$decimal);
         //echo $ex_result;
         save_single_result($link,$sample_id,$ar['examination_id'],$ex_result);
+        //echo '[End] Calculating ex='.$ar['examination_id'].'<br><hr>';
+        echo '</div>';
     }
     
     
@@ -232,8 +233,10 @@ function calculate_and_update($link,$sample_id)
     {  
       //echo '<h1>Just before  run_multi_query</h1><br>';
       //$result was creating problem in next loop
+      echo '<p class="collapse navbar-collapse collapsed cal_data">[Start] procedure for ex='.$ar['examination_id'].'</p>';
       $sql='call '.$procedure.'('.$sample_id.');';
-      //echo $sql.'<br>';      
+      echo '<p class="collapse navbar-collapse collapsed cal_data">'.$sql.'</p>';      
+      //echo '[End] procedure for ex='.$ar['examination_id'].'<br><hr>';      
       $resultt=run_multi_query($link,$GLOBALS['database'],$sql,$display_error='yes');
       //echo $sql.'<br>';
       //echo '<h1>Just after run_multi_query</h1><br>';

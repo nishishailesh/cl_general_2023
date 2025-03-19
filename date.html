@@ -1,0 +1,16 @@
+<script src="bootstrap/jquery-3.3.1.js"></script><!-- jQuery is required -->
+<link  href="bootstrap/datepicker/datepicker.css" rel="stylesheet">
+<script src="bootstrap/datepicker/datepicker.js"></script>
+
+<input id=dp1 data-toggle="datepicker">
+<input id=dp2 data-toggle="datepicker-ymd">
+<textarea data-toggle="datepicker"></textarea>
+<div data-toggle="datepicker">click me to set date</div>
+<input type=date>
+<input type=datetime>
+<input type=datetime-local>
+
+<script>
+$('[data-toggle="datepicker"]').datepicker({format: 'dd-mm-yyyy'});
+$('[data-toggle="datepicker-ymd"]').datepicker({format: 'yyyy-mm-dd'});
+</script>

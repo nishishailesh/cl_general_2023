@@ -8,7 +8,7 @@
 #####if unix plugin , as root 
 echo "database:"
 read d
-mysqldump  -d $d > cl_general_blank_2023.sql 
+mysqldump  -R -d $d > cl_general_blank_2023.sql 
 
 tnames='
 Laboratory
