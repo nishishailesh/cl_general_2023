@@ -6211,10 +6211,14 @@ function update_id_type_examination_for_sample_array($link,$sample_id_array,$exa
     $ars=get_single_row($results);
     $next_id=max($ars['max_id'],$minimum)+1;
     
+    $link_str=mk_random_string(5);
+    
     foreach($sample_id_array as $sid)
     {
-      $sqli='insert into `'.$edit_specification['table'] .'` values ("'.$next_id.'","'.$sid.'")';
-      //echo $sqli.'<br>';
+      $sqli='insert into `'.$edit_specification['table'] .'` 
+      (id,sample_id,link)
+      values ("'.$next_id.'","'.$sid.'","'.$link_str.'")';
+      echo $sqli.'<br>';
       if(!$resulti=run_query($link,$GLOBALS['database'],$sqli,$error='no'))
       {
         echo '<p class="text-danger">func update_id_type...() Record Exist? Data not inserted</p>';
@@ -8682,6 +8686,65 @@ function make_link_return($link,$sample_id)
 
 }
 
+function mk_random_string($len)
+{ 
+  $source='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  $source_len=strlen($source);
+  $random_str='';
+  for($i=0;$i<$len;$i++)
+  {
+    $position=rand(0,$source_len-1);
+    $random_str=$random_str.$source[$position];
+  }
+  print($random_str);
+  return $random_str;
+}
+
+function make_any_qr_string_return($link,$uid)
+{
+  $link_prefix=get_config_value($link,'qr_link_prefix');
+  //print($prefix);
+  if(ctype_digit($uid))
+  {
+    $link_sql='select * from sample_link where sample_id=\''.$uid.'\'';
+    $link_result=run_query($link,$GLOBALS['database'],$link_sql);
+    $link_ar=get_single_row($link_result);
+    return $link_prefix.'q.php?uid='.$uid.'&link='.$link_ar['link'];
+  }
+  else
+  {
+    $sql='select 
+          examination_id,
+          json_extract(edit_specification,\'$.unique_prefix\') as unique_prefix,
+          json_extract(edit_specification,\'$.table\') as id_table 
+        from examination 
+        where 
+          json_extract(edit_specification,\'$.type\')="id_single_sample" or 
+          json_extract(edit_specification,\'$.type\')="id_multi_sample"';
+    //echo $sql.'<br>';
+    $result=run_query($link,$GLOBALS['database'],$sql);
+    if(get_row_count($result)<=0)
+    {
+      //not sample id, no unique id implimented
+      //what can be done? Nothing.
+      return false;
+    }
+    while($ar=get_single_row($result))
+    {
+      $prefix=trim($ar['unique_prefix'],'"');
+      if($prefix==substr($uid,0,strlen($prefix)))
+      {
+        $link_sql='select * from `'.trim($ar['id_table'],'"').'` where id=\''.substr($uid,strlen($prefix)).'\'';
+        $link_result=run_query($link,$GLOBALS['database'],$link_sql);
+        //there can be multiple row, but link value is same. so only first is sufficient
+        $link_ar=get_single_row($link_result);
+        return $link_prefix.'q.php?uid='.$uid.'&link='.$link_ar['link'];
+      }
+    }
+    return false; //no suitable unique id found
+  }
+}
+
 
 function send_sms($sms,$num)
 {
@@ -11069,6 +11132,24 @@ function xxx_show_all_buttons_for_sample($link,$sample_id,$mode='view')
       //echo '</div>';
       xxx_sample_id_TAT_button($sample_id,$target=' target=_blank ',$label='TAT');
   echo '</div>';
+}
+
+function is_eligible_for_print($link,$sample_id)
+{
+  $ret=false;
+  $pre=get_config_value($link,'prerequisite_examination_for_print');
+  $pre_array=explode(',',$pre);
+  //if any one prerequisite examination done, print allowed
+  foreach($pre_array as $pex)
+  {
+    $pp=get_one_ex_result($link,$sample_id,$pex);
+  if(strlen($pp)>0)
+  {
+    $ret=true;
+    break;
+  }
+  }
+  return $ret;
 }
 
 
@@ -13671,9 +13752,10 @@ function xxx_prepare_sample_barcode_1D_2D($link,$sample_id,$label_id,$pdf)
 
             $pdf->write1DBarcode($sample_id, $label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], 0.4, $style, 'N');
           }
-          if($item[2]=='c')
+          else if($item[2]=='c')
           {
-            $qr=make_link_return($link,$sample_id);
+            //$qr=make_link_return($link,$sample_id);
+            $qr=make_any_qr_string_return($link,$sample_id);
             //$pdf->write2DBarcode($sample_id, $label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], $style,'T', FALSE);
             $pdf->write2DBarcode($qr, $label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], $style,'T', FALSE);
           }         
@@ -13756,7 +13838,7 @@ function xxx_prepare_sample_barcode_1D_2D($link,$sample_id,$label_id,$pdf)
       {
         $ex_result=get_any_examination_result($link,$sample_id,$item[0]);
 
-	if($GLOBALS['patient_name']==$item[0])    //Patient name
+    if($GLOBALS['patient_name']==$item[0])    //Patient name
         {
           $ex_result=substr($ex_result,0,10);
         }
@@ -13778,6 +13860,12 @@ function xxx_prepare_sample_barcode_1D_2D($link,$sample_id,$label_id,$pdf)
             $pdf->SetXY($item[3],$item[4]);
             $pdf->Cell($item[5],$item[6],' '.$ex_result,$border, $ln=0, $align='', $fill=false, '', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M');  
           }
+          
+           else if($item[2]=='c')
+          {
+            $qr=make_any_qr_string_return($link,$ex_result);
+            $pdf->write2DBarcode($qr,$label_details['barcode_format'], $item[3],$item[4],$item[5],$item[6], $style,'T', FALSE);
+          }   
         }
         
         else if($item[1]=='v')

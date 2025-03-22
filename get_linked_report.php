@@ -11,8 +11,10 @@ require_once('tcpdf/tcpdf.php');
 //echo '<pre>';print_r($_SESSION);echo '</pre>';
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 $sample_id=get_slink($link,$_GET['token']);
+if(!print_allowed($link,$sample_id)){echo "Not released for printing"; return false;}
 //echo $sample_id;
 //exit(0);
+
 
 $pdf=xxx_prepare_for_report_printing();
 xxx_fill_report($link,$sample_id,$pdf);
