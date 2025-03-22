@@ -35,8 +35,8 @@ foreach ($s_array as $sid)
     else
     {
       
-      echo '<div style="display:inline-block">';
-        echo 'sample_d='.$sid.' is not eligible for print';
+      echo '<div>';
+        echo 'sample_d='.$sid.' is not eligible for print <br>';
       echo '</div>';
         $final_print='no';
         continue;

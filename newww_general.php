@@ -11,7 +11,7 @@ echo '      <link rel="stylesheet" href="project_common.css">
 
 main_menu($link);
 
-mk_random_string(5);
+//mk_random_string(5);
 
 function uhid_link_button()
 {
