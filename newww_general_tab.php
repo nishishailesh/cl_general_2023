@@ -272,7 +272,6 @@ function my_search_test()
   xhttp.send(post); 
 }
 
-
 function get_uhid_data()
 {
   uhid_text=document.getElementById("uhid").value;
@@ -299,6 +298,5 @@ function get_uhid_data()
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhttp.send(post); 
 }
-
 
 </script>

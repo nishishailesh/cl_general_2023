@@ -1983,8 +1983,6 @@ Click to edit"
    
 }
 
-
-
 function get_primary_result_modal($link,$sample_id,$examination_id,$attributes_str='')
 {
   $sql='select * from primary_result where sample_id=\''.$sample_id.'\' and examination_id=\''.$examination_id.'\'';
@@ -2500,7 +2498,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
       echo '
             <input 
             '.$readonly.'
-          id="'.$element_id.'" 
+            id="'.$element_id.'" 
             name=result 
             data-primary="'.$primary.'" 
             data-uniq="'.$uniq.'" 
@@ -2508,9 +2506,15 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
             data-session_name="'.$_POST['session_name'].'"
             data-sid="'.$sample_id.'" 
             data-user="'.$_SESSION['login'].'" 
-            class="form-control autosave" 
-            type=\''.$type.'\' 
-            value=\''.$result.'\'>';
+            class="form-control autosave flatpickr-date"';
+            
+            //type=date removed and class flatpickr-date added
+            //type=text addedx 
+            //echo 'type=\''.$type.'\' ';
+            echo ' type=text ';
+            
+            
+            echo 'value=\''.$result.'\'>';
         echo '</div>';
         echo '<div class="d-inline  no-gutters">';
           if($readonly!='readonly')
@@ -2525,7 +2529,7 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
   }
   elseif($type=='datetime-local')
   {
-    $default=strftime("%Y-%m-%d %H:%M");
+    $default=strftime("%Y-%m-%dT%H:%M");
     $step=isset($edit_specification['step'])?$edit_specification['step']:1;
     //////
     echo '<div class="basic_form  m-0 p-0 no-gutters">';
@@ -2548,9 +2552,11 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
             data-session_name="'.$_POST['session_name'].'"
             data-user="'.$_SESSION['login'].'" 
           pattern="'.$pattern.'" 
-            class="form-control autosave" 
-            type=\''.$type.'\' 
+            class="form-control autosave flatpickr-datetime" 
             value=\''.$result.'\'>';
+        
+        //echo 'type=\''.$type.'\' ';
+
         echo '</div>';
         echo '<div class="d-inline  no-gutters">';
         if($readonly!='readonly')
@@ -4981,7 +4987,9 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
       }
       else
       {
-        echo '<input type=date id=\''.$field.'\' name=\''.'__ex__'.$examination_id.'\' value=\''.$value.'\' '.$attributes_str.' >';
+        //echo '<input type=date id=\''.$field.'\' name=\''.'__ex__'.$examination_id.'\' value=\''.$value.'\' '.$attributes_str.' >';
+        echo '<input type=text class="flatpickr-date" id=\''.$field.'\' name=\''.'__ex__'.$examination_id.'\' value=\''.$value.'\' '.$attributes_str.' >';
+        
         $default=strftime("%Y-%m-%d");
         show_source_button($field,$default);
       }
@@ -5006,6 +5014,7 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
       else
       {
         echo '<input type=time id=\''.$field.'\'  '.$readonly.' name=\''.'__ex__'.$examination_id.'\' value=\''.$value.'\'  '.$attributes_str.' >';
+        //echo '<input type=time id=\''.$field.'\'  '.$readonly.' name=\''.'__ex__'.$examination_id.'\' value=\''.$value.'\'  '.$attributes_str.' >';
         $default=strftime("%H:%M");
         show_source_button($field,$default);
       }
@@ -5187,8 +5196,10 @@ function get_one_field_for_insert($link,$examination_id,$default_value='')
             name="__ex__'.$examination_id.'" 
             data-exid="'.$examination_id.'" 
             
-            class="form-control" 
-            type=\''.$type.'\' 
+            class="form-control flatpickr-date" ';
+            //type=\''.$type.'\' 
+            
+            echo 'type=text 
             >';
         echo '</div>';
         echo '<div class="d-inline  no-gutters">';
@@ -5218,9 +5229,10 @@ function get_one_field_for_insert($link,$examination_id,$default_value='')
             data-exid="'.$examination_id.'" 
             
           pattern="'.$pattern.'" 
-            class="form-control" 
-            type=\''.$type.'\' 
+            class="form-control  flatpickr-datetime" 
+            type=text 
             >';
+            //type=\''.$type.'\' 
         echo '</div>';
         echo '<div class="d-inline  no-gutters">';
           //get_primary_result($link,$sample_id,$examination_id);
@@ -5573,8 +5585,8 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
             data-exid="'.$examination_id.'" 
             data-sid="__s__'.$sample_id.'" 
             
-            class="form-control" 
-            type=\''.$type.'\' 
+            class="form-control flatpickr-date" 
+            type=text 
             >';
         echo '</div>';
         echo '<div class="d-inline  no-gutters">';
@@ -5605,8 +5617,8 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
             data-exid="'.$examination_id.'" 
             data-sid="__s__'.$sample_id.'" 
           pattern="'.$pattern.'" 
-            class="form-control" 
-            type=\''.$type.'\' 
+            class="form-control flatpickr-datetime" 
+            type=text 
             >';
         echo '</div>';
         echo '<div class="d-inline  no-gutters">';
@@ -12680,13 +12692,23 @@ function get_sample_id_array_for_any_id($link,$id)
 
 function get_sample_id_array_for_pid($link,$pid)
 {
+  /*
+  $sql='select 
+        sample_id
+      from result
+      where 
+      examination_id=\''.$GLOBALS['mrd'].'\' and
+      result=\''.$pid.'\'
+      order by sample_id desc limit 10';
+  */
   $sql='select 
         sample_id
       from result
       where 
       examination_id=\''.$GLOBALS['mrd'].'\' and
       result=\''.$pid.'\'';
-       
+      
+             
   $result=run_query($link,$GLOBALS['database'],$sql);
   if(get_row_count($result)<=0){return false;}
   
@@ -13151,8 +13173,8 @@ function get_one_field_for_insert_no_readonly($link,$examination_id)
             name="__ex__'.$examination_id.'" 
             data-exid="'.$examination_id.'" 
             
-            class="form-control" 
-            type=\''.$type.'\' 
+            class="form-control flatpickr-date" 
+            type=text
             >';
         echo '</div>';
         echo '<div class="d-inline  no-gutters">';
@@ -13181,8 +13203,8 @@ function get_one_field_for_insert_no_readonly($link,$examination_id)
             data-exid="'.$examination_id.'" 
             
           pattern="'.$pattern.'" 
-            class="form-control" 
-            type=\''.$type.'\' 
+            class="form-control flatpickr-datetime" 
+            type=text
             >';
         echo '</div>';
         echo '<div class="d-inline  no-gutters">';

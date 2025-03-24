@@ -28,6 +28,11 @@ function head($title='blank')
       <script src="bootstrap/popper.js"></script>
       <script src="bootstrap/js/bootstrap.min.js"></script>
 
+      <link rel="stylesheet" href="flatpickr/flatpickr.min.css">
+      <script src="flatpickr/flatpickr.min.js"></script>
+
+      
+      
       <style>
         #main_container 
         {
@@ -55,7 +60,12 @@ function tail()
 {
   if(!isset($GLOBALS['nojunk']))
   {
-    echo '</body></html>';
+    echo '</body>
+    <script>
+    flatpickr(".flatpickr-date", {});
+    flatpickr(".flatpickr-datetime", {dateFormat: "Y-m-dTH:i" , enableTime:true,time_24hr: true});
+    </script>
+    </html>';
   }
 }
 

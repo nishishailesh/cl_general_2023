@@ -5,7 +5,10 @@ require_once 'base/verify_login.php';
   ////////User code below/////////////////////
       
 echo '      <link rel="stylesheet" href="project_common.css">
-      <script src="project_common.js"></script>';
+
+            <script src="project_common.js"></script>';
+        
+        
         
 //$link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
@@ -221,9 +224,5 @@ function get_uhid_data()
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhttp.send(post); 
 }
-
-
-
-
 
 </script>

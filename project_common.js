@@ -885,8 +885,6 @@ function popup_textarea(me)
   
 }
 
-
-
 function distribute()
 {
   //{"UHID":"20250050003","mobile":"9284339954","prefix":"Mrs.","name":"ALATAF JAMMU","middlename":"KHATIK","surname":"",
@@ -924,3 +922,10 @@ function distribute()
   document.getElementById("source_for_r_id_1012").setAttribute('tabindex', '-1')
   
 }
+
+
+
+//flatpickr("#myID2", {dateFormat: "Y-m-d"});
+//flatpickr("#myID3", {dateFormat: "Y-m-d H:i:S" , enableTime:true,    });
+//flatpickr("#myID4", {dateFormat: "Y-m-d H:i:S" , enableTime:true,time_24hr: true,enableSeconds:true});
+//flatpickr("#myID5", {dateFormat: "d/m/Y"});
