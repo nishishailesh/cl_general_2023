@@ -706,6 +706,8 @@ INSERT INTO `examination` VALUES
 (5223,'Hematocrit','Heparinised-Venous_Blood','{\"type\":\"number\",\"interval_l\":\"36\",\"interval_h\":\"50\",\"equipment\":\"A\"}','','Misc/VBG','Blood Gas Analysis','Venous Blood Examination','','','010','',1,1,0,1,NULL,'','V','<i>Unit: %, Method: Impedance Conductimetry</i><br>\r\n<b>Male:</b> 41-50<br>\r\n<b>Female:</b> 36-48<\r\n\r\n','<i>Unit: %, Method: Impedance Conductimetry</i><br>\r\n<b>Male:</b> 41-50<br>\r\n<b>Female:</b> 36-48','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
 (5224,'Hemoglobin','Heparinised-Venous_Blood','','','Misc/VBG','Blood Gas Analysis','Venous Blood Examination','','','010','',1,1,0,1,NULL,'','V','<i>Unit: gm/dL, Method: Calculation</i><br>\r\n<b>Male:</b> 13.2 - 16.6<br>\r\n<b>Female:</b> 11.6 - 15<br>','<i>Unit: gm/dL, Method: Calculation</i><br>\r\n<b>Male:</b> 13.2 - 16.6<br>\r\n<b>Female:</b> 11.6 - 15<br>','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
 (5225,'eGFRcr (CKD-EPI)','Plain-Blood','{\"procedure\":\"calculate_eGFRcr\",\"help\":\"mL/min/1.73 m² CKD-EPI(2021)\"}','','eGFR','Clinical chemistry/RFT','Renal Function Tests','','','','',1,1,0,1,NULL,'','C','mL/min/1.73 m²<br><a href=\"https://www.kidney.org/ckd-epi-creatinine-equation-2021\">CKD-EPI (2021)</a>','mL/min/1.73 m²<br><a href=\"https://www.kidney.org/ckd-epi-creatinine-equation-2021\">CKD-EPI (2021)</a>','yes','','yes','',',Blood,NABL'),
+(5226,'Serum Osmolality (Complex)','Complex','{\"procedure\":\"calculate_osmolality\"}','','S-Osmolarity,Misc/Osmolarity-Serum','Clinical chemistry','Renal Function Tests','','270','','',1,1,0,1,NULL,'','C','(Calculated)','(Calculated)','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood,NABL'),
+(5227,'referenced_sample_id','Complex','','','S-Osmolarity,Misc/Osmolarity-Serum','Clinical chemistry','Renal Function Tests','','270','','',1,1,0,1,NULL,'','C','(Calculated)','(Calculated)','yes',NULL,'yes','',',Blood,NABL'),
 (9000,'QC Equipment','None','{\"type\":\"select\",\"option\":\",XL_640,XL_1000,VITROS3600,HPLC_723GX,Erba Chem 5 Plus semiauto(060379) 2,Rapidpoint-500e_Siemens,Rapidpoint-500_Siemens,R9,Erba_Chem_5x(sr.no:s2211871),Erba_Chem_5x(sr.no:s12211845),R9-402016,R9-401900,MINDRAY_BS600M,JOKOH EX-D,NXL-1000\"}','','Misc/QC/Sample Details','Sample Details/QC','','','','','',1,1,0,1,NULL,'','','','','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (9001,'equipment_serial_number','None','{\"type\":\"select\",\"option\":\",401900,402016\"}','','Misc/QC/Sample Details','Sample Details/QC','','','','','',1,1,0,1,NULL,'','','','','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (9002,'equipment_specimen_number','None','','','Misc/QC/Sample Details','Sample Details/QC','','','','','',1,1,0,1,NULL,'','','','','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
@@ -1191,7 +1193,7 @@ CREATE TABLE `labels` (
 LOCK TABLES `labels` WRITE;
 /*!40000 ALTER TABLE `labels` DISABLE KEYS */;
 INSERT INTO `labels` VALUES
-(6,'1045','QR','QRCODE','{\r\n\"1\":\"1045,h,c,03,03,20,20\",\r\n\"2\":\"1001,h,t,22,5,25,03\",\r\n\"3\":\"1045,h,t,22,8,25,03\",\r\n\"4\":\"other_data,h,t,22,11,25,03\",\r\n\"5\":\"1002,h,t,22,14,25,03\",\r\n\"6\":\"1045,h,b,22,18,25,03\"\r\n}','select group_concat(sample_id separator \",\") other_data from request_id where id in(select id from request_id where sample_id={sample_id})',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
+(6,'1045','QR','QRCODE','{\n\"1\":\"1045,h,c,02,02,17,17\",\n\"2\":\"1001,h,t,22,5,25,03\",\n\"3\":\"1045,h,t,22,8,25,03\",\n\"4\":\"other_data,h,t,22,11,25,03\",\n\"5\":\"1002,h,t,22,14,25,03\",\n\"6\":\"1045,h,b,05,18,40,03\"\n}','select group_concat(sample_id separator \",\") other_data from request_id where id in(select id from request_id where sample_id={sample_id})',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
 (7,'1045','R1','C128','{\r\n\"1\":\"1045,h,b,05,05,40,10\",\r\n\"2\":\"1001,h,t,20,15,25,03\",\r\n\"3\":\"1045,h,t,5,15,15,03\",\r\n\"4\":\"other_data,h,t,5,18,25,03\",\r\n\"5\":\"1002,h,t,30,18,15,03\"\r\n}','select group_concat(sample_id separator \",\") other_data from request_id where id in(select id from request_id where sample_id={sample_id})',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
 (8,'105049','K1','C128','{\r\n\"1\":\"105049,h,b,03,05,45,10\",\r\n\"2\":\"1000,h,t,25,15,20,03\",\r\n\"3\":\"105049,h,t,10,15,15,03\",\r\n\"4\":\"sample_id,h,t,10,18,15,03\",\r\n\"5\":\"1002,h,t,25,18,20,03\",\r\n\"6\":\"other_data,h,t,5,15,5,6\"\r\n}','select group_concat(distinct equipment SEPARATOR \'\') other_data from result,examination where sample_id={sample_id} and examination.examination_id=result.examination_id',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
 (9,'105045','O1','C128','{\r\n\"1\":\"105045,h,b,03,05,45,10\",\r\n\"2\":\"1000,h,t,25,15,20,03\",\r\n\"3\":\"105045,h,t,10,15,15,03\",\r\n\"4\":\"sample_id,h,t,10,18,15,03\",\r\n\"5\":\"1002,h,t,25,18,20,03\",\r\n\"6\":\"other_data,h,t,5,15,5,6\"\r\n}','select group_concat(distinct equipment SEPARATOR \'\') other_data from result,examination where sample_id={sample_id} and examination.examination_id=result.examination_id',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
@@ -1583,6 +1585,7 @@ LOCK TABLES `sample_id_strategy` WRITE;
 /*!40000 ALTER TABLE `sample_id_strategy` DISABLE KEYS */;
 INSERT INTO `sample_id_strategy` VALUES
 ('Citrate-Blood',1000,1999999,'Biochemistry'),
+('Complex',1000,1999999,'Biochemistry'),
 ('EDTA-Blood',1000,1999999,'Biochemistry'),
 ('Fluoride-Blood',1000,1999999,'Biochemistry'),
 ('HCL-Urine',1000,1999999,'Biochemistry'),
@@ -1784,4 +1787,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-24  9:40:25
+-- Dump completed on 2025-03-27 20:02:50

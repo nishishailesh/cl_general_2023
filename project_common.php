@@ -12707,8 +12707,8 @@ function get_sample_id_array_for_pid($link,$pid)
       where 
       examination_id=\''.$GLOBALS['mrd'].'\' and
       result=\''.$pid.'\'';
-      
-             
+  
+
   $result=run_query($link,$GLOBALS['database'],$sql);
   if(get_row_count($result)<=0){return false;}
   
@@ -12721,7 +12721,6 @@ function get_sample_id_array_for_pid($link,$pid)
   print_r($ret);
   return $ret;
 }
-
 
 function get_ex_id_of_unique_id_from_any_id_value_string($link,$id_value_string)
 {
