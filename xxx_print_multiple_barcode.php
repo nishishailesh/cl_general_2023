@@ -2,7 +2,7 @@
 $GLOBALS['nojunk']='';
 require_once 'project_common.php';
 require_once 'base/verify_login.php';
-	////////User code below/////////////////////
+  ////////User code below/////////////////////
 //echo '<pre>';print_r($_POST);echo '</pre>';
 
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
@@ -12,19 +12,20 @@ $received=unserialize(base64_decode($_POST['label_list']));
 
 //create_multi_label_button($link,$received);
 
-//exit(0);	//echo will cause problem in pdf
+//exit(0);  //echo will cause problem in pdf
 
 $pdf=get_pdf_link_for_barcode();
 
 foreach($received as $one_label)
 {
-	foreach($one_label as $sample)
-	{
-		for($i=0;$i<$sample[2];$i++)
-		{
-			xxx_prepare_sample_barcode($link,$sample[1],$sample[0],$pdf);
-		}
-	}
+  foreach($one_label as $sample)
+  {
+    for($i=0;$i<$sample[2];$i++)
+    {
+      //xxx_prepare_sample_barcode($link,$sample[1],$sample[0],$pdf);
+      xxx_prepare_sample_barcode_1D_2D($link,$sample[1],$sample[0],$pdf);
+    }
+  }
 }
 
 print_pdf($pdf,'barcode.pdf');

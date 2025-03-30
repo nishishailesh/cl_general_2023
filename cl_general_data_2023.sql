@@ -1156,6 +1156,7 @@ INSERT INTO `label_group` VALUES
 (4,'Stem ID','{\"21\":\"1\",\"7\":\"1\"}'),
 (5,'Fluid ID','{\"18\":\"1\",\"7\":\"1\"}'),
 (6,'Sample ID(2)','{\"10\":\"2\"}'),
+(8,'WARD ID QR','{\"6\":\"1\",\"11\":\"1\"}'),
 (9,'Anemia_ID','{\"20\":\"1\",\"7\":\"1\"}'),
 (10,'Sample ID and Request ID','{\"10\":\"1\",\"7\":\"1\"}'),
 (11,'NIRAMAYA ID','{\"13\":\"1\"}'),
@@ -1787,4 +1788,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-27 20:02:50
+-- Dump completed on 2025-03-30 17:54:29
