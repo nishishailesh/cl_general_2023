@@ -11,10 +11,8 @@ read d
 mysqldump  -R -d $d > cl_general_blank_2023.sql 
 
 tnames='
-Laboratory
 config
 consumable_name
-copy_labels
 dashboard
 dementia
 display_choice
@@ -23,11 +21,13 @@ examination_field_specification
 host_code
 label_group
 labels
+Laboratory
 lis_to_vitros_sample_type
 menu_new
 menu_view
 menu_view_fast
 menu_worklist
+my_procedure_code
 qc_lot
 route_priority
 sample_id_strategy

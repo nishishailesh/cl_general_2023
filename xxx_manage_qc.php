@@ -76,7 +76,7 @@ if($_POST['action']=='find_qc_data')
 		$sorted_array[$ex_data['name'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
 	}
 	//echo '<pre>';print_r($sorted_array);echo '</pre>';
-	$sorted=json_encode($sorted_array);		//used by chart.js
+	//$sorted=json_encode($sorted_array);		//used by chart.js
 	
 	
 	//convert in to csv and upload in database and display download link
@@ -102,40 +102,47 @@ if($_POST['action']=='find_qc_data')
 else if(count($sar)>0)
 {
 	//echo implode(',',$sar);
+	$csv=implode(',',$sar);
+	//echo '<h5>'.$csv.'</h5>';
 	
-	$sql='select * from primary_result where sample_id in ('.implode(',',$sar).') order by sample_id desc';
+	$sql='select * from primary_result where sample_id in ('.$csv.') order by sample_id desc';
+	echo $sql;
 	$result=run_query($link,$GLOBALS['database'],$sql);
+	echo '<h1>'.get_row_count($result).'</h1>';
+
 	if(get_row_count($result)>=1)
 	{
 		echo '<a  data-toggle="collapse" href="#lj_table" class="m-2 p-2" aria-expanded="false" >Show/Hide Results</a>';
 		//echo '<button class="btn btn-primary" type="button"  data-toggle="collapse" data-target="#lj_table" aria-expanded="false" >Show Hide Results</button>';
 		echo '<div id="lj_table" class="show p-3 bg-light border border-dark">';
-						echo $sql;
 					
 						echo '<table class="table table-striped table-sm m-3 table-responsive">';
-						
+					
 						$first='yes';
-						$data=[];
+						//$data=[];
+						$counter=0;
 						while($ar=get_single_row($result))
 						{
+							//print_r($ar);
 							$q=display_one_qc($link,$ar,$first);
-							$data[]=$q;
+							//$data[]=$q;
 							$first='no';
+							//echo $ar['sample_id'].',';
 						}
 						echo '</table>';
 		
 		echo '</div>';
-		$json=json_encode($data);
-		$sorted_array=array();
-		foreach($data as $qc)
-		{
-			$ex_data=get_one_examination_details($link,$qc['examination_id']);
+		//$json=json_encode($data);
+		//$sorted_array=array();
+		//foreach($data as $qc)
+		//{
+		//	$ex_data=get_one_examination_details($link,$qc['examination_id']);
 			
 			//$sorted_array[$qc['examination_id'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
-			$sorted_array[$ex_data['name'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
-		}
+		//	$sorted_array[$ex_data['name'].'^'.$qc['qc_lot(sample)'].'^'.$qc['qc_equipment']][]=$qc;
+		//}
 		//echo '<pre>';print_r($sorted_array);echo '</pre>';
-		$sorted=json_encode($sorted_array);		//used by chart.js
+		//$sorted=json_encode($sorted_array);		//used by chart.js
 	}
 }
 else if(count($sar)<=0){echo '<h2 class="text-warning">no qc results available today</h2>';}
@@ -784,9 +791,11 @@ function xxx_edit_primary_result_extra_button($sample_id,$examination_id,$uniq,$
 
 ?>
 
+<!--
 <div class="d-block" style="width:80%">
 	<canvas id="lj_chart2" ></canvas>
 </div>
+-->
 
 <script>
 function my_search_test()
@@ -816,8 +825,8 @@ function my_search_test()
 	xhttp.send(post);	
 }
 
-jdata=<?php echo $json; ?>;
-sdata=<?php echo $sorted; ?>;
+//jdata=<?php echo $json; ?>;
+//sdata=<?php echo $sorted; ?>;
 
 //alert(JSON.stringify(sdata));
 

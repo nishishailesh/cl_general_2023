@@ -404,7 +404,7 @@ function f_5060($link,$sample_id,$ex_id)
   }
   else if (get_one_ex_result($link,$sample_id,$GLOBALS['Age(Y)'])<18)
   {
-    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'age<18? eGFR can not be calculated');
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'age<18, eGFR can not be calculated');
     return true;
   }
    
