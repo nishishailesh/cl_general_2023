@@ -298,6 +298,40 @@ $(document).ready
               );
               
 
+      $(".summernote").change(
+                function()
+                {
+                  //alert($(this).attr('minlength')+$(this).val().length)
+                  
+                  //if( $(this).attr('minlength') > $(this).val().length)
+                  //{
+                  //  alert("do")
+                  //  focus($(this))
+                  //  return false;
+                  //}
+                  $.post(
+                      "save_record.php",
+                      {
+                        examination_id: $(this).attr('data-exid'),
+                        primary: $(this).attr('data-primary'),
+                        uniq: $(this).attr('data-uniq'),
+                        sample_id: $(this).attr('data-sid'),
+                        //result: $(this).val(),
+                        result: $(this).html,
+                        session_name: $(this).attr('data-session_name'),
+                        user: $(this).attr('data-user')
+                       },
+                      function(data,status)
+                      {
+                        //alert("Data: " + data + "\nStatus: " + status);
+                        $("#response").html(data)
+                      }
+                    );
+                }
+              );
+              
+
+
       $(".autosave-blob").change(
                 function()
                 {
@@ -929,3 +963,5 @@ function distribute()
 //flatpickr("#myID3", {dateFormat: "Y-m-d H:i:S" , enableTime:true,    });
 //flatpickr("#myID4", {dateFormat: "Y-m-d H:i:S" , enableTime:true,time_24hr: true,enableSeconds:true});
 //flatpickr("#myID5", {dateFormat: "d/m/Y"});
+
+//For HTML type results

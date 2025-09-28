@@ -1,8 +1,9 @@
--- MariaDB dump 10.19  Distrib 10.11.6-MariaDB, for debian-linux-gnu (x86_64)
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19-11.8.3-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: clg
 -- ------------------------------------------------------
--- Server version	10.11.6-MariaDB-0+deb12u1
+-- Server version	11.8.3-MariaDB-0+deb13u1 from Debian
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -13,7 +14,35 @@
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
+
+--
+-- Table structure for table `Laboratory`
+--
+
+DROP TABLE IF EXISTS `Laboratory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Laboratory` (
+  `Laboratory` varchar(200) NOT NULL,
+  PRIMARY KEY (`Laboratory`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Laboratory`
+--
+
+LOCK TABLES `Laboratory` WRITE;
+/*!40000 ALTER TABLE `Laboratory` DISABLE KEYS */;
+set autocommit=0;
+INSERT INTO `Laboratory` VALUES
+('Biochemistry Laboratory New Civil Hospital Surat'),
+('NCHS Biochemistry Section'),
+('NCHS Pathology Section');
+/*!40000 ALTER TABLE `Laboratory` ENABLE KEYS */;
+UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `config`
@@ -21,7 +50,7 @@
 
 DROP TABLE IF EXISTS `config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `config` (
   `name` varchar(100) NOT NULL,
   `value` text DEFAULT NULL,
@@ -37,15 +66,17 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `config` VALUES
+('edit_delete_restriction_bypass_examination','10015,10016',NULL,''),
 ('eq_color_code','{\"C\":\"lightpink\",\"I\":\"red\",\"A\":\"cyan\",\"D\":\"#00F5E0\",\"6\":\"violet\",\"K\":\"#6699ff\",\"E\":\"mediumvioletred\",\"U\":\"#FFA500\",\"F\":\"#FFA500\",\"e\":\"#c77e62\"}',NULL,''),
 ('examination_id_for_email','1024',NULL,NULL),
 ('examination_id_for_verification_record','10007',NULL,'a datetime examination which will be updated when verification/calculation is done'),
 ('examination_id_for_xmpp','1051',NULL,NULL),
 ('fast_search_result_pages_limit','20',NULL,NULL),
 ('fast_search_result_page_limit','100',NULL,NULL),
-('fast_search_sample_limit','300000',NULL,NULL),
-('footer_notice','Verify authenticity of report by scanning QR Code in mobile browser',NULL,NULL),
+('fast_search_sample_limit','3000',NULL,NULL),
+('footer_notice','Report must have QR code on top-right. Scan QR to verify Authenticity of the report.',NULL,NULL),
 ('header_route','Header',NULL,NULL),
 ('horizontal_status_lot_size','100',NULL,''),
 ('nabl_symbol',NULL,NULL,NULL),
@@ -72,6 +103,7 @@ INSERT INTO `config` VALUES
 ('TAT_remark_id','5191',NULL,NULL);
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `consumable_name`
@@ -79,7 +111,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `consumable_name`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `consumable_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `consumable_name` varchar(100) DEFAULT NULL,
@@ -97,6 +129,7 @@ CREATE TABLE `consumable_name` (
 
 LOCK TABLES `consumable_name` WRITE;
 /*!40000 ALTER TABLE `consumable_name` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `consumable_name` VALUES
 (5,'ADENOSINE BUFFER',NULL,'2020-08-17 14:59:54','9099514805'),
 (6,'ALB_BCG',NULL,'2020-08-17 15:01:18','9099514805'),
@@ -222,6 +255,7 @@ INSERT INTO `consumable_name` VALUES
 (165,'CBB STAIN FOR PRE',NULL,'2020-08-17 15:11:26','9099514805');
 /*!40000 ALTER TABLE `consumable_name` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `dashboard`
@@ -229,7 +263,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `dashboard`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dashboard` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `topic` varchar(100) NOT NULL,
@@ -245,6 +279,7 @@ CREATE TABLE `dashboard` (
 
 LOCK TABLES `dashboard` WRITE;
 /*!40000 ALTER TABLE `dashboard` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `dashboard` VALUES
 (1,'Calculated Parameters','Prothrombin Time related calculation of indexes is now available. \nWhen in <b>Edit</b> mode, Click <b>Calculate</b> to refresh calculation.\nModification in database is required to add new calculated tests.\nChanging ISI value in database as required is essential',NULL),
 (2,'Suggestions and Feedback','For suggestion for improvement, contact lab in-charge or whatsApp: 9664555812 Dr Shailesh ',NULL),
@@ -256,6 +291,7 @@ INSERT INTO `dashboard` VALUES
 (8,'Worklist Print','See number 6 (get examination id from 7)',8);
 /*!40000 ALTER TABLE `dashboard` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `dementia`
@@ -263,7 +299,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `dementia`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dementia` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `Minutes` varchar(10) DEFAULT NULL,
@@ -275,7 +311,7 @@ CREATE TABLE `dementia` (
   `recording_time` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   `recorded_by` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -284,6 +320,7 @@ CREATE TABLE `dementia` (
 
 LOCK TABLES `dementia` WRITE;
 /*!40000 ALTER TABLE `dementia` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `dementia` VALUES
 (28,'0','8','*','*','*','Pepsin wash in ISE module','2020-09-15 09:45:42','3'),
 (29,'0','8','26','*','*','Print Maintenance Sheets','2025-08-19 16:42:09','3'),
@@ -293,7 +330,7 @@ INSERT INTO `dementia` VALUES
 (44,'0','8','1','*','*','Change saturated KCL solution in PH meter','2020-08-13 12:35:34','3'),
 (45,'0','8','1','1','*','Check Expiry Date of drugs in ART kit, Eye wash kit and First aid kit','2020-08-13 12:35:10','3'),
 (46,'0','8','1','8','*','Yearly calibration of volumetric flask','2020-12-16 11:08:46','8866580625'),
-(47,'0','8','*/5','*','*','Refilling of Std-A and std-B','2020-08-13 12:17:05','3'),
+(47,'0','8','*/5','*','*','Check and Refill STD-A and STD-B in ISE Modules of ERBA XL-1000 and NEW ERBA XL-1000','2025-08-28 11:52:12','3'),
 (50,'0','8','1','5','*','Renewal of CMC of Erba XL-1000, NEW Erba XL-1000, Semi-Autos and Radiometer ABGA Analyzers','2025-08-19 16:41:51','3'),
 (52,'0','8','1','4,10','*','PUT REQUEST FOR PRINTER CONSUMABLE','2020-08-13 12:13:08','3'),
 (55,'0','8','1','*','*','Back up of volume parameters,programming parameter, reapeat flags from Erba XL-1000 & Mindray-BS600M to DokuWiKi','2025-08-19 16:35:05','8866580625'),
@@ -317,12 +354,14 @@ INSERT INTO `dementia` VALUES
 (88,'10','8','*','*','2','weekly maintenence of VITROS-3600','2021-08-18 12:28:35','9099514805'),
 (89,'10','8','10','*','*','Hypowash of XL-1000 and NXL-1000','2025-08-19 16:38:05','9099514805'),
 (91,'10','8','1','*','*','Monthly IQC and EQC file of XL-1000, NXL-1000, VITROS-3600, ABGA Analyzers and JOKOH EX-D','2025-08-19 16:38:05','9099514805'),
-(92,'10','8','1','*','*','Monthly TAT file','2021-08-25 09:46:43','9099514805'),
 (95,'30','14','12','1,4,7,10','*','Autoclave Service','2025-08-19 16:33:58','3'),
 (98,'25','10','*','*','*','KIPD Register Check','2025-06-27 10:14:27','3'),
-(99,'00','17','*','*','*','TEST','2025-08-19 17:03:48','9426713235');
+(100,'1','8','14,29','*','*','15 Days LDH Recalibration','2025-06-27 10:14:27','9426713235'),
+(101,'1','8','1','*','*','Update previous month TAT in TAT Analysis Table in LIS.','2025-09-01 17:17:47','9426713235'),
+(102,'50','11,15','*','*','*','Inter-instrumental Sample Comparison - Make file and Verify File','2025-09-20 11:44:39','3');
 /*!40000 ALTER TABLE `dementia` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `display_choice`
@@ -330,7 +369,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `display_choice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `display_choice` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `examination_id` int(11) NOT NULL,
@@ -348,6 +387,7 @@ CREATE TABLE `display_choice` (
 
 LOCK TABLES `display_choice` WRITE;
 /*!40000 ALTER TABLE `display_choice` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `display_choice` VALUES
 (7,1022,'Absurd Potassium (EDTA)','Correct Tube-Barcode ? \r\nDelayed analysis?\r\nCalcium=\r\nRepeat K+=\r\nHemolysis\r\nRemark: Preanalytical error. EDTA contamination suspected\r\n'),
 (8,1022,'Absurd Potassium (Transposition)','Correct Tube-Barcode ? \r\nDelayed analysis?\r\nCalcium=\r\nRepeat K+=\r\nHemolysis\r\nRemark: Preanalytical error. Sample Transposition error'),
@@ -360,6 +400,7 @@ INSERT INTO `display_choice` VALUES
 (20,5097,'Critical Alert','Critical value has been analysed twice. No analytical or pre-analytical error was found.');
 /*!40000 ALTER TABLE `display_choice` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `examination`
@@ -367,7 +408,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `examination`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `examination` (
   `examination_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -406,6 +447,7 @@ CREATE TABLE `examination` (
 
 LOCK TABLES `examination` WRITE;
 /*!40000 ALTER TABLE `examination` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `examination` VALUES
 (1000,'Sample_requirement','None','{\"type\":\"text\",\"help\":\"Describe\",\"readonly\":\"readonly\"}','None','Misc/Sample Details','Sample Details','Header','','20','','compact_report',1,1,0,1,NULL,'','','Describe','Describe','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (1001,'PID','None','','None','Misc/Patient Details','Header','Header','','30','','compact_report',1,1,0,2,NULL,'','',NULL,NULL,NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
@@ -509,7 +551,7 @@ INSERT INTO `examination` VALUES
 (5057,'Calcium:Creatinine Ratio','Plain-Urine','{\"type\":\"number\",\"calculate\":\"E/e\",\"ex_list\":\"5050,5052\", \"step\":\"0.1\",\"decimal\":\"1\",\"help\":\"(Calculated)(mg/mg)\",\"equipment\":\"C\"}','','','Clinical chemistry/Urine','Urine Examination','','','','',1,1,0,1,NULL,'','C','mg/mg (Calculated)','mg/mg (Calculated)','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Urine,NABL'),
 (5058,'24 hours Urine Volume(not in NABL scope)','Plain-Urine','{\"type\":\"number\",\"help\":\"mL (24 hours urine volume)\",\"equipment\":\"C\"}','','Urine/24 HOUR URINE PROFILE','Clinical chemistry/Urine','Urine Examination','','','','',1,1,0,1,NULL,'','C','mL (24 hours urine volume)','mL (24 hours urine volume)','',NULL,'no','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Urine'),
 (5059,'24 hours Urine  Protein','Plain-Urine','{\"type\":\"number\",\"calculate\":\"E*E/100\",\"ex_list\":\"5058,5085,\",\"step\":\"0.1\", \"decimal\":\"1\",\"help\":\"mg(Calculated)\",\"method\":\"Pyrogallol Red\",\"equipment\":\"C\"}','','Urine/24 HOUR URINE PROFILE','Clinical chemistry/Urine','Urine Examination','','','','',1,1,0,1,NULL,'','C','mg(Calculated)','mg(Calculated)','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)<br>\n\n<h5>Instructions for 24 hours urine collection (With Preservative)</h5>\n Do not throw away preservative liquid. Discard 8.00 am urine.<br> There after collect urine in the container till 8 am next morning.<br> Include last 8 am urine in container.<br> Keep in refrigerator in between.\n\n<h5>24 કલાક પેશાબ સંગ્રહ માટેના સૂચનો (પ્રિઝર્વેટીવ સાથે)</h5>\n\n કેન માં રહેલા પ્રિઝર્વેટિવ પ્રવાહી ને ફેકશો નહિ.<br> સવારે ૮ વાગ્યાથી બીજા દિવસે સવારે ૮ વાગ્યા સુધીનો પેશાબ ભેગો કરવાનો છે.<br> પરંતુ આજના સવારનો ૮ વાગ્યાનો પેશાબ લેવો નહિ. ત્યાર બાદ બીજો દિવસ ના સવારે ૮ વાગ્યા સુધીનો બધો જ પેશાબ કેનમાં ભેગો કરવો.<br>દરેક વખતે પેશાબ કેનમાં નખ્યા બાદ કેનને હલાવવું.<br> વચ્ચેના સમય દરમ્યાન કેનને ફ્રિજમાં રાખવુ.\n\n<h5>24 घंटे पेशाब संग्रह के लिए निर्देश (प्रेज़रवेटिव के साथ)</h5>\n\n केन के अन्दर का प्रेज़रवेटिव प्रवाही को मत फेको।<br> सुबह 8 बजे से कल सुबह 8 बजे तक का पेशाब इकट्ठा करना है।<br> लेकिन आज सुबह 8 बजे का पेशाब लेना नहीं है ओर उसके बाद का कल सुबह 8 बजे तक का सारा पेशाब केन मे इकट्ठा करना है।<br> इस बार पेशाब दाल ने के बाद केन को हिलाना जरुरी है।<br> ओर उसके बाद केन को फ्रिज मे रखना है।\n\n',',Urine,NABL'),
-(5060,'eGFR (MDRD, Non african)','Plain-Blood','{\"type\":\"number\",\"calculate\":\"175*E^-1.154*E^-.203*E*1\",\"ex_list\":\"5001,1007,5087\",\"step\":\"0.1\", \"decimal\":\"1\",\"help\":\"mL/min/1.73 m² (MDRD)\",\"equipment\":\"C\"}','','eGFR','Clinical chemistry/RFT','Renal Function Tests','','','','',1,1,0,1,NULL,'','C','mL/min/1.73 m²<br><a href=\"https://www.kidney.org/mdrd-study-equation\">MDRD</a>','mL/min/1.73 m²<br><a href=\"https://www.kidney.org/mdrd-study-equation\">MDRD</a>','yes','','yes','',',Blood,NABL'),
+(5060,'eGFR (MDRD, Non african)','Plain-Blood','{\"type\":\"number\",\"calculate\":\"175*E^-1.154*E^-.203*E*1\",\"ex_list\":\"5001,1007,5087\",\"step\":\"0.1\", \"decimal\":\"1\",\"help\":\"mL/min/1.73 m² (MDRD)\",\"equipment\":\"C\",\"hide\":\"yes\"}','','eGFR','Clinical chemistry/RFT','Renal Function Tests','','','','',1,1,0,1,NULL,'','C','mL/min/1.73 m²<br><a href=\"https://www.kidney.org/mdrd-study-equation\">MDRD</a>','mL/min/1.73 m²<br><a href=\"https://www.kidney.org/mdrd-study-equation\">MDRD</a>','yes','','yes','',',Blood,NABL'),
 (5061,'Serum Osmolality','Plain-Blood','{\"type\":\"number\",\"calculate\":\"1.86*E+(E*0.1667)+(E*0.0556)+9\",\"ex_list\":\"5019,5002,5212\",\"step\":\"0.1\", \"decimal\":\"1\",\"help\":\"(Calculated)\"}','','S-Osmolarity,Misc/Osmolarity-Serum','Clinical chemistry','Renal Function Tests','','270','','',1,1,0,1,NULL,'','C','(Calculated)','(Calculated)','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood,NABL'),
 (5062,'Protein Electrophoresis','Plain-Blood','{\"zoom\":\"zoom\"}','','Reference/protein electro','Electrophoresis ','Protein Electrophoresis','','','','',1,1,0,1,NULL,'','','','','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)<br>AP Level reference required',',Blood,NABL,AP-REF'),
 (5063,'Electrophoresis Observation','EDTA-Blood','{\"type\":\"subsection\",\"readonly\":\"readonly\",\"equipment\":\"E\"}','','Reference/hb electro','Electrophoresis ','Hemoglobin Electrophoresis','','','010','',1,1,0,1,NULL,'','E','','','yes','','no','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)<br>AP Level Reference required',',Blood,NABL,AP-REF'),
@@ -559,14 +601,14 @@ INSERT INTO `examination` VALUES
 (5111,'Micro Protein(not in NABL scope)','Plain-Other','{\"type\":\"number\",\"help\":\"mg/dL NA(Pyrogallol Red)\",\"method\":\"Pyrogallol Red\",\"equipment\":\"C\"}','','Fluid/otherfluid,Misc/QC/c c mor','Clinical chemistry/Fluid','Other Fluid Examination','','','','',1,1,0,1,NULL,'','F','mg/dL NA(Pyrogallol Red)','mg/dL NA(Pyrogallol Red)','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (5112,'Total Protein(not in NABL scope)','Plain-Other','{\"type\":\"number\",\"help\":\" g/dL N/A (Biuret)\",\"step\":\"0.1\",\"method\":\"Biuret\",\"equipment\":\"C\"}','','Fluid/otherfluid','Clinical chemistry/Fluid','Other Fluid Examination','','','','',1,1,0,1,NULL,'','F',' g/dL N/A (Biuret)',' g/dL N/A (Biuret)','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (5113,'Cholinesterase','Plain-Blood','{\"type\":\"number\",\"help\":\" U/L &lt;3000-13000 (Butyrylthiocholine)\",\"cinterval_l\":\"3000\",\"equipment\":\"C\"}','','CHE','Clinical chemistry/CHE','','','220','','',1,1,0,1,NULL,'','ch',' U/L &lt;3000-13000 (Butyrylcholinesterase )',' U/L &lt;3000-13000 (Butyrylcholinesterase )','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood,NABL'),
-(5114,'HCL wash','Plain-Blood','{\"hide\":\"yes\"}','','LRE-CRP-CAL,Misc/QC/clinical chemistry,CAL-MG-PHO/Calcium,CAL-MG-PHO/Magnesium,CAL-MG-PHO/Phosphorous,BIG1,CKD,LREALBTPCALPHOUREA','Clinical chemistry/CAL-PHO-MG','','','200','','',1,1,0,1,NULL,'','','','','','','','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
+(5114,'HCL wash','Plain-Blood','{\"hide\":\"yes\"}','','LRE-CRP-CAL,Misc/QC/clinical chemistry,CAL-MG-PHO/Calcium,CAL-MG-PHO/Magnesium,CAL-MG-PHO/Phosphorous,BIG1,CKD,LREALBTPCALPHOUREA','Clinical chemistry/CAL-PHO-MG','Electrolytes','','200','','',1,1,0,1,NULL,'','','','','','','','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
 (5115,'Total T4(not in NABL scope)','Plain-Blood','{\"type\":\"number\",\"help\":\"nmol/L , 71.2-141 , (ECIA)\",\"equipment\":\"I\"}','','Reference','Immunochemistry/Thyroid profile ','','','','','',1,1,0,1,NULL,'','I','nmol/L , 71.2-141 , (ECIA)','nmol/L , 71.2-141 , (ECIA)','',NULL,'','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
 (5116,'Total T3(not in NABL scope)','Plain-Blood','{\"type\":\"number\",\"help\":\"nmol/L , 1.49-2.60 , (ECIA)\",\"equipment\":\"I\"}','','Reference','Immunochemistry/Thyroid profile ','','','','','',1,1,0,1,NULL,'','I','nmol/L , 1.49-2.60 , (ECIA)','nmol/L , 1.49-2.60 , (ECIA)','',NULL,'','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
 (5117,'TSH','Plain-Blood','{\"type\":\"number\",\"help\":\"mIU/L (CLIA)\\n, 0.465-4.68 \\nNormal ranges for thyroid function tests in infants and children\\n Age             Free T4*(ng/dL)              T4(mcg/dL)        Free T3(pg/mL)     T3(ng/dL)      TSH(mU/L)              TBG(mg/dL)\\n Cord blood      0.9 to 2.2                   7.8 to 13.1       0.2 to 2.4         15 to 75       2.2 to 10.7            1.4 to 9.4\\n 1 to 4 days     2.2 to 5.3                   9.3 to 20.9       1.8 to 7.6         100 to 740     2.7 to 26.5\\n 4 to 30 days    0.9 to 3.4                   8.0 to 21.8       2.93 to 5.08       105 to 387     1.2 to 13.1            1.9 to 4.5\\n 1 to 12 months  0.9 to 2.3                   7.2 to 15.7       2.67 to 5.21       105 to 245     0.6 to 7.3             1.9 to 4.4\\n 1 to 5 years    0.8 to 1.8                   6.4 to 13.5       2.73 to 4.95       105 to 269     0.7 to 6.6             1.6 to 4.2\\n 6 to 10 years   1.0 to 2.1                   6.0 to 12.8       2.73 to 4.69       94 to 241      0.8 to 6.0             1.4 to 3.7\\n 11 to 18 years  0.8 to 1.9                   4.7 to 12.4       2.67 to 4.62       80 to 210      0.6 to 5.8             1.2 to 2.9\\n &gt;18 years       0.9 to 2.5                   5.3 to 10.5       2.10 to 4.40       70 to 204      0.4 to 4.2             1.5 to 3.4\\n T4: thyroxine; T3: triiodothyronine; TSH: thyroid-stimulating hormone; TBG: thyroxine-binding globulin.\\n * Because the normal free T4 reference range varies according to the assay method, clinicians need to determine the range for their specific laboratory, which may differ from the data presented in the table.\\n Data adapted from the following sources:\\n      Nelson JC, Clark SJ, Bonut DL, et al. Age-related changes in serum free thyroxine during childhood and adolescence. J Pediatr 1993; 123:899.\\n     Elmlinger MW, Kühnel W, Lambrecht HG, et al. Reference intervals from birth to adulthood for serum thyroxine (T4), triiodothyronine (T3), free T3, free T4, thyroxine binding globulin (TBG) and thyrotropin (TSH). Clin Chem Lab Med 2001; 39:973.\\n     Mutlu M, Karagüzel G, Alıyazicioğlu Y, et al. Reference intervals for thyrotropin and thyroid hormones and ultrasonographic thyroid volume during the neonatal period. J Matern Fetal Neonatal Med 2012; 25:120.\\n     Strich D, Edri S, Gillis D. Current normal values for TSH and FT3 in children are too low: evidence from over 11,000 samples. J Pediatr Endocrinol Metab 2012; 25:245.\\n     Lem AJ, de Rijke YB, van Toor H, et al. Serum thyroid hormone levels in healthy children from birth to adulthood and in short children born small for gestational age. J Clin Endocrinol Metab 2012; 97:3170.\\n     Esoterix (Endocrine Sciences). \",\"interval_l\":\"0.465\",\"interval_h\":\"4.68\",\"equipment\":\"I\"}','','TSH,Misc/QC/Immunochemistry','Immunochemistry/Thyroid profile','Thyroid Profile','','','','horizontal3',1,1,0,1,NULL,'','I','mIU/L (CLIA), 0.465-4.68 <a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:tsh_gem1001_ww_en_i_10_1.pdf\">Vitros Lit.</a>','mIU/L (CLIA), 0.465-4.68 <a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:tsh_gem1001_ww_en_i_10_1.pdf\">Vitros Lit.</a>','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood,NABL'),
 (5118,'Ferritin','Plain-Blood','{\"type\":\"number\",\"help\":\"microgram/L\\n Male(Adult): 20-250\\n Female(Adult): 10-120\\n Newborn: 25-200 \\n 1 month: 200-600  \\n 2-5 month:50-200  \\n 6 month-15 years:7-140  \\n(ECLIA) \",\"interval_l\":\"6.24\",\"interval_h\":\"464\",\"equipment\":\"I\"}','','Anemia,Misc/QC/Immunochemistry','Immunochemistry/Anemia profile','Anemia Profile','','','','',1,1,0,1,NULL,'','I','microgram/L \r\nMale(Adult): 20-250, \r\nFemale(Adult): 10-120, \r\nNewborn: 25-200,  \r\n1 month: 200-600,   \r\n2-5 month:50-200,   \r\n6 month-15 years:7-140 \r\n(Enhanced chemiluminoscence) \r\n<a href=\"https://gmcsurat.edu.in:12349/dokuwiki/lib/exe/fetch.php?media=nchsls:c:biochemistry:document:ferr_gem1340_ww_en_i_10_1.pdf\">Vitros Lit.</a>','microgram/L \r\n<p>Male(Adult): 20-250, \r\nFemale(Adult): 10-120, \r\nNewborn: 25-200,  \r\n1 month: 200-600,   \r\n2-5 month:50-200,   \r\n6 month-15 years:7-140  \r\n(Enhanced chemiluminoscence)\r\n</p>\r\n<a href=\"https://gmcsurat.edu.in:12349/dokuwiki/lib/exe\r\nfetch.php?media=nchsls:c:biochemistry:document:ferr_gem1340_ww_en_i_10_1.pdf\">Vitros Lit.</a>','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
 (5120,'Procalcitonin (PCT)(not in NABL scope)','Plain-Blood','{\"type\":\"number\",\"help\": \"microgram/L \\n # less than 0.5 =&gt; systemic bacterial infection is unlikely \\n # 0.5-2.0 =&gt; systemic bacterial infection is possible \\n # 2.0-10.0 =&gt; systemic bacterial infection is likely \\n # more than 10.0 =&gt; almost exclusively due to systemic bacterial infection\\n(ECIA)\", \"interval_h\":\"0.5\",\"cinterval_h\":\"2\",\"equipment\":\"I\"}','','','','Inflammatory markers','','','','',1,1,0,1,NULL,'','I','microgram/L \\n # less than 0.5 =&gt; systemic bacterial infection is unlikely \\n # 0.5-2.0 =&gt; systemic bacterial infection is possible \\n # 2.0-10.0 =&gt; systemic bacterial infection is likely \\n # more than 10.0 =&gt; almost exclusively due to systemic bacterial infection\\n(ECIA)','microgram/L \\n # less than 0.5 =&gt; systemic bacterial infection is unlikely \\n # 0.5-2.0 =&gt; systemic bacterial infection is possible \\n # 2.0-10.0 =&gt; systemic bacterial infection is likely \\n # more than 10.0 =&gt; almost exclusively due to systemic bacterial infection\\n(ECIA)','',NULL,'','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
 (5121,'CRP','Plain-Blood','{\"type\":\"number\",\"help\": \"mg/L \\n less than 10 \\n This is not hsCRP. Donot use this result for interpretation when result is less than 10\\n(Immunoturbidimetry)\",\"interval_h\":\"10\",\"equipment\":\"D\"}','','LRE-CRP-CAL,LRE-ALBTP-CRPLDH,BIG1,Misc/QC/c c mor,LRE-ALBTP-CRP','Clinical chemistry/CRP','Inflammatory markers','540','109','','',1,1,0,1,NULL,'','D','mg/L, Ref. Interval: &lt;10<br>\r\n<i>Method: Immunoturbidimetry</i><br>\r\n<b>Note:</b><br>\r\nThis is not hsCRP. Do not use this result for interpretation when result is less than 10 ','mg/L, Ref. Interval: &lt;10<br>\r\n<i>Method: Immunoturbidimetry</i><br>\r\n<b>Note:</b><br>\r\nThis is not hsCRP. Do not use this result for interpretation when result is less than 10 ','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood,NABL'),
-(5122,'D-dimer(not in NABL scope)','Citrate-Blood','{\"type\":\"number\",\"help\":\"microgram/L, &lt;500, (ECIA) \",\"interval_h\":\"500\",\"equipment\":\"D\"}','','Misc/QC/c c mor,D- dimer','Inflammatory Markers','Inflammatory Markers','','','','',1,1,0,1,NULL,'','D','microgram/L, &lt;500, Immunoturbidimetry (ECIA)','microgram/L, &lt;500, Immunoturbidimetry (ECIA)','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
+(5122,'D-dimer','Citrate-Blood','{\"type\":\"number\",\"help\":\"microgram/L, &lt;500, (ECIA) \",\"interval_h\":\"500\",\"equipment\":\"D\"}','','Misc/QC/c c mor,D- dimer','Inflammatory Markers','Inflammatory Markers','','','','',1,1,0,1,NULL,'','D','microgram/L, &lt;500, Immunoturbidimetry (ECIA)','microgram/L, &lt;500, Immunoturbidimetry (ECIA)','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
 (5123,'Cardiac Troponin I (cTnI)','Plain-Blood','{\"type\":\"number\",\"help\":\"ng/L\\n Male: 8.8-23.7\\n Female: 4.4-21.4\\n (high sensitivity, ECIA)\",\"interval_h\":\"23.7\",\"equipment\":\"I\"}','','Cardiac profile','Clinical chemistry/Cardiac Profile','Cardiac Profile','','','','',1,1,0,1,NULL,'','I','ng/L Male: 8.8-23.7 Female: 4.4-21.4 (high sensitivity, ECIA) <a href=\"http://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=nchsls:c:biochemistry:document:hstni_gem1320_xus_en_i_3.pdf\">Vitros Lit.</a>','ng/L Male: 8.8-23.7 Female: 4.4-21.4 (high sensitivity, ECIA) <a href=\"http://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=nchsls:c:biochemistry:document:hstni_gem1320_xus_en_i_3.pdf\">Vitros Lit.</a>)','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
 (5124,'Interleukin-6(not in NABL scope)','EDTA-Blood','{\"help\":\"pg/mL\\n  &lt;7.0 \\n (upconverting phosphor immunoassay)\",\"interval_h\":\"7\",\"equipment\":\"6\"}','','','','','','','','',1,1,0,1,NULL,'','6','pg/mL\\n  &lt;7.0 \\n (upconverting phosphor immunoassay)','pg/mL\\n  &lt;7.0 \\n (upconverting phosphor immunoassay)','','','','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
 (5125,'NT-proBNP','Plain-Blood','{\"help\":\"pg/ml (ECIA)\\n===Heart Failure Unlikely===\\n # Any age, &lt;300\\n====Heart Failure Likely====\\n # 20-50 Y, &gt;450 \\n # 50-75 Y, &gt;900\\n # &gt;75Y, &gt;1800\",\"interval_h\":\"300\",\"equipment\":\"I\"}','','Reference,Misc/QC/Immunochemistry','','Cardiac Profile','','','','horizontal2',1,1,0,1,NULL,'','I','pg/ml (Enhanced chemiluminesecnce) <a href=\"http://11.207.2.240/dokuwiki/lib/exe/fetch.php?media=nchsls:c:biochemistry:document:nbnp2_gem1317_xus_en_i_3.pdf\">Vitros Lit.</a><br>\r\n<table>\r\n\r\n<tr>\r\n    <th>Result</th>\r\n    <th>Age</th>\r\n    <th>Interpretation</th>\r\n</tr>\r\n<tr>\r\n    <td>&lt;300</td>\r\n    <td>Any age</td>\r\n    <td>Heart Failure Unlikely</td>\r\n</tr>\r\n<tr>\r\n    <td>&gt;450</td>\r\n    <td>20-50 Yrs</td>\r\n    <td>Heart Failure Likely</td>\r\n</tr>\r\n<tr>\r\n    <td>&gt;900</td>\r\n    <td>50-75 Yrs</td>\r\n    <td>Heart Failure Likely</td>\r\n</tr>\r\n\r\n<tr>\r\n    <td>&gt;1800</td>\r\n    <td>&gt;75 Yrs</td>\r\n    <td>Heart Failure Likely</td>\r\n</tr>\r\n</table>','pg/ml (Enhanced chemiluminesecnce) <a href=\"http://11.207.2.240/dokuwiki/lib/exe/fetch.php?media=nchsls:c:biochemistry:document:nbnp2_gem1317_xus_en_i_3.pdf\">Vitros Lit.</a><br>\r\n<table>\r\n\r\n<tr>\r\n    <th>Result</th>\r\n    <th>Age</th>\r\n    <th>Interpretation</th>\r\n</tr>\r\n<tr>\r\n    <td>&lt;300</td>\r\n    <td>Any age</td>\r\n    <td>Heart Failure Unlikely</td>\r\n</tr>\r\n<tr>\r\n    <td>&gt;450</td>\r\n    <td>20-50 Yrs</td>\r\n    <td>Heart Failure Likely</td>\r\n</tr>\r\n<tr>\r\n    <td>&gt;900</td>\r\n    <td>50-75 Yrs</td>\r\n    <td>Heart Failure Likely</td>\r\n</tr>\r\n\r\n<tr>\r\n    <td>&gt;1800</td>\r\n    <td>&gt;75 Yrs</td>\r\n    <td>Heart Failure Likely</td>\r\n</tr>\r\n</table>','yes',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)<br>AP Level reference required',',Blood,AP-REF'),
@@ -648,6 +690,8 @@ INSERT INTO `examination` VALUES
 (5224,'Hemoglobin','Heparinised-Venous_Blood','','','Misc/VBG','Blood Gas Analysis','Venous Blood Examination','','','010','',1,1,0,1,NULL,'','V','<i>Unit: gm/dL, Method: Calculation</i><br>\r\n<b>Male:</b> 13.2 - 16.6<br>\r\n<b>Female:</b> 11.6 - 15<br>','<i>Unit: gm/dL, Method: Calculation</i><br>\r\n<b>Male:</b> 13.2 - 16.6<br>\r\n<b>Female:</b> 11.6 - 15<br>','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood'),
 (5225,'eGFRcr (CKD-EPI)','Plain-Blood','{\"procedure\":\"calculate_eGFRcr\",\"help\":\"mL/min/1.73 m² CKD-EPI(2021)\"}','','eGFR','Clinical chemistry/RFT','Renal Function Tests','','','','',1,1,0,1,NULL,'','C','mL/min/1.73 m²<br><a href=\"https://www.kidney.org/ckd-epi-creatinine-equation-2021\">CKD-EPI (2021)</a>','mL/min/1.73 m²<br><a href=\"https://www.kidney.org/ckd-epi-creatinine-equation-2021\">CKD-EPI (2021)</a>','yes','','yes','',',Blood,NABL'),
 (5226,'eGFR (BIS1)','Plain-Blood','{\"procedure\":\"calculate_eGFRbis\",\"help\":\"mL/min/1.73 m²\",\"hide\":\"yes\"}','','eGFR','Clinical chemistry/RFT','Renal Function Tests','','','','',1,1,0,1,NULL,'','C','mL/min/1.73 m², (calculated), (BIS1 Formula)','mL/min/1.73 m², (calculated), (BIS1 Formula)','yes','','yes','',',Blood,NABL'),
+(5227,'referenced_sample_id','complex','',NULL,'referenced_sample_id','referenced_sample_id','referenced_sample_id',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+(5229,'Serum Osmolality (Complex)','complex','',NULL,'serum_osmolality_complex','serum_osmolality_complex','serum_osmolality_complex',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
 (9000,'QC Equipment','None','{\"type\":\"select\",\"option\":\",XL_640,XL_1000,VITROS3600,HPLC_723GX,Erba Chem 5 Plus semiauto(060379) 2,Rapidpoint-500e_Siemens,Rapidpoint-500_Siemens,R9,Erba_Chem_5x(sr.no:s2211871),Erba_Chem_5x(sr.no:s12211845),R9-402016,R9-401900,MINDRAY_BS600M,JOKOH EX-D,NXL-1000\"}','','Misc/QC/Sample Details','Sample Details/QC','','','','','',1,1,0,1,NULL,'','','','','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (9001,'equipment_serial_number','None','{\"type\":\"select\",\"option\":\",401900,402016\"}','','Misc/QC/Sample Details','Sample Details/QC','','','','','',1,1,0,1,NULL,'','','','','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (9002,'equipment_specimen_number','None','','','Misc/QC/Sample Details','Sample Details/QC','','','','','',1,1,0,1,NULL,'','','','','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
@@ -665,6 +709,8 @@ INSERT INTO `examination` VALUES
 (10012,'Laboratory','None','{\"type\":\"examination_field_specification\"}','','Misc/Laboratory Details','Header','Header','','15','','compact_report',1,1,1,2,NULL,'','','','','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (10013,'sample_reverify','None','{\"hide\":\"yes\",\"type\":\"datetime-local\"}','','Misc/Sample Details/Sample Status','Sample Details','Sample Details','','','','compact_report',1,1,0,1,1,'','','','','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (10014,'sample_reverified','None','{\"hide\":\"yes\",\"type\":\"datetime-local\"}','','Misc/Sample Details/Sample Status','Sample Details','Sample Details','','','','compact_report',1,1,0,1,1,'','','','','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
+(10015,'sample_printed','None','{\"hide\":\"yes\",\"type\":\"datetime-local\"}','','Misc/Sample Details/Sample Status','Sample Details','Sample Details','','','','compact_report',1,1,0,1,1,'','','','','',NULL,'yes','',''),
+(10016,'sample_print_delivered','None','{\"hide\":\"yes\",\"type\":\"datetime-local\"}','','Misc/Sample Details/Sample Status','Sample Details','Sample Details','','','','compact_report',1,1,0,1,1,'','','','','',NULL,'yes','',''),
 (105038,'Albumin','Plain-Pleural_Fluid','{\"type\":\"number\",\"help\":\" g/dL N/A (BCG)\",\"step\":\"0.1\",\"equipment\":\"C\"}','','Fluid/pleural','Clinical chemistry/Fluid','Pleural Fluid Examination','','','','',1,1,0,1,NULL,'','F',' g/dL N/A (BCG)',' g/dL N/A (BCG)',NULL,NULL,'','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',''),
 (105041,'fluid_id','None','{\"type\":\"id_single_sample\",\"table\":\"fluid_id\",\"readonly\":\"readonly\",\"unique_prefix\":\"F\",\"minimum\":\"1000\"}','inserted, never edited, one for each sample','Misc/Sample Details/IDs','IDs','Sample Details/IDs','','30','','compact_report',1,1,0,1,NULL,'','','','','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',NULL),
 (105043,'SAMPLE SUBTYPE','None','{\"type\":\"select\",\"option\":\",CSF,Pleural Fluid,Peritoneal Fluid,Pus,Cystic Fluid,Drain Fluid,Other\"}',NULL,'Misc/Sample Details','Sample Details','Sample Details',NULL,'11',NULL,'compact_report',1,1,0,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'no','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',NULL),
@@ -705,6 +751,7 @@ INSERT INTO `examination` VALUES
 (105091,'image','EDTA-Blood','{\"type\":\"blob\",\"img\":\"png\",\"width\":\"300\",\"height\":\"200\"}','','','attachment','attachment','','','','',1,1,0,1,NULL,'','','','','no',NULL,'no','transport at room temperature<br> Report will be avaialble in 4 hours(Wards) 24 hours(OPD)',',Blood,NABL');
 /*!40000 ALTER TABLE `examination` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `examination_field_specification`
@@ -712,7 +759,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `examination_field_specification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `examination_field_specification` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `examination_id` int(11) DEFAULT NULL,
@@ -731,11 +778,13 @@ CREATE TABLE `examination_field_specification` (
 
 LOCK TABLES `examination_field_specification` WRITE;
 /*!40000 ALTER TABLE `examination_field_specification` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `examination_field_specification` VALUES
 (1,10012,'table','Laboratory','Laboratory','',''),
 (2,3001,'dtable','qc_lot','qc_lot','qc_lot,remark','where in_use=1');
 /*!40000 ALTER TABLE `examination_field_specification` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `host_code`
@@ -743,7 +792,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `host_code`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `host_code` (
   `examination_id` int(11) NOT NULL,
   `equipment` enum('XL_640','XL_1000','VITROS3600','RP500','TOSOH','R9-402016','BS600M','JOKOH','NXL_1000') NOT NULL,
@@ -760,6 +809,7 @@ CREATE TABLE `host_code` (
 
 LOCK TABLES `host_code` WRITE;
 /*!40000 ALTER TABLE `host_code` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `host_code` VALUES
 (5001,'XL_1000','CRR'),
 (5002,'XL_1000','UREE'),
@@ -1072,6 +1122,7 @@ INSERT INTO `host_code` VALUES
 (105053,'NXL_1000','ALBB');
 /*!40000 ALTER TABLE `host_code` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `label_group`
@@ -1079,7 +1130,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `label_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `label_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
@@ -1094,6 +1145,7 @@ CREATE TABLE `label_group` (
 
 LOCK TABLES `label_group` WRITE;
 /*!40000 ALTER TABLE `label_group` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `label_group` VALUES
 (1,'WARD ID','{\"11\":\"1\",\"6\":\"1\"}'),
 (2,'OPD ID','{\"14\":\"1\",\"7\":\"1\"}'),
@@ -1110,6 +1162,7 @@ INSERT INTO `label_group` VALUES
 (17,'Comparison ID','{\"16\":\"1\",\"7\":\"1\"}');
 /*!40000 ALTER TABLE `label_group` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `labels`
@@ -1117,7 +1170,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `labels`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `labels` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `examination_id` varchar(30) DEFAULT NULL,
@@ -1138,6 +1191,7 @@ CREATE TABLE `labels` (
 
 LOCK TABLES `labels` WRITE;
 /*!40000 ALTER TABLE `labels` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `labels` VALUES
 (6,'1045','QR','QRCODE','{\n\"1\":\"1045,h,c,02,02,17,17\",\n\"2\":\"1001,h,t,22,5,25,03\",\n\"3\":\"1045,h,t,22,8,25,03\",\n\"4\":\"other_data,h,t,22,11,25,03\",\n\"5\":\"1002,h,t,22,14,25,03\",\n\"6\":\"1045,h,b,05,18,40,04\"\n}','select group_concat(sample_id separator \",\") other_data from request_id where id in(select id from request_id where sample_id={sample_id})',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
 (7,'1045','R1','C128','{\r\n\"1\":\"1045,h,b,05,05,40,10\",\r\n\"2\":\"1001,h,t,20,15,25,03\",\r\n\"3\":\"1045,h,t,5,15,15,03\",\r\n\"4\":\"other_data,h,t,5,18,25,03\",\r\n\"5\":\"1002,h,t,30,18,15,03\"\r\n}','select group_concat(sample_id separator \",\") other_data from request_id where id in(select id from request_id where sample_id={sample_id})',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}'),
@@ -1156,32 +1210,7 @@ INSERT INTO `labels` VALUES
 (24,'105086','N1','C128','{\r\n\"1\":\"105086,h,b,03,05,45,10\",\r\n\"2\":\"1000,h,t,25,15,20,03\",\r\n\"3\":\"105086,h,t,10,15,15,03\",\r\n\"4\":\"sample_id,h,t,10,18,15,03\",\r\n\"5\":\"1002,h,t,25,18,20,03\",\r\n\"6\":\"other_data,h,t,5,15,5,6\"\r\n}','select group_concat(distinct equipment SEPARATOR \'\') other_data from result,examination where sample_id={sample_id} and examination.examination_id=result.examination_id',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}');
 /*!40000 ALTER TABLE `labels` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `Laboratory`
---
-
-DROP TABLE IF EXISTS `Laboratory`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Laboratory` (
-  `Laboratory` varchar(200) NOT NULL,
-  PRIMARY KEY (`Laboratory`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Laboratory`
---
-
-LOCK TABLES `Laboratory` WRITE;
-/*!40000 ALTER TABLE `Laboratory` DISABLE KEYS */;
-INSERT INTO `Laboratory` VALUES
-('Biochemistry Laboratory New Civil Hospital Surat'),
-('NCHS Biochemistry Section'),
-('NCHS Pathology Section');
-/*!40000 ALTER TABLE `Laboratory` ENABLE KEYS */;
-UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `lis_to_vitros_sample_type`
@@ -1189,7 +1218,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `lis_to_vitros_sample_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `lis_to_vitros_sample_type` (
   `lis_sample_type` varchar(100) NOT NULL,
   `vitros_sample_type` varchar(10) NOT NULL,
@@ -1203,11 +1232,13 @@ CREATE TABLE `lis_to_vitros_sample_type` (
 
 LOCK TABLES `lis_to_vitros_sample_type` WRITE;
 /*!40000 ALTER TABLE `lis_to_vitros_sample_type` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `lis_to_vitros_sample_type` VALUES
 ('Plain-Blood','5'),
 ('Plain-Swab','10');
 /*!40000 ALTER TABLE `lis_to_vitros_sample_type` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `menu_new`
@@ -1215,7 +1246,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menu_new`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_new` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `caption` varchar(100) NOT NULL,
@@ -1232,6 +1263,7 @@ CREATE TABLE `menu_new` (
 
 LOCK TABLES `menu_new` WRITE;
 /*!40000 ALTER TABLE `menu_new` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `menu_new` VALUES
 (101,'Ward Request','1001,1002,1004,1005,1006,1007,1008,1012,1023,10003,10011,10012,1045,1047','','10012^Biochemistry Laboratory New Civil Hospital Surat'),
 (200,'OPD Request','1001,1002,1004,1005,1006,105089,1007,1008,1012,10003,1023,10011,10012,1045,1046','','10012^Biochemistry Laboratory New Civil Hospital Surat,1006^OPD'),
@@ -1257,6 +1289,7 @@ INSERT INTO `menu_new` VALUES
 (1004,'Sample ID','1001,1002,1004,1005,1006,1007,1008,1012,1023,10003,10011,10012,1045','','10012^Biochemistry Laboratory New Civil Hospital Surat,1004^Medicine');
 /*!40000 ALTER TABLE `menu_new` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `menu_view`
@@ -1264,7 +1297,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menu_view`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_view` (
   `id` int(11) NOT NULL,
   `caption` varchar(100) NOT NULL,
@@ -1281,6 +1314,7 @@ CREATE TABLE `menu_view` (
 
 LOCK TABLES `menu_view` WRITE;
 /*!40000 ALTER TABLE `menu_view` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `menu_view` VALUES
 (1,'ICU,Casualty','1050','1001,1002,1006,10003','1050'),
 (2,'sample_id','sample_id','1001,1002,1006,10003','sample_id'),
@@ -1295,6 +1329,7 @@ INSERT INTO `menu_view` VALUES
 (12,'calibrationex','105056','1001,1002,1006,10003,5031','105056');
 /*!40000 ALTER TABLE `menu_view` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `menu_view_fast`
@@ -1302,7 +1337,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menu_view_fast`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_view_fast` (
   `id` int(11) NOT NULL,
   `caption` varchar(100) NOT NULL,
@@ -1318,6 +1353,7 @@ CREATE TABLE `menu_view_fast` (
 
 LOCK TABLES `menu_view_fast` WRITE;
 /*!40000 ALTER TABLE `menu_view_fast` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `menu_view_fast` VALUES
 (1,'PID',1001,0),
 (2,'Name',1002,0),
@@ -1325,6 +1361,7 @@ INSERT INTO `menu_view_fast` VALUES
 (4,'Location',1006,0);
 /*!40000 ALTER TABLE `menu_view_fast` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `menu_worklist`
@@ -1332,7 +1369,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menu_worklist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_worklist` (
   `id` int(11) NOT NULL,
   `caption` varchar(100) NOT NULL,
@@ -1349,6 +1386,7 @@ CREATE TABLE `menu_worklist` (
 
 LOCK TABLES `menu_worklist` WRITE;
 /*!40000 ALTER TABLE `menu_worklist` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `menu_worklist` VALUES
 (1,'sample_id','sample_id','10003','sample_id'),
 (2,'OPD','1046','','1046,10003,1023'),
@@ -1361,6 +1399,7 @@ INSERT INTO `menu_worklist` VALUES
 (9,'Stem','1049','10003','1049');
 /*!40000 ALTER TABLE `menu_worklist` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `my_procedure_code`
@@ -1368,7 +1407,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `my_procedure_code`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `my_procedure_code` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
@@ -1384,6 +1423,7 @@ CREATE TABLE `my_procedure_code` (
 
 LOCK TABLES `my_procedure_code` WRITE;
 /*!40000 ALTER TABLE `my_procedure_code` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `my_procedure_code` VALUES
 (1,'calculate_eGFRcr','delimiter //\r\ndrop procedure if exists `calculate_eGFRcr` //\r\nCREATE DEFINER=`cluser`@`%` PROCEDURE `calculate_eGFRcr`(IN sid bigint)\r\nbegin\r\n\r\nset @cr= \'\';\r\nset @age= \'\';\r\nset @sex= \'\';\r\n\r\nset @e_cr= \'\';\r\nset @e_age= \'\';\r\nset @e_sex= \'\';\r\nset @er=\'\';\r\n\r\n\r\nselect result into @cr from result where sample_id=sid and examination_id=5001;\r\nselect result into @age from result where sample_id=sid and examination_id=1007;\r\nselect result into @sex from result where sample_id=sid and examination_id=1008;\r\n\r\nif (CHAR_LENGTH(@cr)<1) then\r\n  set @e_cr = \'cr?\';\r\nelseif (@cr<0.2) then\r\n  set @e_cr = \'cr<LOQ,\';\r\nend if;\r\n\r\nif (CHAR_LENGTH(@age)<1) then\r\n  set @e_age = \'age?\';\r\nelseif (@age<1) then\r\n  set @e_age = \'age<18,\';\r\nend if;\r\n\r\nif (CHAR_LENGTH(@sex)<1) then\r\n  set @e_sex = \'sex?\';\r\nelseif (@sex!=\'Male\' && @sex!=\'Female\') then\r\n  set @e_sex = \'Sex must be M or F,\';\r\nelseif (@sex=\'Male\') then\r\n  set @kappa=0.9;\r\n  set @alpha=-0.302;\r\n  set @sex_factor=1;\r\nelseif (@sex=\'Female\') then\r\n  set @kappa=0.7;\r\n  set @alpha=-0.241;\r\n  set @sex_factor=1.012;\r\nend if;\r\n\r\n\r\nset @er=concat(@e_age, @e_sex,@e_cr);\r\nif(CHAR_LENGTH(@er)>0) then\r\n  set @er = concat(@er,\' eGFR can not be calculated\');\r\n  update result set result=@er where sample_id=sid and examination_id=5225;\r\nelse\r\n  set @egfr= round(142 * power(least(@cr/@kappa,1),@alpha) * power(greatest(@cr/@kappa,1),-1.200) * power(0.9938,@age) * @sex_factor);\r\n  update result set result=@egfr where sample_id=sid and examination_id=5225;\r\nend if;\r\n\r\nend //','call calculate_eGFRcr(539226)\r\n\r\nshow   create procedure `calculate_eGFRcr`\r\n\r\nbeware of hard coded examination id\r\n\r\n\r\nsee mysql.proc table, where it is stored\r\n\r\nto grant procedure creation rights run following\r\ngrant super on *.* to \'cluser\'@\'127.0.0.1\';'),
 (2,'reflex_eGFRcr','delimiter //\r\ndrop procedure if exists `reflex_eGFRcr` //\r\ncreate PROCEDURE `reflex_eGFRcr`(IN sid bigint)\r\nbegin\r\n\r\nselect trim(result) into @age from result where sample_id=sid and examination_id=1007;\r\nif (CHAR_LENGTH(@age)>0) then\r\n  select result into @sex from result where sample_id=sid and examination_id=1008;\r\n  if (CHAR_LENGTH(@sex)>0) then\r\n    select count(examination_id) into @cr_count from result where sample_id=sid and examination_id=5001;\r\n      if (@cr_count=1) then\r\n        insert into result values(sid,5225,\'\',\'\',sysdate(),999) on duplicate key update result=result;\r\n        insert into result values(sid,5060,\'\',\'\',sysdate(),999) on duplicate key update result=result;\r\n      end if;\r\n  end if;\r\nend if;\r\nend //\r\n','to insert egfr if age , sex entered and creatinine is requested\r\n\r\n999 is user_id for reflex test insert'),
@@ -1392,6 +1432,7 @@ INSERT INTO `my_procedure_code` VALUES
 (5,'reflex_eGFRbis','DROP PROCEDURE IF EXISTS calculate_egfrbis;\r\nDELIMITER $$\r\n\r\nCREATE PROCEDURE calculate_egfrbis(IN sid INT)\r\nBEGIN\r\n  DECLARE cr DECIMAL(5,2);\r\n  DECLARE age INT;\r\n  DECLARE sex VARCHAR(10);\r\n  DECLARE sex_factor DOUBLE;\r\n  DECLARE egfr DOUBLE;\r\n  DECLARE err TEXT DEFAULT \'\';\r\n\r\n  -- Fetch values safely (use SELECT ... INTO)\r\n  SELECT CAST(TRIM(result) AS DECIMAL(5,2)) INTO cr \r\n  FROM result \r\n  WHERE sample_id = sid AND examination_id = 5001;\r\n\r\n  SELECT CAST(TRIM(result) AS UNSIGNED) INTO age \r\n  FROM result \r\n  WHERE sample_id = sid AND examination_id = 1007;\r\n\r\n  SELECT TRIM(result) INTO sex \r\n  FROM result \r\n  WHERE sample_id = sid AND examination_id = 1008;\r\n\r\n  -- Input validations\r\n  IF cr IS NULL OR cr < 0.2 THEN\r\n    SET err = CONCAT(err, \'Invalid Creatinine, \');\r\n  END IF;\r\n\r\n  IF age IS NULL OR age < 1 THEN\r\n    SET err = CONCAT(err, \'Invalid Age, \');\r\n  END IF;\r\n\r\n  IF sex IS NULL OR (sex NOT IN (\'Male\', \'Female\')) THEN\r\n    SET err = CONCAT(err, \'Invalid Sex, \');\r\n  END IF;\r\n\r\n  -- If errors, store the error message in exam 5226\r\n  IF CHAR_LENGTH(err) > 0 THEN\r\n    SET err = CONCAT(err, \'eGFR-BIS cannot be calculated\');\r\n    UPDATE result \r\n    SET result = err \r\n    WHERE sample_id = sid AND examination_id = 5226;\r\n  ELSE\r\n    -- Set sex factor\r\n    SET sex_factor = IF(sex = \'Female\', 0.82, 1);\r\n\r\n    -- Calculate BIS1 eGFR (rounded to 1 decimal)\r\n    SET egfr = ROUND(3736 * POW(cr, -0.87) * POW(age, -0.95) * sex_factor, 1);\r\n\r\n    -- Store eGFR result\r\n    UPDATE result \r\n    SET result = egfr \r\n    WHERE sample_id = sid AND examination_id = 5226;\r\n  END IF;\r\nEND$$\r\n\r\nDELIMITER ;\r\n','Berlin Initiative Study-1 Formula for Calculation of eGFR.\r\n\r\nHow to add this procedure in LIS/adminer?\r\nCopy above code and paste it in the SQL Command of Adminer.\r\n\r\nGo into eGFRbis examination id, in edit_specification write {\"procedure\":\"calculate_eGFRbis\"}\r\n');
 /*!40000 ALTER TABLE `my_procedure_code` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `qc_lot`
@@ -1399,7 +1440,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `qc_lot`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `qc_lot` (
   `qc_lot` varchar(100) NOT NULL,
   `in_use` varchar(100) DEFAULT NULL,
@@ -1415,6 +1456,7 @@ CREATE TABLE `qc_lot` (
 
 LOCK TABLES `qc_lot` WRITE;
 /*!40000 ALTER TABLE `qc_lot` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `qc_lot` VALUES
 ('QC/0/BlankW','1','updated from OLD LIS',NULL),
 ('QC/1/Radiometer/R0148','0','updated from OLD LIS',NULL),
@@ -1448,8 +1490,9 @@ INSERT INTO `qc_lot` VALUES
 ('QC/8/Randox/1247UE','0','updated from OLD LIS',NULL),
 ('QC/8/Randox/1296UE','0','new lot',NULL),
 ('QC/8/Randox/1320UE','0','updated from OLD LIS',NULL),
-('QC/8/Randox/1353UE','1','NEW LOT','24-04-2025'),
-('QC/8/Randox/1373UE','1','NEW LOT','07-09-2024'),
+('QC/8/Randox/1353UE','0','NEW LOT','24-04-2025'),
+('QC/8/Randox/1373UE','0','NEW LOT','07-09-2024'),
+('QC/8/Randox/1439UE','1','NEW LOT','22-08-2025'),
 ('QC/BNP/3600','1','updated from OLD LIS',NULL),
 ('QC/DDIMER','1','updated from OLD LIS',NULL),
 ('QC/HbA1c/L1','0','updated from OLD LIS',NULL),
@@ -1481,7 +1524,7 @@ INSERT INTO `qc_lot` VALUES
 ('QC/SERUM POOL/01','0',NULL,NULL),
 ('QC/SERUM POOL/CKMB/01','0',NULL,NULL),
 ('QC/SPIN_CK/24','0','updated from OLD LIS',NULL),
-('QC/SPIN_CKMB/24','1','updated from OLD LIS',NULL),
+('QC/SPIN_CKMB/24','0','updated from OLD LIS',NULL),
 ('QC/TNI/3600','1','updated from OLD LIS',NULL),
 ('QC/Vit-D serum pool','0','updated from OLD LIS',NULL),
 ('TSH CALIBRATOR POOL 1','0',NULL,NULL),
@@ -1489,6 +1532,7 @@ INSERT INTO `qc_lot` VALUES
 ('TSH_SERUM_POOL_202501_L3','1','POOLED SERUM FOR L2 OF TSH','2025-06-21');
 /*!40000 ALTER TABLE `qc_lot` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `route_priority`
@@ -1496,7 +1540,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `route_priority`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `route_priority` (
   `route` varchar(100) NOT NULL,
   `node` varchar(100) NOT NULL,
@@ -1513,6 +1557,7 @@ CREATE TABLE `route_priority` (
 
 LOCK TABLES `route_priority` WRITE;
 /*!40000 ALTER TABLE `route_priority` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `route_priority` VALUES
 ('ALB-TP','ALB-TP','026','',''),
 ('AMY-LIP-ALP','AMY-LIP-ALP','056','1015',''),
@@ -1590,6 +1635,7 @@ INSERT INTO `route_priority` VALUES
 ('Vitamins','Vitamins','','','560');
 /*!40000 ALTER TABLE `route_priority` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `sample_id_strategy`
@@ -1597,7 +1643,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sample_id_strategy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sample_id_strategy` (
   `sample_requirement` varchar(100) NOT NULL,
   `lowest_id` bigint(20) DEFAULT NULL,
@@ -1613,6 +1659,7 @@ CREATE TABLE `sample_id_strategy` (
 
 LOCK TABLES `sample_id_strategy` WRITE;
 /*!40000 ALTER TABLE `sample_id_strategy` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `sample_id_strategy` VALUES
 ('Citrate-Blood',1000,1999999,'Biochemistry'),
 ('EDTA-Blood',1000,1999999,'Biochemistry'),
@@ -1627,9 +1674,11 @@ INSERT INTO `sample_id_strategy` VALUES
 ('Plain-Pleural_Fluid',1000,1999999,'Biochemistry'),
 ('Plain-Swab',1000,1999999,'Biochemistry'),
 ('Plain-Urine',1000,1999999,'Biochemistry'),
-('Plain_Blood',3000001,5000000,'Biochemistry');
+('Plain_Blood',3000001,5000000,'Biochemistry'),
+('complex',1000,1999999,'Biochemistry');
 /*!40000 ALTER TABLE `sample_id_strategy` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `sample_status`
@@ -1637,7 +1686,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sample_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sample_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `priority` decimal(10,3) NOT NULL,
@@ -1649,7 +1698,7 @@ CREATE TABLE `sample_status` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `examination_id` (`examination_id`),
   CONSTRAINT `sample_status_ibfk_1` FOREIGN KEY (`examination_id`) REFERENCES `examination` (`examination_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10016 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1658,6 +1707,7 @@ CREATE TABLE `sample_status` (
 
 LOCK TABLES `sample_status` WRITE;
 /*!40000 ALTER TABLE `sample_status` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `sample_status` VALUES
 (1,100.000,'sample_request',10001,'white',1,'0'),
 (2,200.000,'sample_collection',10002,'#bdb9b9',1,'0'),
@@ -1671,9 +1721,12 @@ INSERT INTO `sample_status` VALUES
 (15,630.000,'sample_reverified',10014,'#579CE0',0,'0'),
 (17,550.000,'sample_immunoassay_verification',105059,'#c02eb0 ',0,'0'),
 (18,370.000,'sample_emergency',105060,'#BB6D3E',1,'0'),
-(19,660.000,'sample_pre_release',105090,'#87CEEB',0,'10007');
+(19,660.000,'sample_pre_release',105090,'#87CEEB',0,'10007'),
+(20,800.000,'sample_printed',10015,'#91648B',1,'10008,10010'),
+(21,900.000,'sample_print_delivered',10016,'#91AAC2',1,'10015');
 /*!40000 ALTER TABLE `sample_status` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `sql`
@@ -1681,7 +1734,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sql`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sql` (
   `name` varchar(100) NOT NULL,
   `sql` text NOT NULL
@@ -1694,11 +1747,13 @@ CREATE TABLE `sql` (
 
 LOCK TABLES `sql` WRITE;
 /*!40000 ALTER TABLE `sql` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `sql` VALUES
 ('export specific colum as sql','select concat (\"update examination set print_route=\'\",\r\n                print_route,\r\n               \"\' where examination_id = \'\"\r\n               ,examination_id,\r\n               \"\'\")\r\nfrom examination\r\norder by print_route desc'),
 ('count of data','(select date(sysdate()),name,result.examination_id,count(sample_id) from result,examination where \r\nresult.examination_id>=10001 and \r\nresult.examination_id<=10012 and \r\nresult like concat(\"%\",date(sysdate()),\"%\") and\r\nresult.examination_id=examination.examination_id\r\ngroup by result.examination_id)\r\nunion\r\n(select \"2023-10-24\",name,result.examination_id,count(sample_id) from result,examination where \r\nresult.examination_id>=10001 and \r\nresult.examination_id<=10012 and \r\nresult like concat(\"%2023-10-24%\") and\r\nresult.examination_id=examination.examination_id\r\ngroup by result.examination_id)');
 /*!40000 ALTER TABLE `sql` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `table_field_specification`
@@ -1706,7 +1761,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `table_field_specification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `table_field_specification` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tname` varchar(100) DEFAULT NULL,
@@ -1726,6 +1781,7 @@ CREATE TABLE `table_field_specification` (
 
 LOCK TABLES `table_field_specification` WRITE;
 /*!40000 ALTER TABLE `table_field_specification` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `table_field_specification` VALUES
 (10,'consumable_receipt','consumable_name','table','consumable_name','consumable_name',''),
 (11,'consumable_receipt','date_of_manufacture','date','','',''),
@@ -1735,6 +1791,7 @@ INSERT INTO `table_field_specification` VALUES
 (51,'consumable_receipt','date_of_starting_use','date','','','');
 /*!40000 ALTER TABLE `table_field_specification` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `unit_name`
@@ -1742,7 +1799,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `unit_name`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `unit_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `unit_name` varchar(100) DEFAULT NULL,
@@ -1758,6 +1815,7 @@ CREATE TABLE `unit_name` (
 
 LOCK TABLES `unit_name` WRITE;
 /*!40000 ALTER TABLE `unit_name` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `unit_name` VALUES
 (1,'ml','2020-08-17 13:06:25','3'),
 (2,'100 Test Pack','2020-12-01 10:59:22','9099514805'),
@@ -1765,6 +1823,7 @@ INSERT INTO `unit_name` VALUES
 (6,'TEST','2022-01-13 15:15:25','8866580625');
 /*!40000 ALTER TABLE `unit_name` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `view_info_data`
@@ -1772,7 +1831,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `view_info_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `view_info_data` (
   `id` int(11) NOT NULL,
   `info` varchar(100) NOT NULL,
@@ -1788,6 +1847,7 @@ CREATE TABLE `view_info_data` (
 
 LOCK TABLES `view_info_data` WRITE;
 /*!40000 ALTER TABLE `view_info_data` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `view_info_data` VALUES
 (0,'Scope','','select\r\n	accr_status as `NABL Accreditation` ,\r\n	examination_id, name,\r\n	sample_requirement,\r\n	display_help as `units/reference_range/(method)`\r\n	from examination \r\n	where \r\n	sample_requirement!=\'None\'\r\n	and\r\n	displayed_scope=\'yes\'\r\n	order by name,sample_requirement'),
 (1,'Total Sample Released On a Day','<input type=date name=__p1 title=\'Give Date\'>','select \'released\', count(examination_id) as `Total_Sample(__p1)` from result where examination_id in (10008) and result like \"__p1%\"\r\n\r\nunion\r\n\r\nselect \'interim released\', count(examination_id) as `Total_Sample(__p1)` from result where examination_id in (10010) and result like \"__p1%\"\r\n\r\nunion\r\n\r\nselect \'Total\', count(examination_id) as `Total_Sample(__p1)` from result where examination_id in (10010,10008) and result like \"__p1%\"\r\n\r\nunion \r\n\r\n\r\nselect \'Counts a sample twice if \', \' it is both interim released and released afterwords\'  '),
@@ -1805,11 +1865,15 @@ INSERT INTO `view_info_data` VALUES
 (21,'Current QC Target and Mean','','SELECT qc_lot,examination.examination_id,examination.name,xxx_lab_reference_value.equipment,mean,sd,start_datetime,end_datetime\r\nFROM \r\n`xxx_lab_reference_value`,examination WHERE `end_datetime`>sysdate() and `xxx_lab_reference_value`.examination_id=examination.examination_id order by examination.examination_id,qc_lot, equipment'),
 (22,'Plain-Blood Vaccutainer Count in OPD','From:<input type=date name=__p1 title=\'Give From  Date\'>To:<input type=date name=__p2 title=\'Give To Date\'>','select \n    count(distinct r1.sample_id) as total_samples\nfrom \n    result r1\njoin \n    result r2 on r1.sample_id = r2.sample_id\nwhere \n    r1.examination_id = 1046\n    and r2.examination_id = 1000\n    and r2.result = \'Plain-Blood\'\n    and r1.recording_time between \'__p1\' and \'__p2\'\n'),
 (23,'Fluoride-Blood Vaccutainer Count in OPD','From:<input type=date name=__p1 title=\'Give From  Date\'>To:<input type=date name=__p2 title=\'Give To Date\'>','select \r\n    count(distinct r1.sample_id) as total_samples\r\nfrom \r\n    result r1\r\njoin \r\n    result r2 on r1.sample_id = r2.sample_id\r\nwhere \r\n    r1.examination_id = 1046\r\n    and r2.examination_id = 1000\r\n    and r2.result = \'Fluoride-Blood\'\r\n    and r1.recording_time between \'__p1\' and \'__p2\'\r\n'),
+(31,'Ward-ID containing samples from location \"KIDNEY\"','From:<input type=date name=__p1 title=\'Give From  Date\'>To:<input type=date name=__p2 title=\'Give To Date\'>','select \r\n    count(distinct r1.sample_id) as total_samples\r\nfrom \r\n    result r1\r\njoin \r\n    result r2 on r1.sample_id = r2.sample_id\r\nwhere \r\n    r1.examination_id = 1047\r\n    and r2.examination_id = 1006\r\n    and r2.result like \'%Kidney%\'\r\n    and r1.recording_time between \'__p1\' and \'__p2\'\r\n'),
+(32,'KIPD-ID containing samples from location \"KIDNEY\"','From:<input type=date name=__p1 title=\'Give From  Date\'>To:<input type=date name=__p2 title=\'Give To Date\'>','select \r\n    count(distinct r1.sample_id) as total_samples\r\nfrom \r\n    result r1\r\njoin \r\n    result r2 on r1.sample_id = r2.sample_id\r\nwhere \r\n    r1.examination_id = 105088\r\n    and r2.examination_id = 1006\r\n    and r2.result like \'%Kidney%\'\r\n    and r1.recording_time between \'__p1\' and \'__p2\'\r\n'),
 (107,'Consumable List (Alphabetically)','','select  * from consumable_receipt order by consumable_name'),
 (109,'Calibartion Data','From:<input type=number name=__p1 title=\'Give From  cal_id\'>To:<input type=number name=__p2 title=\'Give To  cal_id\'>','select \r\ncal_id.id as cal_id,\r\ncal_id.sample_id,\r\nprimary_result.examination_id,\r\nexamination.name as Test,\r\nresult.result as name,primary_result.result,\r\nprimary_result.uniq\r\n\r\nfrom \r\nprimary_result, cal_id,examination,result \r\n\r\nwhere \r\n\r\ncal_id.id between __p1 and __p2 and \r\nprimary_result.sample_id=cal_id.sample_id and \r\nresult.sample_id=cal_id.sample_id and \r\nexamination.examination_id=primary_result.examination_id and\r\nresult.examination_id=1002\r\n'),
-(110,'Comparison Data','From:<input type=number name=__p1 title=\'Give From  cal_id\'>To:<input type=number name=__p2 title=\'Give To  cal_id\'>','select \r\nComparison_ID.id as Comparison_ID,\r\nComparison_ID.sample_id,\r\nprimary_result.examination_id,\r\nexamination.name as Test,\r\nresult.result as name,primary_result.result,\r\nprimary_result.uniq\r\n\r\nfrom \r\nprimary_result, Comparison_ID,examination,result \r\n\r\nwhere \r\n\r\nComparison_ID.id between __p1 and __p2 and \r\nprimary_result.sample_id=Comparison_ID.sample_id and \r\nresult.sample_id=Comparison_ID.sample_id and\r\nexamination.examination_id=primary_result.examination_id and\r\nresult.examination_id=1002\r\n');
+(110,'Comparison Data','From:<input type=number name=__p1 title=\'Give From  cal_id\'>To:<input type=number name=__p2 title=\'Give To  cal_id\'>','select \r\nComparison_ID.id as Comparison_ID,\r\nComparison_ID.sample_id,\r\nprimary_result.examination_id,\r\nexamination.name as Test,\r\nresult.result as name,primary_result.result,\r\nprimary_result.uniq\r\n\r\nfrom \r\nprimary_result, Comparison_ID,examination,result \r\n\r\nwhere \r\n\r\nComparison_ID.id between __p1 and __p2 and \r\nprimary_result.sample_id=Comparison_ID.sample_id and \r\nresult.sample_id=Comparison_ID.sample_id and\r\nexamination.examination_id=primary_result.examination_id and\r\nresult.examination_id=1002\r\n'),
+(111,'Value Check','Examination ID:<input type=number name=__p1 title=\'Examination ID\'> Cutoff:<input type=number name=__p2 title=\'Cutoff\'>','select \r\n    pr.sample_id,\r\n    pr.examination_id,\r\n    pr.result\r\nfrom primary_result pr\r\nwhere pr.sample_id in (\r\n        select distinct sample_id\r\n        from primary_result\r\n        order by sample_id desc\r\n        limit 10000\r\n    )\r\n  and pr.examination_id = __p1   -- examination_id (input parameter)\r\n  and pr.result > __p2;          -- threshold value (input parameter)\r\n');
 /*!40000 ALTER TABLE `view_info_data` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1818,6 +1882,6 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-08-20 19:08:49
+-- Dump completed on 2025-09-28 22:11:10

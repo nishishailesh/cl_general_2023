@@ -21,7 +21,7 @@ $GLOBALS['OPD/Ward']=1006;
 $GLOBALS['email']=1024;
 $GLOBALS['sms_date']=1043;
 $GLOBALS['sms_time']=1044;
-
+$GLOBALS['Sample Collection Condition']=1023;
 
 //for checking function integrity
 $GLOBALS['plasma_glucose']=5031;
@@ -47,8 +47,14 @@ $GLOBALS['serum_potassium']=5020;
 $GLOBALS['serum_calcium']=5014;
 $GLOBALS['serum_urea']=5002;
 $GLOBALS['serum_sodium']=5019;
+$GLOBALS['Serum Osmolality (Complex)']=5229;
+$GLOBALS['referenced_sample_id']=5227;
+$GLOBALS['GTT']=5228;
+$GLOBALS['GTT_condition']['Fasting']=0;
+$GLOBALS['GTT_condition']['PostGlucose-75GM-1HR']=60;
+$GLOBALS['GTT_condition']['PostGlucose-75GM-2HR']=120;
 
-
+ 
 $GLOBALS['Remark']=5098;
 $GLOBALS['Critical_Alert']=5097;
 

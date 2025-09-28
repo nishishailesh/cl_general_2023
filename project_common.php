@@ -133,6 +133,7 @@ function main_menu($link)
             <div class="btn-group-vertical d-block">
               <button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_get_print_id.php type=submit name=action value="get_print_id">Scan and Print</button>
               <button class="btn btn-outline-primary m-0 p-0 " formtarget=_blank formaction=xxx_get_pid_for_print_collective.php type=submit name=action value="get_print_id">Print Cumulative Report</button>
+              <button class="btn btn-outline-primary m-0 p-0 " formtarget=_blank formaction=xxx_get_merged_print_id.php type=submit name=action value="get_print_id">Merged Report</button>
             </div>
           </div>
         </div>';
@@ -2636,6 +2637,45 @@ function edit_field($link,$examination_id,$result_array,$sample_id,$readonly='',
     echo '</div>';
   } 
 
+
+  elseif($type=='html') //type=text
+  {
+    
+        $attributes_str=
+          ' '.$readonly.' '.'
+          id="'.$element_id.'"
+            name=result 
+          data-primary="'.$primary.'" 
+          data-uniq="'.$uniq.'" 
+          data-exid="'.$examination_id.'" 
+          data-sid="'.$sample_id.'" 
+          data-user="'.$_SESSION['login'].'" 
+          data-session_name="'.$_POST['session_name'].'"
+          pattern="'.$pattern.'" 
+          style="resize: both;"
+          minlength=\''.$minlength.'\'';
+          
+    //////
+    echo '<div class="basic_form  m-0 p-0 no-gutters">';
+      ////
+      set_lable($_POST['session_name'],$sample_id,$examination_details,$examination_id,$frill);
+      ////
+      echo '<div class="m-0 p-0 no-gutters">';
+        ////
+        echo '<div class="d-inline-block no-gutters">';         
+          edit_html($link,$examination_id,$result,$attributes_str);
+        echo '</div>';
+        echo '<div class="d-inline  no-gutters">';
+        if($readonly!='readonly')
+        {
+          if($frill){get_primary_result($link,$sample_id,$examination_id);}
+        }
+        echo '</div>';
+      echo '</div>';
+      echo '<div class="help"><pre>'.$help.'</pre></div>';  
+    echo '</div>';
+  } 
+
 //////////////////////
 
   elseif($type=='examination_field_specification')
@@ -5033,6 +5073,23 @@ function read_field($link,$examination_id,$value,$search='no',$readonly='',$attr
 
       echo '<pre><textarea class="w-100"  '.$readonly.' name=\''.'__ex__'.$examination_id.'\' '.$attributes_str.'  >'.$value.'</textarea></pre>';
     } 
+
+    elseif($examination_field_specification['ftype']=='xml')
+    {
+
+      if($autosave=='no')
+      {
+        $attributes_str=$attributes_str. ' class="form-control p-0 m-0 no-gutters  " ';
+      }
+      else
+      {
+        $attributes_str=$attributes_str. ' class="form-control autosave-select p-0 m-0 no-gutters  " ';
+      }
+
+      echo '<pre><textarea class="w-100"  '.$readonly.' name=\''.'__ex__'.$examination_id.'\' '.$attributes_str.'  >'.$value.'</textarea></pre>';
+    } 
+
+
     else
     {
       echo 'not implemented';
@@ -5732,8 +5789,6 @@ function get_one_field_for_insert_in_primary_result($link,$sample_id,$examinatio
     
   }
 
-
-
   else  
   {
     //////
@@ -6118,12 +6173,15 @@ function insert_one_examination_without_result($link,$sample_id,$examination_id,
   } else{return true;}
 }
 
+
+//////////////// restriction post release////////////////
 function insert_one_examination_with_result($link,$sample_id,$examination_id,$result)
 {
   //echo '<h1>'.$result.'</h1>';
   $res=get_config_value($link,'restrictive_examination_for_edit_delete');
+  $bypass=get_config_value($link,'edit_delete_restriction_bypass_examination');
   $res_result=get_one_ex_result($link,$sample_id,$res);
-  if(strlen($res_result>0))
+  if(strlen($res_result>0) && !in_array($examination_id,explode(",",$bypass)))
   {
     echo '<h5 class="bg-warning">Edit/delete operation not possible</h5>';
     return;
@@ -6165,8 +6223,11 @@ function insert_one_examination_with_result($link,$sample_id,$examination_id,$re
 function insert_update_one_examination_with_result($link,$sample_id,$examination_id,$result)
 {
   $res=get_config_value($link,'restrictive_examination_for_edit_delete');
+  $bypass=get_config_value($link,'edit_delete_restriction_bypass_examination');
   $res_result=get_one_ex_result($link,$sample_id,$res);
-  if(strlen($res_result>0))
+  //if(strlen($res_result>0))
+  if(strlen($res_result>0) && !in_array($examination_id,explode(",",$bypass)))
+
   {
     echo '<h5 class="bg-warning">Edit/delete operation not possible</h5>';
     return;
@@ -6201,6 +6262,53 @@ function insert_update_one_examination_with_result($link,$sample_id,$examination
     return false;
   } else{return true;}
 }
+
+
+
+function insert_update_one_examination_with_result_blob($link,$sample_id,$examination_id,$result)
+{
+  $res=get_config_value($link,'restrictive_examination_for_edit_delete');
+  $bypass=get_config_value($link,'edit_delete_restriction_bypass_examination');
+  $res_result=get_one_ex_result($link,$sample_id,$res);
+  //if(strlen($res_result>0))
+  if(strlen($res_result>0) && !in_array($examination_id,explode(",",$bypass)))  
+  {
+    echo '<h5 class="bg-warning">Edit/delete operation not possible</h5>';
+    return;
+  }
+      
+  if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'insert'))
+  {
+    echo '<h5 class="bg-warning">This user is not authorized for [insert] with examination_id='.$examination_id.'</h5>';
+    return;
+  }
+
+  if(!$authorized_for_insert=is_authorized($link,$_SESSION['login'],$examination_id,'update'))
+  {
+    echo '<h5 class="bg-warning">This user is not authorized for [update] with examination_id='.$examination_id.'</h5>';
+    return;
+  }
+  
+  //recording_time=now(),recorded_by=\''.$_POST['user'].'\'
+        
+  $sql='insert into result_blob (sample_id,examination_id,result,recording_time,recorded_by)
+      values ("'.$sample_id.'","'.$examination_id.'","'.my_safe_string($link,$result).'",now(),"'.$_SESSION['login'].'")
+      on duplicate key update
+      result=\''.my_safe_string($link,$result).'\' , 
+      recording_time=now() ,
+      recorded_by=\''.$_SESSION['login'].'\''; 
+      
+  //echo $sql.'(with)<br>';
+  if(!run_query($link,$GLOBALS['database'],$sql))
+  {
+    //echo $sql.'(without)<br>';
+    //echo 'Data not inserted(with)<br>'; 
+    return false;
+  } else{return true;}
+}
+
+
+//////////////// end of restriction post release////////////////
 
 function update_id_type_examination_for_sample_array($link,$sample_id_array,$examination_id,$result)
 {
@@ -12148,9 +12256,9 @@ function print_field($link,$ex_id,$ex_result,$sample_id='')
         echo '<td>'.$examination_details['name'].'</td>';
         
         echo '<td style="padding:2px;">'.
-          htmlspecialchars($ex_result.' '.
+          nl2br(htmlspecialchars($ex_result.' '.
                   decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h).
-                  $append_info).
+                  $append_info)).
           '
         </td>';
       
@@ -12170,9 +12278,9 @@ function print_field($link,$ex_id,$ex_result,$sample_id='')
         echo '<td>'.$examination_details['name'].'</td>';
         
         echo '<td colspan="2">'.
-          htmlspecialchars($ex_result.' '.
+          nl2br(htmlspecialchars($ex_result.' '.
                   decide_alert($ex_result,$interval_l,$cinterval_l,$ainterval_l,$interval_h,$cinterval_h,$ainterval_h).
-                  $append_info).
+                  $append_info)).
           '
         </td>';
         echo '</tr>
@@ -14169,7 +14277,11 @@ function create_multi_label_button($link,$received)
 }
 
 
-
+//sample_status table: 
+//short_cut: wheather bulk change possible or not
+//dependancy_examination_id: only when dependency is filled with date-time -> this will show
+//readonly examination (in examination table) can not be edited/deleted as field in browser
+//
 function xxx_update_sample_status($link,$sample_id,$examination_id)
 {
   $examination_details=get_one_examination_details($link,$examination_id);
@@ -14359,6 +14471,33 @@ function get_one_id()
   echo '<button type=submit class="btn btn-sm m-0 p-0 btn-primary" name=action value=view_dbid>View</button>';
   echo '<input  type=hidden name=session_name  value=\''.session_name().'\'>';
   echo '</form>';
+}
+
+
+function get_xml_defination($link,$id)
+{
+  
+  
+}
+
+
+function edit_html($link,$examination_id,$field_value,$attributes_str)
+{
+  //$examination_details=get_one_examination_details($link,$examination_id);
+  //$display_format=$examination_details['display_format'];
+  //if(strlen($display_format)==0){$display_format='horizontal3';}
+  //$edit_specification=json_decode($examination_details['edit_specification'],true);
+  //$xml_id=isset($edit_specification['html'])?$edit_specification['html']:'';
+  
+  //if(strlen($field_value)==0){$final_xml_id=$xml_id;}
+  
+  //$result=run_query($link,$GLOBALS['database'],'select * from html where id=\''.$final_xml_id.'\'');
+  //$ar=get_single_row($result);
+
+
+  echo '<div class="summernote" '.$attributes_str.' >';
+  echo $field_value;
+  echo '</div>';
 }
 
 

@@ -22,7 +22,7 @@ function verify_sample($link,$sample_id)
     } 
   }
   
-  //verify blob
+  //verify blob ??really useful??
   $ex_result_blob_array=get_result_blob_of_sample_in_array($link,$sample_id); 
   foreach ($ex_result_blob_array as $eid=>$eval)
   {
@@ -404,7 +404,7 @@ function f_5060($link,$sample_id,$ex_id)
   }
   else if (get_one_ex_result($link,$sample_id,$GLOBALS['Age(Y)'])<18)
   {
-    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'age<18, eGFR can not be calculated');
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'age<18? eGFR can not be calculated');
     return true;
   }
    
@@ -420,4 +420,120 @@ function f_5060($link,$sample_id,$ex_id)
 }
 
 
+
+//"calculate":"1.86*E+(E*0.1667)+(E*0.0556)+9","ex_list":"5019,5002,5212"
+//$GLOBALS['serum_urea']=5002;
+//$GLOBALS['serum_sodium']=5019;
+//$GLOBALS['plasma_glucose']=5031;
+//$GLOBALS['Serum Osmolality (Complex)']=5226
+//$GLOBALS['referenced_sample_id']=5227
+//(1.86*Na)+(Urea*0.1667)+(Glc*0.0556)+9
+
+function get_all_examination_result_from_sample_id_csv($link,$sample_id_csv)
+{
+  $sql='select * from result where sample_id in ('.$sample_id_csv.')';
+  $result=run_query($link,$GLOBALS['database'],$sql);
+  $all_data=array();
+  while($ar=get_single_row($result))
+  {
+    $all_data[$ar['examination_id']]=$ar['result'];
+  }
+  return $all_data;
+}
+
+function get_all_examination_result_from_sample_id_csv_with_sample_id($link,$sample_id_csv)
+{
+  $sql='select * from result where sample_id in ('.$sample_id_csv.')';
+  $result=run_query($link,$GLOBALS['database'],$sql);
+  $all_data=array();
+  while($ar=get_single_row($result))
+  {
+    $all_data[$ar['sample_id']][$ar['examination_id']]=$ar['result'];
+  }
+  return $all_data;
+}
+
+
+/*
+
+(1.86*Na)+(Urea*0.1667)+(Glc*0.0556)+9              
+      mmol/L            mg/dL   mg/L    MW    mmol/L    Factor  Final   Factor
+Na    144                                               2       1.86 (For reduced activity, protein binding, PO4 binding, HCO3 binding etc.)
+Urea  6.6667            40      400     60     6.6667   0.1667  0.1667
+Glc   7.222             130     1300    180    7.222    0.0556  0.0556
+Osm   290
+
+*/
+
+function f_5229($link,$sample_id,$ex_id)
+{
+  //To make sure that examination_id in database is same as function_name (via Globals defined in config.php)
+  
+  if(!examination_id_verified($ex_id,$GLOBALS['Serum Osmolality (Complex)'],'Serum Osmolality (Complex)')){return false;}
+
+  $sample_id_csv=get_one_ex_result($link,$sample_id,$GLOBALS['referenced_sample_id']);
+  print('$sample_id_csv: '.$sample_id_csv.'<br>');
+  $all_data=get_all_examination_result_from_sample_id_csv($link,$sample_id_csv);
+  print_r($all_data);
+  
+  $sodium=$all_data[$GLOBALS['serum_sodium']];
+  $urea=$all_data[$GLOBALS['serum_urea']];
+  $glucose=$all_data[$GLOBALS['plasma_glucose']];
+
+   
+  if(!examination_result_numeric($sodium,'sodium')){return false;}
+  if(!examination_result_numeric($urea,'urea')){return false;}
+  if(!examination_result_numeric($glucose,'glucose (fluoride)')){return false;}
+  
+  $osm=(1.86*$sodium)+($urea*0.1667)+($glucose*0.0556)+9;
+  print('Equation used for osmolality: $osm=(1.86*$sodium)+($urea*0.1667)+($glcucose*0.0556)+9');
+  print('$osm: '.$osm.'<br>');
+  $res='Result='.round($osm).PHP_EOL.'Sodium='.$sodium.PHP_EOL.'urea='.$urea.PHP_EOL.'glucose='.$glucose;
+  insert_update_one_examination_with_result($link,$sample_id,$ex_id,$res);
+  
+  return true;
+}
+
+function f_5228($link,$sample_id,$ex_id)
+{
+  echo ' GTT graph creation: function f_5228($link,$sample_id,$ex_id) ';
+  if(!examination_id_verified($ex_id,$GLOBALS['GTT'],'GTT')){return false;}
+
+  $sample_id_csv=get_one_ex_result($link,$sample_id,$GLOBALS['referenced_sample_id']);
+
+  print('$sample_id_csv: '.$sample_id_csv.'<br>');
+  $all_data=get_all_examination_result_from_sample_id_csv_with_sample_id($link,$sample_id_csv);
+  
+  $gtt_time_data='';
+  $gtt_value_data='';
+  $gtt_data=array();
+  echo($GLOBALS['GTT_condition']['Fasting']);
+  foreach ($all_data as $one_sample)
+  {
+    echo $GLOBALS['GTT_condition'][$one_sample[$GLOBALS['Sample_Collection_Condition']]].'::'.$one_sample[$GLOBALS['plasma_glucose']].'<br>';
+    
+    $gtt_data[$GLOBALS['GTT_condition'][$one_sample[$GLOBALS['Sample_Collection_Condition']]]]=$one_sample[$GLOBALS['plasma_glucose']];
+  }
+  
+  
+  echo '<pre>gtt:data:::';
+  
+  print_r($gtt_data);
+  ksort($gtt_data);
+  print_r($gtt_data);
+  echo '</pre>';
+
+
+  $k='';
+  $v='';
+  foreach ($gtt_data as $time=>$val)
+  {
+    $k=$k.' '.$time;
+    $v=$v.' '.$val;
+  }
+          
+  exec('extra/gtt.py '.$sample_id.' '.$ex_id.' '.$k.' '.$v);
+  return true;
+
+}
 ?>

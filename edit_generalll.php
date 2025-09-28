@@ -462,3 +462,8 @@ function my_search_test()
 }
 </script>
 
+<script>
+$(document).ready(function() {
+  $('.summernote').summernote();
+});
+</script>

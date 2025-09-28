@@ -27,7 +27,7 @@ echo ';}
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
 
 if(!isset($_POST['sql']))
 {
@@ -76,6 +76,7 @@ where examination_id=1001 and result like "%9664555%" and sample_id between
                         (select max(sample_id) from sample_link)';
   }
 
+  echo $sql;
   $result=run_query($link,$GLOBALS['database'],$sql);
 
   $fast_search_result_page_limit=get_config_value($link,'fast_search_result_page_limit');

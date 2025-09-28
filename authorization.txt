@@ -1,0 +1,5 @@
+0 select
+1 insert
+2 update
+3 release
+4 manual insert in primary 

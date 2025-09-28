@@ -31,6 +31,8 @@ function head($title='blank')
       <link rel="stylesheet" href="flatpickr/flatpickr.min.css">
       <script src="flatpickr/flatpickr.min.js"></script>
 
+      <link href="ed/summernote.min.css" rel="stylesheet">
+      <script src="ed/summernote.min.js"></script>
       
       
       <style>
