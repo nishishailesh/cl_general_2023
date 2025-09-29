@@ -3,7 +3,7 @@ $GLOBALS['nojunk']='';
 require_once 'project_common.php';
 require_once 'base/verify_login.php';
 	////////User code below/////////////////////
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
 
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //echo '<pre>';print_r($_POST);echo '</pre>';
