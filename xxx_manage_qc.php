@@ -182,7 +182,8 @@ function prepare_qc_data_from_search_condition($link,$post,$limit=400)
         $required_value=$post['__ex__'.$search_examination_id];
         //echo 'It is a point range search ..<br>';
         //echo 'required value is '.$required_value.'.. <br>';
-        $sql=$sql . '(select sample_id from result where examination_id=\''.$search_examination_id.'\' and lower(result) like \'%'.strtolower($required_value).'%\'  ) intersect ';
+        //$sql=$sql . '(select sample_id from result where examination_id=\''.$search_examination_id.'\' and lower(result) like \'%'.strtolower($required_value).'%\'  ) intersect ';
+        $sql=$sql . '(select sample_id from result where examination_id=\''.$search_examination_id.'\' and result = \''.$required_value.'\'  ) intersect ';
       }
     }
   }

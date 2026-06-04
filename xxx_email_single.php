@@ -32,7 +32,7 @@ else
 			values(\''.$email.'\',\''.$subject.'\',\''.$content.'\',0,\''.my_safe_string($rlink,$output).'\',\''.$subject.'.pdf\')';
 	//echo $mail_sql;
 
-	if(run_query($rlink,$GLOBALS['email_database'],$mail_sql))
+	if(run_query($rlink,$GLOBALS['email_db'],$mail_sql))
 	{
 	  echo 'email sent to main server. It may reach destination after 5-30 minutes, depending on main server configuration<br>';
 	}

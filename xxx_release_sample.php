@@ -37,7 +37,7 @@ if(in_array('lock',$auth))
 	insert_update_one_examination_with_result($link,$_POST['sample_id'],$GLOBALS['released_by'],$user['name'].' ('.strftime("%Y-%m-%d %H:%M").')');
 	insert_update_one_examination_with_result($link,$_POST['sample_id'],$GLOBALS['release_date'],strftime("%Y-%m-%d"));
 	insert_update_one_examination_with_result($link,$_POST['sample_id'],$GLOBALS['release_time'],strftime("%H:%M"));
-
+	exec("/usr/share/nchs/clg/extra/gujapi/send_data.py"." ".$_POST['sample_id']) 
 	$tat=calculate_tat($link,$_POST['sample_id'],$print='no');
 	if($tat['Total_TAT']>$GLOBALS['TAT_warn_hours'])
 	{

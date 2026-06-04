@@ -27,7 +27,7 @@ foreach($received as $one_label)
 		}
 	}
 }
-
+//ob_end_clean();
 print_pdf($pdf,'barcode.pdf');
 
 /*

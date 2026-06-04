@@ -187,6 +187,7 @@ function main_menu($link)
                 <button class="btn btn-outline-primary m-0 p-0" formaction=dashboard.php type=submit name=action value=dashboard>Dashboard</button>
                 <button class="btn btn-outline-primary m-0 p-0" formaction=manage_label.php type=submit name=action value=manage_label>Labels</button>
                 <button class="btn btn-outline-primary m-0 p-0" formaction=xxx_prepare_for_group_barcode.php type=submit name=action value=group_label>Print Group Labels</button>
+                <button class="btn btn-outline-primary m-0 p-0" formaction=moving_average.php type=submit name=action value=cup_barcode_range>MovAvg</button>
                 
                 <button class="btn btn-outline-primary m-0 p-0" formaction=get_id_range_for_cup_barcode.php type=submit name=action value=cup_barcode_range>Cup Barcode</button>
                 <!-- <button class="btn btn-outline-primary m-0 p-0" formaction=request.php type=submit name=action value=request>Request</button> -->
@@ -14291,6 +14292,11 @@ function xxx_update_sample_status($link,$sample_id,$examination_id)
   if($readonly!='readonly')
   {
     insert_update_one_examination_with_result($link,$sample_id,$examination_id,strftime("%Y-%m-%dT%H:%M"));
+
+    if($examination_id==10008)
+	{
+		exec("/usr/share/nchs/clg/extra/gujapi/send_data.py"." ".$sample_id);
+	}
   }
   else
   {

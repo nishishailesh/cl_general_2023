@@ -7,8 +7,6 @@ require_once 'base/verify_login.php';
 require_once('tcpdf/tcpdf.php');
 require_once('tcpdf/tcpdf_barcodes_2d.php');
 
-$ignore_unreleased=True;
-
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //echo '<pre>';print_r($_POST);echo '</pre>';
 

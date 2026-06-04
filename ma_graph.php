@@ -40,22 +40,22 @@ if(!isset($_SESSION['password']) && !isset($_POST['password']))
 
 
 //$one='select avg_value from moving_average order by date_time desc limit 200';
-$one='select * from moving_average where examination_id=\''.$_POST['examination_id'].'\' order by date_time desc limit '.$_POST['limit'].' offset '.$_POST['offset'];
-$result=run_query($link,$GLOBALS['database'],$one);
-$data=array();
-while($ar=get_single_row($result))
-{
-  $data[]=	'{'.'ex_id:'.'\''.$ar['examination_id'].'\''.
-		','.'date_time:'.'\''.$ar['date_time'].'\''.
-		','.'avg_value:'.'\''.$ar['avg_value'].'\''.
-		','.'sample_id:'.'\''.$ar['sample_id'].'\''.
-		','.'value:'.'\''.$ar['value'].'\''.
-		'}';
-}
+//$one='select * from moving_average where examination_id=\''.$_POST['examination_id'].'\' order by date_time desc limit '.$_POST['limit'].' offset '.$_POST['offset'];
+//$result=run_query($link,$GLOBALS['database'],$one);
+//$data=array();
+//while($ar=get_single_row($result))
+//{
+//  $data[]=	'{'.'ex_id:'.'\''.$ar['examination_id'].'\''.
+//		','.'date_time:'.'\''.$ar['date_time'].'\''.
+//		','.'avg_value:'.'\''.$ar['avg_value'].'\''.
+//		','.'sample_id:'.'\''.$ar['sample_id'].'\''.
+//		','.'value:'.'\''.$ar['value'].'\''.
+//		'}';
+//}
 
 //print_r($data);
 //$json='['.implode(",",$data).']';
-$json=implode(",",$data);
+//$json=implode(",",$data);
 //echo $json;
 
 
@@ -72,76 +72,12 @@ function get_from_python($python_script)
 }
 
 //////Getting data from python//////
-//echo get_from_python('extra/all_ma.py '.$_POST['limit'].' '.$_POST['offset']);
+echo get_from_python('extra/all_ma.py '.$_POST['limit'].' '.$_POST['offset'].' '.$_POST['examination_id']);
+echo "<br>Newer data on Right. Older data on left";
+echo "<br>mean of mean is mean of moving average";
+echo "<br>sd of mean is sd of moving average";
+echo "<br>horizontal lines represent mean and +/- sd up to 3 sd ";
 
 ?>
-    <canvas id="bar-chart" width=300" height="150"></canvas>
 
 
-    <script >
-jdata=[<?php echo $json; ?>]
-
-function footer(tooltipItem,data)
-{
-  return 'Sum';
-}
-
-new Chart(
-    document.getElementById("bar-chart"), 
-    {
-    type: 'line',
-    data: {
-		datasets:[
-                    {
-                        label: 'Moving Average',
-                        data:jdata,
-                        parsing:
-                        {
-                            yAxisKey:'avg_value',
-                            xAxisKey:'date_time',
-                        }
-          			},
-                    
-                    {
-                        label: 'Result',
-                        data:jdata,
-                        parsing:{
-                                        yAxisKey:'value',
-                                        xAxisKey:'date_time',
-                                },
-
-                        plugins:{
-                                    tooltips: 
-                                        {
-                                            callbacks: {
-                                                            label: function (context){return 'Sum';}
-                                                        }
-                                        }
-                                }
-
-                    }
-
-
-
-			]
-	  },
-    options: 	{
-    			scales:
-			{
-				//y:{suggestedMin:100, suggestedMax:200}
-  			},
-		plugins:{
-			tooltips: 
-			{
-        			callbacks: {
-						label: function (context){return 'Sum';}
-
-					}
-			}
-			}
-
-		},
-    }
-         );
-
-    </script>

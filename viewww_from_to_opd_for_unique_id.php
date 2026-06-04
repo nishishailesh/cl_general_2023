@@ -30,7 +30,7 @@ echo ';}
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 main_menu($link);
 
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 
 if(isset($_POST['action']))
 {
@@ -58,6 +58,7 @@ else
 		{
 			if($ex[1]==$_POST['examination_id']){continue;}
 			else if($ex[1]>0)
+			//if($ex[1]>0)
 			{
 				if(isset($_POST['__from__'.$ex[1]]))
 				{
@@ -87,7 +88,7 @@ else
 }
 //echo '</pre>';
 
-//echo '<pre>';print_r($conditions);echo '</pre>';
+echo '<pre>';print_r($conditions);echo '</pre>';
 
 
 
@@ -131,6 +132,7 @@ limit 200
 */
 
 $u=$_POST['examination_id'];
+echo $u.'<br>';
 if($u!='sample_id')
 {
 	$id_type_table=get_id_type_table_name($link,$u);
@@ -144,7 +146,7 @@ if($u!='sample_id')
 	else
 	{
 		$max_sid=find_max_any_id($link,$_POST['examination_id']);
-		$id_type_from_value=$max_sid-200+1;		
+		$id_type_from_value=$max_sid-200+1;
 		$id_type_to_value=$max_sid;
 	}
 
@@ -158,7 +160,7 @@ if($u!='sample_id')
 		$sql_from=$sql_from.' inner join result '.'e_'.$examination_id.' on '.'e_'.$examination_id.'.sample_id='.$id_type_table.'.sample_id ';
 		if(is_array($result))
 		{
-			
+
 		}
 		else
 		{
@@ -173,29 +175,38 @@ if($u!='sample_id')
 	$final_sql=$select.$sql_from;
 	echo $final_sql;
 }
+
 else
 {
 	$id_type_from='__from__'.$u;
 	$id_type_to='__to__'.$u;
+	echo $_POST[$id_type_from].' to '.$_POST[$id_type_to].'<br>';
 	if(strlen($_POST[$id_type_from])>0 && strlen($_POST[$id_type_to])>0)
 	{
 		$id_type_from_value=$_POST[$id_type_from];
 		$id_type_to_value=$_POST[$id_type_to];
+		echo 'examination_id type from to found<br>';
+		$select=' select sample_link.sample_id as uid, ';
+		$sql_from=' from sample_link ';;
+		$sql_where=' where sample_link.sample_id between '.$id_type_from_value.' and '.$id_type_to_value.' ';
 	}
 	else
 	{
 		$max_sid=find_max_any_id($link,$_POST['examination_id']);
 		$id_type_from_value=$max_sid-200+1;		
 		$id_type_to_value=$max_sid;
+		$select=' select sample_link.sample_id as uid, ';
+		$sql_from=' from sample_link';
+		$sql_where= ' ';
 	}
-	$select=' select sample_link.sample_id as uid, ';
-	$sql_from=' from sample_link ';
 
+
+	$sql_join=' ';
 	foreach($conditions as $examination_id=>$result)
 	{
 		$ex_details=get_one_examination_details($link,$examination_id);
 		$select=$select.'e_'.$examination_id.'.result as `'.$ex_details['name'].'` , ';
-		$sql_from=$sql_from.' inner join result '.'e_'.$examination_id.' on '.'e_'.$examination_id.'.sample_id=sample_link.sample_id ';
+		$sql_join=$sql_join.' inner join result '.'e_'.$examination_id.' on '.'e_'.$examination_id.'.sample_id=sample_link.sample_id ';
 		if(is_array($result))
 		{
 			
@@ -204,11 +215,12 @@ else
 		{
 			$and='and e_'.$examination_id.'.examination_id= '.$examination_id. ' and e_'.$examination_id.'.result like "%'.$result.'%" ';
 		}
-		$sql_from=$sql_from.$and;
+		$sql_join=$sql_join.$and;
 	}
+
 	$select=substr($select,0,-2);
 
-	$final_sql=$select.$sql_from. 'limit 400';
+	$final_sql=$select.$sql_from.$sql_join.$sql_where.' limit 400';
 	echo $final_sql.'<br>';	
 	//exit();
 	
@@ -231,21 +243,22 @@ else
 
 $sample_id_csv=view_sql_result_as_table_with_button($link,$final_sql,$prefix=$prefix);
 
-echo '<form method=post action=xxx_print_multiple.php target=_blank>
+echo '<form method=post action=xxx_print_multiple_ignore_unreleased.php target=_blank>
 			<button 	style="width:100%;height:100%;" 
 						class="btn btn-outline-success btn-sm btn-block text-dark " 
 						name=list_of_id value=\''.$sample_id_csv.'\' >Print</button>
 			<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
-			<input type=hidden name=action value=view_single>
+			<input type=hidden name=action value=view_pdf>
 			<input type=hidden name=ignore value=yes>
 			<span class="badge badge-danger">Unreleased reports will not be printed.</span>
 </form>';
+
 echo '<form method=post action=xxx_print_collective.php target=_blank>
 			<button 	style="width:100%;height:100%;" 
 						class="btn btn-outline-success btn-sm btn-block text-dark " 
 						name=list_of_id value=\''.$sample_id_csv.'\' >Print Collective Report</button>
 			<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
-			<input type=hidden name=action value=view_single>
+			<input type=hidden name=action value=view_collective>
 			<input type=hidden name=ignore value=yes>
 			<span class="badge badge-danger">Unreleased reports will not be printed.</span>
 </form>';							
