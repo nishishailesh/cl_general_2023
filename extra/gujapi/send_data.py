@@ -9,6 +9,8 @@ import time
 import fcntl
 import gujapi
 
+#quit()
+
 from mysql_lis import mysql_lis
 sys.path.append('/var/gmcs_config')
 import astm_var_clg as astm_var

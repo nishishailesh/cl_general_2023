@@ -2164,7 +2164,7 @@ function calculate_result($link,$equation,$ex_list,$sample_id,$decimal=0)
 {
   //check devide by zero,  e is not allowed to have 0
   //check if ex result is empty
-  echo $equation.'<br>';
+  echo '<br>equation:'.$equation.'<br>';
   $data=explode(',',$ex_list);
   $data_count=count($data);
   //print_r($data);
@@ -14295,7 +14295,8 @@ function xxx_update_sample_status($link,$sample_id,$examination_id)
 
     if($examination_id==10008)
 	{
-		exec("/usr/share/nchs/clg/extra/gujapi/send_data.py"." ".$sample_id);
+		#removed. delay due to unreachable site
+		#exec("/usr/share/nchs/clg/extra/gujapi/send_data.py"." ".$sample_id);
 	}
   }
   else

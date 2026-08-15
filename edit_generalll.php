@@ -222,13 +222,13 @@ function calculate_and_update($link,$sample_id)
     {   
         echo '<div class="collapse navbar-collapse collapsed cal_data">[Start]Calculating ex='.$ar['examination_id'].'';
         $ex_result=calculate_result($link,$calculate,$ex_list,$sample_id,$decimal);
-        //echo $ex_result;
+        //echo '>>>>>>>>>>>>>>>>>>>>'.$ex_result;
         save_single_result($link,$sample_id,$ar['examination_id'],$ex_result);
         //echo '[End] Calculating ex='.$ar['examination_id'].'<br><hr>';
         echo '</div>';
     }
     
-    
+    /*
     if(strlen($procedure)>0)
     {  
       //echo '<h1>Just before  run_multi_query</h1><br>';
@@ -241,6 +241,7 @@ function calculate_and_update($link,$sample_id)
       //echo $sql.'<br>';
       //echo '<h1>Just after run_multi_query</h1><br>';
     }
+    */
   }
 
   //echo '<h1>Just before verify_sample</h1><br>';

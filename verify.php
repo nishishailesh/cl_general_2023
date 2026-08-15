@@ -293,18 +293,45 @@ function f_5020($link,$sample_id,$ex_id)
 function f_5001($link,$sample_id,$ex_id)
 {
   echo '<br><b>.....Verification of examination_id=5001 (Creatinine, serum).....</b><br>';
+  
   if(!examination_id_verified($ex_id,$GLOBALS['serum_creatinine'],'serum creatinine')){return false;}
 
   $ex_result_array=get_result_of_sample_in_array($link,$sample_id);
-  if( !examination_result_numeric($ex_result_array[$GLOBALS['serum_creatinine']],'serum creatinine')){return false;}
-  
+  if( !examination_result_numeric($ex_result_array[$GLOBALS['serum_creatinine']],'serum creatinine'))
+  {
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR require numeric value of creatinine'); 
+	return false;
+  }
+
+
+  if(
+		!is_examination_requested($link,$sample_id,$GLOBALS['Sex']) && !is_examination_requested($link,$sample_id,$GLOBALS['Age(Y)'])
+	)
+  {
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR require Age and Sex');  
+  }
+  else if (!is_examination_requested($link,$sample_id,$GLOBALS['Sex']))
+  {
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR require Sex');  
+  }
+  else if(!is_examination_requested($link,$sample_id,$GLOBALS['Age(Y)']))
+  {
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR require Age');  
+  }
+  else
+  {
+    //echo '<span class="badge badge-danger d-inline">calling f_5060 from f_5001</span><br>';	
+	//f_5060($link,$sample_id,$GLOBALS['eGFR']);
+	ff_5060($link,$sample_id,$GLOBALS['eGFR']);
+  }
+
   $creatinine=$ex_result_array[$GLOBALS['serum_creatinine']];
   if($creatinine>1.5)
   {
     echo '<span class="badge badge-danger d-inline">serum creatinine is more than 1.5 mg/dL. Adding Urea and electrolytes reflexly</span><br>';
-    insert_one_examination_without_result($link,$sample_id,$GLOBALS['serum_urea'],$error='yes');
-    insert_one_examination_without_result($link,$sample_id,$GLOBALS['serum_potassium'],$error='yes');
-    insert_one_examination_without_result($link,$sample_id,$GLOBALS['serum_sodium'],$error='yes');
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['serum_urea'],isset($ex_result_array[$GLOBALS['serum_urea']])?$ex_result_array[$GLOBALS['serum_urea']]:'');
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['serum_potassium'],isset($ex_result_array[$GLOBALS['serum_urea']])?$ex_result_array[$GLOBALS['serum_potassium']]:'');
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['serum_sodium'],isset($ex_result_array[$GLOBALS['serum_urea']])?$ex_result_array[$GLOBALS['serum_sodium']]:'');
     return true;
   }
   return true;
@@ -319,7 +346,7 @@ function f_5001($link,$sample_id,$ex_id)
 //1008 = Sex
 //5087 = sex eGFR
 //when Sex is verified, following function is run
-function f_1008($link,$sample_id,$ex_id)
+function f_1008_old($link,$sample_id,$ex_id)
 {
   //sole purpose is to calculate eGFR
   //don't waste time if it is not requested
@@ -376,9 +403,72 @@ function f_1008($link,$sample_id,$ex_id)
   return true;
 }
 
+
+//this function adds eGFR if sex is requested
+//disabled. eGFR for all creatinine
+//renamed to diable
+function disabled_f_1008($link,$sample_id,$ex_id)
+{
+  //sole purpose is to calculate eGFR
+  //don't waste time if it is not requested
+  //if(is_examination_requested($link,$sample_id,$GLOBALS['eGFR'])==True)
+  //{
+  //    echo '<br><b>eGFR requested. So, trying for Sex based factor in MDRD equation</b><br>';
+  //}
+  //else
+  //{
+  //    echo '<br><b>eGFR not requested. So, not trying for Sex based factor in MDRD equation</b><br>';
+  //    return true;
+  //}
+  
+  //information display on web page. Not strctly necessary
+  echo '<b>.....Verification of examination_id=1008 (Sex, None).....</b><br>';
+  
+  //This is cross check. If someone mistakenly alter examination_id of Sex, this function will not be run
+  //If someone gives another examination this(1008) ID, then also it may create problems
+  //see config.php for $GLOBALS defination
+  if(!examination_id_verified($ex_id,$GLOBALS['Sex'],'Sex')){return false;}
+  //if name and id do not match as per expectation, do not do any thing
+  
+  //get examination results 
+  $ex_result_array=get_result_of_sample_in_array($link,$sample_id);
+  //print on page for debug purpose
+  print_r($ex_result_array);
+  
+  
+  //We do not want following. results are not numeric. 
+  //if( !examination_result_numeric($ex_result_array[$GLOBALS['serum_creatinine']],'serum creatinine')){return false;}
+ 
+  
+  $sex=$ex_result_array[$GLOBALS['Sex']];
+  //(male:1) (female:0.742)
+  if($sex=='Male')
+  {
+    echo '<span class="badge badge-danger d-inline">Sex is Male. Sex for eGFR will be 1</span><br>';
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['Sex for eGFR'],'1');
+    return true;
+  }
+  else if($sex=='Female')
+  {
+    echo '<span class="badge badge-danger d-inline">Sex is Female. Sex for eGFR will be 0.742</span><br>';
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['Sex for eGFR'],'0.742');
+    return true;
+  }
+  else
+  {
+    echo '<br><span class="badge badge-danger d-inline">Sex is not Male/Female. eGFR can not be calculated</span><br>';
+    echo '<span class="badge badge-danger d-inline">Consult clinician, if it is possible to use M or F based on some biological characteristics</span><br>';
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['Sex for eGFR'],'Sex must be M or F. No Result Given');
+    return true;
+  }    
+  return true;
+}
+
+
 //eGFR (MDRD, Non african)
 //$GLOBALS['eGFR']
-function f_5060($link,$sample_id,$ex_id)
+//we come here if creatrinine is numeric and age , sex requested -> eGFR inserted -> now verify
+function ff_5060($link,$sample_id,$ex_id)
 {
   //information display on web page. Not strictly necessary
   echo '<b>.....Verification of examination_id=5060(eGFR (MDRD, Non african), Serum).....</b><br>';
@@ -394,27 +484,65 @@ function f_5060($link,$sample_id,$ex_id)
   //print on page for debug purpose
   //print_r($ex_result_array);
   
-  
-  //if eGFR is not numeric, we will not touch it
-  if( !examination_result_numeric($ex_result_array[$GLOBALS['eGFR']],'eGFR (MDRD, Non african)')){return false;}
+  $sex=$ex_result_array[$GLOBALS['Sex']];
+  //(male:1) (female:0.742)
+  echo '<br><span class="badge badge-danger d-inline">eGFR result 490:'.$ex_result_array[$GLOBALS['eGFR']].'</span><br>';	 
 
-  if( !examination_result_numeric($ex_result_array[$GLOBALS['Age(Y)']],'Age (In Completed Years)'))
+  if( strlen($sex)==0)
   {
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR can not be calculated. Reason: Sex is empty');
+    return false;
+  }
+  else if($sex=='Male')
+  {
+    echo '<span class="badge badge-danger d-inline">Sex is Male. Sex for eGFR will be 1</span><br>';
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['Sex for eGFR'],'1');
+  }
+  else if($sex=='Female')
+  {
+    echo '<span class="badge badge-danger d-inline">Sex is Female. Sex for eGFR will be 0.742</span><br>';
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['Sex for eGFR'],'0.742');
+  }
+  else
+  {
+    echo '<br><span class="badge badge-danger d-inline">Sex is not Male/Female. eGFR can not be calculated</span><br>';
+    echo '<span class="badge badge-danger d-inline">Consult clinician, if it is possible to use M or F based on some biological characteristics</span><br>';
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['Sex for eGFR'],'Sex must be Male or Female.');
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR can not be calculated. Reason: Sex must be Male or Female');
+    return true;
+  }    
+  
+  if( strlen($ex_result_array[$GLOBALS['Age(Y)']])==0)
+  {
+    echo '<br><span class="badge badge-danger d-inline">GFR can not be calculated. Reason: age is not written</span><br>';
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR can not be calculated. Reason: age is not written');
+    return false;
+  }
+  else if( !examination_result_numeric($ex_result_array[$GLOBALS['Age(Y)']],'Age (In Completed Years)'))
+  {
+    echo '<br><span class="badge badge-danger d-inline">eGFR can not be calculated. Reason: age in not in complete numbers</span><br>';
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR can not be calculated. Reason: age in not in complete numbers');
     return false;
   }
   else if (get_one_ex_result($link,$sample_id,$GLOBALS['Age(Y)'])<18)
   {
-    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'age<18? eGFR can not be calculated');
+    echo '<br><span class="badge badge-danger d-inline">eGFR can not be calculated. Reason: age<18</span><br>';	 
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR can not be calculated. Reason: age<18');
     return true;
   }
    
   $gfr_value=$ex_result_array[$GLOBALS['eGFR']];
   //(male:1) (female:0.742)
-  if($gfr_value>60)
+  echo '<br><span class="badge badge-danger d-inline">eGFR result at last:'.$gfr_value.':</span><br>';	 
+
+  if(examination_result_numeric($gfr_value,'eGFR'))
   {
-    echo '<span class="badge badge-danger d-inline">MDRD eGFR is valid only upto 60</span><br>';
-    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'greater than 60');
-    return true;
+	  if($gfr_value>60)
+	  {
+		echo '<span class="badge badge-danger d-inline">MDRD eGFR is valid only upto 60</span><br>';
+		insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'greater than 60');
+		return true;
+	  }
   }
   return true;
 }
