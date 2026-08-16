@@ -829,7 +829,7 @@ CREATE TABLE `stem_id` (
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19021 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19022 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1249,4 +1249,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-08-17  1:33:47
+-- Dump completed on 2026-08-17  1:45:24

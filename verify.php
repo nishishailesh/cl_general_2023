@@ -300,6 +300,7 @@ function f_5001($link,$sample_id,$ex_id)
   if( !examination_result_numeric($ex_result_array[$GLOBALS['serum_creatinine']],'serum creatinine'))
   {
 	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR require numeric value of creatinine'); 
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFRcr (CKD-EPI)'],'eGFR require numeric value of creatinine'); 
 	return false;
   }
 
