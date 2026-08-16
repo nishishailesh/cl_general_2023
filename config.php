@@ -35,7 +35,7 @@ $GLOBALS['Age(Y)']=1007;  //for eGFR
 $GLOBALS['Sex']=1008;  //for eGFR
 $GLOBALS['Sex for eGFR']=5087;  //for eGFR
 $GLOBALS['eGFR']=5060;  //for eGFR
-
+$GLOBALS['eGFRcr (CKD-EPI)']=5225; // for CKD EPI
 
 $GLOBALS['serum_CHOL']=5015;
 $GLOBALS['serum_TG']=5018;

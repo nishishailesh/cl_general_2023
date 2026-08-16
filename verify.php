@@ -309,20 +309,54 @@ function f_5001($link,$sample_id,$ex_id)
 	)
   {
 	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR require Age and Sex');  
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFRcr (CKD-EPI)'],'eGFR require Age and Sex');  
+
   }
   else if (!is_examination_requested($link,$sample_id,$GLOBALS['Sex']))
   {
 	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR require Sex');  
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFRcr (CKD-EPI)'],'eGFR require Age and Sex');  
+
   }
   else if(!is_examination_requested($link,$sample_id,$GLOBALS['Age(Y)']))
   {
 	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFR'],'eGFR require Age');  
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFRcr (CKD-EPI)'],'eGFR require Age and Sex');  
   }
   else
   {
     //echo '<span class="badge badge-danger d-inline">calling f_5060 from f_5001</span><br>';	
 	//f_5060($link,$sample_id,$GLOBALS['eGFR']);
 	ff_5060($link,$sample_id,$GLOBALS['eGFR']);
+	
+	
+	//calculation is done here. No equation in mysql
+	$ckd_epi_data=ff_5225($link,$sample_id,$GLOBALS['eGFRcr (CKD-EPI)']);
+	print_r($ckd_epi_data);
+	if($ckd_epi_data!=False)
+	{
+		$cr=$ex_result_array[$GLOBALS['serum_creatinine']];
+		echo '<br>cr='.$cr.'<br>';
+		$kappa=$ckd_epi_data[0];
+		echo 'kappa='.$kappa.'<br>';
+		$alpha=$ckd_epi_data[1];
+		echo 'alpha='.$alpha.'<br>';
+		$my_factor=$ckd_epi_data[2];
+		echo 'my_factor='.$my_factor.'<br>';
+		$age=$ckd_epi_data[3];
+		echo 'age='.$age.'<br>';
+		$one=142;
+		$two=  pow(min( $cr/$kappa ,1 ),$alpha);
+		$three=pow(max( $cr/$kappa ,1 ),-1.200);
+		$four=pow(0.9938,$age);
+		$five=$my_factor;
+		echo $one."/".$two."/".$three."/".$four."/".$five;
+		$ckd_epi_egfr=round($one*$two*$three*$four*$five,0);
+		echo 'GFRRR='.$ckd_epi_egfr.'<br>';
+		
+		//$GLOBALS['eGFRcr (CKD-EPI)']
+		insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFRcr (CKD-EPI)'],$ckd_epi_egfr);  
+	}
   }
 
   $creatinine=$ex_result_array[$GLOBALS['serum_creatinine']];
@@ -545,6 +579,69 @@ function ff_5060($link,$sample_id,$ex_id)
 	  }
   }
   return true;
+}
+
+
+//5225 eGFRcr (CKD-EPI)
+//$GLOBALS['eGFRcr (CKD-EPI)']
+//we come here if creatrinine is numeric and age , sex requested -> eGFR inserted -> now verify
+function ff_5225($link,$sample_id,$ex_id)
+{
+  //information display on web page. Not strictly necessary
+  echo '<b>.....Verification of examination_id=5225 [eGFRcr (CKD-EPI) ].....</b><br>';
+  
+  //This is cross check. If someone mistakenly alter examination_id of Sex, this function will not be run
+  //If someone gives another examination this(1008) ID, then also it may create problems
+  //see config.php for $GLOBALS defination
+  if(!examination_id_verified($ex_id,$GLOBALS['eGFRcr (CKD-EPI)'],'eGFRcr (CKD-EPI)')){return false;}
+  //if name and id do not match as per expectation, do not do any thing
+  
+  //get examination results 
+  $ex_result_array=get_result_of_sample_in_array($link,$sample_id);
+  //print on page for debug purpose
+  //print_r($ex_result_array);
+
+  $sex=$ex_result_array[$GLOBALS['Sex']];
+  $kappa=["Male"=>0.9,"Female"=>0.7];
+  $alpha=["Male"=>-0.302,"Female"=>-0.241];
+  $my_factor=["Male"=>1,"Female"=>1.012];
+
+  if( strlen($sex)==0)
+  {
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFRcr (CKD-EPI)'],'eGFR can not be calculated. Reason: Sex is empty');
+    return false;
+  }
+  else if(!in_array( $sex, [ 'Female', 'Male']))
+  {
+    echo '<br><span class="badge badge-danger d-inline">Sex is not Male/Female. eGFR can not be calculated</span><br>';
+    echo '<span class="badge badge-danger d-inline">Consult clinician, if it is possible to use M or F based on some biological characteristics</span><br>';
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFRcr (CKD-EPI)'],'eGFR can not be calculated. Reason: Sex must be Male or Female');
+    return false;
+  }    
+  
+  if( strlen($ex_result_array[$GLOBALS['Age(Y)']])==0)
+  {
+    echo '<br><span class="badge badge-danger d-inline">GFR can not be calculated. Reason: age is not written</span><br>';
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFRcr (CKD-EPI)'],'eGFR can not be calculated. Reason: age is not written');
+    return false;
+  }
+  else if( !examination_result_numeric($ex_result_array[$GLOBALS['Age(Y)']],'Age (In Completed Years)'))
+  {
+    echo '<br><span class="badge badge-danger d-inline">eGFR can not be calculated. Reason: age in not in complete numbers</span><br>';
+	insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFRcr (CKD-EPI)'],'eGFR can not be calculated. Reason: age in not in complete numbers');
+    return false;
+  }
+  else if (get_one_ex_result($link,$sample_id,$GLOBALS['Age(Y)'])<18)
+  {
+    echo '<br><span class="badge badge-danger d-inline">eGFR can not be calculated. Reason: age<18</span><br>';	 
+    insert_update_one_examination_with_result($link,$sample_id,$GLOBALS['eGFRcr (CKD-EPI)'],'eGFR can not be calculated. Reason: age<18');
+    return false;
+  }
+
+
+	$ckd_epi_data=array($kappa[$sex],$alpha[$sex],$my_factor[$sex],$ex_result_array[$GLOBALS['Age(Y)']]);
+	 print_r($ckd_epi_data);
+  return $ckd_epi_data;
 }
 
 
