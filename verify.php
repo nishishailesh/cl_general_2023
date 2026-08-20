@@ -328,6 +328,14 @@ function f_5001($link,$sample_id,$ex_id)
   {
     //echo '<span class="badge badge-danger d-inline">calling f_5060 from f_5001</span><br>';	
 	//f_5060($link,$sample_id,$GLOBALS['eGFR']);
+	$eer=is_examination_requested($link,$sample_id,$GLOBALS['eGFR'])?get_one_ex_result($link,$sample_id,$GLOBALS['eGFR']):'';
+	insert_update_one_examination_with_result(
+											$link,
+											$sample_id,
+											$GLOBALS['eGFR'],
+											$eer
+											
+											);  
 	ff_5060($link,$sample_id,$GLOBALS['eGFR']);
 	
 	
