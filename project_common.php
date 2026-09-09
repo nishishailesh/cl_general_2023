@@ -147,6 +147,7 @@ function main_menu($link)
           <div class="dropdown-menu m-0 p-0 ">
             <div class="btn-group-vertical d-block">
               <button class="btn btn-outline-primary m-0 p-0 " formaction=xxx_manage_qc.php type=submit name=action value="get_print_id">Internal Quality Control</button>
+              <button class="btn btn-outline-primary m-0 p-0 " formaction=xbarb_xxx_manage_qc.php type=submit name=action value="get_print_id">PBRTQC</button>              
               <button class="btn btn-outline-primary m-0 p-0 " formtarget=_blank formaction="http://'.$_SERVER['HTTP_HOST'].':3838/TAT" type=submit name=action value="get_print_id">TAT analysis</button>
             </div>
           </div>
@@ -8346,9 +8347,10 @@ function get_equipment_str($link,$sample_id)
   foreach($r as $k=>$v)
   {
     $examination_details=get_one_examination_details($link,$k);
+    //print_r($examination_details);
     //$edit_specification=json_decode($examination_details['edit_specification'],true);
     //$eq=isset($edit_specification['equipment'])?$edit_specification['equipment']:'';
-    $eq_ar[]=$examination_details['equipment'];
+    $eq_ar[]=$examination_details['equipment']??'';
   }
   $eq_ar_u=array_unique($eq_ar);
   sort($eq_ar_u);
