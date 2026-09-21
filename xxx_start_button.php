@@ -53,6 +53,7 @@ echo '<div class="m-3">
 		filter_by_status($link);
 	echo '</fieldset>';
 echo '</div>';
+echo '<h4 class="text-danger">'.get_config_value($link,'menu_notice').'</h4>';
 //////////////user code ends////////////////
 tail();
 //echo '<pre>start:post';print_r($_POST);echo '</pre>';

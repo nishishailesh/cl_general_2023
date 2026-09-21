@@ -14297,8 +14297,8 @@ function xxx_update_sample_status($link,$sample_id,$examination_id)
 
     if($examination_id==10008)
 	{
-		#removed. delay due to unreachable site
-		#exec("/usr/share/nchs/clg/extra/gujapi/send_data.py"." ".$sample_id);
+		//removed. delay due to unreachable site
+		//exec("/usr/share/nchs/clg/extra/gujapi/send_data.py"." ".$sample_id);
 	}
   }
   else

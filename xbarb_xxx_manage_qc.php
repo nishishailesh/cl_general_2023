@@ -9,7 +9,9 @@ echo '      <link rel="stylesheet" href="project_common.css">
 ';  
       
 ////////User code below/////////////////////
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
+
+
 
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 
@@ -26,10 +28,11 @@ function xbarb_details($link,$sample_id,$examination_id, $uniq)
 			result REGEXP "^-?[0-9]+\\.[0-9]+$" 
 			order by sample_id desc 
 			limit 40';
-			
+
 	view_sql_result_as_table($link,$sql,$show_hide='no');
-	
+
 }
+
 main_menu($link);
 
 $limit=isset($_POST['row_limit'])?$_POST['row_limit']:get_config_value($link,'qc_result_limit');
@@ -116,20 +119,9 @@ function prepare_qc_data_from_search_condition($link,$post,$limit=400)
  
   /////////////add ordering//////////////////////////
   
-  if($_POST['sort_order']=='sample_id')
-  {
-    $sql=$sql.' order by sample_id desc,examination_id,uniq desc limit '.$limit;
-  }
-  else if($_POST['sort_order']=='examination_id')
-  {
-    $sql=$sql.' order by examination_id,sample_id desc,uniq desc limit '.$limit;
-  }
-  else
-  {
-    $sql=$sql.' order by examination_id,sample_id desc,uniq desc limit '.$limit;
-  }
+    $sql=$sql.' order by uniq,sample_id desc limit '.$limit;
   
-    //echo $sql;
+  //echo $sql;
   
   //view_sql_result_as_table($link,$sql,$show_hide='no');
   //return 0;
@@ -149,7 +141,7 @@ function prepare_qc_data_from_search_condition($link,$post,$limit=400)
 	$first='no';
   }
   echo '</table>';
-
+  //echo 'xyz';
 }
 
 function format_one_lj_point($q)
@@ -258,9 +250,7 @@ function format_one_lj_point($q)
   echo '</td>';   
   
 }
-//      style="background-color:'.$bar_color[ min(floor($q['sdi']),3) ].';"></canvas>';
-//          ctx.strokeText("'.$q['sdi'].'", 20, 20);
-//          ctx.fillStyle = "'.$bar_color[ min(floor($q['sdi']),3) ].'";
+
 function display_one_qc($ar,$r,$first)
 {
   $mean=$r['mean'];
@@ -277,63 +267,14 @@ function display_one_qc($ar,$r,$first)
   $q['sd']=$sd;
   $q['other_ref_data']=$r['other_data'];
   $q['ref_remark']=$r['remark'];
-  
+  ////////////////
   if($first=='yes')
   {
 
-    $lj_graphics= '
-    <th style="border-right-style: dotted;padding:0px;border-left-style: dotted;padding:0px;text-align:right">
+    $lj_graphics= '    <th style="border-right-style: dotted;padding:0px;border-left-style: dotted;padding:0px;text-align:right"><canvas id="lj_header_negative" height="30" width="160" ></canvas><script>  can=document.getElementById("lj_header_negative");            ctx=can.getContext("2d");            ctx.font = "15px Arial";            ctx.strokeText("-3s", 40,20);            ctx.strokeText("-2s", 80,20);            ctx.strokeText("-1s", 120,20);            ctx.strokeStyle = "red";            ctx.strokeText(".", 40 , 5);            ctx.strokeStyle = "orange";            ctx.strokeText(".", 80 , 5);            ctx.strokeStyle = "lightgreen";            ctx.strokeText(".", 120 , 5);          </script>    </th>    <th style="border-right-style: dotted;padding:0px;text-align:left"><canvas id="lj_header_positive"               height="30"               width="160"               ></canvas>        <script>            can=document.getElementById("lj_header_positive");            ctx=can.getContext("2d");            ctx.font = "15px Arial";            ctx.strokeText("1s", 25,20);            ctx.strokeText("2s", 65,20);            ctx.strokeText("3s", 105,20);            ctx.strokeStyle = "lightgreen";            ctx.strokeText(".", 40 , 5);            ctx.strokeStyle = "orange";            ctx.strokeText(".", 80 , 5);            ctx.strokeStyle = "red";            ctx.strokeText(".", 120 , 5);          </script>  </th>';      
     
-          <canvas id="lj_header_negative" 
-              height="30" 
-              width="160" 
-              ></canvas>
-        <script>
-            can=document.getElementById("lj_header_negative");
-            ctx=can.getContext("2d");
-            ctx.font = "15px Arial";
-
-            ctx.strokeText("-3s", 40,20);
-            ctx.strokeText("-2s", 80,20);
-            ctx.strokeText("-1s", 120,20);
-
-            ctx.strokeStyle = "red";
-            ctx.strokeText(".", 40 , 5);
-            ctx.strokeStyle = "orange";
-            ctx.strokeText(".", 80 , 5);
-            ctx.strokeStyle = "lightgreen";
-            ctx.strokeText(".", 120 , 5);
-          </script>
-    </th>
-    <th style="border-right-style: dotted;padding:0px;text-align:left">
-    
-    
-          <canvas id="lj_header_positive" 
-              height="30" 
-              width="160" 
-              ></canvas>
-        <script>
-            can=document.getElementById("lj_header_positive");
-            ctx=can.getContext("2d");
-            ctx.font = "15px Arial";
-
-            ctx.strokeText("1s", 25,20);
-            ctx.strokeText("2s", 65,20);
-            ctx.strokeText("3s", 105,20);
-
-            ctx.strokeStyle = "lightgreen";
-            ctx.strokeText(".", 40 , 5);
-            ctx.strokeStyle = "orange";
-            ctx.strokeText(".", 80 , 5);
-            ctx.strokeStyle = "red";
-            ctx.strokeText(".", 120 , 5);
-          </script> 
-    
-    </th>';
-  
     echo '<tr>
-    <th>sample_id</th>';
-    
+    <th style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;">sample_id</th>';
     //echo '<td>'.$lj_graphics.'</td>';
     foreach($q as $k=>$v)
     {
@@ -348,16 +289,10 @@ function display_one_qc($ar,$r,$first)
     }
     echo '</tr>';
   }
-      
+  
+  ///////////////
   echo '<tr>';
-
-
-
-  //format_one_lj_point($q);
-
-
-
-      
+    
   foreach($q as $k=>$v)
   {
     if(in_array($k,['sdi']))
@@ -367,16 +302,26 @@ function display_one_qc($ar,$r,$first)
     }
     else
     {
-		if($k=='sample_id')
-		{
-			echo '<td>';
-			xbarb_xxx_sample_id_button($q['sample_id'],$q['examination_id'],$q['uniq'],' target=_blank ',$q['sample_id']);
-			echo '</td>';
-		}
-		else
-		{
-			echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;">'.$v.'</td>';
-		}
+      if($k=='sample_id')
+      {        
+        $arr=htmlentities($q['result_extra']);
+        //echo '<h4>'.$arr.'</h4>';
+
+        echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;">';
+          echo '<form method=post action="xbarb_details.php" target=_blank >';
+            echo '<input  type=hidden name=session_name value=\''.$_POST['session_name'].'\'>';
+            echo '<button             name=detail       type=submit >'.$q['sample_id'].'</button>';
+            echo '<input  type=hidden name=data         value=\''.htmlentities($q['result_extra']).'\'>';
+          echo '</form>';
+        echo '</td>';
+      }
+      else if($k=='result_extra')
+      {
+          echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;" title=" '.htmlentities($v).' " >'.substr($v,0,10).'</td>';      }
+      else
+      {
+        echo '<td style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;">'.$v.'</td>';
+      }
     }
   }
   
@@ -441,9 +386,6 @@ function xxx_get_examination_data_for_qc($link,$sql)
   echo '<ul id="get_examination_data" style="list-style-type: none">';
   xxx_tree_to_panel($link,$tree,'',' collapse ');
   echo '</ul>';
-  //xxxxxx
-  //echo '<input type=text readonly class="w-100" name=selected_examination_list type=text id=selected_examination_list>';
-  //tree_to_table($link,$tree,'',' show ');
 }
 
 
@@ -548,6 +490,56 @@ function my_search_test()
   xhttp.open('POST', 'xxx_search_examination.php', true);
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhttp.send(post); 
+}
+
+
+
+function jsonToTable(jsonData) {
+  // 1. Parse the JSON string if it isn't already an object/array
+  const data = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
+
+  if (!data || data.length === 0) return '<p>No data available</p>';
+
+  // 2. Extract column headers dynamically from the first object
+  const columns = Object.keys(data[0]);
+
+  // 3. Generate Table Headers
+  const headerRow = columns
+    .map(col => `<th>${col.charAt(0).toUpperCase() + col.slice(1)}</th>`)
+    .join('');
+
+  // 4. Generate Table Body Rows
+  const bodyRows = data
+    .map(row => {
+      const cells = columns
+        .map(col => `<td>${row[col] ?? ''}</td>`) // fallback to empty string if null/undefined
+        .join('');
+      return `<tr>${cells}</tr>`;
+    })
+    .join('');
+
+  // 5. Assemble the complete HTML table
+  return `
+    <table>
+      <thead>
+        <tr>${headerRow}</tr>
+      </thead>
+      <tbody>
+        ${bodyRows}
+      </tbody>
+    </table>
+  `;
+}
+
+
+
+function openNewWindow(data) {
+  let newWin = window.open("", "_blank");
+  x='['+data.slice(1,-1)+']'
+  y=JSON.parse(x);
+  z=jsonToTable(y);
+  document.body.innerHTML=z;
+  newWin.document.write(z);
 }
 
 </script>
