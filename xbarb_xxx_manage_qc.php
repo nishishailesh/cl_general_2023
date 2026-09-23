@@ -28,48 +28,50 @@ function xbarb_details($link,$sample_id,$examination_id, $uniq)
 			result REGEXP "^-?[0-9]+\\.[0-9]+$" 
 			order by sample_id desc 
 			limit 40';
-
+			
 	view_sql_result_as_table($link,$sql,$show_hide='no');
-
+	
 }
-
 main_menu($link);
 
 $limit=isset($_POST['row_limit'])?$_POST['row_limit']:get_config_value($link,'qc_result_limit');
 
 
-$qc_sql="select * from examination  where sample_requirement!='None' order by request_route,name";
+$qc_sql="select examination.examination_id, algorithm from examination,current_xbarb_xxx_lab_reference_value  
+          where examination.examination_id=current_xbarb_xxx_lab_reference_value.examination_id ";
 
-echo '<a  data-toggle="collapse" href="#get_data" aria-expanded="false" class="m-2 p-2">Show/Hide Search Window</a>';
-echo '<div id="get_data" class=" p-3 bg-light border border-dark collapse">';
-  echo '<div class="two_column_one_by_two show" >';
-        echo '<div>';
+echo '<form method=post>';
+    echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
+    echo '<input type=hidden name=action value=find_qc_data>';
+$default_to=  strftime("%Y%m%d%H%M%S");
+$timestamp = time() -  86400;
+$default_from=strftime("%Y%m%d%H%M%S",$timestamp);
 
-            xxx_get_examination_data_for_qc($link,$qc_sql);
 
-            echo '<div>
-                <span class="badge badge-primary"  data-toggle="collapse" data-target="#status-window">Selected Examinations</span>';
-                echo '  <div id="status-window" 
-                      class="border border-success">
-                    </div>
-                <span class="badge badge-primary"  data-toggle="collapse" data-target="#select-window">Select Examinations</span>';
-                echo '  <div id="select-window" class="border border-success">
-                      <input type=text id=my_search_text  onchange="my_search_test()">
-                      <button type=button id=my_search onclick="my_search_test()">search</button>
-                      <div id=my_search_result></div>
-                    </div>            
-            </div>';
-        echo '</div>';
-    
-        echo '<div>';
-            get_qc_search_conditions($link,'sample_id',array(),array('sample_id'),$limit);
-        echo '</div>';
-  echo '</div>';
-echo '</div>';
+		  echo '<fieldset ><legend>Timestamp</legend>';
+
+		  echo '<div class="basic_form">';     
+			echo '<div class="d-inline p-2">';
+			echo '    <input type=text size=13 value=\''.$default_from.'\' name=from_timestamp  class="form-control text-danger"\>';
+			echo '</div>';    
+		  echo '</div>';    
+			
+		  echo '<div class="basic_form">';     
+			echo '<div class="d-inline p-2">';
+			echo '    <input type=text size=13 value=\''.$default_to.'\' name=to_timestamp  class="form-control text-danger"\>';
+			echo '</div>';    
+		  echo '</div>';
+		  
+		  
+		  echo '</fieldset>';   
+
+		xxx_get_examination_data_for_qc($link,$qc_sql);
+
+echo '</form>';
+
 
 if($_POST['action']=='find_qc_data')
 {
-  echo '<a  data-toggle="collapse" href="#lj_table" class="m-2 p-2" aria-expanded="false" >Show/Hide Results</a>';
       echo '<div id="lj_table" class="show p-3 bg-light border border-dark">';
         $data=prepare_qc_data_from_search_condition($link,$_POST,$limit);
       echo '</div>';
@@ -106,22 +108,24 @@ function prepare_qc_data_from_search_condition($link,$post,$limit=400)
 	}
 	//print_r($ref_data);
 	
-	
-  $ex_list_csv=$post['selected_examination_list'];
-  //echo 'selected examinations:'.$ex_list_csv.'<br>';
-  
+
+  $xbarb_data=explode('^',$_POST['examination_id']);
+   
   /////////////make selection of sample id/////////////////////
   $sql='';
-  $from=$post['__from__sample_id'];
-  $to=$post['__to__sample_id'];
-  $sql=$sql . 'select * from xbarb_primary_result where sample_id between \''.$from.'\' and  \''.$to.'\' and examination_id in ('.$ex_list_csv.')';
+  $from=$post['from_timestamp'];
+  $to=$post['to_timestamp'];
+  $sql=$sql . 'select * from xbarb_primary_result 
+									where sample_id between \''.$from.'\' and  \''.$to.'\' and 
+									examination_id=\''.$xbarb_data[0].'\' and
+									uniq=\''.$xbarb_data[1].'\'';
   //echo "SQL1:".$sql.'<br>';
  
   /////////////add ordering//////////////////////////
   
-    $sql=$sql.' order by uniq,sample_id desc limit '.$limit;
+    $sql=$sql.' order by sample_id limit '.$limit;
   
-  //echo $sql;
+    echo $sql;
   
   //view_sql_result_as_table($link,$sql,$show_hide='no');
   //return 0;
@@ -134,14 +138,14 @@ function prepare_qc_data_from_search_condition($link,$post,$limit=400)
   {
     //$q=display_one_qc($link,$ar,$first);
     $r=get_ref_data($ref_data,$ar['sample_id'],$ar['uniq']);
-	//echo('<hr>');
-	//print_r($ar);
-	//print_r($r);
+	#echo('<hr>');
+	#print_r($ar);
+	#print_r($r);
 	display_one_qc($ar,$r,$first);
 	$first='no';
   }
   echo '</table>';
-  //echo 'xyz';
+
 }
 
 function format_one_lj_point($q)
@@ -379,37 +383,28 @@ function xxx_get_lab_reference_value($link,$sample_id,$examination_id)
 
 function xxx_get_examination_data_for_qc($link,$sql)
 {
-  echo '<button class="btn btn-success " data-status=off type=button id=ex_all_expand onclick="expand_all(this)"><h4>&darr;&darr;&darr;</h4></button>';
-  //echo '<button class="btn btn-danger "type=button id=ex_all_collapse onclick="collapse_all()">Collapse All</button>';
-  $tree=xxx_make_examination_tree($link,$sql,'request_route');
-  //tree_to_div($tree);
-  echo '<ul id="get_examination_data" style="list-style-type: none">';
-  xxx_tree_to_panel($link,$tree,'',' collapse ');
-  echo '</ul>';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	while($ar=get_single_row($result))
+	{    
+		//print_r($ar);
+		xbarb_display_one_examination($link,$ar,'xbarb_');
+	}
+}
+
+
+function xbarb_display_one_examination($link,$ar)
+{
+    echo '<button
+        class="bg-warning ex_btn" 
+        type=submit
+        name=examination_id
+        value='.$ar['examination_id'].'^'.$ar['algorithm'].'><pre>'.$ar['examination_id'].'<br>'.$ar['algorithm'].'</pre></button>';
 }
 
 
 
-function get_qc_search_conditions($link,$examination_id,$search_list_of_examination_id,$range_search_list_of_examination_id,$limit)
+function get_qc_search_conditions($link)
 {
-  if($examination_id=='sample_id')
-  {
-    $ex_name='sample_id';
-  }
-  else
-  {
-    $examination_details=get_one_examination_details($link,$examination_id);
-    $ex_name=$examination_details['name'];
-  } 
-    
-  echo '<form method=post>';
-  
-  foreach($search_list_of_examination_id as $examination_id)
-  {
-    get_one_field_for_search($link,$examination_id);
-  }
-
-  $qc_id_examination_id=get_config_value($link,'qc_id_examination_id');
   foreach($range_search_list_of_examination_id as $examination_id)
   {
     if($examination_id=='sample_id')
