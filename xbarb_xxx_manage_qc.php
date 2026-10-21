@@ -146,7 +146,7 @@ function prepare_qc_data_from_search_condition($link,$post,$limit=400)
     $r=get_ref_data($ref_data,$ar['sample_id'],$ar['uniq'],$ar['examination_id']);
 	#echo('<hr>');
 	#print_r($ar);
-	print_r($r);
+	#print_r($r);
 	display_one_qc($ar,$r,$first);
 	$first='no';
   }
