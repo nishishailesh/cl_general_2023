@@ -37,8 +37,12 @@ main_menu($link);
 $limit=isset($_POST['row_limit'])?$_POST['row_limit']:get_config_value($link,'qc_result_limit');
 
 
-$qc_sql="select examination.examination_id, algorithm from examination,current_xbarb_xxx_lab_reference_value  
-          where examination.examination_id=current_xbarb_xxx_lab_reference_value.examination_id ";
+$qc_sql="select 
+		examination.examination_id, algorithm 
+	from 
+		examination,current_xbarb_xxx_lab_reference_value  
+        where 
+		examination.examination_id=current_xbarb_xxx_lab_reference_value.examination_id ";
 
 echo '<form method=post>';
     echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
@@ -84,13 +88,15 @@ tail();
 
 //////////////Functions///////////////////////
 
-function get_ref_data($ref_data,$sample_id,$uniq)
+function get_ref_data($ref_data,$sample_id,$uniq,$examination_id)
 {
 	foreach( $ref_data as $i)
 	{
 		if(	$i['from_sample_id']<=$sample_id && 
 			$sample_id<=$i['to_sample_id'] &&
-			$i['algorithm']==$uniq )
+			$i['algorithm']==$uniq  &&
+			$i['examination_id'] == $examination_id
+		)
 		{
 			return $i;
 		}
@@ -137,10 +143,10 @@ function prepare_qc_data_from_search_condition($link,$post,$limit=400)
   while($ar=get_single_row($result))
   {
     //$q=display_one_qc($link,$ar,$first);
-    $r=get_ref_data($ref_data,$ar['sample_id'],$ar['uniq']);
+    $r=get_ref_data($ref_data,$ar['sample_id'],$ar['uniq'],$ar['examination_id']);
 	#echo('<hr>');
 	#print_r($ar);
-	#print_r($r);
+	print_r($r);
 	display_one_qc($ar,$r,$first);
 	$first='no';
   }
@@ -276,7 +282,7 @@ function display_one_qc($ar,$r,$first)
   {
 
     $lj_graphics= '    <th style="border-right-style: dotted;padding:0px;border-left-style: dotted;padding:0px;text-align:right"><canvas id="lj_header_negative" height="30" width="160" ></canvas><script>  can=document.getElementById("lj_header_negative");            ctx=can.getContext("2d");            ctx.font = "15px Arial";            ctx.strokeText("-3s", 40,20);            ctx.strokeText("-2s", 80,20);            ctx.strokeText("-1s", 120,20);            ctx.strokeStyle = "red";            ctx.strokeText(".", 40 , 5);            ctx.strokeStyle = "orange";            ctx.strokeText(".", 80 , 5);            ctx.strokeStyle = "lightgreen";            ctx.strokeText(".", 120 , 5);          </script>    </th>    <th style="border-right-style: dotted;padding:0px;text-align:left"><canvas id="lj_header_positive"               height="30"               width="160"               ></canvas>        <script>            can=document.getElementById("lj_header_positive");            ctx=can.getContext("2d");            ctx.font = "15px Arial";            ctx.strokeText("1s", 25,20);            ctx.strokeText("2s", 65,20);            ctx.strokeText("3s", 105,20);            ctx.strokeStyle = "lightgreen";            ctx.strokeText(".", 40 , 5);            ctx.strokeStyle = "orange";            ctx.strokeText(".", 80 , 5);            ctx.strokeStyle = "red";            ctx.strokeText(".", 120 , 5);          </script>  </th>';      
-    
+
     echo '<tr>
     <th style="white-space: nowrap;border-right-style: dotted;border-right-color: lightgray;">sample_id</th>';
     //echo '<td>'.$lj_graphics.'</td>';

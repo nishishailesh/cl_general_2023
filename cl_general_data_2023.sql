@@ -456,7 +456,7 @@ CREATE TABLE `examination` (
   `class_tag` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`examination_id`),
   KEY `sample_requirement` (`sample_requirement`)
-) ENGINE=InnoDB AUTO_INCREMENT=105107 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=105108 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -780,7 +780,8 @@ INSERT INTO `examination` VALUES
 (105102,'340TR','Plain-Blood','{\"type\":\"number\",\"hide\":\"yes\",\"help\":\" mg/dL 2.5-4.5 (Ammonium Molybdate)\",\"step\":\"0.1\",\"cinterval_l\":\"1\",\"cinterval_h\":\"8.9\",\"interval_h\":\"4.5\",\"interval_l\":\"2.5\",\"ainterval_h\":\"12.0\",\"ainterval_l\":\"0.5\",\"equipment\":\"C\"}','','EXPHO','','','520','190','','',1,1,0,1,NULL,'','C','','','yes',NULL,'no','',',Blood,NABL'),
 (105104,'CA125','Plain-Blood','{\"type\":\"number\",\"help\":\"U/mL &lt;35 \\n(ECIA)\",\"interval_h\":\"35\",\"interval_l\":\"35\",\"equipment\":\"I\"}','','Reference,Misc/QC/Immunochemistry','TUMOR MARKERS','TUMOR MARKERS','','','','',1,2,0,1,NULL,'','I','U/mL &lt;35  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>','U/mL &lt;35  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 8 hours(Wards) 48 hours(OPD)<br>AP Level reference required',',Blood,AP-REF'),
 (105105,'CA19-9','Plain-Blood','{\"type\":\"number\",\"help\":\"U/mL &lt;37 \\n(ECIA)\",\"interval_h\":\"37\",\"interval_l\":\"37\",\"equipment\":\"I\"}','','Reference,Misc/QC/Immunochemistry','TUMOR MARKERS','TUMOR MARKERS','','','','',1,2,0,1,NULL,'','I','U/mL &lt;37  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>','U/mL &lt;37  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>',NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 8 hours(Wards) 48 hours(OPD)<br>AP Level reference required',',Blood,AP-REF'),
-(105106,'CA15-3','Plain-Blood','{\"type\":\"number\",\"help\":\"U/mL &lt;37 \\n(ECIA)\",\"interval_h\":\"37\",\"interval_l\":\"37\",\"equipment\":\"I\"}','','Reference,Misc/QC/Immunochemistry','TUMOR MARKERS','TUMOR MARKERS','','','','',1,2,0,1,NULL,'','I','U/mL &lt;37  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>','U/mL &lt;37  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>',NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 8 hours(Wards) 48 hours(OPD)<br>AP Level reference required',',Blood,AP-REF');
+(105106,'CA15-3','Plain-Blood','{\"type\":\"number\",\"help\":\"U/mL &lt;37 \\n(ECIA)\",\"interval_h\":\"37\",\"interval_l\":\"37\",\"equipment\":\"I\"}','','Reference,Misc/QC/Immunochemistry','TUMOR MARKERS','TUMOR MARKERS','','','','',1,2,0,1,NULL,'','I','U/mL &lt;37  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>','U/mL &lt;37  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>',NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 8 hours(Wards) 48 hours(OPD)<br>AP Level reference required',',Blood,AP-REF'),
+(105107,'LIPSP','Plain-Blood','{\"type\":\"number\",\"help\":\" U/L 0-5 (Turbidimetry )\",\"interval_h\":\"5\",\"equipment\":\"C\"}','','Misc/QC/clinical chemistry','Clinical chemistry','Pancreatic Function Tests','','','','',1,2,0,1,NULL,'','C',' U/L 0-5 (Turbidimetry )',' U/L 0-5 (Turbidimetry )',NULL,NULL,'','transport at room temperature<br> Report will be avaialble in 8 hours(Wards) 48 hours(OPD)',',Blood,NABL');
 /*!40000 ALTER TABLE `examination` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -924,6 +925,7 @@ INSERT INTO `host_code` VALUES
 (105055,'XL_1000','IHCLL'),
 (105057,'XL_1000','Kk'),
 (105102,'XL_1000','EXPTR'),
+(105107,'XL_1000','LIPSP'),
 (5115,'VITROS3600','002'),
 (5117,'VITROS3600','035'),
 (5118,'VITROS3600','031'),
@@ -1182,7 +1184,8 @@ INSERT INTO `host_code` VALUES
 (105099,'NXL_1000','BRIJP'),
 (105100,'NXL_1000','TRITP'),
 (105101,'NXL_1000','EXPBR'),
-(105102,'NXL_1000','EXPTR');
+(105102,'NXL_1000','EXPTR'),
+(105107,'NXL_1000','LIPSP');
 /*!40000 ALTER TABLE `host_code` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1321,8 +1324,8 @@ LOCK TABLES `menu_new` WRITE;
 /*!40000 ALTER TABLE `menu_new` DISABLE KEYS */;
 INSERT INTO `menu_new` VALUES
 (101,'Ward Request','1001,1002,1004,1005,1006,1007,1008,1012,1023,10003,10011,10012,1045,1047','','10012^Biochemistry Laboratory New Civil Hospital Surat'),
-(200,'OPD Request','1001,1002,1004,1005,1006,105089,1007,1008,1012,10003,1023,10011,10012,1045,1046','','10012^Biochemistry Laboratory New Civil Hospital Surat,1006^KidneyOPD'),
-(201,'Stem Cell OPD Request','1001,1002,1004,1005,1006,1007,1008,1012,1023,10002,10003,10011,10012,1045,1049','','10012^Biochemistry Laboratory New Civil Hospital Surat,1006^StemOPD,1004^Medicine'),
+(200,'OPD Request','1001,1002,1025,1004,1005,1006,105089,1007,1008,1012,10003,1023,10011,10012,1045,1046','','10012^Biochemistry Laboratory New Civil Hospital Surat,1006^KidneyOPD'),
+(201,'Stem Cell OPD Request','1001,1002,1025,1004,1005,1006,1007,1008,1012,1023,10002,10003,10011,10012,1045,1049','','10012^Biochemistry Laboratory New Civil Hospital Surat,1006^StemOPD,1004^Medicine'),
 (300,'ABG Request(seimens)','1001,1002,1004,1005,1006,1007,1008,1012,10003,5195,5143,5144,5145,5148,5159,5150,5158,10012,5163,5149,5151,5154,5159,5160,5162,10011,105076','','10012^Biochemistry Laboratory New Civil Hospital Surat'),
 (301,'Fluid Request','1001,1002,1004,1005,1006,1007,1008,1012,105043,10003,1023,10011,10012,1045,105041','Fluid','10012^Biochemistry Laboratory New Civil Hospital Surat'),
 (302,'ANEMIA request','1001,1002,1004,1005,1006,1007,1008,1012,1023,10003,10011,10012,1045,105071','','10012^Biochemistry Laboratory New Civil Hospital Surat'),
@@ -1518,7 +1521,7 @@ INSERT INTO `qc_lot` VALUES
 ('QC/5/ADALOW','1','updated from OLD LIS',NULL),
 ('QC/5/CRP','1','updated from OLD LIS',NULL),
 ('QC/5/Lipase','0','updated from OLD LIS',NULL),
-('QC/5/Lipase/001','1','updated from OLD LIS',NULL),
+('QC/5/Lipase/001','0','updated from OLD LIS',NULL),
 ('QC/5/Lipase/002','1','updated from OLD LIS',NULL),
 ('QC/5/MPR/1320UN','0','updated from OLD LIS',NULL),
 ('QC/5/MPR/1588UN','0','',NULL),
@@ -1938,4 +1941,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-23 11:12:20
+-- Dump completed on 2026-10-21 18:51:12
