@@ -1,8 +1,9 @@
--- MariaDB dump 10.19  Distrib 10.11.6-MariaDB, for debian-linux-gnu (x86_64)
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19-11.8.6-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: clg
 -- ------------------------------------------------------
--- Server version	10.11.6-MariaDB-0+deb12u1
+-- Server version	11.8.6-MariaDB-0+deb13u1 from Debian
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -13,7 +14,7 @@
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
 --
 -- Table structure for table `Laboratory`
@@ -21,7 +22,7 @@
 
 DROP TABLE IF EXISTS `Laboratory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Laboratory` (
   `Laboratory` varchar(200) NOT NULL,
   PRIMARY KEY (`Laboratory`)
@@ -32,6 +33,7 @@ CREATE TABLE `Laboratory` (
 -- Dumping data for table `Laboratory`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `Laboratory` WRITE;
 /*!40000 ALTER TABLE `Laboratory` DISABLE KEYS */;
 INSERT INTO `Laboratory` VALUES
@@ -40,6 +42,8 @@ INSERT INTO `Laboratory` VALUES
 ('NCHS Pathology Section');
 /*!40000 ALTER TABLE `Laboratory` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `config`
@@ -47,7 +51,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `config` (
   `name` varchar(100) NOT NULL,
   `value` text DEFAULT NULL,
@@ -61,6 +65,7 @@ CREATE TABLE `config` (
 -- Dumping data for table `config`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
 INSERT INTO `config` VALUES
@@ -100,6 +105,8 @@ INSERT INTO `config` VALUES
 ('TAT_remark_id','5191',NULL,NULL);
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `consumable_name`
@@ -107,7 +114,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `consumable_name`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `consumable_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `consumable_name` varchar(100) DEFAULT NULL,
@@ -123,6 +130,7 @@ CREATE TABLE `consumable_name` (
 -- Dumping data for table `consumable_name`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `consumable_name` WRITE;
 /*!40000 ALTER TABLE `consumable_name` DISABLE KEYS */;
 INSERT INTO `consumable_name` VALUES
@@ -266,6 +274,8 @@ INSERT INTO `consumable_name` VALUES
 (181,'Reagent- CA 19-9 KIT',1,'2026-08-26 10:00:10','9099514805');
 /*!40000 ALTER TABLE `consumable_name` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `dashboard`
@@ -273,7 +283,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `dashboard`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dashboard` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `topic` varchar(100) NOT NULL,
@@ -287,6 +297,7 @@ CREATE TABLE `dashboard` (
 -- Dumping data for table `dashboard`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `dashboard` WRITE;
 /*!40000 ALTER TABLE `dashboard` DISABLE KEYS */;
 INSERT INTO `dashboard` VALUES
@@ -300,6 +311,8 @@ INSERT INTO `dashboard` VALUES
 (8,'Worklist Print','See number 6 (get examination id from 7)',8);
 /*!40000 ALTER TABLE `dashboard` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `dementia`
@@ -307,7 +320,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `dementia`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dementia` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `Minutes` varchar(10) DEFAULT NULL,
@@ -326,6 +339,7 @@ CREATE TABLE `dementia` (
 -- Dumping data for table `dementia`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `dementia` WRITE;
 /*!40000 ALTER TABLE `dementia` DISABLE KEYS */;
 INSERT INTO `dementia` VALUES
@@ -375,6 +389,8 @@ INSERT INTO `dementia` VALUES
 (109,'0','8','1','8,02','*','sample intergrity and sample verification every 6 monthly','2021-05-13 11:37:27','9099514805');
 /*!40000 ALTER TABLE `dementia` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `display_choice`
@@ -382,7 +398,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `display_choice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `display_choice` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `examination_id` int(11) NOT NULL,
@@ -398,6 +414,7 @@ CREATE TABLE `display_choice` (
 -- Dumping data for table `display_choice`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `display_choice` WRITE;
 /*!40000 ALTER TABLE `display_choice` DISABLE KEYS */;
 INSERT INTO `display_choice` VALUES
@@ -419,6 +436,8 @@ INSERT INTO `display_choice` VALUES
 (29,105092,'SNR','All examinations in this sample are NOT DONE as the sample was not received at the Laboratory,');
 /*!40000 ALTER TABLE `display_choice` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `examination`
@@ -426,7 +445,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `examination`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `examination` (
   `examination_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -463,6 +482,7 @@ CREATE TABLE `examination` (
 -- Dumping data for table `examination`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `examination` WRITE;
 /*!40000 ALTER TABLE `examination` DISABLE KEYS */;
 INSERT INTO `examination` VALUES
@@ -781,9 +801,11 @@ INSERT INTO `examination` VALUES
 (105104,'CA125','Plain-Blood','{\"type\":\"number\",\"help\":\"U/mL &lt;35 \\n(ECIA)\",\"interval_h\":\"35\",\"interval_l\":\"35\",\"equipment\":\"I\"}','','Reference,Misc/QC/Immunochemistry','TUMOR MARKERS','TUMOR MARKERS','','','','',1,2,0,1,NULL,'','I','U/mL &lt;35  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>','U/mL &lt;35  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>','',NULL,'yes','transport at room temperature<br> Report will be avaialble in 8 hours(Wards) 48 hours(OPD)<br>AP Level reference required',',Blood,AP-REF'),
 (105105,'CA19-9','Plain-Blood','{\"type\":\"number\",\"help\":\"U/mL &lt;37 \\n(ECIA)\",\"interval_h\":\"37\",\"interval_l\":\"37\",\"equipment\":\"I\"}','','Reference,Misc/QC/Immunochemistry','TUMOR MARKERS','TUMOR MARKERS','','','','',1,2,0,1,NULL,'','I','U/mL &lt;37  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>','U/mL &lt;37  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>',NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 8 hours(Wards) 48 hours(OPD)<br>AP Level reference required',',Blood,AP-REF'),
 (105106,'CA15-3','Plain-Blood','{\"type\":\"number\",\"help\":\"U/mL &lt;37 \\n(ECIA)\",\"interval_h\":\"37\",\"interval_l\":\"37\",\"equipment\":\"I\"}','','Reference,Misc/QC/Immunochemistry','TUMOR MARKERS','TUMOR MARKERS','','','','',1,2,0,1,NULL,'','I','U/mL &lt;37  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>','U/mL &lt;37  (ECIA)<a href=\"https://stem.gmcsurat.edu.in/dokuwiki/lib/exe/fetch.php?media=public:b12_gem1350_ww_en_i_12.pdf\">Vitros Lit.</a>',NULL,NULL,'yes','transport at room temperature<br> Report will be avaialble in 8 hours(Wards) 48 hours(OPD)<br>AP Level reference required',',Blood,AP-REF'),
-(105107,'LIPSP','Plain-Blood','{\"type\":\"number\",\"help\":\" U/L 0-5 (Turbidimetry )\",\"interval_h\":\"5\",\"equipment\":\"C\"}','','Misc/QC/clinical chemistry','Clinical chemistry','Pancreatic Function Tests','','','','',1,2,0,1,NULL,'','C',' U/L 0-5 (Turbidimetry )',' U/L 0-5 (Turbidimetry )',NULL,NULL,'','transport at room temperature<br> Report will be avaialble in 8 hours(Wards) 48 hours(OPD)',',Blood,NABL');
+(105107,'LIPSP','Plain-Blood','{\"type\":\"number\",\"help\":\" U/L 0-5 (Turbidimetry )\",\"interval_h\":\"5\",\"equipment\":\"C\"}','','AMY-LIP-ALP,Misc/QC/clinical chemistry','Clinical chemistry/AMY-LIP-ALP','Pancreatic Function Tests','','','','',1,2,0,1,NULL,'','C',' U/L 0-5 (Turbidimetry )',' U/L 0-5 (Turbidimetry )',NULL,NULL,'','transport at room temperature<br> Report will be avaialble in 8 hours(Wards) 48 hours(OPD)',',Blood,NABL');
 /*!40000 ALTER TABLE `examination` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `examination_field_specification`
@@ -791,7 +813,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `examination_field_specification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `examination_field_specification` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `examination_id` int(11) DEFAULT NULL,
@@ -808,6 +830,7 @@ CREATE TABLE `examination_field_specification` (
 -- Dumping data for table `examination_field_specification`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `examination_field_specification` WRITE;
 /*!40000 ALTER TABLE `examination_field_specification` DISABLE KEYS */;
 INSERT INTO `examination_field_specification` VALUES
@@ -815,6 +838,8 @@ INSERT INTO `examination_field_specification` VALUES
 (2,3001,'dtable','qc_lot','qc_lot','qc_lot,remark','where in_use=1');
 /*!40000 ALTER TABLE `examination_field_specification` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `host_code`
@@ -822,7 +847,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `host_code`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `host_code` (
   `examination_id` int(11) NOT NULL,
   `equipment` enum('XL_640','XL_1000','VITROS3600','RP500','TOSOH','R9-402016','R9-401900','BS600M','JOKOH','NXL_1000') NOT NULL,
@@ -837,6 +862,7 @@ CREATE TABLE `host_code` (
 -- Dumping data for table `host_code`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `host_code` WRITE;
 /*!40000 ALTER TABLE `host_code` DISABLE KEYS */;
 INSERT INTO `host_code` VALUES
@@ -1188,6 +1214,8 @@ INSERT INTO `host_code` VALUES
 (105107,'NXL_1000','LIPSP');
 /*!40000 ALTER TABLE `host_code` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `label_group`
@@ -1195,7 +1223,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `label_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `label_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
@@ -1208,6 +1236,7 @@ CREATE TABLE `label_group` (
 -- Dumping data for table `label_group`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `label_group` WRITE;
 /*!40000 ALTER TABLE `label_group` DISABLE KEYS */;
 INSERT INTO `label_group` VALUES
@@ -1226,6 +1255,8 @@ INSERT INTO `label_group` VALUES
 (17,'Comparison ID','{\"16\":\"1\",\"7\":\"1\"}');
 /*!40000 ALTER TABLE `label_group` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `labels`
@@ -1233,7 +1264,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `labels`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `labels` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `examination_id` varchar(30) DEFAULT NULL,
@@ -1252,6 +1283,7 @@ CREATE TABLE `labels` (
 -- Dumping data for table `labels`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `labels` WRITE;
 /*!40000 ALTER TABLE `labels` DISABLE KEYS */;
 INSERT INTO `labels` VALUES
@@ -1272,6 +1304,8 @@ INSERT INTO `labels` VALUES
 (24,'105086','N1','C128','{\r\n\"1\":\"105086,h,b,03,05,45,10\",\r\n\"2\":\"1000,h,t,25,15,20,03\",\r\n\"3\":\"105086,h,t,10,15,15,03\",\r\n\"4\":\"sample_id,h,t,10,18,15,03\",\r\n\"5\":\"1002,h,t,25,18,20,03\",\r\n\"6\":\"other_data,h,t,5,15,5,6\"\r\n}','select group_concat(distinct equipment SEPARATOR \'\') other_data from result,examination where sample_id={sample_id} and examination.examination_id=result.examination_id',0,'{\"6\":\"9\"}','{\"6\":\"helveticaB\"}');
 /*!40000 ALTER TABLE `labels` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `lis_to_vitros_sample_type`
@@ -1279,7 +1313,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `lis_to_vitros_sample_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `lis_to_vitros_sample_type` (
   `lis_sample_type` varchar(100) NOT NULL,
   `vitros_sample_type` varchar(10) NOT NULL,
@@ -1291,6 +1325,7 @@ CREATE TABLE `lis_to_vitros_sample_type` (
 -- Dumping data for table `lis_to_vitros_sample_type`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `lis_to_vitros_sample_type` WRITE;
 /*!40000 ALTER TABLE `lis_to_vitros_sample_type` DISABLE KEYS */;
 INSERT INTO `lis_to_vitros_sample_type` VALUES
@@ -1298,6 +1333,8 @@ INSERT INTO `lis_to_vitros_sample_type` VALUES
 ('Plain-Swab','10');
 /*!40000 ALTER TABLE `lis_to_vitros_sample_type` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `menu_new`
@@ -1305,7 +1342,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menu_new`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_new` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `caption` varchar(100) NOT NULL,
@@ -1320,6 +1357,7 @@ CREATE TABLE `menu_new` (
 -- Dumping data for table `menu_new`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `menu_new` WRITE;
 /*!40000 ALTER TABLE `menu_new` DISABLE KEYS */;
 INSERT INTO `menu_new` VALUES
@@ -1347,6 +1385,8 @@ INSERT INTO `menu_new` VALUES
 (1004,'Sample ID','1001,1002,1004,1005,1006,1007,1008,1012,1023,10003,10011,10012,1045','','10012^Biochemistry Laboratory New Civil Hospital Surat,1004^Medicine');
 /*!40000 ALTER TABLE `menu_new` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `menu_view`
@@ -1354,7 +1394,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menu_view`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_view` (
   `id` int(11) NOT NULL,
   `caption` varchar(100) NOT NULL,
@@ -1369,6 +1409,7 @@ CREATE TABLE `menu_view` (
 -- Dumping data for table `menu_view`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `menu_view` WRITE;
 /*!40000 ALTER TABLE `menu_view` DISABLE KEYS */;
 INSERT INTO `menu_view` VALUES
@@ -1385,6 +1426,8 @@ INSERT INTO `menu_view` VALUES
 (12,'calibrationex','105056','1001,1002,1006,10003,5031','105056');
 /*!40000 ALTER TABLE `menu_view` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `menu_view_fast`
@@ -1392,7 +1435,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menu_view_fast`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_view_fast` (
   `id` int(11) NOT NULL,
   `caption` varchar(100) NOT NULL,
@@ -1406,6 +1449,7 @@ CREATE TABLE `menu_view_fast` (
 -- Dumping data for table `menu_view_fast`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `menu_view_fast` WRITE;
 /*!40000 ALTER TABLE `menu_view_fast` DISABLE KEYS */;
 INSERT INTO `menu_view_fast` VALUES
@@ -1415,6 +1459,8 @@ INSERT INTO `menu_view_fast` VALUES
 (4,'Location',1006,0);
 /*!40000 ALTER TABLE `menu_view_fast` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `menu_worklist`
@@ -1422,7 +1468,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menu_worklist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_worklist` (
   `id` int(11) NOT NULL,
   `caption` varchar(100) NOT NULL,
@@ -1437,6 +1483,7 @@ CREATE TABLE `menu_worklist` (
 -- Dumping data for table `menu_worklist`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `menu_worklist` WRITE;
 /*!40000 ALTER TABLE `menu_worklist` DISABLE KEYS */;
 INSERT INTO `menu_worklist` VALUES
@@ -1451,6 +1498,8 @@ INSERT INTO `menu_worklist` VALUES
 (9,'Stem','1049','10003','1049');
 /*!40000 ALTER TABLE `menu_worklist` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `my_procedure_code`
@@ -1458,7 +1507,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `my_procedure_code`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `my_procedure_code` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
@@ -1472,6 +1521,7 @@ CREATE TABLE `my_procedure_code` (
 -- Dumping data for table `my_procedure_code`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `my_procedure_code` WRITE;
 /*!40000 ALTER TABLE `my_procedure_code` DISABLE KEYS */;
 INSERT INTO `my_procedure_code` VALUES
@@ -1482,6 +1532,8 @@ INSERT INTO `my_procedure_code` VALUES
 (5,'reflex_eGFRbis','DROP PROCEDURE IF EXISTS calculate_egfrbis;\r\nDELIMITER $$\r\n\r\nCREATE PROCEDURE calculate_egfrbis(IN sid INT)\r\nBEGIN\r\n  DECLARE cr DECIMAL(5,2);\r\n  DECLARE age INT;\r\n  DECLARE sex VARCHAR(10);\r\n  DECLARE sex_factor DOUBLE;\r\n  DECLARE egfr DOUBLE;\r\n  DECLARE err TEXT DEFAULT \'\';\r\n\r\n  -- Fetch values safely (use SELECT ... INTO)\r\n  SELECT CAST(TRIM(result) AS DECIMAL(5,2)) INTO cr \r\n  FROM result \r\n  WHERE sample_id = sid AND examination_id = 5001;\r\n\r\n  SELECT CAST(TRIM(result) AS UNSIGNED) INTO age \r\n  FROM result \r\n  WHERE sample_id = sid AND examination_id = 1007;\r\n\r\n  SELECT TRIM(result) INTO sex \r\n  FROM result \r\n  WHERE sample_id = sid AND examination_id = 1008;\r\n\r\n  -- Input validations\r\n  IF cr IS NULL OR cr < 0.2 THEN\r\n    SET err = CONCAT(err, \'Invalid Creatinine, \');\r\n  END IF;\r\n\r\n  IF age IS NULL OR age < 1 THEN\r\n    SET err = CONCAT(err, \'Invalid Age, \');\r\n  END IF;\r\n\r\n  IF sex IS NULL OR (sex NOT IN (\'Male\', \'Female\')) THEN\r\n    SET err = CONCAT(err, \'Invalid Sex, \');\r\n  END IF;\r\n\r\n  -- If errors, store the error message in exam 5226\r\n  IF CHAR_LENGTH(err) > 0 THEN\r\n    SET err = CONCAT(err, \'eGFR-BIS cannot be calculated\');\r\n    UPDATE result \r\n    SET result = err \r\n    WHERE sample_id = sid AND examination_id = 5226;\r\n  ELSE\r\n    -- Set sex factor\r\n    SET sex_factor = IF(sex = \'Female\', 0.82, 1);\r\n\r\n    -- Calculate BIS1 eGFR (rounded to 1 decimal)\r\n    SET egfr = ROUND(3736 * POW(cr, -0.87) * POW(age, -0.95) * sex_factor, 1);\r\n\r\n    -- Store eGFR result\r\n    UPDATE result \r\n    SET result = egfr \r\n    WHERE sample_id = sid AND examination_id = 5226;\r\n  END IF;\r\nEND$$\r\n\r\nDELIMITER ;\r\n','Berlin Initiative Study-1 Formula for Calculation of eGFR.\r\n\r\nHow to add this procedure in LIS/adminer?\r\nCopy above code and paste it in the SQL Command of Adminer.\r\n\r\nGo into eGFRbis examination id, in edit_specification write {\"procedure\":\"calculate_eGFRbis\"}\r\n');
 /*!40000 ALTER TABLE `my_procedure_code` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `qc_lot`
@@ -1489,7 +1541,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `qc_lot`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `qc_lot` (
   `qc_lot` varchar(100) NOT NULL,
   `in_use` varchar(100) DEFAULT NULL,
@@ -1503,6 +1555,7 @@ CREATE TABLE `qc_lot` (
 -- Dumping data for table `qc_lot`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `qc_lot` WRITE;
 /*!40000 ALTER TABLE `qc_lot` DISABLE KEYS */;
 INSERT INTO `qc_lot` VALUES
@@ -1598,6 +1651,8 @@ INSERT INTO `qc_lot` VALUES
 ('TSH_SERUM_POOL_202501_L3','0','POOLED SERUM FOR L2 OF TSH','2025-06-21');
 /*!40000 ALTER TABLE `qc_lot` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `route_priority`
@@ -1605,7 +1660,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `route_priority`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `route_priority` (
   `route` varchar(100) NOT NULL,
   `node` varchar(100) NOT NULL,
@@ -1620,6 +1675,7 @@ CREATE TABLE `route_priority` (
 -- Dumping data for table `route_priority`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `route_priority` WRITE;
 /*!40000 ALTER TABLE `route_priority` DISABLE KEYS */;
 INSERT INTO `route_priority` VALUES
@@ -1701,6 +1757,8 @@ INSERT INTO `route_priority` VALUES
 ('Vitamins','Vitamins','','','560');
 /*!40000 ALTER TABLE `route_priority` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `sample_id_strategy`
@@ -1708,7 +1766,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sample_id_strategy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sample_id_strategy` (
   `sample_requirement` varchar(100) NOT NULL,
   `lowest_id` bigint(20) DEFAULT NULL,
@@ -1722,6 +1780,7 @@ CREATE TABLE `sample_id_strategy` (
 -- Dumping data for table `sample_id_strategy`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `sample_id_strategy` WRITE;
 /*!40000 ALTER TABLE `sample_id_strategy` DISABLE KEYS */;
 INSERT INTO `sample_id_strategy` VALUES
@@ -1742,6 +1801,8 @@ INSERT INTO `sample_id_strategy` VALUES
 ('complex',1000,1999999,'Biochemistry');
 /*!40000 ALTER TABLE `sample_id_strategy` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `sample_status`
@@ -1749,7 +1810,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sample_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sample_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `priority` decimal(10,3) NOT NULL,
@@ -1768,6 +1829,7 @@ CREATE TABLE `sample_status` (
 -- Dumping data for table `sample_status`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `sample_status` WRITE;
 /*!40000 ALTER TABLE `sample_status` DISABLE KEYS */;
 INSERT INTO `sample_status` VALUES
@@ -1788,6 +1850,8 @@ INSERT INTO `sample_status` VALUES
 (21,900.000,'sample_print_delivered',10016,'#91AAC2',1,'10015');
 /*!40000 ALTER TABLE `sample_status` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `sql`
@@ -1795,7 +1859,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `sql`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sql` (
   `name` varchar(100) NOT NULL,
   `sql` text NOT NULL
@@ -1806,6 +1870,7 @@ CREATE TABLE `sql` (
 -- Dumping data for table `sql`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `sql` WRITE;
 /*!40000 ALTER TABLE `sql` DISABLE KEYS */;
 INSERT INTO `sql` VALUES
@@ -1813,6 +1878,8 @@ INSERT INTO `sql` VALUES
 ('count of data','(select date(sysdate()),name,result.examination_id,count(sample_id) from result,examination where \r\nresult.examination_id>=10001 and \r\nresult.examination_id<=10012 and \r\nresult like concat(\"%\",date(sysdate()),\"%\") and\r\nresult.examination_id=examination.examination_id\r\ngroup by result.examination_id)\r\nunion\r\n(select \"2023-10-24\",name,result.examination_id,count(sample_id) from result,examination where \r\nresult.examination_id>=10001 and \r\nresult.examination_id<=10012 and \r\nresult like concat(\"%2023-10-24%\") and\r\nresult.examination_id=examination.examination_id\r\ngroup by result.examination_id)');
 /*!40000 ALTER TABLE `sql` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `table_field_specification`
@@ -1820,7 +1887,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `table_field_specification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `table_field_specification` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tname` varchar(100) DEFAULT NULL,
@@ -1838,6 +1905,7 @@ CREATE TABLE `table_field_specification` (
 -- Dumping data for table `table_field_specification`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `table_field_specification` WRITE;
 /*!40000 ALTER TABLE `table_field_specification` DISABLE KEYS */;
 INSERT INTO `table_field_specification` VALUES
@@ -1849,6 +1917,8 @@ INSERT INTO `table_field_specification` VALUES
 (51,'consumable_receipt','date_of_starting_use','date','','','');
 /*!40000 ALTER TABLE `table_field_specification` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `unit_name`
@@ -1856,7 +1926,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `unit_name`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `unit_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `unit_name` varchar(100) DEFAULT NULL,
@@ -1870,6 +1940,7 @@ CREATE TABLE `unit_name` (
 -- Dumping data for table `unit_name`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `unit_name` WRITE;
 /*!40000 ALTER TABLE `unit_name` DISABLE KEYS */;
 INSERT INTO `unit_name` VALUES
@@ -1879,6 +1950,8 @@ INSERT INTO `unit_name` VALUES
 (6,'TEST','2022-01-13 15:15:25','8866580625');
 /*!40000 ALTER TABLE `unit_name` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
 -- Table structure for table `view_info_data`
@@ -1886,7 +1959,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `view_info_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `view_info_data` (
   `id` int(11) NOT NULL,
   `info` varchar(100) NOT NULL,
@@ -1900,6 +1973,7 @@ CREATE TABLE `view_info_data` (
 -- Dumping data for table `view_info_data`
 --
 
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `view_info_data` WRITE;
 /*!40000 ALTER TABLE `view_info_data` DISABLE KEYS */;
 INSERT INTO `view_info_data` VALUES
@@ -1931,6 +2005,8 @@ INSERT INTO `view_info_data` VALUES
 (112,'CRP','From:<input type=date name=__p1 title=\'Give From  Date\'>To:<input type=date name=__p2 title=\'Give To Date\'>','select \n    distinct r1.sample_id\nfrom \n    result r1\nwhere \n    r1.examination_id = 5121\n    and r1.result > 100\n    and r1.recording_time between \'__p1\' and \'__p2\';\n');
 /*!40000 ALTER TABLE `view_info_data` ENABLE KEYS */;
 UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1939,6 +2015,6 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-10-21 18:53:01
+-- Dump completed on 2026-10-22 10:28:25

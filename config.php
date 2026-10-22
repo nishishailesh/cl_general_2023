@@ -19,6 +19,8 @@ $GLOBALS['sample_requirement']=1000;
 $GLOBALS['patient_name']=1002;
 $GLOBALS['OPD/Ward']=1006;
 $GLOBALS['email']=1024;
+$GLOBALS['mobile']=1025;
+
 $GLOBALS['sms_date']=1043;
 $GLOBALS['sms_time']=1044;
 $GLOBALS['Sample Collection Condition']=1023;

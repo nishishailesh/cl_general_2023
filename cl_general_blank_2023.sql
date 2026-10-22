@@ -1,8 +1,9 @@
--- MariaDB dump 10.19  Distrib 10.11.6-MariaDB, for debian-linux-gnu (x86_64)
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19-11.8.6-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: clg
 -- ------------------------------------------------------
--- Server version	10.11.6-MariaDB-0+deb12u1
+-- Server version	11.8.6-MariaDB-0+deb13u1 from Debian
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -13,7 +14,7 @@
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
 --
 -- Table structure for table `Anemia_id`
@@ -21,13 +22,13 @@
 
 DROP TABLE IF EXISTS `Anemia_id`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Anemia_id` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19996 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19962 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,13 +37,13 @@ CREATE TABLE `Anemia_id` (
 
 DROP TABLE IF EXISTS `Comparison_ID`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Comparison_ID` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3163 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3159 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,13 +52,13 @@ CREATE TABLE `Comparison_ID` (
 
 DROP TABLE IF EXISTS `KIPD_ID`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `KIPD_ID` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=186605 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=186167 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +67,7 @@ CREATE TABLE `KIPD_ID` (
 
 DROP TABLE IF EXISTS `Laboratory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Laboratory` (
   `Laboratory` varchar(200) NOT NULL,
   PRIMARY KEY (`Laboratory`)
@@ -79,7 +80,7 @@ CREATE TABLE `Laboratory` (
 
 DROP TABLE IF EXISTS `M1_ID`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `M1_ID` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
@@ -94,7 +95,7 @@ CREATE TABLE `M1_ID` (
 
 DROP TABLE IF EXISTS `M2_ID`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `M2_ID` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
@@ -109,13 +110,13 @@ CREATE TABLE `M2_ID` (
 
 DROP TABLE IF EXISTS `abga_id`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `abga_id` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=74311 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=74240 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -124,13 +125,13 @@ CREATE TABLE `abga_id` (
 
 DROP TABLE IF EXISTS `cal_id`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cal_id` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=373 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=370 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -139,7 +140,7 @@ CREATE TABLE `cal_id` (
 
 DROP TABLE IF EXISTS `config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `config` (
   `name` varchar(100) NOT NULL,
   `value` text DEFAULT NULL,
@@ -155,7 +156,7 @@ CREATE TABLE `config` (
 
 DROP TABLE IF EXISTS `consumable_name`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `consumable_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `consumable_name` varchar(100) DEFAULT NULL,
@@ -173,7 +174,7 @@ CREATE TABLE `consumable_name` (
 
 DROP TABLE IF EXISTS `consumable_receipt`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `consumable_receipt` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `consumable_name` varchar(100) DEFAULT NULL,
@@ -193,7 +194,7 @@ CREATE TABLE `consumable_receipt` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `consumable_name_lot_identifier_serial_number` (`consumable_name`,`lot_identifier`,`serial_number`),
   CONSTRAINT `consumable_receipt_ibfk_1` FOREIGN KEY (`consumable_name`) REFERENCES `consumable_name` (`consumable_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=8943 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8873 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,7 +203,7 @@ CREATE TABLE `consumable_receipt` (
 
 DROP TABLE IF EXISTS `current_xbarb_xxx_lab_reference_value`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `current_xbarb_xxx_lab_reference_value` (
   `lab_reference_value_id` int(11) NOT NULL,
   `bin_size` varchar(100) NOT NULL,
@@ -223,7 +224,7 @@ CREATE TABLE `current_xbarb_xxx_lab_reference_value` (
 
 DROP TABLE IF EXISTS `dashboard`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dashboard` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `topic` varchar(100) NOT NULL,
@@ -239,7 +240,7 @@ CREATE TABLE `dashboard` (
 
 DROP TABLE IF EXISTS `dementia`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `dementia` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `Minutes` varchar(10) DEFAULT NULL,
@@ -260,7 +261,7 @@ CREATE TABLE `dementia` (
 
 DROP TABLE IF EXISTS `display_choice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `display_choice` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `examination_id` int(11) NOT NULL,
@@ -278,7 +279,7 @@ CREATE TABLE `display_choice` (
 
 DROP TABLE IF EXISTS `ehospital`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ehospital` (
   `UHID` varchar(100) NOT NULL,
   `visit_date` varchar(100) DEFAULT NULL,
@@ -308,7 +309,7 @@ CREATE TABLE `ehospital` (
 
 DROP TABLE IF EXISTS `email`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `email` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `to` varchar(100) NOT NULL,
@@ -327,7 +328,7 @@ CREATE TABLE `email` (
 
 DROP TABLE IF EXISTS `examination`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `examination` (
   `examination_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -366,7 +367,7 @@ CREATE TABLE `examination` (
 
 DROP TABLE IF EXISTS `examination_field_specification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `examination_field_specification` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `examination_id` int(11) DEFAULT NULL,
@@ -385,7 +386,7 @@ CREATE TABLE `examination_field_specification` (
 
 DROP TABLE IF EXISTS `feedback`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `feedback` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `sample_id` varchar(255) NOT NULL,
@@ -401,12 +402,12 @@ CREATE TABLE `feedback` (
 
 DROP TABLE IF EXISTS `fluid_id`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fluid_id` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8947 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8945 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -415,7 +416,7 @@ CREATE TABLE `fluid_id` (
 
 DROP TABLE IF EXISTS `host_code`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `host_code` (
   `examination_id` int(11) NOT NULL,
   `equipment` enum('XL_640','XL_1000','VITROS3600','RP500','TOSOH','R9-402016','R9-401900','BS600M','JOKOH','NXL_1000') NOT NULL,
@@ -432,7 +433,7 @@ CREATE TABLE `host_code` (
 
 DROP TABLE IF EXISTS `label_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `label_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
@@ -447,7 +448,7 @@ CREATE TABLE `label_group` (
 
 DROP TABLE IF EXISTS `labels`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `labels` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `examination_id` varchar(30) DEFAULT NULL,
@@ -468,7 +469,7 @@ CREATE TABLE `labels` (
 
 DROP TABLE IF EXISTS `lis_to_vitros_sample_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `lis_to_vitros_sample_type` (
   `lis_sample_type` varchar(100) NOT NULL,
   `vitros_sample_type` varchar(10) NOT NULL,
@@ -482,7 +483,7 @@ CREATE TABLE `lis_to_vitros_sample_type` (
 
 DROP TABLE IF EXISTS `log_entry`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `log_entry` (
   `name` varchar(100) NOT NULL,
   `value` varchar(1000) NOT NULL,
@@ -497,7 +498,7 @@ CREATE TABLE `log_entry` (
 
 DROP TABLE IF EXISTS `menu_new`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_new` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `caption` varchar(100) NOT NULL,
@@ -514,7 +515,7 @@ CREATE TABLE `menu_new` (
 
 DROP TABLE IF EXISTS `menu_view`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_view` (
   `id` int(11) NOT NULL,
   `caption` varchar(100) NOT NULL,
@@ -531,7 +532,7 @@ CREATE TABLE `menu_view` (
 
 DROP TABLE IF EXISTS `menu_view_fast`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_view_fast` (
   `id` int(11) NOT NULL,
   `caption` varchar(100) NOT NULL,
@@ -547,7 +548,7 @@ CREATE TABLE `menu_view_fast` (
 
 DROP TABLE IF EXISTS `menu_worklist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_worklist` (
   `id` int(11) NOT NULL,
   `caption` varchar(100) NOT NULL,
@@ -564,7 +565,7 @@ CREATE TABLE `menu_worklist` (
 
 DROP TABLE IF EXISTS `my_procedure_code`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `my_procedure_code` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
@@ -580,7 +581,7 @@ CREATE TABLE `my_procedure_code` (
 
 DROP TABLE IF EXISTS `niramaya_id`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `niramaya_id` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
@@ -595,13 +596,13 @@ CREATE TABLE `niramaya_id` (
 
 DROP TABLE IF EXISTS `opd_id`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `opd_id` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=329785 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=329342 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -610,7 +611,7 @@ CREATE TABLE `opd_id` (
 
 DROP TABLE IF EXISTS `primary_result`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `primary_result` (
   `sample_id` bigint(20) NOT NULL,
   `examination_id` int(11) NOT NULL,
@@ -631,7 +632,7 @@ CREATE TABLE `primary_result` (
 
 DROP TABLE IF EXISTS `primary_result_blob`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `primary_result_blob` (
   `sample_id` bigint(20) NOT NULL,
   `examination_id` int(11) NOT NULL,
@@ -652,13 +653,13 @@ CREATE TABLE `primary_result_blob` (
 
 DROP TABLE IF EXISTS `qc_id`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `qc_id` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49113 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49062 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -667,7 +668,7 @@ CREATE TABLE `qc_id` (
 
 DROP TABLE IF EXISTS `qc_lot`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `qc_lot` (
   `qc_lot` varchar(100) NOT NULL,
   `in_use` varchar(100) DEFAULT NULL,
@@ -683,7 +684,7 @@ CREATE TABLE `qc_lot` (
 
 DROP TABLE IF EXISTS `reminders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `reminders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `reminder` varchar(100) DEFAULT NULL,
@@ -693,7 +694,7 @@ CREATE TABLE `reminders` (
   `recording_time` varchar(100) DEFAULT NULL,
   `recorded_by` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11491 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11454 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -702,7 +703,7 @@ CREATE TABLE `reminders` (
 
 DROP TABLE IF EXISTS `request_id`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `request_id` (
   `id` bigint(20) NOT NULL,
   `sample_id` bigint(20) NOT NULL,
@@ -718,7 +719,7 @@ CREATE TABLE `request_id` (
 
 DROP TABLE IF EXISTS `result`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `result` (
   `sample_id` bigint(20) NOT NULL,
   `examination_id` int(11) NOT NULL,
@@ -740,7 +741,7 @@ CREATE TABLE `result` (
 
 DROP TABLE IF EXISTS `result_blob`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `result_blob` (
   `sample_id` bigint(20) NOT NULL,
   `examination_id` int(11) NOT NULL,
@@ -763,7 +764,7 @@ CREATE TABLE `result_blob` (
 
 DROP TABLE IF EXISTS `route_priority`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `route_priority` (
   `route` varchar(100) NOT NULL,
   `node` varchar(100) NOT NULL,
@@ -780,7 +781,7 @@ CREATE TABLE `route_priority` (
 
 DROP TABLE IF EXISTS `sample_id_strategy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sample_id_strategy` (
   `sample_requirement` varchar(100) NOT NULL,
   `lowest_id` bigint(20) DEFAULT NULL,
@@ -796,7 +797,7 @@ CREATE TABLE `sample_id_strategy` (
 
 DROP TABLE IF EXISTS `sample_link`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sample_link` (
   `sample_id` bigint(20) NOT NULL,
   `link` varchar(500) NOT NULL,
@@ -810,7 +811,7 @@ CREATE TABLE `sample_link` (
 
 DROP TABLE IF EXISTS `sample_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sample_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `priority` decimal(10,3) NOT NULL,
@@ -831,7 +832,7 @@ CREATE TABLE `sample_status` (
 
 DROP TABLE IF EXISTS `sql`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sql` (
   `name` varchar(100) NOT NULL,
   `sql` text NOT NULL
@@ -844,13 +845,13 @@ CREATE TABLE `sql` (
 
 DROP TABLE IF EXISTS `stem_id`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `stem_id` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24454 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24383 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -859,7 +860,7 @@ CREATE TABLE `stem_id` (
 
 DROP TABLE IF EXISTS `table_field_specification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `table_field_specification` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tname` varchar(100) DEFAULT NULL,
@@ -879,7 +880,7 @@ CREATE TABLE `table_field_specification` (
 
 DROP TABLE IF EXISTS `unit_name`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `unit_name` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `unit_name` varchar(100) DEFAULT NULL,
@@ -895,13 +896,13 @@ CREATE TABLE `unit_name` (
 
 DROP TABLE IF EXISTS `upload_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `upload_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `upload_data` mediumblob NOT NULL,
   `upload_data_name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=88768 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=88095 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -910,7 +911,7 @@ CREATE TABLE `upload_data` (
 
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
   `user` bigint(20) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -931,7 +932,7 @@ CREATE TABLE `user` (
 
 DROP TABLE IF EXISTS `view_info_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `view_info_data` (
   `id` int(11) NOT NULL,
   `info` varchar(100) NOT NULL,
@@ -947,13 +948,13 @@ CREATE TABLE `view_info_data` (
 
 DROP TABLE IF EXISTS `ward_id`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ward_id` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sample_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sample_id` (`sample_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=510259 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=510008 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -962,7 +963,7 @@ CREATE TABLE `ward_id` (
 
 DROP TABLE IF EXISTS `xbarb_primary_result`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `xbarb_primary_result` (
   `sample_id` bigint(20) NOT NULL,
   `examination_id` int(11) NOT NULL,
@@ -979,7 +980,7 @@ CREATE TABLE `xbarb_primary_result` (
 
 DROP TABLE IF EXISTS `xbarb_xxx_lab_reference_value`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `xbarb_xxx_lab_reference_value` (
   `lab_reference_value_id` int(11) NOT NULL AUTO_INCREMENT,
   `bin_size` varchar(100) NOT NULL,
@@ -1001,7 +1002,7 @@ CREATE TABLE `xbarb_xxx_lab_reference_value` (
 
 DROP TABLE IF EXISTS `xxx_lab_reference_value`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!40101 SET character_set_client = utf8mb4 */;
 CREATE TABLE `xxx_lab_reference_value` (
   `lab_reference_value_id` int(11) NOT NULL AUTO_INCREMENT,
   `qc_lot` varchar(100) NOT NULL,
@@ -1016,289 +1017,12 @@ CREATE TABLE `xxx_lab_reference_value` (
   PRIMARY KEY (`lab_reference_value_id`),
   KEY `qc_lot` (`qc_lot`),
   CONSTRAINT `xxx_lab_reference_value_ibfk_1` FOREIGN KEY (`qc_lot`) REFERENCES `qc_lot` (`qc_lot`)
-) ENGINE=InnoDB AUTO_INCREMENT=108769 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=108766 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping routines for database 'clg'
 --
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `calculate_eGFRbis` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-DELIMITER ;;
-CREATE DEFINER=`cluser`@`localhost` PROCEDURE `calculate_eGFRbis`(IN sid BIGINT)
-BEGIN
-  DECLARE cr DECIMAL(5,2);
-  DECLARE age INT;
-  DECLARE sex VARCHAR(10);
-  DECLARE sex_factor DOUBLE;
-  DECLARE egfr DOUBLE;
-  DECLARE err TEXT DEFAULT '';
-
-  -- Fetch values
-  SELECT result INTO cr FROM result WHERE sample_id = sid AND examination_id = 5001;
-  SELECT result INTO age FROM result WHERE sample_id = sid AND examination_id = 1007;
-  SELECT result INTO sex FROM result WHERE sample_id = sid AND examination_id = 1008;
-
-  -- Input validations
-  IF cr IS NULL OR cr < 0.2 THEN
-    SET err = CONCAT(err, 'Invalid Creatinine, ');
-  END IF;
-
-  IF age IS NULL OR age < 1.1 THEN
-    SET err = CONCAT(err, 'Invalid Age, ');
-  END IF;
-
-  IF sex IS NULL OR (sex != 'Male' AND sex != 'Female') THEN
-    SET err = CONCAT(err, 'Invalid Sex, ');
-  END IF;
-
-  -- If errors, store the error message
-  IF CHAR_LENGTH(err) > 0 THEN
-    SET err = CONCAT(err, 'eGFR-BIS cannot be calculated');
-    UPDATE result SET result = err WHERE sample_id = sid AND examination_id = 5226;
-  ELSE
-    -- Set sex factor
-    IF sex = 'Female' THEN
-      SET sex_factor = 0.82;
-    ELSE
-      SET sex_factor = 1;
-    END IF;
-
-    -- Calculate BIS1 eGFR (rounded to 1 decimal place)
-    SET egfr = ROUND(3736 * POW(cr, -0.87) * POW(age, -0.95) * sex_factor, 1);
-
-    -- Store result
-    UPDATE result SET result = egfr WHERE sample_id = sid AND examination_id = 5226;
-  END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `calculate_eGFRcr` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-DELIMITER ;;
-CREATE DEFINER=`cluser`@`%` PROCEDURE `calculate_eGFRcr`(IN sid BIGINT)
-BEGIN
-  SET @cr = '';
-  SET @age = '';
-  SET @sex = '';
-
-  SET @e_cr = '';
-  SET @e_age = '';
-  SET @e_sex = '';
-  SET @er = '';
-
-  -- Fetch inputs
-  SELECT result INTO @cr FROM result WHERE sample_id = sid AND examination_id = 5001;
-  SELECT result INTO @age FROM result WHERE sample_id = sid AND examination_id = 1007;
-  SELECT result INTO @sex FROM result WHERE sample_id = sid AND examination_id = 1008;
-
-  -- Validation for creatinine
-  IF (CHAR_LENGTH(@cr) < 1) THEN
-    SET @e_cr = 'cr?';
-  ELSEIF (@cr < 0.2) THEN
-    SET @e_cr = 'cr<LOQ,';
-  END IF;
-
-  -- Validation for age
-  IF (CHAR_LENGTH(@age) < 1) THEN
-    SET @e_age = 'age?';
-  ELSEIF (@age < 1) THEN
-    SET @e_age = 'age<18,';
-  END IF;
-
-  -- Validation for sex
-  IF (CHAR_LENGTH(@sex) < 1) THEN
-    SET @e_sex = 'sex?';
-  ELSEIF (@sex != 'Male' AND @sex != 'Female') THEN
-    SET @e_sex = 'Sex must be M or F,';
-  ELSEIF (@sex = 'Male') THEN
-    SET @kappa = 0.9;
-    SET @alpha = -0.302;
-    SET @sex_factor = 1;
-  ELSEIF (@sex = 'Female') THEN
-    SET @kappa = 0.7;
-    SET @alpha = -0.241;
-    SET @sex_factor = 1.012;
-  END IF;
-
-  -- Error handling
-  SET @er = CONCAT(@e_age, @e_sex, @e_cr);
-  IF (CHAR_LENGTH(@er) > 0) THEN
-    SET @er = CONCAT(@er, ' eGFR cannot be calculated');
-    UPDATE result SET result = @er WHERE sample_id = sid AND examination_id = 5225;
-  ELSE
-    -- eGFR calculation (CKD-EPI) with 1 decimal place
-    SET @egfr = ROUND(
-      142 * POWER(LEAST(@cr / @kappa, 1), @alpha) * 
-      POWER(GREATEST(@cr / @kappa, 1), -1.200) * 
-      POWER(0.9938, @age) * @sex_factor, 
-    1);
-    
-    UPDATE result SET result = @egfr WHERE sample_id = sid AND examination_id = 5225;
-  END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `insert_result_with_check` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-DELIMITER ;;
-CREATE DEFINER=`cluser`@`localhost` PROCEDURE `insert_result_with_check`(
-  IN p_sample_id INT,
-  IN p_examination_id INT,
-  IN p_result VARCHAR(255)
-)
-BEGIN
-  DECLARE na_count INT DEFAULT 0;
-
-  -- Check for NA only if examination_id = 10008
-  IF p_examination_id = 10008 THEN
-    SELECT COUNT(*)
-    INTO na_count
-    FROM result
-    WHERE sample_id = p_sample_id
-      AND result = 'NA';
-
-    IF na_count > 0 THEN
-      SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Cannot insert examination_id = 10008: one or more results are NA for this sample.';
-    END IF;
-  END IF;
-
-  -- If check passes, do the insert
-  INSERT INTO result (sample_id, examination_id, result)
-  VALUES (p_sample_id, p_examination_id, p_result);
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `reflex_eGFRcr` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-DELIMITER ;;
-CREATE DEFINER=`cluser`@`%` PROCEDURE `reflex_eGFRcr`(IN sid BIGINT)
-BEGIN
-  DECLARE age VARCHAR(10);
-  DECLARE sex VARCHAR(10);
-  DECLARE cr_count INT;
-
-  -- Get age
-  SELECT TRIM(result) INTO age FROM result WHERE sample_id = sid AND examination_id = 1007;
-
-  IF CHAR_LENGTH(age) > 0 THEN
-    -- Get sex
-    SELECT result INTO sex FROM result WHERE sample_id = sid AND examination_id = 1008;
-
-    IF CHAR_LENGTH(sex) > 0 THEN
-      -- Check if creatinine result exists
-      SELECT COUNT(examination_id) INTO cr_count 
-      FROM result 
-      WHERE sample_id = sid AND examination_id = 5001;
-
-      IF cr_count = 1 THEN
-        -- Insert required reflex result entries
-        INSERT INTO result 
-        VALUES (sid, 5225, '', '', SYSDATE(), 999) 
-        ON DUPLICATE KEY UPDATE result = result;
-
-        INSERT INTO result 
-        VALUES (sid, 5226, '', '', SYSDATE(), 999) 
-        ON DUPLICATE KEY UPDATE result = result;
-
-        INSERT INTO result 
-        VALUES (sid, 5060, '', '', SYSDATE(), 999) 
-        ON DUPLICATE KEY UPDATE result = result;
-      END IF;
-    END IF;
-  END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `reflex_ldl` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-DELIMITER ;;
-CREATE DEFINER=`cluser`@`%` PROCEDURE `reflex_ldl`(IN sid INT)
-BEGIN
-  DECLARE trig DECIMAL(10,2) DEFAULT NULL;
-  DECLARE trig_count INT DEFAULT 0;
-
-  -- Check if triglyceride result exists
-  SELECT COUNT(*) INTO trig_count
-  FROM result
-  WHERE sample_id = sid AND examination_id = 5018;
-
-  IF trig_count = 1 THEN
-    -- Get triglyceride result
-    SELECT CAST(TRIM(result) AS DECIMAL(10,2)) INTO trig
-    FROM result
-    WHERE sample_id = sid AND examination_id = 5018;
-
-    -- If triglyceride > 400, do reflex changes
-    IF trig > 400 THEN
-      -- Insert examination_id = 1099 if not already present
-      INSERT INTO result (sample_id, examination_id, result)
-      SELECT sid, 1099, ''
-      FROM DUAL
-      WHERE NOT EXISTS (
-        SELECT 1 FROM result 
-        WHERE sample_id = sid AND examination_id = 1099
-      );
-
-      -- Delete LDL result (examination_id = 5017) if present
-      DELETE FROM result 
-      WHERE sample_id = sid AND examination_id = 5017;
-    END IF;
-  END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1307,6 +1031,6 @@ DELIMITER ;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-10-21 18:53:01
+-- Dump completed on 2026-10-22 10:28:25

@@ -3814,6 +3814,26 @@ function view_field($link,$ex_id,$ex_result,$sample_id='')
                 xxx_set_unique_id_prev_next_button($link,$sample_id,$ex_id);
               echo '</div>';
             }
+
+            else if($ex_id==$GLOBALS['mobile'])
+            {
+				$res=get_config_value($link,'restrictive_examination_for_edit_delete');
+				$res_result=get_one_ex_result($link,$sample_id,$res);
+				if(strlen($res_result)>0)
+				{
+					echo '  <div role=group class="my_label text-wrap btn-toolbar lead w-auto border '.$print_hide.' ">'.$examination_details['name'];
+					$patient_name_value=get_one_ex_result($link,$sample_id,$GLOBALS['patient_name']);
+					xxx_sample_id_mobile_button($link,$sample_id,$ex_result,$patient_name_value);
+					echo '</div>';
+				}
+				else
+				{
+					echo '  <div role=group class="my_label text-wrap btn-toolbar lead w-auto border '.$print_hide.' ">'.$examination_details['name'];
+	              echo '</div>';
+
+				}
+            }
+                        
             else
             {
               echo '  <div class="my_label text-wrap lead w-auto border '.$print_hide.'">'.$examination_details['name'].':';          
@@ -11383,6 +11403,19 @@ function xxx_sample_id_email_button($link,$sample_id)
 
 }
 
+function xxx_sample_id_mobile_button($link,$sample_id,$mobile,$patient_name_value)
+{
+  echo '<div class="d-inline-block"  ><form method=post action=xxx_whatsapp_single.php class=print_hide>
+  <button class="btn btn-outline-success btn-sm" name=mobile value=\''.$mobile.'\' >WhatsApp</button>
+  <input type=hidden name=sample_id value=\''.$sample_id.'\'>
+  <input type=hidden name=name value=\''.$patient_name_value.'\'>
+  <input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+  <input type=hidden name=action value=mobile>
+  </form></div>';
+  //  <input type=hidden name=email value=\''.get_one_ex_result($link,$sample_id,get_config_value($link,' examination_id_for_email')).'\'>
+
+}
+
 function xxx_sample_id_xmpp_button($link,$sample_id)
 {
   echo '<div class="d-inline-block"  ><form method=post action=xxx_im_single.php class=print_hide>
@@ -12740,6 +12773,11 @@ function generate_pdf_for_report_as_file($pdf)
     return $pdf->Output('report.pdf', 'S');
 }
 
+
+function generate_pdf_for_report_as_server_file($pdf,$filename)
+{
+    return $pdf->Output($filename, 'F');
+}
 
 
 function get_sample_id_array_for_any_id($link,$id)
